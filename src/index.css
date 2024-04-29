@@ -1,0 +1,19 @@
+:root {
+  --main-bg-color1: #00948B;
+  --main-bg-color2: #004A45;
+  --main-text-color: white;
+}
+
+body {
+  /* display: flex; */
+  /* flex-direction: column;
+  justify-content: center;
+  align-items: center; */
+  min-height: 100vh;
+  margin: 0;
+
+  /* background: linear-gradient(to bottom, var(--main-bg-color2), var(--main-bg-color1) 30%, var(--main-bg-color2)) no-repeat; */
+  background: var(--main-bg-color2) no-repeat;
+  color: var(--main-text-color);
+  text-align: center;
+}

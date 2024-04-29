@@ -1,0 +1,10 @@
+/* 이 설정은 frontend폴더가 vscode에서 작업영역일 때 만 적용됩니다.
+(git을 함께 쓰고 싶으면, frontend폴더를 vscode에서 작업영역으로 먼저
+열고나서, vscode git extension으로 git repository를 여세요)
+
+사용자의 vscode설정에 대해 우선하여 적용됩니다. */
+
+{
+  "editor.tabSize": 2,
+  "editor.insertSpaces": true
+}
