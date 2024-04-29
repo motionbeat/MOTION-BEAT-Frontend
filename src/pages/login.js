@@ -4,6 +4,7 @@ import axios from 'axios';
 import { CheckLoginValidate } from "../utils/checkValidate";
 
 const Login = () => {
+  const backendUrl = process.env.REACT_APP_API_URL
   /* ID PW */
   const emailRef = useRef(null);
   const pwRef = useRef(null);
@@ -14,7 +15,6 @@ const Login = () => {
   /* Navi */
   const navigate = useNavigate();
 
-  const backendUrl = process.env.REACT_APP_API_URL
 
   /*  */
   const handleSubmit = async (event) => {
@@ -39,7 +39,6 @@ const Login = () => {
     }
 
     try {
-      console.log("Try to enter : " + backendUrl)
       const response = await axios.post(`${backendUrl}/api/users/login`, formData, {
         headers: {
           'Content-Type': 'application/json'
