@@ -2,7 +2,7 @@ import React, { useRef, useState } from 'react'
 import { useNavigate } from 'react-router-dom';
 import { CheckForgotValidate } from "../utils/checkValidate";
 
-export default function Forgot() {
+export default function ForgotPw() {
   const [errors, setErrors] = useState({});
   const emailRef = useRef(null);
 
