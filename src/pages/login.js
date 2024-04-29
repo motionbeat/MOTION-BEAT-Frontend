@@ -6,7 +6,6 @@ import { CheckLoginValidate } from "../utils/checkValidate";
 const Login = () => {
   /* ID PW */
   const emailRef = useRef(null);
-  const nicknameRef = useRef(null);
   const pwRef = useRef(null);
 
   const [isLoading, setIsLoading] = useState(false);
@@ -20,16 +19,12 @@ const Login = () => {
   /*  */
   const handleSubmit = async (event) => {
     event.preventDefault();
-    // if (!email || !pw) {
-    //     alert('이메일과 비밀번호를 모두 입력해주세요.');
-    //     return;
-    // }
+
     setIsLoading(true);
 
     /* input 값 추출 */
     const formData = {
       email: emailRef.current.value,
-      nickname: nicknameRef.current.value,
       pw: pwRef.current.value,
     };
 
@@ -38,21 +33,23 @@ const Login = () => {
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
 
-      console.log(validationErrors)
-      console.log(errors)
+      console.log("유효성 에러 : ");
+      console.log(validationErrors);
       return
     }
 
     try {
-      console.log(backendUrl)
-      const response = await axios.post(`${backendUrl}/api/users/signup`, formData, {
+      console.log("Try to enter : " + backendUrl)
+      const response = await axios.post(`${backendUrl}/api/users/login`, formData, {
         headers: {
           'Content-Type': 'application/json'
         }
       });
-      localStorage.setItem('userToken', response.data.token); // 로그인 성공 시 토큰 저장
-      localStorage.setItem('userId', response.data.userId); // 사용자 ID 저장
-      alert('로그인에 성공하였습니다.');
+      sessionStorage.setItem('userToken', response.data.jwtoken); // 로그인 성공 시 토큰 저장
+      sessionStorage.setItem('userId', response.data.userId); // 사용자 ID 저장
+      // alert('로그인에 성공하였습니다.');
+
+      navigate("/main");
     } catch (error) {
       setIsLoading(false);
       if (axios.isAxiosError(error) && error.response) {
@@ -65,7 +62,7 @@ const Login = () => {
   };
 
   const handleForgot = () => {
-    navigate("/forgot");
+    navigate("/forgotPw");
   };
   const handleSignup = () => {
     navigate("/signup");
@@ -83,10 +80,6 @@ const Login = () => {
             <input type="text" placeholder="이메일" ref={emailRef} />
             {errors.email && <p style={{ color: 'red' }}>{errors.email[0]}</p>}
           </div >
-          <div>
-            <input type="text" placeholder="닉네임" ref={nicknameRef} />
-            {errors.nickname && <p style={{ color: 'red' }}>{errors.nickname[0]}</p>}
-          </div>
           <div>
             <input type="password" placeholder="비밀번호" ref={pwRef} />
             {errors.pw && <p style={{ color: 'red' }}>{errors.pw[0]}</p>}
