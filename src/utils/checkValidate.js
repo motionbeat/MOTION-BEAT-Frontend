@@ -13,11 +13,6 @@ export const CheckLoginValidate = (data) => {
         message: "유효한 이메일 주소를 입력하세요."
       },
     },
-    nickname: {
-      presence: {
-        allowEmpty: false, message: "닉네임은 필수항목 입니다."
-      }
-    },
     pw: {
       presence: {
         allowEmpty: false,
@@ -34,9 +29,9 @@ export const CheckLoginValidate = (data) => {
   if (!validationErrors) {
     console.log('유효한 폼입니다. 제출 중...');
   }
-  console.log(data)
-  console.log(rules)
-  console.log(validationErrors)
+  // console.log(data)
+  // console.log(rules)
+  // console.log(validationErrors)
 
   return validationErrors || {};
 }
