@@ -12,11 +12,10 @@ import Signup from "./pages/signup";
 
 /* 메인 (인증인가 O)*/
 import Main from "./pages/main";
-import Mypage from "./pages/mypage";
-import Playtype from "./pages/playtype";
-import Tutorial from "./pages/tutorial";
-import Ranking from "./pages/ranking";
-import Setting from "./pages/setting";
+import Playtype from "./components/main/playtype";
+import Tutorial from "./components/main/tutorial";
+import Ranking from "./components/main/ranking";
+import Settings from "./components/main/settings";
 
 import Room from "./pages/room";
 
@@ -46,7 +45,6 @@ const App = () => {
           {/* 메인 */}
           <Route element={<PrivateRoute />}>
             <Route path="/main" element={<Main />} />
-            <Route path="/mypage" element={<Mypage />} />
             <Route path="/playtype" element={<Playtype />} />
             <Route path="/tutorial" element={<Tutorial />} />
             <Route path="/ranking" element={<Ranking />} />

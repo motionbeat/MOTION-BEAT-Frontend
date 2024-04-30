@@ -17,10 +17,11 @@ const Login = () => {
   /* Navi */
   const navigate = useNavigate();
 
+
+  const backendUrl = process.env.REACT_APP_BACK_API_URL;
+  
   /* Popup */
   const [popupClosedByUser, setPopupClosedByUser] = useState(false);
-
-
 
   /*  */
   const handleSubmit = async (event) => {
