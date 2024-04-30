@@ -4,7 +4,7 @@ import axios from 'axios';
 import { CheckSignupValidate } from "../utils/checkValidate"
 
 const Signup = () => {
-  const backendUrl = process.env.REACT_APP_API_URL
+  const backendUrl = process.env.REACT_APP_BACK_API_URL
 
   const navigate = useNavigate();
   const [errors, setErrors] = useState({});

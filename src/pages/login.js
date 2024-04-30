@@ -4,7 +4,7 @@ import axios from 'axios';
 import { CheckLoginValidate } from "../utils/checkValidate";
 
 const Login = () => {
-  const backendUrl = process.env.REACT_APP_API_URL
+  const backendUrl = process.env.REACT_APP_BACK_API_URL
   /* ID PW */
   const emailRef = useRef(null);
   const pwRef = useRef(null);
