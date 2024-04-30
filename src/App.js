@@ -20,7 +20,12 @@ import Setting from "./pages/setting";
 
 import Room from "./pages/room";
 
+import Redirect from "./pages/redirect";
+import { KakaoCallback } from "./apis/kko";
+import { GoogleCallback } from "./apis/ggl";
+
 import NotFound from "./pages/notFound";
+import PrivateRoute from "./utils/checkAuth";
 
 const App = () => {
 
@@ -39,14 +44,20 @@ const App = () => {
           <Route path="/signup" element={<Signup />} />
 
           {/* 메인 */}
-          <Route path="/main" element={<Main />} />
-          <Route path="/mypage" element={<Mypage />} />
-          <Route path="/playtype" element={<Playtype />} />
-          <Route path="/tutorial" element={<Tutorial />} />
-          <Route path="/ranking" element={<Ranking />} />
-          <Route path="/setting" element={<Setting />} />
+          <Route element={<PrivateRoute />}>
+            <Route path="/main" element={<Main />} />
+            <Route path="/mypage" element={<Mypage />} />
+            <Route path="/playtype" element={<Playtype />} />
+            <Route path="/tutorial" element={<Tutorial />} />
+            <Route path="/ranking" element={<Ranking />} />
+            <Route path="/setting" element={<Setting />} />
 
-          <Route path="/room" element={<Room />} />
+            <Route path="/room" element={<Room />} />
+          </Route>
+
+          {/* Redirect */}
+          <Route path="/callback/google-login" element={<GoogleCallback />} />
+          <Route path="/callback/kakao-login" element={<KakaoCallback />} />
 
           {/* 404 */}
           <Route path="*" element={<NotFound />} />
