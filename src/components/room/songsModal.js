@@ -4,40 +4,43 @@ import axios from 'axios';
 
 const SongsModal = ({ modalOn, handleSongSelect }) => {
   const [songs, setSongs] = useState([]);
-  const [difficulty, setDifficulty] = useState("ALL");
-  const [selectedSong, setSelectedSong] = useState(null);
+  const [difficulty, setDifficulty] = useState("all");
 
   const backendUrl = process.env.REACT_APP_API_URL
 
   useEffect(() => {
     const fetchSongs = async () => {
         try {
-            let url = `${backendUrl}/api/songs`;
-            if (difficulty === "all") {
-                url = `${backendUrl}/api/songs`;
-            } else if (difficulty === "favorite") {
-                url = `${backendUrl}/api/users/favorite`;
-            } else {
-                url = `${backendUrl}/api/songs/difficulty/${difficulty}`;
-            }
+          let url = `${backendUrl}/api/songs`;
+          if (difficulty === "all") {
+              url = `${backendUrl}/api/songs`;
+          } else if (difficulty === "favorite") {
+              url = `${backendUrl}/api/songs/favorite`;
+          } else {
+              url = `${backendUrl}/api/songs/difficulty/${difficulty}`;
+          }
 
-            const response = await axios.get(url, {
-                headers: {
-                    'Content-Type': 'application/json'
-                }
-            });
-            setSongs(response.data);
+          const response = await axios.get(url, {
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
+              "UserId": sessionStorage.getItem("userId")
+            }
+          });
+          console.log(response.headers);
+          console.log(response.data);
+          setSongs(response.data);
         } catch (error) {
-            console.error("Error fetching songs:", error);
+          console.error("Error fetching songs:", error);
         }
     };
 
     fetchSongs();
   }, [backendUrl, difficulty]);
 
-  // if (!modalOn) {
-  //   return null;
-  // }
+  if (!modalOn) {
+    return null;
+  }
 
   return (
     <>
@@ -76,9 +79,8 @@ const Modal = styled.div`
     background-color: #d9d9d9;
     opacity: 0.7;
     position: absolute;
-    top: 50%;
+    top: 0;
     left: 50%;
-    display: ${({ modalOn }) => (modalOn ? 'block' : 'none')};
 `
 
 const ModalWrapper = styled.div`

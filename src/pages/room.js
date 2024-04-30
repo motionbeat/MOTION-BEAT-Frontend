@@ -6,6 +6,7 @@ import WebCam from "../components/room/webCam";
 import RoomChatting from "../components/room/roomChatting";
 
 const Room = () => {
+    const userId = sessionStorage.getItem("userId");
     return (
         <>
             <RoomWrapper>
