@@ -2,6 +2,8 @@ import React, { useState, useRef } from "react"
 import { useNavigate } from 'react-router-dom';
 import axios from 'axios';
 import { CheckLoginValidate } from "../utils/checkValidate";
+import { KakaoLoginButton } from "../apis/kko";
+import { GoogleLoginButton } from "../apis/ggl";
 
 const Login = () => {
   const backendUrl = process.env.REACT_APP_BACK_API_URL
@@ -14,6 +16,10 @@ const Login = () => {
 
   /* Navi */
   const navigate = useNavigate();
+
+  /* Popup */
+  const [popupClosedByUser, setPopupClosedByUser] = useState(false);
+
 
 
   /*  */
@@ -39,6 +45,7 @@ const Login = () => {
     }
 
     try {
+      console.log("백엔드와 연동");
       const response = await axios.post(`${backendUrl}/api/users/login`, formData, {
         headers: {
           'Content-Type': 'application/json'
@@ -91,13 +98,10 @@ const Login = () => {
         </form>
         <div>
           <div>
-            <button id="kakao-login-btn">Login with Kakao</button>
-            <button id="google-login-btn">Login with Google</button>
+            <GoogleLoginButton setEvent={setPopupClosedByUser}>Login with Google</GoogleLoginButton>
+            <KakaoLoginButton setEvent={setPopupClosedByUser}>Login With Kakao</KakaoLoginButton>
+            {popupClosedByUser && <p>로그인 창이 닫혔습니다. 다시 시도해 주세요.</p>}
           </div>
-          {/* <div>
-            <GoogleLoginButton>Login with Google</GoogleLoginButton>
-            <KakaoLoginButton>Login With Kakao</KakaoLoginButton>
-          </div> */}
         </div>
       </div>
     </>

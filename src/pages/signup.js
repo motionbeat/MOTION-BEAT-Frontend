@@ -1,5 +1,5 @@
-import React, { useRef, useState } from "react"
-import { useNavigate } from "react-router-dom"
+import React, { useRef, useState, useEffect } from "react"
+import { useNavigate, useLocation } from "react-router-dom"
 import axios from 'axios';
 import { CheckSignupValidate } from "../utils/checkValidate"
 
@@ -13,6 +13,17 @@ const Signup = () => {
   const nicknameRef = useRef(null);
   const pwRef = useRef(null);
   const pwAgainRef = useRef(null);
+
+  /* for Social Login */
+  const location = useLocation();
+  useEffect(() => {
+    if (location.state?.email) {
+      emailRef.current.value = location.state.email;
+    }
+    if (location.state?.nickname) {
+      nicknameRef.current.value = location.state.nickname;
+    }
+  }, []);
 
   const handleRevert = () => {
     navigate("/login");
@@ -55,6 +66,8 @@ const Signup = () => {
       }
     }
   };
+
+
 
   return (
     <form onSubmit={handleSubmit}>
