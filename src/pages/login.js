@@ -14,7 +14,7 @@ const Login = () => {
   /* Navi */
   const navigate = useNavigate();
 
-  const backendUrl = process.env.REACT_APP_API_URL
+  const backendUrl = process.env.REACT_APP_BACK_API_URL
 
   /*  */
   const handleSubmit = async (event) => {
