@@ -15,7 +15,6 @@ import Main from "./pages/main";
 import Playtype from "./components/main/playtype";
 import Tutorial from "./components/main/tutorial";
 import Ranking from "./components/main/ranking";
-import Settings from "./components/main/settings";
 
 import Room from "./pages/room";
 
@@ -48,7 +47,6 @@ const App = () => {
             <Route path="/playtype" element={<Playtype />} />
             <Route path="/tutorial" element={<Tutorial />} />
             <Route path="/ranking" element={<Ranking />} />
-            <Route path="/setting" element={<Setting />} />
 
             <Route path="/room" element={<Room />} />
           </Route>
