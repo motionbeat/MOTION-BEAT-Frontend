@@ -1,0 +1,12 @@
+.background-songSheet {
+  display: block;
+
+  position: relative;
+
+  width: 100vw;
+  height: 30vh;
+
+  margin-bottom: 10vh;
+
+  background: rgba(5, 5, 5, 0.4);
+}

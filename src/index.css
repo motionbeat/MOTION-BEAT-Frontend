@@ -9,7 +9,7 @@ body {
   /* flex-direction: column;
   justify-content: center;
   align-items: center; */
-  min-height: 100vh;
+  min-height: 80vh;
   margin: 0;
 
   /* background: linear-gradient(to bottom, var(--main-bg-color2), var(--main-bg-color1) 30%, var(--main-bg-color2)) no-repeat; */
