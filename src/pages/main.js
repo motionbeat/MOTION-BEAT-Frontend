@@ -1,5 +1,7 @@
 import React, { useState } from "react"
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import socket from "../server/server";
 import Playtype from "../components/main/playtype";
 import Tutorial from "../components/main/tutorial";
 import Ranking from "../components/main/ranking";
@@ -11,9 +13,13 @@ import Friends from "../components/friends";
 
 const Main = () => {
   const navigate = useNavigate();
+  const backendUrl = process.env.REACT_APP_BACK_API_URL;
+  const [code, setCode] = useState(''); // 방 코드 받아올 때 사용
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentElement, setCurrentElement] = useState(null);
+
+
 
   const openModal = (element) => {
     setCurrentElement(element);

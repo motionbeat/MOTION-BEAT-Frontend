@@ -23,7 +23,6 @@ import { KakaoCallback } from "./apis/kko";
 import { GoogleCallback } from "./apis/ggl";
 
 import NotFound from "./pages/notFound";
-import CreateSong from "./components/common/createSong";
 import AddSong from "./pages/addSong";
 import PrivateRoute from "./utils/checkAuth";
 import Setting from "./pages/setting";
