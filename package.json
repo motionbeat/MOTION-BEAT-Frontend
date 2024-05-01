@@ -4,6 +4,7 @@
     "description": "4교육장 14-18주차 (2024.4.19(금) ~ 2024.5.23(목)) 나만의 무기 갖기 2조: 사나이팀",
     "private": true,
     "dependencies": {
+        "@reduxjs/toolkit": "^1.6.1",
         "@testing-library/jest-dom": "^5.17.0",
         "@testing-library/react": "^12.0.0",
         "@testing-library/user-event": "^13.5.0",
@@ -49,5 +50,11 @@
             "last 1 firefox version",
             "last 1 safari version"
         ]
-    }
+    },
+    "devDependencies": {
+        "@babel/plugin-proposal-private-property-in-object": "^7.21.11"
+    },
+    "plugins": [
+        "@babel/plugin-proposal-private-property-in-object"
+    ]
 }
