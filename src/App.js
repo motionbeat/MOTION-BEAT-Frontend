@@ -21,6 +21,8 @@ import Setting from "./pages/setting";
 import Room from "./pages/room";
 
 import NotFound from "./pages/notFound";
+import CreateSong from "./components/common/createSong";
+import AddSong from "./pages/addSong";
 
 const App = () => {
 
@@ -47,6 +49,7 @@ const App = () => {
           <Route path="/setting" element={<Setting />} />
 
           <Route path="/room" element={<Room />} />
+          <Route path="/addsong" element={<AddSong />} />
 
           {/* 404 */}
           <Route path="*" element={<NotFound />} />
