@@ -16,14 +16,17 @@ import Playtype from "./components/main/playtype";
 import Tutorial from "./components/main/tutorial";
 import Ranking from "./components/main/ranking";
 
+/* 룸(=대기방) */
 import Room from "./pages/room";
+
+/* 인게임 */
+import Ingame from "./pages/ingame";
 
 import Redirect from "./pages/redirect";
 import { KakaoCallback } from "./apis/kko";
 import { GoogleCallback } from "./apis/ggl";
 
 import NotFound from "./pages/notFound";
-import CreateSong from "./components/common/createSong";
 import AddSong from "./pages/addSong";
 import PrivateRoute from "./utils/checkAuth";
 import Setting from "./pages/setting";
@@ -35,7 +38,7 @@ const App = () => {
       <Router>
         <ShowTitle />
         <Routes>
-          {/* <Route path="/" element={<Navigate replace to="/login" />} /> */}
+          {/* token사용 시 아래 주석과 "###"아래 주석을 해제하세요 */}
           {/* 웹 접속 */}
           <Route path="/" element={<Splash />} />
 
@@ -45,14 +48,21 @@ const App = () => {
           <Route path="/signup" element={<Signup />} />
 
           {/* 메인 */}
-          <Route element={<PrivateRoute />}>
-            <Route path="/main" element={<Main />} />
-            <Route path="/playtype" element={<Playtype />} />
-            <Route path="/tutorial" element={<Tutorial />} />
-            <Route path="/ranking" element={<Ranking />} />
+          {/* token사용 시 아래 주석과 "###"아래 주석을 해제하세요 */}
+          {/* <Route element={<PrivateRoute />}> */}
+          <Route path="/main" element={<Main />} />
+          <Route path="/playtype" element={<Playtype />} />
+          <Route path="/tutorial" element={<Tutorial />} />
+          <Route path="/ranking" element={<Ranking />} />
 
-            <Route path="/room" element={<Room />} />
-          </Route>
+          {/* 룸(=대기방) */}
+          <Route path="/room" element={<Room />} />
+
+          {/* 인게임 */}
+          <Route path="/ingame" element={<Ingame />} />
+
+          {/* ### */}
+          {/* </Route> */}
 
           {/* Redirect */}
           <Route path="/callback/google-login" element={<GoogleCallback />} />
@@ -69,7 +79,9 @@ const App = () => {
 const ShowTitle = () => {
   const location = useLocation();
 
-  return location.pathname === "/" ? null : (
+  const excludeTitle = ["/", "/ingame"];
+
+  return excludeTitle.indexOf(location.pathname) !== -1 ? null : (
     <Title style={{ textAlign: "center" }} />
   );
 }
