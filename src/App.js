@@ -30,6 +30,7 @@ import NotFound from "./pages/notFound";
 import AddSong from "./pages/addSong";
 import PrivateRoute from "./utils/checkAuth";
 import Setting from "./pages/setting";
+import Mediapipe from "./components/mediapipe/mediapipe";
 
 const App = () => {
 
@@ -60,6 +61,10 @@ const App = () => {
 
           {/* 인게임 */}
           <Route path="/ingame" element={<Ingame />} />
+
+          {/* 인게임 */}
+          <Route path="/cam" element={<Mediapipe />} />
+
 
           {/* ### */}
           {/* </Route> */}
