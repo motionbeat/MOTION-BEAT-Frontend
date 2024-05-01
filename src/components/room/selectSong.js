@@ -1,13 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import LemonImg from "../../img/lemon.png"
 import PlayBtn from "../../img/play.svg"
 import StopBtn from "../../img/stop.svg"
 import styled from "styled-components"
 import SongsModal from "./songsModal";
+import axios from "axios";
+import socket from "../../server/server.js"
 
-const SelectSong = () => {
+const SelectSong = ({ songNumber }) => {
   const [modalOn, setModalOn] = useState(false);
-  const [selectedSong, setSelectedSong] = useState(null);
+  const [selectedSong, setSelectedSong] = useState([]);
+  const songNum = songNumber;
+
+  const backendUrl = process.env.REACT_APP_BACK_API_URL;
 
   const selectMusic = () => {
     setModalOn(!modalOn);
@@ -18,22 +23,42 @@ const SelectSong = () => {
     setModalOn(false);
   }
   
+  useEffect(() => {
+    const findSong = async () => {
+      try {
+        const response = await axios.get(`${backendUrl}/api/songs/${songNum}`, {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
+            "UserId": sessionStorage.getItem("userId"),
+            "Nickname": sessionStorage.getItem("nickname")
+          }
+        });
+        setSelectedSong(response.data);
+      } catch (error) {
+        console.error("Error random songs:", error);
+      }
+    };
+
+    findSong();
+  }, [backendUrl, songNum]);
+
   return (
     <>
       <RoomSelectSongBox>
         <div onClick={selectMusic}><img src={LemonImg} alt="lemon" /></div>
         <RoomSelectSong>
-          <h2>{selectedSong ? selectedSong.title : "LEMON"}</h2>
-          <p>{selectedSong ? selectedSong.artist : "Kenshi Yonezu"}</p>
-          <p>{selectedSong ? selectedSong.runtime : "4:35"}</p>
+          <h2>{selectedSong[0]?.title}</h2>
+          <p>{selectedSong[0]?.artist}</p>
+          <p>{selectedSong[0]?.runtime}</p>
           <SongBtn>
             <img src={PlayBtn} alt="play" />
             <img src={StopBtn} alt="stop" />
           </SongBtn>
-          <p>{selectedSong ? selectedSong.difficulty : "NORMAL"}</p>
+          <p>{selectedSong[0]?.difficulty}</p>
         </RoomSelectSong>
-        <SongsModal modalOn={modalOn} handleSongSelect={handleSongSelect}  />
     </RoomSelectSongBox>
+        <SongsModal modalOn={modalOn} handleSongSelect={handleSongSelect}  />
     </>
   )
 }

@@ -15,7 +15,6 @@ import Main from "./pages/main";
 import Playtype from "./components/main/playtype";
 import Tutorial from "./components/main/tutorial";
 import Ranking from "./components/main/ranking";
-import Settings from "./components/main/settings";
 
 import Room from "./pages/room";
 
@@ -24,7 +23,10 @@ import { KakaoCallback } from "./apis/kko";
 import { GoogleCallback } from "./apis/ggl";
 
 import NotFound from "./pages/notFound";
+import CreateSong from "./components/common/createSong";
+import AddSong from "./pages/addSong";
 import PrivateRoute from "./utils/checkAuth";
+import Setting from "./pages/setting";
 
 const App = () => {
 
@@ -48,7 +50,6 @@ const App = () => {
             <Route path="/playtype" element={<Playtype />} />
             <Route path="/tutorial" element={<Tutorial />} />
             <Route path="/ranking" element={<Ranking />} />
-            <Route path="/setting" element={<Setting />} />
 
             <Route path="/room" element={<Room />} />
           </Route>

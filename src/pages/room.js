@@ -1,25 +1,73 @@
 import styled from "styled-components"
-import React, {useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import socket from "../server/server"
 import SelectSong from "../components/room/selectSong";
 import WebCam from "../components/room/webCam";
 import RoomChatting from "../components/room/roomChatting";
+import axios from "axios";
+import { useLocation, useNavigate } from "react-router-dom";
 
 const Room = () => {
-    const userId = sessionStorage.getItem("userId");
+    const location = useLocation();
+    const navigate = useNavigate();
+    const { roomData } = location.state || {};
+    const [room, setRoom] = useState(roomData);
+    const backendUrl = process.env.REACT_APP_BACK_API_URL;
+
+    //joinRoom을 쏴줘야 함
+    useEffect (() => {
+      // socket.on("players", setRoom.players, (updatedPlayers) => {
+      //   setRoom(prev => ({ ...prev, players: updatedPlayers }));
+      // })
+      // "players" 이벤트에 대한 응답으로 players 상태를 업데이트함.
+      const updatePlayers = (updatedPlayers) => {
+        setRoom(prev => ({ ...prev, players: updatedPlayers }));
+      };
+      
+      socket.on("players", updatePlayers);
+      
+      // 이벤트 리스너 해제를 위한 cleanup 함수 반환
+      return () => {
+        socket.off("players", updatePlayers);
+      };
+    }, [room.code])
+
+    const leaveRoom = async () => {
+      try {
+        const response = await axios.patch(`${backendUrl}/api/rooms/leave`, {
+          code : room ? room.code:"",
+          }, {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
+            "UserId": sessionStorage.getItem("userId"),
+            "Nickname": sessionStorage.getItem("nickname")
+          }
+        });
+        if(response.data.message === "redirect") navigate("/main");
+      } catch (error) {
+        console.error("Error random songs:", error);
+      }
+    };
+
     return (
         <>
             <RoomWrapper>
-                <RoomTitle>문미새님의 게임</RoomTitle>
+                <ExitRoomBtn onClick={leaveRoom}>방 나가기</ExitRoomBtn>
+                <RoomTitle>{room.hostName}님의 게임</RoomTitle>
                 <RoomMainWrapper>
-                    <SelectSong />
-                    <WebCam />
+                    <div style={{display: "flex", justifyContent: "space-between"}}>
+                      <SelectSong songNumber={room.song} />
+                      <SecretCode>코드 : {room.code}</SecretCode>
+                    </div>
+                    <WebCam players={room.players} />
                 </RoomMainWrapper>
                 <RoomChatting />
             </RoomWrapper>
         </>
     )
 }
+
 export default Room;
 
 const RoomWrapper = styled.div`
@@ -39,5 +87,22 @@ const RoomMainWrapper = styled.div`
     background-color: #CAFFF5;
     margin: 10px auto 0 auto;
 `
+const SecretCode = styled.div`
+  margin: 20px;
+  padding: 20px;
+  width: 200px;
+  height: 20px;
+  border: 1px solid black;
+`
 
+const ExitRoomBtn = styled.div`
+  position: absolute;
+  top: 10%;
+  left: 9%;                          
+  padding: 15px;
+  background-color: white;
+  border-radius: 10px;
+  margin: 20px;
+  cursor: pointer;
+`
 

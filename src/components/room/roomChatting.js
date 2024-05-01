@@ -6,10 +6,9 @@ import ChatIcon from "../../img/kakao.png"
 const RoomChatting = () => {
   const [isChatVisible, setIsChatVisible] = useState(false);
   const [chatHeight, setChatHeight] = useState('0');
-
   const [message, setMessage] = useState('');
   const [messageList, setMessageList] = useState([]);
-  const [user, setUser] = useState('문미새');
+  const userNickname = sessionStorage.getItem("nickname");
 
   const toggleChat = () => {
     setIsChatVisible(!isChatVisible);
@@ -29,31 +28,42 @@ const RoomChatting = () => {
   // 메시지 전송 핸들러
   const handleSendMessage = (e) => {
       e.preventDefault();
+      if (!message.trim()) return;
 
       socket.emit("sendMessage", message, (res) => {
           console.log("sendMessage res", res);
+          setMessage('');
       });
-      setMessageList((prevState) => [...prevState, message]);
-      console.log(message);
-      setMessage('');
+      // setMessageList((prevState) => [...prevState, { userNickname, message }]);
   };
 
+  // chat, user(id, nickname)
   useEffect(() => {
-    socket.on('message', (message) => {
-        setMessageList((prevState)=> prevState.concat(message));
-    })
-    askUserName();
-}, []);
+    // const handleMessageReceive = (message) => {
+    //   setMessageList((prevState) => prevState.concat(message));
+    // }
+  
+    socket.on('message', (res) => {
+      console.log("bringMessage res", res);
+      // setMessageList((prevState) => prevState.concat(message));
+      // setMessageList((prevState) => [...prevState, res]);
+      setMessageList((prevState) => [...prevState, { userNickname: res.user.nickname, message: res.chat }]);
+    });
 
-const askUserName = () => {
-    const userName = "문미새";
-    console.log("이름 : ", userName);
+    return () => {
+      socket.off('message');
+    };
+  }, []);
 
-    socket.emit("login", userName, (res) => {
-    if (res?.ok) {
-        setUser(res.data);
-    }});
-};
+// const askUserName = () => {
+//     const userName = "문미새";
+//     console.log("이름 : ", userName);
+
+//     socket.emit("login", userName, (res) => {
+//     if (res?.ok) {
+//         setUser(res.data);
+//     }});
+// };
 
   return (
     <>
@@ -61,19 +71,23 @@ const askUserName = () => {
         <ChatBtn onClick={toggleChat} chatHeight={chatHeight}>
             <img src={ChatIcon} alt="chat" />
         </ChatBtn>
-        {isChatVisible && <ChatContentBox isVisible={isChatVisible} style={{height: chatHeight}}>
+        {isChatVisible && (
+          <ChatContentBox isVisible={isChatVisible} style={{height: chatHeight}}>
             <ChatInnerBox>
                 <ChatContent>
-                {messageList.map((message, index) => (
-                    <div key={index}>문미새 : {message}</div>
+                {messageList.map((item, index) => (
+                    <div key={index}>{item.userNickname} : {item.message}</div>
                 ))}
                 </ChatContent>
-                <ChatInputBox>
-                    <ChatInput value={message} onChange={handleMessageChange} />
-                    <ChatInputSubmit disabled={message === ""} type="submit" onClick={handleSendMessage}>전송</ChatInputSubmit>
-                </ChatInputBox>
+                <form onSubmit={handleSendMessage}>
+                  <ChatInputBox>
+                      <ChatInput value={message} onChange={handleMessageChange} />
+                      <ChatInputSubmit disabled={message === ""} type="submit" onClick={handleSendMessage}>전송</ChatInputSubmit>
+                  </ChatInputBox>
+                </form>
             </ChatInnerBox>
-        </ChatContentBox>}
+          </ChatContentBox>
+        )}
     </ChatBox>
     </>
   )
