@@ -4,6 +4,7 @@ import axios from 'axios';
 import { CheckLoginValidate } from "../utils/checkValidate";
 import { KakaoLoginButton } from "../apis/kko";
 import { GoogleLoginButton } from "../apis/ggl";
+import socket from "../server/server.js";
 
 const Login = () => {
   const backendUrl = process.env.REACT_APP_BACK_API_URL
@@ -43,7 +44,7 @@ const Login = () => {
     }
 
     try {
-      console.log("백엔드와 연동");
+      console.log("Try to enter : " + backendUrl);
       const response = await axios.post(`${backendUrl}/api/users/login`, formData, {
         headers: {
           'Content-Type': 'application/json'
@@ -51,7 +52,17 @@ const Login = () => {
       });
       sessionStorage.setItem('userToken', response.data.jwtoken); // 로그인 성공 시 토큰 저장
       sessionStorage.setItem('userId', response.data.userId); // 사용자 ID 저장
+      sessionStorage.setItem('nickname', response.data.nickname); // 사용자 ID 저장
+      sessionStorage.setItem("socketId", socket.id); // 소켓 id 저장
       // alert('로그인에 성공하였습니다.');
+
+      const nickname =  sessionStorage.getItem("nickname");
+
+      socket.emit("login", nickname, (res) => {
+        if (res?.ok) {
+          console.log(nickname);
+        }
+      });  
 
       navigate("/main");
     } catch (error) {
