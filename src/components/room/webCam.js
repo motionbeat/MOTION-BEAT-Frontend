@@ -1,26 +1,17 @@
 import styled from "styled-components"
 import Indu from "../../img/indu.png"
 
-const WebCam = () => {
+const WebCam = ({ players }) => {
+  console.log("플레이어 확인", players);
   return (
     <>
       <WebCamBox>
-        <WebCamInfo>
-            <img src={Indu} alt="인두" />
-            <h2>인두</h2>
-        </WebCamInfo>
-        <WebCamInfo>
-            <img src={Indu} alt="인두" />
-            <h2>인두</h2>
-        </WebCamInfo>
-        <WebCamInfo>
-            <img src={Indu} alt="인두" />
-            <h2>인두</h2>
-        </WebCamInfo>
-        <WebCamInfo>
-            <img src={Indu} alt="인두" />
-            <h2>인두</h2>
-        </WebCamInfo>
+        {players.map((player, index) => ( // players 배열을 순회하여 각 플레이어의 정보를 표시
+          <WebCamInfo key={index}>
+            <img src={Indu} alt={player} />
+            <h2>{player}</h2>
+          </WebCamInfo>
+        ))}
       </WebCamBox>
     </>
   )
