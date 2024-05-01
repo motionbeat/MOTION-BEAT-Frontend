@@ -9,7 +9,7 @@ const AddSong = () => {
   const [runtime, setRuntime] = useState('');
   const [difficulty, setDifficulty] = useState('');
 
-  const backendUrl = process.env.REACT_APP_API_URL;
+  const backendUrl = process.env.REACT_APP_BACK_API_URL;
   
   const AddSongsSubmit = async (e) => {
     e.preventDefault();
@@ -28,7 +28,8 @@ const AddSong = () => {
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
-          "UserId": sessionStorage.getItem("userId")
+          "UserId": sessionStorage.getItem("userId"),
+          "Nickname": sessionStorage.getItem("nickname")
         },
       });
       console.log("success", response);

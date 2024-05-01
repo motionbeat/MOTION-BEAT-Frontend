@@ -6,7 +6,7 @@ const SongsModal = ({ modalOn, handleSongSelect }) => {
   const [songs, setSongs] = useState([]);
   const [difficulty, setDifficulty] = useState("all");
 
-  const backendUrl = process.env.REACT_APP_API_URL
+  const backendUrl = process.env.REACT_APP_BACK_API_URL
 
   useEffect(() => {
     const fetchSongs = async () => {
@@ -74,16 +74,15 @@ const SongsModal = ({ modalOn, handleSongSelect }) => {
 export default SongsModal
 
 const Modal = styled.div`
-    width: 400px;
-    height: 400px;
+    width: 80%;
+    height: 100vh;
     background-color: #d9d9d9;
     opacity: 0.7;
     position: absolute;
     top: 0;
-    left: 50%;
+    left: 10%;
 `
 
 const ModalWrapper = styled.div`
     display: flex;
-
 `
