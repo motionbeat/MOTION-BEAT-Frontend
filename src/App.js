@@ -48,7 +48,7 @@ const App = () => {
             <Route path="/playtype" element={<Playtype />} />
             <Route path="/tutorial" element={<Tutorial />} />
             <Route path="/ranking" element={<Ranking />} />
-            <Route path="/setting" element={<Setting />} />
+            <Route path="/settings" element={<Settings />} />
 
             <Route path="/room" element={<Room />} />
           </Route>
