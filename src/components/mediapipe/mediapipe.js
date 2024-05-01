@@ -20,9 +20,9 @@ class Mediapipe extends Component {
         this.videoRef = React.createRef();
         this.canvasRef = React.createRef();
         this.pose = undefined;
-        this.soundA = new Audio('/effect/drum_1.mp3');
-        this.soundB = new Audio('/effect/drum_2.mp3');
-        this.backgroundMusic = new Audio('/song/Instinctively.mp4');
+        this.soundA = new Audio('/effect/drum_5.mp3');
+        this.soundB = new Audio('/effect/drum_1.mp3');
+        this.backgroundMusic = new Audio('/song/Instinctively.mp3');
     }
 
     componentDidMount() {
@@ -53,17 +53,21 @@ class Mediapipe extends Component {
                 };
 
                 this.pose.onResults((results) => {
-                    const canvasContext = canvas.getContext('2d');
-                    canvasContext.clearRect(0, 0, canvas.width, canvas.height);
-                    drawingUtils.drawConnectors(canvasContext, results.poseLandmarks, posedetection.POSE_CONNECTIONS, { color: '#00FF00', lineWidth: 4 });
-                    drawingUtils.drawLandmarks(canvasContext, results.poseLandmarks, { color: '#FF0000', lineWidth: 2 });
-
-                    const leftWristY = results.poseLandmarks[posedetection.POSE_LANDMARKS.LEFT_WRIST]?.y;
-                    const rightWristY = results.poseLandmarks[posedetection.POSE_LANDMARKS.RIGHT_WRIST]?.y;
-
-                    this.detectWristMovement('left', leftWristY);
-                    this.detectWristMovement('right', rightWristY);
-                });
+                  const canvasContext = canvas.getContext('2d');
+                  canvasContext.clearRect(0, 0, canvas.width, canvas.height);
+                  // if (results.poseLandmarks) {
+                  //     drawingUtils.drawConnectors(canvasContext, results.poseLandmarks, posedetection.POSE_CONNECTIONS, { color: '#00FF00', lineWidth: 4 });
+                  //     drawingUtils.drawLandmarks(canvasContext, results.poseLandmarks, { color: '#FF0000', lineWidth: 2 });
+                  // }
+              
+                  const leftWristY = results.poseLandmarks?.[posedetection.POSE_LANDMARKS.LEFT_WRIST]?.y;
+                  const rightWristY = results.poseLandmarks?.[posedetection.POSE_LANDMARKS.RIGHT_WRIST]?.y;
+              
+                  if (typeof leftWristY === 'number' && typeof rightWristY === 'number') {
+                      this.detectWristMovement('left', leftWristY);
+                      this.detectWristMovement('right', rightWristY);
+                  }
+              });
 
                 onFrame();
             } catch (error) {
@@ -78,7 +82,7 @@ class Mediapipe extends Component {
         if (currentY === null) return;
         const stateKey = wrist + 'WristY';
         const previousY = this.state[stateKey];
-        const threshold = 0.03; // 움직임을 감지할 최소 픽셀 수
+        const threshold = 0.015; // 움직임을 감지할 최소 픽셀 수
 
         if (previousY !== null) {
             const movement = currentY < previousY ? 'up' : 'down';
@@ -142,49 +146,51 @@ class Mediapipe extends Component {
     render() {
         const { postureStatus, backgroundMusicVolume } = this.state;
         return (
-            <div>
-                {this.state.session ? (
-                    <div id="session">
-                        <video ref={this.videoRef} style={{ width: '640px', height: '480px', position: 'relative', zIndex: 1 }} playsInline autoPlay />
-                        <canvas ref={this.canvasRef} style={{ position: 'absolute', top: '0', left: '0', width: '640px', height: '480px', opacity: 0.9, zIndex: 2 }} width="640" height="480" />
-                        <div>현재 자세: {postureStatus}</div>
+          <div>
+            {this.state.session ? (
+                <div id="session" style={{ position: 'relative', width: '640px', height: '480px' }}>
+                    <video ref={this.videoRef} style={{ width: '100%', height: '100%', position: 'absolute', top: '0', left: '0', zIndex: 1 }} playsInline autoPlay />
+                    <canvas ref={this.canvasRef} style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%', opacity: 0.9, zIndex: 2 }} width="640" height="480" />
+                    <div style={{ position: 'absolute', top: '10px', left: '10px', zIndex: 3 }}>
+                        {/* <div>현재 자세: {postureStatus}</div> */}
                         <button onClick={this.playBackgroundMusic}>BGM 재생</button>
                         <button onClick={this.pauseBackgroundMusic}>BGM 일시정지</button>
                         <input type="range" min="0" max="1" step="0.01" value={backgroundMusicVolume} onChange={this.handleVolumeChange} />
                     </div>
-                ) : (
-                    <div id="join">
-                        <div id="join-dialog">
-                            <h1>비디오 세션 참여</h1>
-                            <form onSubmit={this.joinSession}>
-                                <p>
-                                    <label>참가자: </label>
-                                    <input
-                                        type="text"
-                                        id="userName"
-                                        value={this.state.myUserName}
-                                        onChange={this.handleChangeUserName}
-                                        required
-                                    />
-                                </p>
-                                <p>
-                                    <label>세션: </label>
-                                    <input
-                                        type="text"
-                                        id="sessionId"
-                                        value={this.state.mySessionId}
-                                        onChange={this.handleChangeSessionId}
-                                        required
-                                    />
-                                </p>
-                                <p>
-                                    <input name="commit" type="submit" value="JOIN" />
-                                </p>
-                            </form>
-                        </div>
+                </div>
+            ) : (
+                <div id="join">
+                    <div id="join-dialog">
+                        <h1>비디오 세션 참여</h1>
+                        <form onSubmit={this.joinSession}>
+                            <p>
+                                <label>참가자: </label>
+                                <input
+                                    type="text"
+                                    id="userName"
+                                    value={this.state.myUserName}
+                                    onChange={this.handleChangeUserName}
+                                    required
+                                />
+                            </p>
+                            <p>
+                                <label>세션: </label>
+                                <input
+                                    type="text"
+                                    id="sessionId"
+                                    value={this.state.mySessionId}
+                                    onChange={this.handleChangeSessionId}
+                                    required
+                                />
+                            </p>
+                            <p>
+                                <input name="commit" type="submit" value="JOIN" />
+                            </p>
+                        </form>
                     </div>
-                )}
-            </div>
+                </div>
+            )}
+        </div>
         );
     }
 }
