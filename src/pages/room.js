@@ -70,9 +70,9 @@ const Room = () => {
                 <RoomMainWrapper>
                     <div style={{display: "flex", justifyContent: "space-between"}}>
                       <SelectSong songNumber={room.song} hostName={room.hostName} />
-                      <SecretCode>코드 : {room.code}</SecretCode>
+                      {room.type !== 'match' && <SecretCode>코드 : {room.code}</SecretCode>}
                     </div>
-                    <WebCam players={room.players} hostName={room.hostName} />
+                    <WebCam players={room.players} hostName={room.hostName} roomCode={room.code} />
                 </RoomMainWrapper>
                 <RoomChatting />
             </RoomWrapper>
@@ -91,6 +91,7 @@ const RoomWrapper = styled.div`
 // 방제목
 const RoomTitle = styled.h1`
     text-align: center;
+    padding: 10px 0;
 `
 // 노래, 웹캠 등의 전체 박스
 const RoomMainWrapper = styled.div`
@@ -98,19 +99,23 @@ const RoomMainWrapper = styled.div`
     height: 80vh;
     background-color: #CAFFF5;
     margin: 10px auto 0 auto;
+    border-radius: 20px
 `
 const SecretCode = styled.div`
-  margin: 20px;
-  padding: 20px;
   width: 200px;
-  height: 20px;
-  border: 1px solid black;
+  height: 50px;
+  margin: 20px;
+  line-height: 3;
+  border: 2px solid #d9d9d9;
+  text-align: center;
+  border-radius: 10px;
+  background-color: white;
 `
 
 const ExitRoomBtn = styled.div`
   position: absolute;
-  top: 10%;
-  left: 9%;                          
+  top: 0;
+  left: 0;                          
   padding: 15px;
   background-color: white;
   border-radius: 10px;
