@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components"
-import socket from "../../server/server";
+import socket from "../../server/server.js";
 import ChatIcon from "../../img/kakao.png"
 
 const RoomChatting = () => {

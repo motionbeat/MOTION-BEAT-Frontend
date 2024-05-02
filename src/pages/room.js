@@ -1,6 +1,6 @@
 import styled from "styled-components"
 import React, { useEffect, useState } from 'react';
-import socket from "../server/server"
+import socket from "../server/server.js"
 import SelectSong from "../components/room/selectSong";
 import WebCam from "../components/room/webCam";
 import RoomChatting from "../components/room/roomChatting";
