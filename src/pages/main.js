@@ -87,23 +87,23 @@ const Main = () => {
 
       case "PLAY":
         console.log("Playtype 컴포넌트를 불러옵니다.");
-
-        /* 다음 로직은 Room이 구현되면 주석처리 된것과 안된것을 서로 토글하여서 변경하세요 */
-        // setCurrentView(<Playtype />)
-        navigate("/ingame", { state: { ingameData, userData } });
-
+        setCurrentView(<Playtype />)
         break;
+
       case "TUTORIAL":
         console.log("Tutorial 컴포넌트를 불러옵니다.");
         setCurrentView(<Tutorial />)
         break;
+
       case "RANKING":
         console.log("Ranking 컴포넌트를 불러옵니다.");
         setCurrentView(<Ranking />)
         break;
+
       case "SETTINGS":
         setCurrentView(<Settings />)
         break;
+        
       default:
         console.log("알 수 없는 버튼입니다.");
         setCurrentView(null)
