@@ -89,7 +89,12 @@ const Playtype = () => {
   
         navigate("/room", { state: { roomData: response.data }});
       } catch (error) {
-        console.error("Error go Room:", error);
+        if(axios.isAxiosError(error) && error.response) {
+          const message = error.response.data?.message;
+          alert(message);
+        } else {
+          console.error("Error go Room:", error);
+        }
       }
     };
 
