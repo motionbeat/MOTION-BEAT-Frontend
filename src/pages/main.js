@@ -1,5 +1,7 @@
 import React, { useState } from "react"
 import { useNavigate } from "react-router-dom";
+import axios from "axios";
+import socket from "../server/server";
 import Playtype from "../components/main/playtype";
 import Tutorial from "../components/main/tutorial";
 import Ranking from "../components/main/ranking";
@@ -11,9 +13,13 @@ import Friends from "../components/friends";
 
 const Main = () => {
   const navigate = useNavigate();
+  const backendUrl = process.env.REACT_APP_BACK_API_URL;
+  const [code, setCode] = useState(''); // 방 코드 받아올 때 사용
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentElement, setCurrentElement] = useState(null);
+
+
 
   const openModal = (element) => {
     setCurrentElement(element);
@@ -38,6 +44,10 @@ const Main = () => {
       </>
     )
   };
+
+  /* 이 노래데이터, 유저데이터는 임시데이터 입니다. */
+  let ingameData = { imageUrl: "https://i.namu.wiki/i/C7Pn4lj5y_bVOJ8oMyjvvqO2Pv2qach6uyVt2sss93xx-NNS3fWpsDavIVYzfcPX516sK2wcOS8clpyz6acFOtpe1WM6-RN6dWBU77m1z98tQ5UyRshbnJ4RPVic87oZdHPh7tR0ceU8Uq2RlRIApA.webp", songSound: "https://www.youtube.com/watch?v=SX_ViT4Ra7k&ab_channel=KenshiYonezu%E7%B1%B3%E6%B4%A5%E7%8E%84%E5%B8%AB" }
+  let userData = { playerName: "indu", playerColor: "255, 165, 0" }
 
   const handleRevert = () => {
     if (isMenuButtonSelected === false) {
@@ -74,9 +84,14 @@ const Main = () => {
         console.log("Mypage 컴포넌트를 불러옵니다.");
         openModal(<Mypage />);
         break;
+
       case "PLAY":
         console.log("Playtype 컴포넌트를 불러옵니다.");
-        setCurrentView(<Playtype />)
+
+        /* 다음 로직은 Room이 구현되면 주석처리 된것과 안된것을 서로 토글하여서 변경하세요 */
+        // setCurrentView(<Playtype />)
+        navigate("/ingame", { state: { ingameData, userData } });
+
         break;
       case "TUTORIAL":
         console.log("Tutorial 컴포넌트를 불러옵니다.");

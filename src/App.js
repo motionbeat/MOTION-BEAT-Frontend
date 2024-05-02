@@ -65,7 +65,6 @@ const App = () => {
           {/* 인게임 */}
           <Route path="/cam" element={<Mediapipe />} />
 
-
           {/* ### */}
           {/* </Route> */}
 

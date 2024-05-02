@@ -16,15 +16,20 @@ const Room = () => {
 
     //joinRoom을 쏴줘야 함
     useEffect (() => {
-      // socket.on("players", setRoom.players, (updatedPlayers) => {
-      //   setRoom(prev => ({ ...prev, players: updatedPlayers }));
-      // })
       // "players" 이벤트에 대한 응답으로 players 상태를 업데이트함.
       const updatePlayers = (updatedPlayers) => {
         setRoom(prev => ({ ...prev, players: updatedPlayers }));
       };
       
+      // 방에서 나갈 때 상태 업데이트
+      const updatePlayersAfterLeave = (updatedPlayers) => {
+        setRoom(prevRoom => {
+          return { ...prevRoom, players: updatedPlayers };
+        });
+      };
+
       socket.on("players", updatePlayers);
+      socket.on("leftRoom", updatePlayersAfterLeave);
       
       // 이벤트 리스너 해제를 위한 cleanup 함수 반환
       return () => {
@@ -44,9 +49,14 @@ const Room = () => {
             "Nickname": sessionStorage.getItem("nickname")
           }
         });
+
+        socket.emit("leaveRoom", room.code, (res) => {
+          console.log("leaveRoom res", res);
+        })
+
         if(response.data.message === "redirect") navigate("/main");
       } catch (error) {
-        console.error("Error random songs:", error);
+        console.error("leave room error", error);
       }
     };
 
@@ -57,10 +67,10 @@ const Room = () => {
                 <RoomTitle>{room.hostName}님의 게임</RoomTitle>
                 <RoomMainWrapper>
                     <div style={{display: "flex", justifyContent: "space-between"}}>
-                      <SelectSong songNumber={room.song} />
+                      <SelectSong songNumber={room.song} hostName={room.hostName} />
                       <SecretCode>코드 : {room.code}</SecretCode>
                     </div>
-                    <WebCam players={room.players} />
+                    <WebCam players={room.players} hostName={room.hostName} />
                 </RoomMainWrapper>
                 <RoomChatting />
             </RoomWrapper>

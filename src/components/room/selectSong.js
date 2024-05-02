@@ -7,22 +7,23 @@ import SongsModal from "./songsModal";
 import axios from "axios";
 import socket from "../../server/server.js"
 
-const SelectSong = ({ songNumber }) => {
+const SelectSong = ({ songNumber, hostName }) => {
   const [modalOn, setModalOn] = useState(false);
   const [selectedSong, setSelectedSong] = useState([]);
   const songNum = songNumber;
 
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
 
+  const myNickname = sessionStorage.getItem("nickname");
+
   const selectMusic = () => {
-    setModalOn(!modalOn);
+    if(myNickname === hostName) {
+      setModalOn(!modalOn);
+    } else {
+      return;
+    }
   }
 
-  const handleSongSelect = (song) => {
-    setSelectedSong(song);
-    setModalOn(false);
-  }
-  
   useEffect(() => {
     const findSong = async () => {
       try {
@@ -41,22 +42,46 @@ const SelectSong = ({ songNumber }) => {
     };
 
     findSong();
+
+    const handleSongChange = (song) => {
+      console.log("change res", song);
+      setSelectedSong([song]);
+    };
+    socket.on("change", handleSongChange);
+
+    return () => {
+      socket.off("change", handleSongChange);
+    };
+
   }, [backendUrl, songNum]);
+
+  // 노래 선택
+  const handleSongSelect = (song) => {
+    setSelectedSong(song);
+
+    socket.emit("changeSong", song, (res) => {
+      console.log("changeSong res", res);
+    });
+
+    setModalOn(false);
+  }
 
   return (
     <>
       <RoomSelectSongBox>
         <div onClick={selectMusic}><img src={LemonImg} alt="lemon" /></div>
-        <RoomSelectSong>
-          <h2>{selectedSong[0]?.title}</h2>
-          <p>{selectedSong[0]?.artist}</p>
-          <p>{selectedSong[0]?.runtime}</p>
-          <SongBtn>
-            <img src={PlayBtn} alt="play" />
-            <img src={StopBtn} alt="stop" />
-          </SongBtn>
-          <p>{selectedSong[0]?.difficulty}</p>
-        </RoomSelectSong>
+        {selectedSong.length > 0 && (
+          <RoomSelectSong>
+            <h2>{selectedSong[0]?.title}</h2>
+            <p>{selectedSong[0]?.artist}</p>
+            <p>{selectedSong[0]?.runtime}</p>
+            <SongBtn>
+              <img src={PlayBtn} alt="play" />
+              <img src={StopBtn} alt="stop" />
+            </SongBtn>
+            <p>{selectedSong[0]?.difficulty}</p>
+          </RoomSelectSong>
+        )}
     </RoomSelectSongBox>
         <SongsModal modalOn={modalOn} handleSongSelect={handleSongSelect}  />
     </>
