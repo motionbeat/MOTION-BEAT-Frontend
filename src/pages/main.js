@@ -1,7 +1,7 @@
 import React, { useState } from "react"
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import socket from "../server/server";
+import socket from "../server/server.js";
 import Playtype from "../components/main/playtype";
 import Tutorial from "../components/main/tutorial";
 import Ranking from "../components/main/ranking";
