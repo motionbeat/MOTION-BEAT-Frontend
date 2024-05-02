@@ -30,6 +30,7 @@ import NotFound from "./pages/notFound";
 import AddSong from "./pages/addSong";
 import PrivateRoute from "./utils/checkAuth";
 import Setting from "./pages/setting";
+import Mediapipe from "./components/mediapipe/mediapipe";
 
 const App = () => {
 
@@ -49,22 +50,23 @@ const App = () => {
 
           {/* 메인 */}
           {/* token사용 시 아래 주석과 "###"아래 주석을 해제하세요 */}
-          <Route element={<PrivateRoute />}>
-            <Route path="/main" element={<Main />} />
-            <Route path="/playtype" element={<Playtype />} />
-            <Route path="/tutorial" element={<Tutorial />} />
-            <Route path="/ranking" element={<Ranking />} />
+          {/* <Route element={<PrivateRoute />}> */}
+          <Route path="/main" element={<Main />} />
+          <Route path="/playtype" element={<Playtype />} />
+          <Route path="/tutorial" element={<Tutorial />} />
+          <Route path="/ranking" element={<Ranking />} />
 
-            {/* 룸(=대기방) */}
-            {/* 이렇게? path=/arbitraryRoomCode/room */}
-            <Route path="/room" element={<Room />} />
+          {/* 룸(=대기방) */}
+          <Route path="/room" element={<Room />} />
 
-            {/* 인게임 */}
-            {/* 이렇게? path=/arbitraryRoomCode/ingame */}
-            <Route path="/ingame" element={<Ingame />} />
+          {/* 인게임 */}
+          <Route path="/ingame" element={<Ingame />} />
 
-            {/* ### */}
-          </Route>
+          {/* 인게임 */}
+          <Route path="/cam" element={<Mediapipe />} />
+
+          {/* ### */}
+          {/* </Route> */}
 
           {/* Redirect */}
           <Route path="/callback/google-login" element={<GoogleCallback />} />
