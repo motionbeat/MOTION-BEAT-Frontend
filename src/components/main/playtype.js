@@ -18,6 +18,7 @@ const Playtype = () => {
   const handleMatchingClick = async () => {
     try {
       const response = await axios.post(`${backendUrl}/api/rooms/match`, {
+        type: "match"
       }, {
         headers: {
           "Content-Type": "application/json",
