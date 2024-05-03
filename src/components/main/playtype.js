@@ -28,13 +28,13 @@ const Playtype = () => {
         },
       });
 
-      socket.emit("joinRoom", response.data.code, (res) => {
+      socket.emit(`joinRoom`, response.data.code, (res) => {
         console.log("joinRoom res", res);
       });
 
       navigate("/room", { state: { roomData: response.data }});
     } catch (error) {
-      console.error("Error random songs:", error);
+      console.error("Error random room", error);
     }
   }
 

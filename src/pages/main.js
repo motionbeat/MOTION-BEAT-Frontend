@@ -9,7 +9,7 @@ import Settings from "../components/main/settings";
 
 import Modal from "../components/modal";
 import Mypage from "../components/mypage";
-import Friends from "../components/friends";
+import FriendState from "../components/common/friendState.js";
 
 const Main = () => {
   const navigate = useNavigate();
@@ -18,8 +18,6 @@ const Main = () => {
 
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentElement, setCurrentElement] = useState(null);
-
-
 
   const openModal = (element) => {
     setCurrentElement(element);
@@ -45,26 +43,46 @@ const Main = () => {
     )
   };
 
-  const handleRevert = () => {
-    if (isMenuButtonSelected === false) {
-      setCurrentElement(null);
-      // ESLint 경고를 비활성화하는 주석
-      /* confirm메서드의 사용을 위해, 아래 주석을 제거하지 마세요 */
-      // eslint-disable-next-line no-restricted-globals
-      if (confirm("로그아웃 하시겠습니까?")) {
-        setIsMenuButtonSelected(false);
-        // jwtoken만 삭제
-        // sessionStorage.removeItem('jwtoken');
-        // 모든 데이터 삭제
+  const logout = async () => {
+    try {
+      const response = await axios.patch(`${backendUrl}/api/users/logout`,{}, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
+          "UserId": sessionStorage.getItem("userId"),
+          "Nickname": sessionStorage.getItem("nickname")
+        }
+      });
+        console.log('로그아웃 성공:', response.data);
+        // sessionStorage.removeItem("userId");
+        // sessionStorage.removeItem("socketId");
+        // sessionStorage.removeItem("nickname");
         sessionStorage.clear();
         navigate("/login");
-      } else {
-        return;
-      }
-    } else {
-      setIsMenuButtonSelected(false);
-    }
+      } catch (error) {
+        // 에러 처리
+        console.error('로그아웃 에러:', error);
+      };
   };
+
+  // const handleRevert = () => {
+  //   if (isMenuButtonSelected === false) {
+  //     setCurrentElement(null);
+  //     // ESLint 경고를 비활성화하는 주석
+  //     /* confirm메서드의 사용을 위해, 아래 주석을 제거하지 마세요 */
+  //     // eslint-disable-next-line no-restricted-globals
+  //     if (confirm("로그아웃 하시겠습니까?")) {
+  //       setIsMenuButtonSelected(false);
+  
+  //       sessionStorage.clear();
+  //       navigate("/login");
+  //     } else {
+  //       return;
+  //     }
+  //   } else {
+  //     setIsMenuButtonSelected(false);
+  //   }
+  // };
 
   const handleClick = (e) => {
     setIsMenuButtonSelected(true);
@@ -74,7 +92,7 @@ const Main = () => {
     switch (btnName) {
       case "FRIENDS":
         console.log("Friends 컴포넌트를 불러옵니다.");
-        openModal(<Friends />);
+        openModal(<FriendState />);
         break;
       case "MYPAGE":
         console.log("Mypage 컴포넌트를 불러옵니다.");
@@ -113,7 +131,7 @@ const Main = () => {
     switch (btnName) {
       case "FRIENDS":
         console.log("Friends 컴포넌트를 불러옵니다.");
-        openModal(<Friends />);
+        openModal(<FriendState />);
         break;
       case "MYPAGE":
         console.log("Mypage 컴포넌트를 불러옵니다.");
@@ -128,7 +146,7 @@ const Main = () => {
   return (
     <div>
       <div>
-        <button className="revert" onClick={handleRevert}>{"<-"}</button>
+        <button className="revert" onClick={logout}>{"<-"}</button>
       </div>
       <div style={{ display: "inline", float: "right" }}>
         <button id="FRIENDS" onClick={handleStickyClick}>Friends</button>

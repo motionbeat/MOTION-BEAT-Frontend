@@ -34,7 +34,6 @@ import Setting from "./pages/setting";
 import Mediapipe from "./components/mediapipe/mediapipe";
 
 const App = () => {
-
   return (
     <>
       <Router>

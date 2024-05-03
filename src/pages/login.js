@@ -6,8 +6,9 @@ import { KakaoLoginButton } from "../apis/kko";
 import { GoogleLoginButton } from "../apis/ggl";
 import socket from "../server/server.js";
 import styled from "styled-components";
-import LoginBg from "../../src/img/loginBg.png";
+import LoginBackground from "../img/loginpage.png";
 import "../styles/login.scss";
+import {login} from "../server/socketEvents.js"
 
 const Login = () => {
   const backendUrl = process.env.REACT_APP_BACK_API_URL
@@ -61,11 +62,12 @@ const Login = () => {
 
       const nickname =  sessionStorage.getItem("nickname");
 
-      socket.emit("login", nickname, (res) => {
-        if (res?.ok) {
-          console.log(nickname);
-        }
-      });  
+      login(nickname);
+      // socket.emit("login", nickname, (res) => {
+      //   if (res?.ok) {
+      //     console.log(nickname);
+      //   }
+      // });  
 
       navigate("/main");
     } catch (error) {
@@ -123,7 +125,7 @@ export default Login
 const LoginWrapper = styled.div`
   width: 100vw;
   height: 100vh;
-  background-image: url(${LoginBg});
+  background-image: url(${LoginBackground});
   background-repeat: no-repeat;
   background-size: cover;
   background-position: left top;

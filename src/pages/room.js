@@ -6,6 +6,7 @@ import WebCam from "../components/room/webCam";
 import RoomChatting from "../components/room/roomChatting";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
+import "../styles/room/room.scss";
 
 const Room = () => {
     const location = useLocation();
@@ -28,8 +29,8 @@ const Room = () => {
         });
       };
 
-      socket.on("players", updatePlayers);
-      socket.on("leftRoom", updatePlayersAfterLeave);
+      socket.on(`players${room.code}`, updatePlayers);
+      socket.on(`leftRoom${room.code}`, updatePlayersAfterLeave);
 
       socket.on(`gameStarted${room.code}`, async (game) => {
         navigate("/ingame", {state: {game}});
@@ -68,34 +69,27 @@ const Room = () => {
 
     return (
         <>
-            <RoomWrapper>
+            <div className="room-wrapper">
                 <ExitRoomBtn onClick={leaveRoom}>방 나가기</ExitRoomBtn>
-                <RoomTitle>{room.hostName}님의 게임</RoomTitle>
+                <h1 className="room-title">{room.hostName}님의 게임</h1>
                 <RoomMainWrapper>
                     <div style={{display: "flex", justifyContent: "space-between"}}>
-                      <SelectSong songNumber={room.song} hostName={room.hostName} />
+                      <SelectSong songNumber={room.song} hostName={room.hostName} roomCode={room.code} />
                       {room.type !== 'match' && <SecretCode>코드 : {room.code}</SecretCode>}
                     </div>
                     <WebCam players={room.players} hostName={room.hostName} roomCode={room.code} />
                 </RoomMainWrapper>
-                <RoomChatting />
-            </RoomWrapper>
+                <RoomChatting roomCode = {room.code} />
+            </div>
         </>
     )
 }
 
 export default Room;
 
-const RoomWrapper = styled.div`
-    width: 100vw;
-    height: 100vh;
-    padding: 20px 0;
-    background-color: #00AA81;
-`
 // 방제목
 const RoomTitle = styled.h1`
-    text-align: center;
-    padding: 10px 0;
+
 `
 // 노래, 웹캠 등의 전체 박스
 const RoomMainWrapper = styled.div`
@@ -103,7 +97,8 @@ const RoomMainWrapper = styled.div`
     height: 80vh;
     background-color: #CAFFF5;
     margin: 10px auto 0 auto;
-    border-radius: 20px
+    border-radius: 20px;
+
 `
 const SecretCode = styled.div`
   width: 200px;

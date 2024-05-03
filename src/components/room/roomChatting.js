@@ -1,9 +1,9 @@
 import { useEffect, useState } from "react";
 import styled from "styled-components"
 import socket from "../../server/server.js";
-import ChatIcon from "../../img/kakao.png"
+import ChatIcon from "../../img/kakao.png";
 
-const RoomChatting = () => {
+const RoomChatting = (roomCode) => {
   const [isChatVisible, setIsChatVisible] = useState(false);
   const [chatHeight, setChatHeight] = useState('0');
   const [message, setMessage] = useState('');
@@ -34,19 +34,12 @@ const RoomChatting = () => {
           console.log("sendMessage res", res);
           setMessage('');
       });
-      // setMessageList((prevState) => [...prevState, { userNickname, message }]);
   };
 
-  // chat, user(id, nickname)
   useEffect(() => {
-    // const handleMessageReceive = (message) => {
-    //   setMessageList((prevState) => prevState.concat(message));
-    // }
-  
-    socket.on('message', (res) => {
+    console.log(roomCode);
+    socket.on(`message`, (res) => {
       console.log("bringMessage res", res);
-      // setMessageList((prevState) => prevState.concat(message));
-      // setMessageList((prevState) => [...prevState, res]);
       setMessageList((prevState) => [...prevState, { userNickname: res.user.nickname, message: res.chat }]);
     });
 
@@ -54,16 +47,6 @@ const RoomChatting = () => {
       socket.off('message');
     };
   }, []);
-
-// const askUserName = () => {
-//     const userName = "문미새";
-//     console.log("이름 : ", userName);
-
-//     socket.emit("login", userName, (res) => {
-//     if (res?.ok) {
-//         setUser(res.data);
-//     }});
-// };
 
   return (
     <>
