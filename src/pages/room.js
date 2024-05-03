@@ -30,6 +30,10 @@ const Room = () => {
 
       socket.on("players", updatePlayers);
       socket.on("leftRoom", updatePlayersAfterLeave);
+
+      socket.on(`gameStarted${room.code}`, async (game) => {
+        navigate("/ingame", {state: {game}});
+      })
       
       // 이벤트 리스너 해제를 위한 cleanup 함수 반환
       return () => {

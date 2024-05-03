@@ -2,5 +2,10 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  background-size: 100% 100%;
+}
+
+body, html {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
 }
