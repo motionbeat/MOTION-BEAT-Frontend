@@ -10,11 +10,11 @@ import socket from "../../server/server.js"
 const SelectSong = ({ songNumber, hostName }) => {
   const [modalOn, setModalOn] = useState(false);
   const [selectedSong, setSelectedSong] = useState([]);
+  const [selectFavorite, setSelectFavorite] = useState(false);
+  
   const songNum = songNumber;
-
-  const backendUrl = process.env.REACT_APP_BACK_API_URL;
-
   const myNickname = sessionStorage.getItem("nickname");
+  const backendUrl = process.env.REACT_APP_BACK_API_URL;
 
   const selectMusic = () => {
     if(myNickname === hostName) {
@@ -66,6 +66,11 @@ const SelectSong = ({ songNumber, hostName }) => {
     setModalOn(false);
   }
 
+  // 즐겨찾기
+  // const selectFavorite = () => {
+
+  // }
+
   return (
     <>
       <RoomSelectSongBox>
@@ -73,13 +78,13 @@ const SelectSong = ({ songNumber, hostName }) => {
         {selectedSong.length > 0 && (
           <RoomSelectSong>
             <h2>{selectedSong[0]?.title}</h2>
-            <p>{selectedSong[0]?.artist}</p>
-            <p>{selectedSong[0]?.runtime}</p>
+            <Artist>{selectedSong[0]?.artist}</Artist>
+            <Runtime>{selectedSong[0]?.runtime}</Runtime>
             <SongBtn>
               <img src={PlayBtn} alt="play" />
               <img src={StopBtn} alt="stop" />
             </SongBtn>
-            <p>{selectedSong[0]?.difficulty}</p>
+            <Difficulty>{selectedSong[0]?.difficulty}</Difficulty>
           </RoomSelectSong>
         )}
     </RoomSelectSongBox>
@@ -91,19 +96,36 @@ export default SelectSong
 
 // 노래 정보 박스
 const RoomSelectSongBox = styled.div`
-    display: flex;
+  margin: 30px;
+  display: flex;
 `
 
 // 노래 정보
 const RoomSelectSong = styled.div`
+  margin-left: 30px;
 
+  h2 {
+    font-size: 30px;
+  }
+`
+
+const Artist = styled.p`
+  font-size: 19px;
+`
+
+const Runtime = styled.p`
+  font-size: 14px;
 `
 
 // 노래 재생, 일시정지
 const SongBtn = styled.div`
   
   img {
-    width: 15px;
-    margin-right: 10px;
+    width: 25px;
+    margin: 20px 20px 20px 0;
   }
+`
+
+const Difficulty = styled.p`
+  font-size: 24px;
 `

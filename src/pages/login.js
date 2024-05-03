@@ -5,6 +5,9 @@ import { CheckLoginValidate } from "../utils/checkValidate";
 import { KakaoLoginButton } from "../apis/kko";
 import { GoogleLoginButton } from "../apis/ggl";
 import socket from "../server/server.js";
+import styled from "styled-components";
+import LoginBg from "../../src/img/loginBg.png";
+import "../styles/login.scss";
 
 const Login = () => {
   const backendUrl = process.env.REACT_APP_BACK_API_URL
@@ -85,35 +88,53 @@ const Login = () => {
 
   return (
     <>
-      <div style={{
-        display: "flex",
-        flexDirection: "column"
-      }}>
-        <form onSubmit={handleSubmit}>
-          <p>LOGIN</p>
+      <LoginWrapper>
+        <LoginForm>
+          <form onSubmit={handleSubmit}>
+            <h1 className="login-title">MOTION BEAT</h1>
+            <div>
+              <input type="text" placeholder="이메일" ref={emailRef} />
+              {errors.email && <p style={{ color: 'red' }}>{errors.email[0]}</p>}
+            </div >
+            <div>
+              <input type="password" placeholder="비밀번호" ref={pwRef} />
+              {errors.pw && <p style={{ color: 'red' }}>{errors.pw[0]}</p>}
+            </div>
+            <div>
+              <button type="submit">Log in</button>
+              <button onClick={handleForgot}>Forgot</button>
+              <button onClick={handleSignup}>Signup</button>
+            </div>
+          </form>
           <div>
-            <input type="text" placeholder="이메일" ref={emailRef} />
-            {errors.email && <p style={{ color: 'red' }}>{errors.email[0]}</p>}
-          </div >
-          <div>
-            <input type="password" placeholder="비밀번호" ref={pwRef} />
-            {errors.pw && <p style={{ color: 'red' }}>{errors.pw[0]}</p>}
+            <div>
+              <GoogleLoginButton setEvent={setPopupClosedByUser}>Login with Google</GoogleLoginButton>
+              <KakaoLoginButton setEvent={setPopupClosedByUser}>Login With Kakao</KakaoLoginButton>
+              {popupClosedByUser && <p>로그인 창이 닫혔습니다. 다시 시도해 주세요.</p>}
+            </div>
           </div>
-          <div>
-            <button type="submit">Log in</button>
-            <button onClick={handleForgot}>Forgot</button>
-            <button onClick={handleSignup}>Signup</button>
-          </div>
-        </form>
-        <div>
-          <div>
-            <GoogleLoginButton setEvent={setPopupClosedByUser}>Login with Google</GoogleLoginButton>
-            <KakaoLoginButton setEvent={setPopupClosedByUser}>Login With Kakao</KakaoLoginButton>
-            {popupClosedByUser && <p>로그인 창이 닫혔습니다. 다시 시도해 주세요.</p>}
-          </div>
-        </div>
-      </div>
+        </LoginForm>
+      </LoginWrapper>
     </>
   )
 }
 export default Login
+
+const LoginWrapper = styled.div`
+  width: 100vw;
+  height: 100vh;
+  background-image: url(${LoginBg});
+  background-repeat: no-repeat;
+  background-size: cover;
+  background-position: left top;
+`
+
+const LoginForm = styled.div`
+  width: 500px;
+  margin: 0 auto;
+  text-align: center;
+  position: absolute;
+  top: 50%;
+  transform: translate(50%, -50%);
+`
+

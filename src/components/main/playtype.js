@@ -66,7 +66,7 @@ const Playtype = () => {
   
         navigate("/room", { state: { roomData: response.data }});
       } catch (error) {
-        console.error("Error random songs:", error);
+        console.error("Error in Room:", error);
       }
     };
 
