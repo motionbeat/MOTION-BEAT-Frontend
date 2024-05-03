@@ -1,6 +1,6 @@
 import styled from "styled-components"
 import React, { useEffect, useState } from 'react';
-import socket from "../server/server"
+import socket from "../server/server.js"
 import SelectSong from "../components/room/selectSong";
 import WebCam from "../components/room/webCam";
 import RoomChatting from "../components/room/roomChatting";
@@ -60,9 +60,7 @@ const Room = () => {
       }
     };
 
-      /* 이 노래데이터, 유저데이터는 임시데이터 입니다. */
-    let ingameData = { imageUrl: "https://i.namu.wiki/i/C7Pn4lj5y_bVOJ8oMyjvvqO2Pv2qach6uyVt2sss93xx-NNS3fWpsDavIVYzfcPX516sK2wcOS8clpyz6acFOtpe1WM6-RN6dWBU77m1z98tQ5UyRshbnJ4RPVic87oZdHPh7tR0ceU8Uq2RlRIApA.webp", songSound: "https://www.youtube.com/watch?v=SX_ViT4Ra7k&ab_channel=KenshiYonezu%E7%B1%B3%E6%B4%A5%E7%8E%84%E5%B8%AB" }
-    let userData = { playerName: "indu", playerColor: "255, 165, 0" }
+
 
     return (
         <>
@@ -72,9 +70,9 @@ const Room = () => {
                 <RoomMainWrapper>
                     <div style={{display: "flex", justifyContent: "space-between"}}>
                       <SelectSong songNumber={room.song} hostName={room.hostName} />
-                      <SecretCode>코드 : {room.code}</SecretCode>
+                      {room.type !== 'match' && <SecretCode>코드 : {room.code}</SecretCode>}
                     </div>
-                    <WebCam players={room.players} hostName={room.hostName} />
+                    <WebCam players={room.players} hostName={room.hostName} roomCode={room.code} />
                 </RoomMainWrapper>
                 <RoomChatting />
             </RoomWrapper>
@@ -93,6 +91,7 @@ const RoomWrapper = styled.div`
 // 방제목
 const RoomTitle = styled.h1`
     text-align: center;
+    padding: 10px 0;
 `
 // 노래, 웹캠 등의 전체 박스
 const RoomMainWrapper = styled.div`
@@ -100,19 +99,23 @@ const RoomMainWrapper = styled.div`
     height: 80vh;
     background-color: #CAFFF5;
     margin: 10px auto 0 auto;
+    border-radius: 20px
 `
 const SecretCode = styled.div`
-  margin: 20px;
-  padding: 20px;
   width: 200px;
-  height: 20px;
-  border: 1px solid black;
+  height: 50px;
+  margin: 20px;
+  line-height: 3;
+  border: 2px solid #d9d9d9;
+  text-align: center;
+  border-radius: 10px;
+  background-color: white;
 `
 
 const ExitRoomBtn = styled.div`
   position: absolute;
-  top: 10%;
-  left: 9%;                          
+  top: 0;
+  left: 0;                          
   padding: 15px;
   background-color: white;
   border-radius: 10px;

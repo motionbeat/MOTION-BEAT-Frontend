@@ -5,8 +5,8 @@ import axios from 'axios';
 const SongsModal = ({ modalOn, handleSongSelect }) => {
   const [songs, setSongs] = useState([]);
   const [difficulty, setDifficulty] = useState("all");
-
-  const backendUrl = process.env.REACT_APP_BACK_API_URL
+  const [favorite, setFavorite] = useState();
+  const backendUrl = process.env.REACT_APP_BACK_API_URL;
 
   useEffect(() => {
     const fetchSongs = async () => {
@@ -27,8 +27,8 @@ const SongsModal = ({ modalOn, handleSongSelect }) => {
               "UserId": sessionStorage.getItem("userId")
             }
           });
-          console.log(response.headers);
-          console.log(response.data);
+          console.log("리스폰 헤더", response.headers);
+          console.log("리스폰 데이터", response.data);
           setSongs(response.data);
         } catch (error) {
           console.error("Error fetching songs:", error);
@@ -36,7 +36,7 @@ const SongsModal = ({ modalOn, handleSongSelect }) => {
     };
 
     fetchSongs();
-  }, [backendUrl, difficulty]);
+  }, [backendUrl, difficulty, Favorite]);
 
   if (!modalOn) {
     return null;
@@ -55,15 +55,16 @@ const SongsModal = ({ modalOn, handleSongSelect }) => {
             </div>
             <div>
                 {songs.map((song) => (
-                    <div key={song.id} onClick={() => handleSongSelect(song)}>
+                    <SongInfoWrapper key={song.id}>
+                        <Favorite>★☆</Favorite>    
+                        <img src={song.imgPath} alt = "" />
                         <div>
-                            <h2>{song.title}</h2>
+                            <h2 onClick={() => handleSongSelect(song)}>{song.title}</h2>
                             <p>{song.artist}</p>
                             <p>{song.runtime}</p>
-                            <p>{song.imgPath}</p>
                             <p>{song.difficulty}</p>
                         </div>
-                    </div>
+                    </SongInfoWrapper>
                 ))}
             </div>
         </ModalWrapper>
@@ -84,5 +85,15 @@ const Modal = styled.div`
 `
 
 const ModalWrapper = styled.div`
-    display: flex;
+  display: flex;
+`
+
+const SongInfoWrapper = styled.div`
+  position: relative;
+  border: 2px solid black;
+`
+
+// 즐겨찾기
+const Favorite = styled.div`
+  position: absolute;
 `

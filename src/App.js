@@ -1,5 +1,6 @@
 import React from "react";
 import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
+import "./App.css"
 
 /* 웹 접속 */
 import Title from "./components/title";
@@ -37,7 +38,7 @@ const App = () => {
   return (
     <>
       <Router>
-        <ShowTitle />
+        {/* <ShowTitle /> */}
         <Routes>
           {/* token사용 시 아래 주석과 "###"아래 주석을 해제하세요 */}
           {/* 웹 접속 */}
@@ -80,14 +81,14 @@ const App = () => {
   );
 }
 
-const ShowTitle = () => {
-  const location = useLocation();
+// const ShowTitle = () => {
+//   const location = useLocation();
 
-  const excludeTitle = ["/", "/ingame"];
+//   const excludeTitle = ["/", "/ingame"];
 
-  return excludeTitle.indexOf(location.pathname) !== -1 ? null : (
-    <Title style={{ textAlign: "center" }} />
-  );
-}
+//   return excludeTitle.indexOf(location.pathname) !== -1 ? null : (
+//     <Title style={{ textAlign: "center" }} />
+//   );
+// }
 
 export default App;

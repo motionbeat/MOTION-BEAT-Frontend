@@ -18,6 +18,7 @@ const Playtype = () => {
   const handleMatchingClick = async () => {
     try {
       const response = await axios.post(`${backendUrl}/api/rooms/match`, {
+        type: "match"
       }, {
         headers: {
           "Content-Type": "application/json",
@@ -65,7 +66,7 @@ const Playtype = () => {
   
         navigate("/room", { state: { roomData: response.data }});
       } catch (error) {
-        console.error("Error random songs:", error);
+        console.error("Error in Room:", error);
       }
     };
 
@@ -89,7 +90,12 @@ const Playtype = () => {
   
         navigate("/room", { state: { roomData: response.data }});
       } catch (error) {
-        console.error("Error go Room:", error);
+        if(axios.isAxiosError(error) && error.response) {
+          const message = error.response.data?.message;
+          alert(message);
+        } else {
+          console.error("Error go Room:", error);
+        }
       }
     };
 
