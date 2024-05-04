@@ -48,12 +48,12 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
       console.log("received");
       setSelectedSong([song]);
     };
-    socket.on(`change`, handleSongChange);
+    socket.on(`songChanged`, handleSongChange);
 
     return () => {
-      socket.off("change", handleSongChange);
+      socket.off("songChanged", handleSongChange);
     };
-
+    
   }, [backendUrl, songNum]);
 
   // 노래 선택

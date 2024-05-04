@@ -7,7 +7,6 @@ import RoomChatting from "../components/room/roomChatting";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/room/room.scss";
-import ExitBtn from "../components/common/atomic/exitBtn.js";
 
 const Room = () => {
     const location = useLocation();
@@ -72,7 +71,6 @@ const Room = () => {
         <>
             <div className="room-wrapper">
                 <ExitRoomBtn onClick={leaveRoom}>방 나가기</ExitRoomBtn>
-                <ExitBtn onClick={leaveRoom} />
                 <h1 className="room-title">{room.hostName}님의 게임</h1>
                 <RoomMainWrapper>
                     <div style={{display: "flex", justifyContent: "space-between"}}>
@@ -89,10 +87,6 @@ const Room = () => {
 
 export default Room;
 
-// 방제목
-const RoomTitle = styled.h1`
-
-`
 // 노래, 웹캠 등의 전체 박스
 const RoomMainWrapper = styled.div`
     width: 80%;

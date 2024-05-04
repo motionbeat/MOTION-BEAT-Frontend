@@ -32,6 +32,7 @@ import AddSong from "./pages/addSong";
 import PrivateRoute from "./utils/checkAuth";
 import Setting from "./pages/setting";
 import Mediapipe from "./components/mediapipe/mediapipe";
+import AtomicTest from "./components/common/atomic/atomicTest";
 
 const App = () => {
   return (
@@ -74,6 +75,9 @@ const App = () => {
 
           {/* 404 */}
           <Route path="*" element={<NotFound />} />
+
+          {/* 컴포넌트 테스트 */}
+          <Route path="/atomic" element={<AtomicTest />} />
         </Routes>
       </Router>
     </>
