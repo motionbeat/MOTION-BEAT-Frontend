@@ -17,35 +17,30 @@ const Room = () => {
 
     //joinRoom을 쏴줘야 함
     useEffect (() => {
-      // "players" 이벤트에 대한 응답으로 players 상태를 업데이트함.
       const updatePlayers = (updatedPlayers) => {
         console.log(updatedPlayers);
         setRoom(prev => ({ 
           ...prev, 
-          players: updatedPlayers.map(player => player.nickname),
-  
-          instruments: updatedPlayers.map(player => player.instrument)
+          players: updatedPlayers
         }));
       };
       
       // 방에서 나갈 때 상태 업데이트
       const updatePlayersAfterLeave = (updatedPlayers) => {
-        // setRoom(prevRoom => ({
-        //   return { 
-        //     ...prevRoom, 
-        //     players: updatedPlayers.map(player => player.nickname),
-        //     instruments: updatedPlayers.map(player => player.instrument)
-        //   };
-        // }));
         setRoom(prevRoom => ({ 
           ...prevRoom, 
-          players: updatedPlayers.map(player => player.nickname),
-          instruments: updatedPlayers.map(player => player.instrument)
+          players: updatedPlayers
         }));
       };
 
       socket.on(`players${room.code}`, updatePlayers);
       socket.on(`leftRoom${room.code}`, updatePlayersAfterLeave);
+      socket.on("hostChanged", (res) => {
+        setRoom(prevRoom => ({
+          ...prevRoom,
+          hostName: res
+        }));
+      });
 
       socket.on(`gameStarted${room.code}`, async (game) => {
         navigate("/ingame", {state: {game}});
@@ -80,8 +75,6 @@ const Room = () => {
       }
     };
 
-
-
     return (
         <>
             <div className="room-wrapper">
@@ -92,7 +85,7 @@ const Room = () => {
                       <SelectSong songNumber={room.song} hostName={room.hostName} roomCode={room.code} />
                       {room.type !== 'match' && <SecretCode>코드 : {room.code}</SecretCode>}
                     </div>
-                    <WebCam players={room.players} hostName={room.hostName} roomCode={room.code} instruments={room.instruments} />
+                    <WebCam players={room.players} hostName={room.hostName} roomCode={room.code} />
                 </RoomMainWrapper>
                 <RoomChatting roomCode = {room.code} />
             </div>

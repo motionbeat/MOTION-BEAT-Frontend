@@ -1,15 +1,22 @@
 import styled from "styled-components"
-import Indu from "../../img/indu.png"
 import socket from "../../server/server.js"
 import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import Mediapipe from "../mediapipe/mediapipe.js";
 
-const WebCam = ({ players = [], hostName, roomCode, instruments = [] }) => {
-  const [playerStatuses, setPlayerStatuses] = useState(
-    players.reduce((acc, player) => ({...acc, [player]: false}), {})
-  );
+const WebCam = ({ players = [], hostName, roomCode}) => {
+  // const [playerStatuses, setPlayerStatuses] = useState(
+  //   players.reduce((acc, player) => ({
+  //     ...acc,
+  //     [player.nickname]: {
+  //       nickname: player.nickname,
+  //       instrument: player.instrument,
+  //       isReady: false
+  //     }
+  //   }), {})
+  // );
+  const [playerStatuses, setPlayerStatuses] = useState({});
   const myNickname = sessionStorage.getItem("nickname");
   const navigate = useNavigate();
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
@@ -48,9 +55,11 @@ const WebCam = ({ players = [], hostName, roomCode, instruments = [] }) => {
   
       setPlayerStatuses(prevStatuses => ({
         ...prevStatuses,
-        [nickname]: !prevStatuses[nickname]
+        [nickname]: {
+          ...prevStatuses[nickname],
+          isReady: !prevStatuses[nickname].isReady
+        }
       }));
-      console.log("22",playerStatuses);
     } else {
       return;
     }
@@ -62,10 +71,26 @@ const WebCam = ({ players = [], hostName, roomCode, instruments = [] }) => {
   }
 
   useEffect(() => {
+    setPlayerStatuses(
+      players.reduce((acc, player) => {
+        acc[player.nickname] = {
+          nickname: player.nickname,
+          instrument: player.instrument,
+          isReady: false
+        };
+        return acc;
+      }, {})
+    );
+  }, [players]);
+
+  useEffect(() => {
     socket.on("readyStatus", (userReady) => {
       setPlayerStatuses(prevStatuses => ({
         ...prevStatuses,
-        [userReady.nickname]: userReady.isReady
+        [userReady.nickname]: {
+          ...prevStatuses[userReady.nickname],
+          isReady: userReady.isReady
+        }
       }));
     });
 
@@ -77,41 +102,9 @@ const WebCam = ({ players = [], hostName, roomCode, instruments = [] }) => {
 
   return (
     <>
-      
-      {/* 처음부터 자리가 4명 고정으로 시작하고 플레이어가 들어오는 방식
-      <WebCamBox>
-        {[...Array(4).keys()].map((index) => {
-          const player = players[index] || "빈자리";
-          return (
-            <PlayerContainer key={index}>
-              <WebCamInfo>
-                <WebCamTop>
-                  <Mediapipe />
-                  <HitMiss>
-                    <p>0</p>
-                    <p>0</p>
-                  </HitMiss>
-                </WebCamTop>
-                <h2>{player}</h2>
-              </WebCamInfo>
-              {player === hostName ? (
-                <ReadyBtn onClick={() => startGameHandler()}>시작</ReadyBtn>
-                ) : (
-                <ReadyBtn
-                  isReady={playerStatuses[player]}
-                  onClick={() => readyBtnClick(player)}
-                >
-                  {playerStatuses[player] ? "준비 완료" : "대기 중"}
-                </ReadyBtn>
-              )}
-            </PlayerContainer>
-          );
-        })}
-      </WebCamBox> */}
-
       {/* 플레이어 들어오면 div가 늘어나는 방식 */}
       <WebCamBox>
-        {playerStatuses.map((players, index) => (
+      {Object.entries(playerStatuses).map(([nickname, {instrument, isReady}], index) => (
           <PlayerContainer key={index}>
             <WebCamInfo>
               <WebCamTop>
@@ -122,26 +115,22 @@ const WebCam = ({ players = [], hostName, roomCode, instruments = [] }) => {
                 </HitMiss>
               </WebCamTop>
               <div>
-                {/* <h2>{player} - {playersInstru.find(p => p.nickname === player)?.instrument || "악기 미선택"}</h2> */}
-                <h2>{players.nickname} - {players.instrument || "악기 미선택"}</h2>
+                <h2>{nickname}</h2>
+                <h2 onClick={selectInstrument}>{instrument}</h2>
               </div>
             </WebCamInfo>
-            {players.nickname === hostName ? (
+            {nickname === hostName ? (
               <ReadyBtn onClick={() => startGameHandler()}>시작</ReadyBtn>
             ) : (
               <ReadyBtn
-                isReady={playerStatuses[players.nickname]}
-                onClick={() => readyBtnClick(players.nickname)}
+                isReady={isReady}
+                onClick={() => readyBtnClick(nickname)}
               >
-                {playerStatuses[players.nickname] ? "준비 완료" : "대기 중"}
+                {isReady ? "준비 완료" : "대기 중"}
               </ReadyBtn>
             )}
           </PlayerContainer>
         ))}
-        {/* <InstrumentsContainer>
-          {instruments.map((instrument, idx) => (
-            <InstrumentButton key={idx} onClick={selectInstrument}>{instrument}</InstrumentButton>
-          ))}
           {instruModal && (
             <InstrumentModal>
               <ul>
@@ -152,7 +141,6 @@ const WebCam = ({ players = [], hostName, roomCode, instruments = [] }) => {
               </ul>
             </InstrumentModal>
           )}
-        </InstrumentsContainer> */}
       </WebCamBox>
     </>
   )
@@ -217,28 +205,13 @@ const ReadyBtn = styled.button`
   margin-top: 20px;
 `
 
-// const InstrumentsContainer = styled.div`
-//   display: flex;
-//   justify-content: center;
-//   margin-top: 20px;
-// `;
-
-// const InstrumentButton = styled.button`
-//   background-color: #f5f5f5;
-//   border: 1px solid #ccc;
-//   padding: 10px 20px;
-//   margin: 0 10px;
-//   cursor: pointer;
-//   border-radius: 5px;
-// `;
-
-// const InstrumentModal = styled.div`
-//   position: fixed;
-//   top: 50%;
-//   left: 50%;
-//   transform: translate(-50%, -50%);
-//   background-color: white;
-//   padding: 20px;
-//   border-radius: 5px;
-//   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
-// `;
+const InstrumentModal = styled.div`
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+`;

@@ -6,6 +6,7 @@ import ReadyStateBox from "../atomic/room/readyStateBox";
 import RoomTitle from "../atomic/room/roomTitle";
 import SocialBtn from "./socialBtn";
 import WebCamBox from "../atomic/room/webCamBox";
+import SelectMenu from "./main/selectMenu";
 
 const AtomicTest = () => {
   return (
@@ -19,6 +20,7 @@ const AtomicTest = () => {
         <JoinCode />
         <ReadyStateBox />
         <WebCamBox />
+        <SelectMenu />
       </div>
     </>
   )
