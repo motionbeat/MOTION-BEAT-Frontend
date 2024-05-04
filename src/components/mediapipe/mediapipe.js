@@ -25,8 +25,8 @@ class Mediapipe extends Component {
         this.videoRef = React.createRef();
         this.canvasRef = React.createRef();
         this.pose = undefined;
-        this.soundA = new Audio('/effect/drum_5.mp3');
-        this.soundB = new Audio('/effect/drum_1.mp3');
+        this.soundA = new Audio('/effect/tom.mp3');
+        this.soundB = new Audio('/effect/snare.mp3');
         this.backgroundMusic = new Audio('/song/본능적으로.mp4');
     }
 
@@ -96,7 +96,7 @@ class Mediapipe extends Component {
         if (currentY === null || !this.state.bgmPlaying) return;
         const stateKey = wrist + 'WristY';
         const previousY = this.state[stateKey];
-        const threshold = 0.04; // 감도 조정
+        const threshold = 0.045; // 감도 조정
     
         if (previousY !== null) {
             const movement = currentY < previousY ? 'up' : 'down';
