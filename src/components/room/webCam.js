@@ -6,22 +6,17 @@ import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import Mediapipe from "../mediapipe/mediapipe.js";
 
-const WebCam = ({ players = [], hostName, roomCode }) => {
+const WebCam = ({ players = [], hostName, roomCode, instruments = [] }) => {
   const [playerStatuses, setPlayerStatuses] = useState(
     players.reduce((acc, player) => ({...acc, [player]: false}), {})
   );
   const myNickname = sessionStorage.getItem("nickname");
   const navigate = useNavigate();
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
-  const [instrument, setInstrument] = useState([]);
   const [instruModal, setInstruModal] = useState(false);
 
-  /* 이 노래데이터, 유저데이터는 임시데이터 입니다. */
-  // let ingameData = { imageUrl: "https://i.namu.wiki/i/C7Pn4lj5y_bVOJ8oMyjvvqO2Pv2qach6uyVt2sss93xx-NNS3fWpsDavIVYzfcPX516sK2wcOS8clpyz6acFOtpe1WM6-RN6dWBU77m1z98tQ5UyRshbnJ4RPVic87oZdHPh7tR0ceU8Uq2RlRIApA.webp", songSound: "https://www.youtube.com/watch?v=SX_ViT4Ra7k&ab_channel=KenshiYonezu%E7%B1%B3%E6%B4%A5%E7%8E%84%E5%B8%AB" }
-  // let userData = { playerName: "indu", playerColor: "255, 165, 0" }
-
   // 방장 시작버튼
-  const startGameHandler = () => {
+  const startGameHandler = async () => {
     if(myNickname === hostName) {
       const gameStart = async () => {
         try {
@@ -37,7 +32,7 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
           });
           console.log("start res:", response);
         } catch (error) {
-          console.error("Error random songs:", error);
+          console.error("Error start res:", error);
         }
       };
       gameStart();
@@ -55,13 +50,14 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
         ...prevStatuses,
         [nickname]: !prevStatuses[nickname]
       }));
+      console.log("22",playerStatuses);
     } else {
       return;
     }
   }
 
   // 악기 선택
-  const seleceInstrument = () => {
+  const selectInstrument = () => {
     setInstruModal(!instruModal);
   }
 
@@ -115,7 +111,7 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
 
       {/* 플레이어 들어오면 div가 늘어나는 방식 */}
       <WebCamBox>
-        {players.map((player, index) => (
+        {playerStatuses.map((players, index) => (
           <PlayerContainer key={index}>
             <WebCamInfo>
               <WebCamTop>
@@ -126,169 +122,42 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
                 </HitMiss>
               </WebCamTop>
               <div>
-                <h2>{player}</h2>
-                <div onClick={seleceInstrument}>악기</div>
-                {instruModal && (
-                  <ul>
-                    <li>1</li>
-                    <li>2</li>
-                    <li>3</li>
-                    <li>4</li>
-                  </ul>
-                )}
+                {/* <h2>{player} - {playersInstru.find(p => p.nickname === player)?.instrument || "악기 미선택"}</h2> */}
+                <h2>{players.nickname} - {players.instrument || "악기 미선택"}</h2>
               </div>
             </WebCamInfo>
-            {player === hostName ? (
+            {players.nickname === hostName ? (
               <ReadyBtn onClick={() => startGameHandler()}>시작</ReadyBtn>
             ) : (
               <ReadyBtn
-                isReady={playerStatuses[player]}
-                onClick={() => readyBtnClick(player)}
+                isReady={playerStatuses[players.nickname]}
+                onClick={() => readyBtnClick(players.nickname)}
               >
-                {playerStatuses[player] ? "준비 완료" : "대기 중"}
+                {playerStatuses[players.nickname] ? "준비 완료" : "대기 중"}
               </ReadyBtn>
             )}
           </PlayerContainer>
         ))}
+        {/* <InstrumentsContainer>
+          {instruments.map((instrument, idx) => (
+            <InstrumentButton key={idx} onClick={selectInstrument}>{instrument}</InstrumentButton>
+          ))}
+          {instruModal && (
+            <InstrumentModal>
+              <ul>
+                <li>1</li>
+                <li>2</li>
+                <li>3</li>
+                <li>4</li>
+              </ul>
+            </InstrumentModal>
+          )}
+        </InstrumentsContainer> */}
       </WebCamBox>
     </>
   )
 }
 export default WebCam
-
-// ----
-
-// import React, { useState, useEffect, useRef } from "react";
-// import styled from "styled-components";
-// import axios from "axios";
-// import socket from "../../server/server.js";
-// import { useNavigate } from 'react-router-dom';
-// import Indu from "../../img/indu.png";
-// const WebCam = ({ players, hostName, roomCode }) => {
-//   // const [playerStatuses, setPlayerStatuses] = useState(
-//   //   players.reduce((acc, player) => ({...acc, [player]: false}), {})
-//   // );
-//   const [playerStatuses, setPlayerStatuses] = useState([]);
-//   const myNickname = sessionStorage.getItem("nickname");
-//   const navigate = useNavigate();
-//   const backendUrl = process.env.REACT_APP_BACK_API_URL;
-//   const videoRef = useRef(null); // 비디오 엘리먼트를 위한 ref 추가
-//   // 웹캠 스트림 설정
-//   useEffect(() => {
-//     const getMedia = async () => {
-//       try {
-//         const stream = await navigator.mediaDevices.getUserMedia({ video: true });
-//         if (videoRef.current) {
-//           videoRef.current.srcObject = stream;
-//         }
-//       } catch (error) {
-//         console.error("웹캠 스트림을 가져오는데 실패했습니다:", error);
-//       }
-//     };
-//     getMedia();
-//     // 컴포넌트 언마운트 시 스트림 정리
-//     return () => {
-//       if (videoRef.current && videoRef.current.srcObject) {
-//         const tracks = videoRef.current.srcObject.getTracks();
-//         tracks.forEach(track => track.stop());
-//       }
-//     };
-//   }, []);
-//   // 방장 시작버튼
-//   const startGameHandler = () => {
-//     if(myNickname === hostName) {
-//       const gameStart = async () => {
-//         try {
-//           const response = await axios.post(`${backendUrl}/api/games/start`, {
-//             code: roomCode
-//           }, {
-//             headers: {
-//               "Content-Type": "application/json",
-//               "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
-//               "UserId": sessionStorage.getItem("userId"),
-//               "Nickname": sessionStorage.getItem("nickname")
-//             }
-//           });
-//           console.log("start res:", response);
-//           // navigate("/ingame", {}, gameData: response.data});
-//         } catch (error) {
-//           console.error("Error random songs:", error);
-//         }
-//       };
-//       gameStart();
-//     }
-//   }
-//   // 레디 버튼
-//   const readyBtnClick = (nickname) => {
-//     if(myNickname === nickname) {
-//       socket.emit("ready", (res) => {
-//         console.log("ready res", res);
-//       })
-//       setPlayerStatuses(prevStatuses => ({
-//         ...prevStatuses,
-//         [nickname]: !prevStatuses[nickname]
-//       }));
-//     } else {
-//       return;
-//     }
-//   }
-//   useEffect(() => {
-//     socket.on("readyStatus", (userReady) => {
-//       setPlayerStatuses(prevStatuses => ({
-//         ...prevStatuses,
-//         [userReady.nickname]: userReady.isReady
-//       }));
-//     });
-//     return () => {
-//       socket.off("readyStatus");
-//     };
-//   }, []);
-//   console.log("플레이어 확인", playerStatuses);
-//   return (
-//     <>
-//       <WebCamBox>
-//         {players.map((player, index) => { // 플레이어 목록을 map으로 순회
-//           return (
-//             <PlayerContainer key={index}>
-//               <WebCamInfo>
-//                 <WebCamTop>
-//                   <video ref={videoRef} style={{ width: '100%' }} autoPlay playsInline muted></video>
-//                   <HitMiss>
-//                     <p>0</p>
-//                     <p>0</p>
-//                   </HitMiss>
-//                 </WebCamTop>
-//                 <h2>{player}</h2>
-//               </WebCamInfo>
-//               {/* 기존 버튼 로직 유지 */}
-//               {player === hostName ? (
-//                 <ReadyBtn onClick={() => startGameHandler()}>시작</ReadyBtn>
-//                 ) : (
-//                 <ReadyBtn
-//                   isReady={playerStatuses[player]}
-//                   onClick={() => readyBtnClick(player)}
-//                 >
-//                   {playerStatuses[player] ? "준비 완료" : "대기 중"}
-//                 </ReadyBtn>
-//               )}
-//             </PlayerContainer>
-//           );
-//         })}
-//       </WebCamBox>
-//     </>
-//   );
-// }
-// export default WebCam;
-
-// // const WebCamBox = styled.div`
-// //   position: relative;
-// //   width: 100%;
-// //   height: 100%;
-// // `;
-
-// // Styles for other components...
-
-
 
 const PlayerContainer = styled.div`
     display: flex;
@@ -347,3 +216,29 @@ const ReadyBtn = styled.button`
   border-radius: 5px;
   margin-top: 20px;
 `
+
+// const InstrumentsContainer = styled.div`
+//   display: flex;
+//   justify-content: center;
+//   margin-top: 20px;
+// `;
+
+// const InstrumentButton = styled.button`
+//   background-color: #f5f5f5;
+//   border: 1px solid #ccc;
+//   padding: 10px 20px;
+//   margin: 0 10px;
+//   cursor: pointer;
+//   border-radius: 5px;
+// `;
+
+// const InstrumentModal = styled.div`
+//   position: fixed;
+//   top: 50%;
+//   left: 50%;
+//   transform: translate(-50%, -50%);
+//   background-color: white;
+//   padding: 20px;
+//   border-radius: 5px;
+//   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+// `;

@@ -19,14 +19,29 @@ const Room = () => {
     useEffect (() => {
       // "players" 이벤트에 대한 응답으로 players 상태를 업데이트함.
       const updatePlayers = (updatedPlayers) => {
-        setRoom(prev => ({ ...prev, players: updatedPlayers }));
+        console.log(updatedPlayers);
+        setRoom(prev => ({ 
+          ...prev, 
+          players: updatedPlayers.map(player => player.nickname),
+  
+          instruments: updatedPlayers.map(player => player.instrument)
+        }));
       };
       
       // 방에서 나갈 때 상태 업데이트
       const updatePlayersAfterLeave = (updatedPlayers) => {
-        setRoom(prevRoom => {
-          return { ...prevRoom, players: updatedPlayers };
-        });
+        // setRoom(prevRoom => ({
+        //   return { 
+        //     ...prevRoom, 
+        //     players: updatedPlayers.map(player => player.nickname),
+        //     instruments: updatedPlayers.map(player => player.instrument)
+        //   };
+        // }));
+        setRoom(prevRoom => ({ 
+          ...prevRoom, 
+          players: updatedPlayers.map(player => player.nickname),
+          instruments: updatedPlayers.map(player => player.instrument)
+        }));
       };
 
       socket.on(`players${room.code}`, updatePlayers);
@@ -77,7 +92,7 @@ const Room = () => {
                       <SelectSong songNumber={room.song} hostName={room.hostName} roomCode={room.code} />
                       {room.type !== 'match' && <SecretCode>코드 : {room.code}</SecretCode>}
                     </div>
-                    <WebCam players={room.players} hostName={room.hostName} roomCode={room.code} />
+                    <WebCam players={room.players} hostName={room.hostName} roomCode={room.code} instruments={room.instruments} />
                 </RoomMainWrapper>
                 <RoomChatting roomCode = {room.code} />
             </div>
