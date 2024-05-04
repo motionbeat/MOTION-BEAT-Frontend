@@ -6,16 +6,6 @@ import axios from "axios";
 import Mediapipe from "../mediapipe/mediapipe.js";
 
 const WebCam = ({ players = [], hostName, roomCode}) => {
-  // const [playerStatuses, setPlayerStatuses] = useState(
-  //   players.reduce((acc, player) => ({
-  //     ...acc,
-  //     [player.nickname]: {
-  //       nickname: player.nickname,
-  //       instrument: player.instrument,
-  //       isReady: false
-  //     }
-  //   }), {})
-  // );
   const [playerStatuses, setPlayerStatuses] = useState({});
   const myNickname = sessionStorage.getItem("nickname");
   const navigate = useNavigate();
