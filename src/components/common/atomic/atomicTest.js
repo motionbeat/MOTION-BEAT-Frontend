@@ -19,7 +19,6 @@ const AtomicTest = () => {
         <JoinCode />
         <ReadyStateBox />
         <WebCamBox />
-        <hr/>
       </div>
     </>
   )

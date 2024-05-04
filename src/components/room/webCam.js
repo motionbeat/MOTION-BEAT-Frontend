@@ -13,6 +13,8 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
   const myNickname = sessionStorage.getItem("nickname");
   const navigate = useNavigate();
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
+  const [instrument, setInstrument] = useState([]);
+  const [instruModal, setInstruModal] = useState(false);
 
   /* 이 노래데이터, 유저데이터는 임시데이터 입니다. */
   // let ingameData = { imageUrl: "https://i.namu.wiki/i/C7Pn4lj5y_bVOJ8oMyjvvqO2Pv2qach6uyVt2sss93xx-NNS3fWpsDavIVYzfcPX516sK2wcOS8clpyz6acFOtpe1WM6-RN6dWBU77m1z98tQ5UyRshbnJ4RPVic87oZdHPh7tR0ceU8Uq2RlRIApA.webp", songSound: "https://www.youtube.com/watch?v=SX_ViT4Ra7k&ab_channel=KenshiYonezu%E7%B1%B3%E6%B4%A5%E7%8E%84%E5%B8%AB" }
@@ -56,6 +58,11 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
     } else {
       return;
     }
+  }
+
+  // 악기 선택
+  const seleceInstrument = () => {
+    setInstruModal(!instruModal);
   }
 
   useEffect(() => {
@@ -118,7 +125,18 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
                   <p>0</p>
                 </HitMiss>
               </WebCamTop>
-              <h2>{player}</h2>
+              <div>
+                <h2>{player}</h2>
+                <div onClick={seleceInstrument}>악기</div>
+                {instruModal && (
+                  <ul>
+                    <li>1</li>
+                    <li>2</li>
+                    <li>3</li>
+                    <li>4</li>
+                  </ul>
+                )}
+              </div>
             </WebCamInfo>
             {player === hostName ? (
               <ReadyBtn onClick={() => startGameHandler()}>시작</ReadyBtn>
