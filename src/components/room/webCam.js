@@ -4,6 +4,7 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import Mediapipe from "../mediapipe/mediapipe.js";
+import "../../styles/room/webcam.scss"
 
 const WebCam = ({ players = [], hostName, roomCode}) => {
   const [playerStatuses, setPlayerStatuses] = useState({});
@@ -169,9 +170,9 @@ const WebCam = ({ players = [], hostName, roomCode}) => {
   return (
     <>
       {/* 플레이어 들어오면 div가 늘어나는 방식 */}
-      <WebCamBox>
+      <div className="webCamBox">
       {Object.entries(playerStatuses).map(([nickname, {instrument, isReady}], index) => (
-          <PlayerContainer key={index}>
+          <div className="playerContainer" key={index}>
             <WebCamInfo>
               <WebCamTop>
                 <Mediapipe />
@@ -195,7 +196,7 @@ const WebCam = ({ players = [], hostName, roomCode}) => {
                 {isReady ? "준비 완료" : "대기 중"}
               </ReadyBtn>
             )}
-          </PlayerContainer>
+          </div>
         ))}
           {instruModal && (
             <InstrumentModal>
@@ -208,29 +209,33 @@ const WebCam = ({ players = [], hostName, roomCode}) => {
               ))}
             </InstrumentModal>
           )}
-      </WebCamBox>
+      </div>
     </>
   )
 }
 export default WebCam
 
-const PlayerContainer = styled.div`
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    margin-top: 20px;
-`;
+// const PlayerContainer = styled.div`
+//     display: flex;
+//     flex-direction: column;
+//     align-items: center;
+//     margin-top: 20px;
+// `;
 
-// 웹 캠
-const WebCamBox = styled.div`
-    width: 100%;
-    display: flex;
-    // justify-content: space-around;
+// // 웹 캠
+// const WebCamBox = styled.div`
+//     width: 100%;
+//     display: flex;
 
-    h2 {
-      margin: 0;
-      text-align: center;
-      }
+//     h2 {
+//       margin: 0;
+//       text-align: center;
+//       }
+// `
+
+const WebCamInfo = styled.div`
+    width: 230px;
+    background-color: white;
 `
 
 const WebCamTop = styled.div`
@@ -256,10 +261,6 @@ const HitMiss = styled.div`
   }
 `
 
-const WebCamInfo = styled.div`
-    width: 230px;
-    background-color: white;
-`
 
 const ReadyBtn = styled.button`
   background-color: ${(props) => (props.isReady ? "#6EDACD" : "#CB0000")};
