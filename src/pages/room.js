@@ -13,6 +13,7 @@ const Room = () => {
     const navigate = useNavigate();
     const { roomData } = location.state || {};
     const [room, setRoom] = useState(roomData);
+    console.log("room 플레이어", room.players);
     const backendUrl = process.env.REACT_APP_BACK_API_URL;
 
     //joinRoom을 쏴줘야 함
@@ -49,8 +50,9 @@ const Room = () => {
       // 이벤트 리스너 해제를 위한 cleanup 함수 반환
       return () => {
         socket.off("players", updatePlayers);
+        socket.off(`leftRoom${room.code}`, updatePlayersAfterLeave);
       };
-    }, [room.code])
+    }, [room.code, navigate])
 
     const leaveRoom = async () => {
       try {

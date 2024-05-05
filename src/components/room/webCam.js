@@ -11,6 +11,7 @@ const WebCam = ({ players = [], hostName, roomCode}) => {
   const navigate = useNavigate();
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
   const [instruModal, setInstruModal] = useState(false);
+  const [instrumentList, setInstrumentList] = useState([]);
 
   // 방장 시작버튼
   const startGameHandler = async () => {
@@ -56,9 +57,73 @@ const WebCam = ({ players = [], hostName, roomCode}) => {
   }
 
   // 악기 선택
-  const selectInstrument = () => {
+  const findingInstrument = (nickname) => {
+    if(myNickname === nickname){
+    const findInstrument = async () => {
+      try {
+        const response = await axios.get(`${backendUrl}/api/instruments`, {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
+            "UserId": sessionStorage.getItem("userId"),
+            "Nickname": sessionStorage.getItem("nickname")
+          }
+        });
+        console.log("악기찾기 api", response);
+        setInstrumentList(response.data);
+      } catch (error) {
+        console.error("Error start res:", error);
+      }
+    };
+    findInstrument();
     setInstruModal(!instruModal);
   }
+  }
+
+  // 악기를 골랐을 때
+  const selectedInstrument = (instrumentName) => {
+    setPlayerStatuses((prevStatuses) => ({
+      ...prevStatuses,
+      [myNickname]: {
+        ...prevStatuses[myNickname],
+        instrument: instrumentName,
+      },
+    }));
+    // 악기 소켓에 전달
+    const sendInstrument = async () => {
+      try {
+        const response = await axios.patch(`${backendUrl}/api/instruments/select`, {
+          instrumentName
+        },{
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
+            "UserId": sessionStorage.getItem("userId"),
+            "Nickname": sessionStorage.getItem("nickname")
+          }
+        });
+        console.log("감", response);
+      } catch (error) {
+        console.error("Error start res:", error);
+      }
+    };
+
+    sendInstrument();
+    setInstruModal(false);
+  };
+
+  useEffect(() => {
+    const initializeMediaStream = async () => {
+      const mediapipeInstance = new Mediapipe();
+      const value = {
+        userName: "asdf",
+        sessionid: "abcd"
+      };
+      await mediapipeInstance.joinSession(value);
+    };
+
+    initializeMediaStream();
+  }, []); 
 
   useEffect(() => {
     setPlayerStatuses(
@@ -84,6 +149,17 @@ const WebCam = ({ players = [], hostName, roomCode}) => {
       }));
     });
 
+    socket.on("instrumentStatus", (res) => {
+      setPlayerStatuses(prevStatuses => ({
+        ...prevStatuses,
+        [res.nickname]: {
+          ...prevStatuses[res.nickname],
+          instrument: res.instrument
+        }
+      }));
+      console.log("rere", res);
+    })
+
     return () => {
       socket.off("readyStatus");
     };
@@ -106,7 +182,7 @@ const WebCam = ({ players = [], hostName, roomCode}) => {
               </WebCamTop>
               <div>
                 <h2>{nickname}</h2>
-                <h2 onClick={selectInstrument}>{instrument}</h2>
+                <h2 onClick={() => findingInstrument(nickname)}>{instrument}</h2>
               </div>
             </WebCamInfo>
             {nickname === hostName ? (
@@ -123,12 +199,13 @@ const WebCam = ({ players = [], hostName, roomCode}) => {
         ))}
           {instruModal && (
             <InstrumentModal>
-              <ul>
-                <li>1</li>
-                <li>2</li>
-                <li>3</li>
-                <li>4</li>
-              </ul>
+              {instrumentList.map((instrument) => (
+                <ul key={instrument.id}>
+                  <li onClick={() => selectedInstrument(instrument.instrumentName)}>
+                    {instrument.instrumentName}
+                  </li>
+                </ul>
+              ))}
             </InstrumentModal>
           )}
       </WebCamBox>
