@@ -25,6 +25,7 @@ const FriendState = () => {
 
       } catch (error) {
         console.error("Failed to fetch friend list.", error);
+        alert("친구 목록을 불러오는데 실패했습니다.");
       }
     };
     fetchFriends();

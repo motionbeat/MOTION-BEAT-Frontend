@@ -11,7 +11,7 @@ import SelectMenu from "./main/selectMenu";
 const AtomicTest = () => {
   return (
     <>
-      <div style={{width: "100vw", height: "100vh", backgroundColor: "#000"}}>
+      <div style={{width: "100vw", minHeight: "100vh", backgroundColor: "#000"}}>
         <ExitBtn />
         <SocialBtn />
         <MypageBtn />
@@ -20,7 +20,10 @@ const AtomicTest = () => {
         <JoinCode />
         <ReadyStateBox />
         <WebCamBox />
-        <SelectMenu />
+        <SelectMenu mainMenu = "PLAY" />
+        <SelectMenu mainMenu = "TUTORIAL" />
+        <SelectMenu mainMenu = "RANKINGS" />
+        <SelectMenu mainMenu = "SETTINGS" />
       </div>
     </>
   )

@@ -1,13 +1,20 @@
 import styled from "styled-components";
 import mainSeleceBar from "../../../../img/selectBar.png"
+import "../../../../styles/common/selectMenu.scss"
 
-const SelectMenu = () => {
+const SelectMenu = ({mainMenu}) => {
   return (
     <>
       <SelectMenuWrapper style={{display:"flex", margin:"20px 0"}}>
-        <SelectBars></SelectBars>
-        <SelectCategory>PLAY</SelectCategory>
-        <SelectBars></SelectBars>
+        <SelectBars>
+          <img src={mainSeleceBar} alt="선택 테두리" />
+        </SelectBars>
+        <div className="selectCategory">
+          <span className="categoryText">{mainMenu}</span>
+        </div>
+        <SelectBars>
+          <img src={mainSeleceBar} alt="선택 테두리" />
+        </SelectBars>
       </SelectMenuWrapper>
     </>
   )
@@ -17,6 +24,7 @@ export default SelectMenu;
 const SelectMenuWrapper = styled.div`
   display: flex;
   justify-content: center;
+  align-items: center;
   margin: 20px 0;
 `
 
@@ -24,15 +32,14 @@ const SelectBars = styled.div`
   width: 100px;
   height: 10px;
   border-radius: 37px;
-  background-image: url(${mainSeleceBar});
-  box-shadow: inset 0px 3px 5px rgba(255, 255, 255, 0.5);
+  align-items: center;
   opacity: 0.9;
-`
+  display: flex;
+  // background-image: url(${mainSeleceBar});
+  // box-shadow: inset 0px 3px 5px rgba(255, 255, 255, 0.5);
 
-const SelectCategory = styled.div`
-  width: 379px;
-  height: 62px;
-  font-size: 50px;
-  color: white;
-  text-align: center;
+  // img {
+  //   height: 100%;
+  //   width: auto;
+  // }
 `

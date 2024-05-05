@@ -43,6 +43,7 @@ const Room = () => {
         }));
       });
 
+      // 게임을 시작할 때 다같이 게임시작하기 위한 소켓
       socket.on(`gameStarted${room.code}`, async (game) => {
         navigate("/ingame", {state: {game}});
       })
@@ -54,6 +55,7 @@ const Room = () => {
       };
     }, [room.code, navigate])
 
+    // 방을 떠날 때
     const leaveRoom = async () => {
       try {
         const response = await axios.patch(`${backendUrl}/api/rooms/leave`, {
