@@ -7,19 +7,19 @@ import axios from "axios";
 
 const WebCam = ({ players, hostName, roomCode }) => {
   const [playerStatuses, setPlayerStatuses] = useState(
-    players.reduce((acc, player) => ({...acc, [player]: false}), {})
+    players.reduce((acc, player) => ({ ...acc, [player]: false }), {})
   );
   const myNickname = sessionStorage.getItem("nickname");
   const navigate = useNavigate();
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
 
   /* 이 노래데이터, 유저데이터는 임시데이터 입니다. */
-  let ingameData = { imageUrl: "https://i.namu.wiki/i/C7Pn4lj5y_bVOJ8oMyjvvqO2Pv2qach6uyVt2sss93xx-NNS3fWpsDavIVYzfcPX516sK2wcOS8clpyz6acFOtpe1WM6-RN6dWBU77m1z98tQ5UyRshbnJ4RPVic87oZdHPh7tR0ceU8Uq2RlRIApA.webp", songSound: "https://www.youtube.com/watch?v=SX_ViT4Ra7k&ab_channel=KenshiYonezu%E7%B1%B3%E6%B4%A5%E7%8E%84%E5%B8%AB" }
-  let userData = { playerName: "indu", playerColor: "255, 165, 0" }
+  // let ingameData = { imageUrl: "https://i.namu.wiki/i/C7Pn4lj5y_bVOJ8oMyjvvqO2Pv2qach6uyVt2sss93xx-NNS3fWpsDavIVYzfcPX516sK2wcOS8clpyz6acFOtpe1WM6-RN6dWBU77m1z98tQ5UyRshbnJ4RPVic87oZdHPh7tR0ceU8Uq2RlRIApA.webp", songSound: "https://www.youtube.com/watch?v=SX_ViT4Ra7k&ab_channel=KenshiYonezu%E7%B1%B3%E6%B4%A5%E7%8E%84%E5%B8%AB" }
+  // let userData = { playerName: "indu", playerColor: "255, 165, 0" }
 
   // 방장 시작버튼
   const startGameHandler = () => {
-    if(myNickname === hostName) {
+    if (myNickname === hostName) {
       const gameStart = async () => {
         try {
           const response = await axios.post(`${backendUrl}/api/games/start`, {
@@ -33,7 +33,8 @@ const WebCam = ({ players, hostName, roomCode }) => {
             }
           });
           console.log("start res:", response);
-          navigate("/ingame", {state : {ingameData, userData}, gameData: response.data});
+          // navigate("/ingame", { state: { ingameData, userData }, gameData: response.data });
+          navigate("/ingame");
         } catch (error) {
           console.error("Error random songs:", error);
         }
@@ -44,11 +45,11 @@ const WebCam = ({ players, hostName, roomCode }) => {
 
   // 레디 버튼
   const readyBtnClick = (nickname) => {
-    if(myNickname === nickname) {
+    if (myNickname === nickname) {
       socket.emit("ready", (res) => {
         console.log("ready res", res);
       })
-  
+
       setPlayerStatuses(prevStatuses => ({
         ...prevStatuses,
         [nickname]: !prevStatuses[nickname]
@@ -92,7 +93,7 @@ const WebCam = ({ players, hostName, roomCode }) => {
               </WebCamInfo>
               {player === hostName ? (
                 <ReadyBtn onClick={() => startGameHandler()}>시작</ReadyBtn>
-                ) : (
+              ) : (
                 <ReadyBtn
                   isReady={playerStatuses[player]}
                   onClick={() => readyBtnClick(player)}
