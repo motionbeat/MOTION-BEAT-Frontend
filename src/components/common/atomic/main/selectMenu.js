@@ -1,6 +1,6 @@
 import styled from "styled-components";
 import mainSeleceBar from "../../../../img/selectBar.png"
-import "../../../../styles/common/selectMenu.scss"
+import "../../../../styles/main/selectMenu.scss"
 
 const SelectMenu = ({mainMenu}) => {
   return (

@@ -7,6 +7,7 @@ import RoomTitle from "../atomic/room/roomTitle";
 import SocialBtn from "./socialBtn";
 import WebCamBox from "../atomic/room/webCamBox";
 import SelectMenu from "./main/selectMenu";
+import FriendBox from "./main/friendBox";
 
 const AtomicTest = () => {
   return (
@@ -24,6 +25,7 @@ const AtomicTest = () => {
         <SelectMenu mainMenu = "TUTORIAL" />
         <SelectMenu mainMenu = "RANKINGS" />
         <SelectMenu mainMenu = "SETTINGS" />
+        <FriendBox />
       </div>
     </>
   )

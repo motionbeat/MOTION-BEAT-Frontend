@@ -18,6 +18,6 @@
   -webkit-text-stroke-width: 5px;
   -webkit-text-stroke-color: transparent;
   background-image: linear-gradient(108.62deg, #FC92E4 2.2%, #00FFF0 115.74%);
-  -webkit-background-clip: text; /* 텍스트에만 배경 적용 */
-  background-clip: text; /* 텍스트에만 배경 적용 */
+  -webkit-background-clip: text;
+  background-clip: text;
 }
