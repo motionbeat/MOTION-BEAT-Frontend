@@ -14,3 +14,49 @@
   border: 2px solid white;
   border-radius: 15px;
 }
+
+.exitRoomBtn {
+  position: absolute;
+  top: 5%;
+  left: 5%;                          
+  margin: 20px;
+  width: 205px;
+  height: 62px;
+  background-color: #47B5B4;
+  color: white;
+  font-size: 32px;
+  font-weight: bold;
+  border-radius: 16px;
+  border: 1px solid #35383F;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &:active {
+    box-shadow: inset 0px 3px 5px rgba(0, 0, 0, 0.5);
+    transform: translateY(2px);
+  }
+}
+
+// 노래 웹 캠 등의 전체 박스
+.roomMainWrapper {
+  width: 80%;
+  height: 80vh;
+  background-color: #CAFFF5;
+  margin: 10px auto 0 auto;
+  border-radius: 20px;
+}
+
+// 방 입장 코드
+.secretCode {
+  width: 200px;
+  height: 50px;
+  margin: 20px;
+  line-height: 3;
+  border: 2px solid #d9d9d9;
+  text-align: center;
+  border-radius: 10px;
+  background-color: white;
+}

@@ -255,7 +255,7 @@ const Ingame = () => {
       <div style={{ position: "relative" }}>
         {gameEnded ? (
           <>
-            <div>게임이 끝났습니다. 여기에 새로운 내용을 표시할 수 있습니다.</div>
+            <GameResult roomCode={gameData.code} />
             <button onClick={exitBtn}>나가기</button>
           </>
         ) : (

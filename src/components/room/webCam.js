@@ -34,7 +34,6 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
                             "Nickname": sessionStorage.getItem("nickname")
                         }
                     });
-                    console.log("start res:", response);
                 } catch (error) {
                     console.error("Error start res:", error);
                 }
@@ -75,7 +74,6 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
                             "Nickname": sessionStorage.getItem("nickname")
                         }
                     });
-                    console.log("악기찾기 api", response);
                     setInstrumentList(response.data);
                 } catch (error) {
                     console.error("Error start res:", error);
@@ -110,7 +108,6 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
                         "Nickname": sessionStorage.getItem("nickname")
                     }
                 });
-                console.log("감", response);
             } catch (error) {
                 console.error("Error start res:", error);
             }
@@ -220,7 +217,6 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
                     instrument: res.instrument
                 }
             }));
-            console.log("rere", res);
         })
 
         return () => {

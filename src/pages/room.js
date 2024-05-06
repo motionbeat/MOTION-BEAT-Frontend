@@ -13,10 +13,7 @@ const Room = () => {
     const navigate = useNavigate();
     const { roomData } = location.state || {};
     const [room, setRoom] = useState(roomData);
-    console.log("room 플레이어", room.players);
     const backendUrl = process.env.REACT_APP_BACK_API_URL;
-
-    console.log("룸플레이어",room.players);
 
     //joinRoom을 쏴줘야 함
     useEffect (() => {
@@ -84,15 +81,15 @@ const Room = () => {
     return (
         <>
             <div className="room-wrapper">
-                <ExitRoomBtn onClick={leaveRoom}>방 나가기</ExitRoomBtn>
+                <button className="exitRoomBtn" onClick={leaveRoom}>방 나가기</button>
                 <h1 className="room-title">{room.hostName}님의 게임</h1>
-                <RoomMainWrapper>
+                <div className="roomMainWrapper">
                     <div style={{display: "flex", justifyContent: "space-between"}}>
                       <SelectSong songNumber={room.song} hostName={room.hostName} roomCode={room.code} />
-                      {room.type !== 'match' && <SecretCode>코드 : {room.code}</SecretCode>}
+                      {room.type !== 'match' && <div className="secretCode">코드 : {room.code}</div>}
                     </div>
                     <WebCam players={room.players} hostName={room.hostName} roomCode={room.code} />
-                </RoomMainWrapper>
+                </div>
                 <RoomChatting roomCode = {room.code} />
             </div>
         </>
@@ -100,35 +97,4 @@ const Room = () => {
 }
 
 export default Room;
-
-// 노래, 웹캠 등의 전체 박스
-const RoomMainWrapper = styled.div`
-    width: 80%;
-    height: 80vh;
-    background-color: #CAFFF5;
-    margin: 10px auto 0 auto;
-    border-radius: 20px;
-
-`
-const SecretCode = styled.div`
-  width: 200px;
-  height: 50px;
-  margin: 20px;
-  line-height: 3;
-  border: 2px solid #d9d9d9;
-  text-align: center;
-  border-radius: 10px;
-  background-color: white;
-`
-
-const ExitRoomBtn = styled.div`
-  position: absolute;
-  top: 0;
-  left: 0;                          
-  padding: 15px;
-  background-color: white;
-  border-radius: 10px;
-  margin: 20px;
-  cursor: pointer;
-`
 
