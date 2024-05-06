@@ -20,8 +20,6 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
   const selectMusic = () => {
     if(myNickname === hostName) {
       setModalOn(!modalOn);
-    } else {
-      return;
     }
   }
 

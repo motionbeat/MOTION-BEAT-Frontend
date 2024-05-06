@@ -13,25 +13,37 @@ const Room = () => {
     const navigate = useNavigate();
     const { roomData } = location.state || {};
     const [room, setRoom] = useState(roomData);
+    console.log("room 플레이어", room.players);
     const backendUrl = process.env.REACT_APP_BACK_API_URL;
 
     //joinRoom을 쏴줘야 함
     useEffect (() => {
-      // "players" 이벤트에 대한 응답으로 players 상태를 업데이트함.
       const updatePlayers = (updatedPlayers) => {
-        setRoom(prev => ({ ...prev, players: updatedPlayers }));
+        console.log(updatedPlayers);
+        setRoom(prev => ({ 
+          ...prev, 
+          players: updatedPlayers
+        }));
       };
       
       // 방에서 나갈 때 상태 업데이트
       const updatePlayersAfterLeave = (updatedPlayers) => {
-        setRoom(prevRoom => {
-          return { ...prevRoom, players: updatedPlayers };
-        });
+        setRoom(prevRoom => ({ 
+          ...prevRoom, 
+          players: updatedPlayers
+        }));
       };
 
       socket.on(`players${room.code}`, updatePlayers);
       socket.on(`leftRoom${room.code}`, updatePlayersAfterLeave);
+      socket.on("hostChanged", (res) => {
+        setRoom(prevRoom => ({
+          ...prevRoom,
+          hostName: res
+        }));
+      });
 
+      // 게임을 시작할 때 다같이 게임시작하기 위한 소켓
       socket.on(`gameStarted${room.code}`, async (game) => {
         navigate("/ingame", {state: {game}});
       })
@@ -39,9 +51,11 @@ const Room = () => {
       // 이벤트 리스너 해제를 위한 cleanup 함수 반환
       return () => {
         socket.off("players", updatePlayers);
+        socket.off(`leftRoom${room.code}`, updatePlayersAfterLeave);
       };
-    }, [room.code])
+    }, [room.code, navigate])
 
+    // 방을 떠날 때
     const leaveRoom = async () => {
       try {
         const response = await axios.patch(`${backendUrl}/api/rooms/leave`, {
@@ -64,8 +78,6 @@ const Room = () => {
         console.error("leave room error", error);
       }
     };
-
-
 
     return (
         <>

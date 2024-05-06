@@ -6,11 +6,14 @@ import ReadyStateBox from "../atomic/room/readyStateBox";
 import RoomTitle from "../atomic/room/roomTitle";
 import SocialBtn from "./socialBtn";
 import WebCamBox from "../atomic/room/webCamBox";
+import SelectMenu from "./main/selectMenu";
+import FriendBox from "./main/friendBox";
+import MusicModal from "./room/musicModal";
 
 const AtomicTest = () => {
   return (
     <>
-      <div style={{width: "100vw", height: "100vh", backgroundColor: "#000"}}>
+      <div style={{width: "100vw", minHeight: "100vh", backgroundColor: "#000"}}>
         <ExitBtn />
         <SocialBtn />
         <MypageBtn />
@@ -19,6 +22,12 @@ const AtomicTest = () => {
         <JoinCode />
         <ReadyStateBox />
         <WebCamBox />
+        <SelectMenu mainMenu = "PLAY" />
+        <SelectMenu mainMenu = "TUTORIAL" />
+        <SelectMenu mainMenu = "RANKINGS" />
+        <SelectMenu mainMenu = "SETTINGS" />
+        <FriendBox />
+        <MusicModal />
       </div>
     </>
   )
