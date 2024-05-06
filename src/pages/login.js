@@ -93,7 +93,7 @@ const Login = () => {
       {/* <h1 className="login-title">MOTION BEAT</h1> */}
       <div className="loginWrapper">
         <div className="loginForm">
-          <div>
+          <div className="loginHeader">
             <div><img src={BackArrow} alt="뒤로가기" /></div>
             <div></div>
           </div>
