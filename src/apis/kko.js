@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useCallback } from 'react-router-dom';
 import axios from 'axios';
+import kakaoImg from "../img/kakaoImg.png";
 
 export const KakaoLoginButton = ({ setEvent }) => {
   const kakaoURL = `https://kauth.kakao.com/oauth/authorize?client_id=${process.env.REACT_APP_KAKAO_REST_API_KEY}&redirect_uri=${process.env.REACT_APP_KAKAO_REDIRECT_URI}&response_type=code`
@@ -35,7 +36,19 @@ export const KakaoLoginButton = ({ setEvent }) => {
 
   return (
     <>
-      <button onClick={handleLogin}>카카오 로그인</button>
+      <button style={{
+        width:"80px",
+        height:"60px",
+        borderRadius:"16px",
+        border:"1px solid #35383F",
+        backgroundColor:"#1F222A",
+        cursor:"pointer"
+      }} onClick={handleLogin}>
+        <img style={{
+        width:"24px",
+        height:"24px"
+        }} src={kakaoImg} alt='카카오로그인' />
+      </button>
     </>
   )
 }

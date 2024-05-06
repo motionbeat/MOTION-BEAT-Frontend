@@ -1,6 +1,7 @@
 import { useEffect, useState } from 'react';
 import { useNavigate, useCallback } from 'react-router-dom';
 import axios from 'axios';
+import googleImg from "../img/googleImg.png";
 
 export const GoogleLoginButton = ({ setEvent }) => {
   const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
@@ -37,7 +38,19 @@ export const GoogleLoginButton = ({ setEvent }) => {
   };
 
   return (
-    <button onClick={handleLogin}>구글 로그인</button>
+    <button style={{
+      width:"80px",
+      height:"60px",
+      borderRadius:"16px",
+      border:"1px solid #35383F",
+      backgroundColor:"#1F222A",
+      cursor:"pointer"
+    }} onClick={handleLogin}>
+      <img style={{
+        width:"24px",
+        height:"24px"
+      }} src={googleImg} alt='구글로그인' />
+    </button>
   );
 };
 

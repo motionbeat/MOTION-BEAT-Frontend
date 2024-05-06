@@ -9,6 +9,8 @@ import styled from "styled-components";
 import "../styles/login.scss";
 import {login} from "../server/socketEvents.js"
 import BackArrow from "../img/backArrow.png"
+import emailIcon from "../img/emailIcon.png"
+import pwIcon from "../img/pwIcon.png"
 
 const Login = () => {
   const backendUrl = process.env.REACT_APP_BACK_API_URL
@@ -94,29 +96,49 @@ const Login = () => {
       <div className="loginWrapper">
         <div className="loginForm">
           <div className="loginHeader">
-            <div><img src={BackArrow} alt="뒤로가기" /></div>
-            <div></div>
+            <div className="loginBackArrow"><img src={BackArrow} alt="뒤로가기" /></div>
+            <div className="loginTitle">로그인</div>
           </div>
           <form onSubmit={handleSubmit}>
-            <div>
-              <input type="text" placeholder="이메일" ref={emailRef} />
+            <div className="formInputWrapper">
+              <p>ID</p>
+              <div className="inputBox">
+                <img src={emailIcon} alt="이메일아이콘" />
+                <input type="text" placeholder="motion@gmail.com" ref={emailRef} />
+              </div>
               {errors.email && <p style={{ color: 'red' }}>{errors.email[0]}</p>}
             </div >
-            <div>
-              <input type="password" placeholder="비밀번호" ref={pwRef} />
+            <div className="formInputWrapper">
+              <p>Password</p>
+              <div className="inputBox">
+                <img src={pwIcon} alt="비번아이콘" />
+                <input type="password" placeholder="********" ref={pwRef} />
+              </div>
               {errors.pw && <p style={{ color: 'red' }}>{errors.pw[0]}</p>}
             </div>
-            <div>
-              <button type="submit">Log in</button>
-              <button onClick={handleForgot}>Forgot</button>
-              <button onClick={handleSignup}>Signup</button>
+            <div className="subFuncBox">
+              <div>
+                <input type="checkbox" />
+                <p>아이디 저장</p>
+              </div>
+              <p onClick={handleForgot}>비밀번호 찾기</p>
             </div>
+            <div className="loginBtnBox">
+              <button type="submit">로그인</button>
+            </div>
+            <div className="socialLogin">
+              <KakaoLoginButton setEvent={setPopupClosedByUser}>Login With Kakao</KakaoLoginButton>
+              {/* <div className="dummy"></div> */}
+              <GoogleLoginButton setEvent={setPopupClosedByUser}>Login with Google</GoogleLoginButton>
+            </div>
+              {/* {popupClosedByUser && <p>로그인 창이 닫혔습니다. 다시 시도해 주세요.</p>} */}
+              <div className="signupBox">
+                <p onClick={handleSignup}>아직 회원이 아니신가요?<span>회원가입</span></p>
+              </div>
           </form>
           <div>
             <div>
-              <GoogleLoginButton setEvent={setPopupClosedByUser}>Login with Google</GoogleLoginButton>
-              <KakaoLoginButton setEvent={setPopupClosedByUser}>Login With Kakao</KakaoLoginButton>
-              {popupClosedByUser && <p>로그인 창이 닫혔습니다. 다시 시도해 주세요.</p>}
+              
             </div>
           </div>
         </div>
