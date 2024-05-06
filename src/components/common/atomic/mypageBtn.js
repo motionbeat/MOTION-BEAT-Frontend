@@ -1,11 +1,12 @@
-import mypageButton from "../../../img/mypage.png"
+import mypageBtn from "../../../img/mypageBtn.png"
+import mypageBtnClick from "../../../img/mypageBtnClick.png"
 import styled from "styled-components";
 
 const MypageBtn = () => {
   return (
     <>
       <FriendsBtn>
-        <img src={mypageButton} alt="마이페이지" />
+        <img src={mypageBtn} alt="마이페이지" />
       </FriendsBtn>
     </>
   )

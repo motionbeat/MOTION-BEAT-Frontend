@@ -6,9 +6,9 @@ import { KakaoLoginButton } from "../apis/kko";
 import { GoogleLoginButton } from "../apis/ggl";
 import socket from "../server/server.js";
 import styled from "styled-components";
-import LoginBackground from "../img/loginpage.png";
 import "../styles/login.scss";
 import {login} from "../server/socketEvents.js"
+import BackArrow from "../img/backArrow.png"
 
 const Login = () => {
   const backendUrl = process.env.REACT_APP_BACK_API_URL
@@ -90,10 +90,14 @@ const Login = () => {
 
   return (
     <>
-      <LoginWrapper>
-        <LoginForm>
+      {/* <h1 className="login-title">MOTION BEAT</h1> */}
+      <div className="loginWrapper">
+        <div className="loginForm">
+          <div>
+            <div><img src={BackArrow} alt="뒤로가기" /></div>
+            <div></div>
+          </div>
           <form onSubmit={handleSubmit}>
-            <h1 className="login-title">MOTION BEAT</h1>
             <div>
               <input type="text" placeholder="이메일" ref={emailRef} />
               {errors.email && <p style={{ color: 'red' }}>{errors.email[0]}</p>}
@@ -115,28 +119,9 @@ const Login = () => {
               {popupClosedByUser && <p>로그인 창이 닫혔습니다. 다시 시도해 주세요.</p>}
             </div>
           </div>
-        </LoginForm>
-      </LoginWrapper>
+        </div>
+      </div>
     </>
   )
 }
 export default Login
-
-const LoginWrapper = styled.div`
-  width: 100vw;
-  height: 100vh;
-  background-image: url(${LoginBackground});
-  background-repeat: no-repeat;
-  background-size: cover;
-  background-position: left top;
-`
-
-const LoginForm = styled.div`
-  width: 500px;
-  margin: 0 auto;
-  text-align: center;
-  position: absolute;
-  top: 50%;
-  transform: translate(50%, -50%);
-`
-

@@ -9,3 +9,20 @@
   color: white;
   margin: 20px 0;
 }
+
+.loginWrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 421px;
+  height: 662px;
+  background-image: url("../img/loginBox.png");
+}
+
+.loginForm {
+  width: 80%;
+  border: 1px solid white;
+  margin: 0 auto;
+  text-align: center;
+}

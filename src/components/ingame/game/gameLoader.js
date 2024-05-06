@@ -57,7 +57,7 @@ const loadSongData = async (song, players) => {
     });
     const myInstrument = playerObject.instrument;
     const findNotes = response.data.notes.find(item=> item.instrument === myInstrument);
-    myNotes = findNotes.sequences;
+    myNotes = findNotes;
     // console.log("노트 정보", response.data);
 } catch (error) {
     console.error("Error start res:", error);

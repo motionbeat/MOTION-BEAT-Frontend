@@ -146,7 +146,7 @@ const Ingame = () => {
 
   const exitBtn = async () => {
     try {
-      const response = await axios.patch(`${backendUrl}/api/rooms/leave`, {
+      const response1 = await axios.patch(`${backendUrl}/api/rooms/leave`, {
         code: gameData ? gameData.code : "",
       }, {
         headers: {
@@ -157,11 +157,23 @@ const Ingame = () => {
         }
       });
 
-      socket.emit("leaveRoom", gameData.code, (res) => {
-        console.log("leaveRoom res", res);
-      })
-
-      if (response.data.message === "redirect") navigate("/main");
+      if (response1.data.message === "redirect") {
+        const response2 = await axios.patch(`${backendUrl}/api/games/leave`, {
+          code: gameData ? gameData.code : "",
+        }, {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
+            "UserId": sessionStorage.getItem("userId"),
+            "Nickname": sessionStorage.getItem("nickname")
+          }
+        });
+        socket.emit("leaveRoom", gameData.code, (res) => {
+          console.log("leaveRoom res", res);
+        });
+  
+        if (response2.data.message === "redirect") navigate("/main");
+      }
     } catch (error) {
       console.error("leave room error", error);
     }

@@ -7,6 +7,7 @@ import RoomChatting from "../components/room/roomChatting";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/room/room.scss";
+import RoomHeader from "../components/common/atomic/room/roomHeader.js";
 
 const Room = () => {
     const location = useLocation();
@@ -54,41 +55,27 @@ const Room = () => {
       };
     }, [room.code, navigate])
 
-    // 방을 떠날 때
-    const leaveRoom = async () => {
-      try {
-        const response = await axios.patch(`${backendUrl}/api/rooms/leave`, {
-          code : room ? room.code:"",
-          }, {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
-            "UserId": sessionStorage.getItem("userId"),
-            "Nickname": sessionStorage.getItem("nickname")
-          }
-        });
-
-        socket.emit("leaveRoom", room.code, (res) => {
-          console.log("leaveRoom res", res);
-        })
-
-        if(response.data.message === "redirect") navigate("/main");
-      } catch (error) {
-        console.error("leave room error", error);
-      }
-    };
-
     return (
         <>
             <div className="room-wrapper">
-                <button className="exitRoomBtn" onClick={leaveRoom}>방 나가기</button>
-                <h1 className="room-title">{room.hostName}님의 게임</h1>
+                <RoomHeader room={room} />
                 <div className="roomMainWrapper">
-                    <div style={{display: "flex", justifyContent: "space-between"}}>
+                  <div className="roomMainInnerWrapper">
+                    <div className="roomMiddleWrapper">
                       <SelectSong songNumber={room.song} hostName={room.hostName} roomCode={room.code} />
-                      {room.type !== 'match' && <div className="secretCode">코드 : {room.code}</div>}
+                      <div className="roomMiddleRight">
+                        <button className="gameStartBtn">게임 시작</button>
+                        {room.type !== 'match' &&
+                          <div className="secretCodeWrapper">
+                            <div className="secretCode">입장코드 : {room.code}</div>
+                            <button>복사</button>
+                          </div>
+                        }
+                        <button className="chattingBtn">채팅하기</button>
+                      </div>
                     </div>
                     <WebCam players={room.players} hostName={room.hostName} roomCode={room.code} />
+                  </div>
                 </div>
                 <RoomChatting roomCode = {room.code} />
             </div>
