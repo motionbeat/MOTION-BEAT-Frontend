@@ -3,10 +3,14 @@ export const Judge = (key, time, judgedNotes) => {
   let result = "ignore"; // 기본 결과를 "ignore"로 설정
 
   notes.forEach(note => {
-    const noteIndex = parseInt(note.index, 10);
-    const noteTime = parseInt(note.time, 10);
+    const noteIndex = note.index;
+    const noteTime = note.time;
+    console.log(noteTime);
+    console.log(note.time);
+
     if (noteIndex !== judgedNotes) return;
     console.log(judgedNotes)
+
     const timeDiff = noteTime - time;
     console.log(timeDiff)
 
