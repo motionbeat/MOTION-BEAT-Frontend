@@ -57,6 +57,7 @@ const RoomChatting = (roomCode) => {
         {isChatVisible && (
           <ChatContentBox isVisible={isChatVisible} style={{height: chatHeight}}>
             <ChatInnerBox>
+                <div>대기방</div>
                 <ChatContent>
                 {messageList.map((item, index) => (
                     <div key={index}>{item.userNickname} : {item.message}</div>

@@ -102,7 +102,7 @@ export const Start = ({ data, eventKey, railRefs, send }) => {
 
   audioPlayer.addEventListener("ended", () => {
     console.log("노래 재생이 끝났습니다. End 함수를 호출하기 전 5초 대기합니다.");
-    // socket.emit("gameEnded", send)
+    socket.emit("gameEnded", send)
     setTimeout(() => End(), 5000);  // 5초 후 게임 종료
   });
 

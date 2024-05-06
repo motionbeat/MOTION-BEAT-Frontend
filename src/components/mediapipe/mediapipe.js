@@ -10,11 +10,11 @@ class Mediapipe extends Component {
             leftWristY: null,
             rightWristY: null,
             postureStatus: "X",
-            backgroundMusicVolume: 0.2,
-            timer: 0,
-            bgmPlaying: false,
-            soundTimes: [],
-            hitCount: 0,
+            // backgroundMusicVolume: 0.2,
+            // timer: 0,
+            // bgmPlaying: false,
+            // soundTimes: [],
+            // hitCount: 0,
             lastPlayedSound: null
         };
 
@@ -23,26 +23,39 @@ class Mediapipe extends Component {
         this.pose = undefined;
         this.soundA = new Audio('/effect/tom.mp3');
         this.soundB = new Audio('/effect/snare.mp3');
-        this.backgroundMusic = new Audio('/song/본능적으로.mp4');
+        // this.backgroundMusic = new Audio('/song/본능적으로.mp4');
     }
 
     componentDidMount() {
         this.initializePose();
-        this.startTimer();
+        // this.startTimer();
         this.initializeMediaStream(); // 비디오 스트림을 즉시 초기화합니다.
     }
 
-    startTimer = () => {
-        setInterval(() => {
-            if (this.state.bgmPlaying) {
-                this.setState(prevState => ({ timer: prevState.timer + 1 }));
-            }
-        }, 1000);
+    dispatchKey(key) {
+        const event = new KeyboardEvent('keydown', {
+            key: key,
+            code: key.toUpperCase(),
+            which: key.charCodeAt(0),
+            keyCode: key.charCodeAt(0),
+            shiftKey: false,
+            ctrlKey: false,
+            metaKey: false
+        });
+        window.dispatchEvent(event);
     }
 
-    toggleBgmPlaying = () => {
-        this.setState(prevState => ({ bgmPlaying: !prevState.bgmPlaying }));
-    }
+    // startTimer = () => {
+    //     setInterval(() => {
+    //         if (this.state.bgmPlaying) {
+    //             this.setState(prevState => ({ timer: prevState.timer + 1 }));
+    //         }
+    //     }, 1000);
+    // }
+
+    // toggleBgmPlaying = () => {
+    //     this.setState(prevState => ({ bgmPlaying: !prevState.bgmPlaying }));
+    // }
 
     initializePose() {
         this.pose = new posedetection.Pose({
@@ -90,7 +103,7 @@ class Mediapipe extends Component {
     }
 
     detectWristMovement(wrist, currentY) {
-        if (currentY === null || !this.state.bgmPlaying) return;
+        if (currentY === null) return;
         const stateKey = wrist + 'WristY';
         const previousY = this.state[stateKey];
         const threshold = 0.045; // 감도 조정
@@ -103,11 +116,13 @@ class Mediapipe extends Component {
                 if (this.state.postureStatus !== newStatus) {
                     if (newStatus === 'A') {
                         this.soundA.play();
+                        this.dispatchKey('d')
                     } else if (newStatus === 'B') {
                         this.soundB.play();
+                        this.dispatchKey('f')
                     }
                     this.setState(prevState => ({
-                        hitCount: prevState.hitCount + 1,
+                        // hitCount: prevState.hitCount + 1,
                         lastPlayedSound: newStatus,
                         postureStatus: newStatus
                     }), () => {
@@ -119,21 +134,21 @@ class Mediapipe extends Component {
         this.setState({ [stateKey]: currentY });
     }
 
-    playBackgroundMusic = () => {
-        this.backgroundMusic.play();
-        this.setState({ bgmPlaying: true });
-    }
+    // playBackgroundMusic = () => {
+    //     this.backgroundMusic.play();
+    //     this.setState({ bgmPlaying: true });
+    // }
 
-    pauseBackgroundMusic = () => {
-        this.backgroundMusic.pause();
-        this.setState({ bgmPlaying: false });
-    }
+    // pauseBackgroundMusic = () => {
+    //     this.backgroundMusic.pause();
+    //     this.setState({ bgmPlaying: false });
+    // }
 
-    handleVolumeChange = (event) => {
-        const volume = event.target.value;
-        this.setState({ backgroundMusicVolume: volume });
-        this.backgroundMusic.volume = volume;
-    }
+    // handleVolumeChange = (event) => {
+    //     const volume = event.target.value;
+    //     this.setState({ backgroundMusicVolume: volume });
+    //     this.backgroundMusic.volume = volume;
+    // }
 
     render() {
         const { postureStatus, backgroundMusicVolume, hitCount } = this.state;

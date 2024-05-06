@@ -19,6 +19,7 @@ import Input from "../utils/input";
 import Output from "../utils/output";
 import socket from "../server/server";
 import axios from "axios";
+import GameResult from "../components/ingame/gameResult";
 
 const Ingame = () => {
   const [message, setMessage] = useState("");
@@ -138,7 +139,8 @@ const Ingame = () => {
   // 서버에 보낼 데이터
   const sendData = {
     nickname: myNickname,
-    code: gameData.code
+    code: gameData.code,
+    score: 5,
   };
 
   const exitBtn = async () => {
@@ -239,6 +241,7 @@ const Ingame = () => {
   console.log(loadedData.skinData);
   console.log(loadedData.skinData.colors);
   console.log(loadedData.skinData.userData);
+  console.log(gameEnded);
 
   // 노래 재생 끝났을 때의 함수
   const handleAudioEnd = () => {
