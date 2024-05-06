@@ -72,7 +72,8 @@ const Ingame = () => {
     if (event.key === "Enter" && loadedData) {
       setShowEnter(false); // Enter 후 ShowEnter 숨기기
       window.removeEventListener("keydown", handleEnterDown); // 이벤트 리스너 제거
-      Start({ data: loadedData, eventKey: event.key, railRefs: railRefs });
+      console.log("TEST", sendData)
+      Start({ data: loadedData, eventKey: event.key, railRefs: railRefs, send: sendData });
     }
   }, [loadedData]);
 
