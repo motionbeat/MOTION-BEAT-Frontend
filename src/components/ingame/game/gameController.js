@@ -70,13 +70,12 @@ export const Start = ({ data, eventKey, railRefs, send }) => {
     const rail = railRefs.current[data.skinData.userData.myPosition].current;
     rail.appendChild(noteElement);
 
-    // 7%의 오차가 있음
     const animateNote = () => {
       const elapsedTime = audioPlayer.currentTime * 1000 - start;
       const progress = elapsedTime / animationDuration;
 
       if (progress <= 1) {
-        noteElement.style.left = `${100 - 100 * progress}%`; // 100%에서 -20%로 이동
+        noteElement.style.left = `${100 - 100 * progress}%`;
         requestAnimationFrame(animateNote);
       } else {
         rail.removeChild(noteElement); // 애니메이션 종료 후 노트 제거
