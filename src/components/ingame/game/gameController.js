@@ -43,7 +43,7 @@ export const Start = ({ data, eventKey, railRefs, send }) => {
     const scheduleNotes = () => {
 
       audioTime = audioPlayer.currentTime * 1000;
-      
+
 
       const notes = data.songData.myNotes;
       let count = 0;
@@ -51,9 +51,10 @@ export const Start = ({ data, eventKey, railRefs, send }) => {
 
         const startTime = note.time - animationDuration - 1;
 
-        if (startTime <= audioTime && !processedNotes.has(note)) {
+        if (startTime + 5000 <= audioTime && !processedNotes.has(note)) {
           GenerateNote(note, audioTime, count);  // 노트 생성 및 애니메이션 시작
           processedNotes.add(note);  // 노트를 처리된 상태로 표시
+          console.log(note.time);
         }
         count++;
       }
@@ -70,7 +71,7 @@ export const Start = ({ data, eventKey, railRefs, send }) => {
     noteElement.className = "Note";
     noteElement.textContent = `${motion}`;
     noteElement.setAttribute('data-motion', motion);
-    noteElement.setAttribute('data-time', time.toString());
+    noteElement.setAttribute('data-time', (time + 5000).toString());
     noteElement.setAttribute('data-index', index.toString());
 
     const rail = railRefs.current[data.skinData.userData.myPosition].current;
