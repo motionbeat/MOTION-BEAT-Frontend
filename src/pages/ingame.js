@@ -20,6 +20,7 @@ import Output from "../utils/output";
 import socket from "../server/server";
 import axios from "axios";
 import GameResult from "../components/ingame/gameResult";
+import { JudgeEffect } from "../components/ingame/judgeEffect.js";
 
 const Ingame = () => {
   const [message, setMessage] = useState("");
@@ -57,9 +58,11 @@ const Ingame = () => {
     if (result === "hit") {
       setHittedNotes(prev => prev + 1);
       setJudgedNotes(prev => prev + 1);
+      return "hit";
     } else if (result === "miss") {
       setMissedNotes(prev => prev + 1);
       setJudgedNotes(prev => prev + 1);
+      return "miss";
     }
   };
 
@@ -182,6 +185,8 @@ const Ingame = () => {
     return <p>Loading...</p>;
   }
 
+  let judge
+
   const SongSheet = ({ railRefs, myPosition, Colors }) => {
     // console.log(railRefs);
 
@@ -190,9 +195,10 @@ const Ingame = () => {
     const handleKeyDown = useCallback((key, time) => {
       setIsActive(true);
 
-      const judgeResult = Judge(key, time, judgedNotes);
+      const notes = document.querySelectorAll(".Note");
+      const judgeResult = Judge(key, time, judgedNotes, notes);
 
-      updateScore(judgeResult);
+      judge = updateScore(judgeResult);
     }, [judgedNotes]);
 
     const handleKeyUp = useCallback(() => {
@@ -266,6 +272,7 @@ const Ingame = () => {
             <SongSheet railRefs={railRefs} myPosition={loadedData.skinData.userData.myPosition} Colors={loadedData.skinData.colors} >
             </SongSheet>
             <div style={{ position: "relative" }}>
+              {!judge ? null : <JudgeEffect judge={judge} />}
               <Score hitted={hittedNotes} missed={missedNotes} />
               <WebCamFrame />
               <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} />

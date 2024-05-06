@@ -1,5 +1,4 @@
-export const Judge = (key, time, judgedNotes) => {
-  const notes = document.querySelectorAll('.Note'); // 모든 노트 요소 검색
+export const Judge = (key, time, judgedNotes, notes) => {
   let result = "ignore"; // 기본 결과를 "ignore"로 설정
 
   notes.forEach(note => {
