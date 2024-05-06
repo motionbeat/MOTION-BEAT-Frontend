@@ -81,7 +81,7 @@ const Room = () => {
     return (
         <>
             <div className="room-wrapper">
-                <div className="exitRoomBtn" onClick={leaveRoom}>방 나가기</div>
+                <button className="exitRoomBtn" onClick={leaveRoom}>방 나가기</button>
                 <h1 className="room-title">{room.hostName}님의 게임</h1>
                 <div className="roomMainWrapper">
                     <div style={{display: "flex", justifyContent: "space-between"}}>

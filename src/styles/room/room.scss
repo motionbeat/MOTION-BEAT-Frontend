@@ -17,13 +17,27 @@
 
 .exitRoomBtn {
   position: absolute;
-  top: 0;
-  left: 0;                          
-  padding: 15px;
-  background-color: white;
-  border-radius: 10px;
+  top: 5%;
+  left: 5%;                          
   margin: 20px;
+  width: 205px;
+  height: 62px;
+  background-color: #47B5B4;
+  color: white;
+  font-size: 32px;
+  font-weight: bold;
+  border-radius: 16px;
+  border: 1px solid #35383F;
   cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &:active {
+    box-shadow: inset 0px 3px 5px rgba(0, 0, 0, 0.5);
+    transform: translateY(2px);
+  }
 }
 
 // 노래 웹 캠 등의 전체 박스
