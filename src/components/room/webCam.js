@@ -16,6 +16,7 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
     const [instrumentList, setInstrumentList] = useState([]);
     const [session, setSession] = useState(null);
     const [subscribers, setSubscribers] = useState([]);
+    const OV = useRef(new OpenVidu());
 
     // 방장 시작버튼
     const startGameHandler = async () => {
@@ -141,7 +142,7 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
     //토큰 생성 요청
     const fetchToken = async () => {
         try {
-            const response = await axios.post(`${APPLICATION_SERVER_URL}/api/openvidu`, { sessionName: roomCode });
+            const response = await axios.post(`${backendUrl}/api/openvidu`, { sessionName: roomCode });
             return response.data.token;
         } catch (error) {
             console.error("Error fetching token:", error);
@@ -150,17 +151,16 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
 
     // OpenVidu
     useEffect(() => {
-        const OV = new OpenVidu();
-        const session = OV.initSession();
+        const session = OV.current.initSession();
         setSession(session);
     
         session.on('streamCreated', (event) => {
             const subscriber = session.subscribe(event.stream, undefined);
-            setSubscribers(prev => [...prev, subscriber]);
+            setSubscribers(prevSubscribers => [...prevSubscribers, subscriber]);
         });
     
         session.on('streamDestroyed', (event) => {
-            setSubscribers(prev => prev.filter(sub => sub !== event.stream.streamManager));
+            setSubscribers(subscribers => subscribers.filter(s => s !== event.stream.streamManager));
         });
     
         return () => {
