@@ -1,0 +1,18 @@
+// 웹 캠 전체 박스
+.webCamBox {
+  width: 100%;
+  display: flex;
+
+  h2 {
+    margin: 0;
+    text-align: center;
+    }
+}
+
+// 유저 각각의 박스
+.playerContainer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  margin-top: 20px;
+}

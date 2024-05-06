@@ -1,0 +1,23 @@
+@font-face {
+  font-family: "LexendMega";
+  src: url("../../fonts/LexendMega/LexendMega-Bold.ttf");
+}
+
+.selectCategory {
+  // width: 379px;
+  margin: 0 30px;
+  height: 62px;
+  font-size: 50px;
+  font-family: "LexendMega";
+  color: white;
+  text-align: center;
+}
+
+.categoryText {
+  display: inline-block;
+  -webkit-text-stroke-width: 5px;
+  -webkit-text-stroke-color: transparent;
+  background-image: linear-gradient(108.62deg, #FC92E4 2.2%, #00FFF0 115.74%);
+  -webkit-background-clip: text;
+  background-clip: text;
+}

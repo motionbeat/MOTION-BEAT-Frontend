@@ -27,8 +27,6 @@ const SongsModal = ({ modalOn, handleSongSelect }) => {
               "UserId": sessionStorage.getItem("userId")
             }
           });
-          console.log("리스폰 헤더", response.headers);
-          console.log("리스폰 데이터", response.data);
           setSongs(response.data);
         } catch (error) {
           console.error("Error fetching songs:", error);

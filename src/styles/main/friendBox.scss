@@ -1,0 +1,70 @@
+@font-face {
+  font-family: "Pretendard";
+  src: url("../../fonts/pretendard/Pretendard-Black.ttf");
+}
+
+.friendBoxWrapper {
+  width: 420px;
+  height: 602px;
+  padding: 30px;
+  background-image: url("../../img/friendBox.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  color: white;
+  font-family: "LexendMega";
+  position: relative;
+}
+
+// 헤더 부분
+.friendBoxHeader {
+  width: 360px;
+  display: flex;
+  justify-content: space-between;
+  margin: 10px 0 30px 0;
+
+  span {
+    font-size: 20px;
+    font-weight: 400;
+  }
+
+  img {
+    width: 24px;
+    height: 24px;
+  }
+}
+
+// 내용 부분
+.friendBoxBody {
+  width: 380px;
+  position: absolute;
+  right: 10px;
+}
+
+.friendBoxUl {
+
+}
+
+.friendBoxLi {
+  width: 356px;
+  height: 100px;
+  display: flex;
+  justify-content: space-between;
+  background-image: url("../../img/friendOne.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  padding: 20px;
+  font-weight: 400;
+  margin-bottom: 20px;
+
+  div {
+    &:nth-child(1) {
+      font-size: 22px;
+      line-height: 2.7;
+    }
+
+    &:nth-child(2) {
+      font-size: 18px;
+      line-height: 3.3;
+    }
+  }
+}

@@ -1,0 +1,51 @@
+@font-face {
+  font-family: "Pretendard";
+  src: url("../../fonts/pretendard/Pretendard-Light.ttf");
+}
+
+.musicModalBox {
+  width: 844px;
+  height: 766px;
+  border-radius: 26px;
+  background-image: url("../../img/musicModalBox.png");
+  display: flex;
+}
+
+// 모달 좌측 div
+.musicModalLeft {
+  background-color: black;
+  border-radius: 20px 0 0 20px;
+  width: 30%;
+  // height: inherit;
+  padding: 30px;
+  margin: 5px;
+}
+
+.backArrow {
+  width: 36px;
+  height: 36px;
+  background-image: url("../../img/backArrow.png");
+  margin-bottom: 120px;
+}
+
+.songSelectBox {
+  font-family: "Pretendard";
+  font-size: 32px;
+  color: white;
+  font-weight: normal;
+  width: 30%;
+  height: inherit;
+
+  div {
+    margin-bottom: 60px;
+  }
+}
+
+// 모달 우측 div
+.musicModalRight {
+  width: 70%;
+  height: inherit;
+  border-radius: 0 20px 20px 0;
+  // background-color: white;
+  padding: 30px;
+}

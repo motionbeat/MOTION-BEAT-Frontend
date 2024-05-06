@@ -7,7 +7,8 @@ import SongsModal from "./songsModal";
 import axios from "axios";
 import socket from "../../server/server.js"
 
-const SelectSong = ({ songNumber, hostName }) => {
+const SelectSong = ({ songNumber, hostName, roomCode }) => {
+  console.log(roomCode);
   const [modalOn, setModalOn] = useState(false);
   const [selectedSong, setSelectedSong] = useState([]);
   const [selectFavorite, setSelectFavorite] = useState(false);
@@ -19,8 +20,6 @@ const SelectSong = ({ songNumber, hostName }) => {
   const selectMusic = () => {
     if(myNickname === hostName) {
       setModalOn(!modalOn);
-    } else {
-      return;
     }
   }
 
@@ -44,22 +43,25 @@ const SelectSong = ({ songNumber, hostName }) => {
     findSong();
 
     const handleSongChange = (song) => {
-      console.log("change res", song);
+      console.log("received");
       setSelectedSong([song]);
     };
-    socket.on("change", handleSongChange);
+    socket.on(`songChanged`, handleSongChange);
 
     return () => {
-      socket.off("change", handleSongChange);
+      socket.off("songChanged", handleSongChange);
     };
-
+    
   }, [backendUrl, songNum]);
 
   // 노래 선택
   const handleSongSelect = (song) => {
     setSelectedSong(song);
-
-    socket.emit("changeSong", song, (res) => {
+    const sendData = {
+      song, 
+      roomCode
+    }
+    socket.emit("changeSong", sendData, (res) => {
       console.log("changeSong res", res);
     });
 
