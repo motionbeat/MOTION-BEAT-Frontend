@@ -73,8 +73,8 @@ const Ingame = () => {
     if (event.key === "Enter" && loadedData) {
       setShowEnter(false); // Enter 후 ShowEnter 숨기기
       window.removeEventListener("keydown", handleEnterDown); // 이벤트 리스너 제거
-      Start({ data: loadedData, eventKey: event.key, railRefs: railRefs, changeEnd: setGameEnded });
-
+      console.log("TEST", sendData)
+      Start({ data: loadedData, eventKey: event.key, railRefs: railRefs, send: sendData });
     }
   }, [loadedData]);
 
@@ -139,7 +139,8 @@ const Ingame = () => {
   // 서버에 보낼 데이터
   const sendData = {
     nickname: myNickname,
-    code: gameData.code
+    code: gameData.code,
+    score: 5,
   };
 
   const exitBtn = async () => {
@@ -255,7 +256,7 @@ const Ingame = () => {
       <div style={{ position: "relative" }}>
         {gameEnded ? (
           <>
-            <div>게임이 끝났습니다. 여기에 새로운 내용을 표시할 수 있습니다.</div>
+            <GameResult roomCode={gameData.code} />
             <button onClick={exitBtn}>나가기</button>
           </>
         ) : (

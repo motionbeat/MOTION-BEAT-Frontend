@@ -1,10 +1,11 @@
 import { useSelector, useCallback } from "react-redux";
 import { now } from "../../../utils/time.js";
 import styled, { keyframes } from "styled-components"
+import socket from "../../../server/server.js";
 
-
-export const Start = ({ data, eventKey, railRefs, changeEnd }) => {
+export const Start = ({ data, eventKey, railRefs, send }) => {
   console.log("게임 시작 로직 실행");
+  console.log("TEST", send)
 
   if (!data?.songData?.ingameData) {
     console.error("Invalid data passed to Start function");
@@ -78,7 +79,7 @@ export const Start = ({ data, eventKey, railRefs, changeEnd }) => {
       const progress = elapsedTime / animationDuration;
 
       if (progress <= 1) {
-        noteElement.style.left = `${100 - 100 * progress}%`; // 100%에서 -20%로 이동
+        noteElement.style.left = `${100 - 127 * progress}%`; // 100%에서 -20%로 이동
         requestAnimationFrame(animateNote);
       } else {
         rail.removeChild(noteElement); // 애니메이션 종료 후 노트 제거
@@ -91,7 +92,6 @@ export const Start = ({ data, eventKey, railRefs, changeEnd }) => {
 
   const End = () => {
     console.log("게임 종료");
-    changeEnd(true);
     document.removeEventListener('keydown', playAudio);  // Clean up event listener
     audioPlayer.dataset.listenersAdded = false;
   };
@@ -102,6 +102,7 @@ export const Start = ({ data, eventKey, railRefs, changeEnd }) => {
 
   audioPlayer.addEventListener("ended", () => {
     console.log("노래 재생이 끝났습니다. End 함수를 호출하기 전 5초 대기합니다.");
+    socket.emit("gameEnded", send)
     setTimeout(() => End(), 5000);  // 5초 후 게임 종료
   });
 
