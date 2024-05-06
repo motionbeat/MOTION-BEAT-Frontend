@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import Mediapipe from "../mediapipe/mediapipe.js";
 import "../../styles/room/webcam.scss"
-import OpenVidu from "openvidu-browser";
+import { OpenVidu } from "openvidu-browser";
+
 
 const WebCam = ({ players = [], hostName, roomCode }) => {
     const [playerStatuses, setPlayerStatuses] = useState({});
@@ -16,6 +17,7 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
     const [instrumentList, setInstrumentList] = useState([]);
     const [session, setSession] = useState(null);
     const [subscribers, setSubscribers] = useState([]);
+    const OV = new OpenVidu();
 
     // 방장 시작버튼
     const startGameHandler = async () => {
@@ -141,7 +143,7 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
     //토큰 생성 요청
     const fetchToken = async () => {
         try {
-            const response = await axios.post(`${APPLICATION_SERVER_URL}/api/openvidu`, { sessionName: roomCode });
+            const response = await axios.post(`${backendUrl}/api/openvidu`, { sessionName: roomCode });
             return response.data.token;
         } catch (error) {
             console.error("Error fetching token:", error);
@@ -150,7 +152,6 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
 
     // OpenVidu
     useEffect(() => {
-        const OV = new OpenVidu();
         const session = OV.initSession();
         setSession(session);
     
