@@ -40,11 +40,11 @@ const WebCam = ({ players = [], hostName, roomCode}) => {
 
   // 레디 버튼
   const readyBtnClick = (nickname) => {
-    if(myNickname === nickname) {
+    if (myNickname === nickname) {
       socket.emit("ready", (res) => {
         console.log("ready res", res);
       })
-  
+
       setPlayerStatuses(prevStatuses => ({
         ...prevStatuses,
         [nickname]: {
