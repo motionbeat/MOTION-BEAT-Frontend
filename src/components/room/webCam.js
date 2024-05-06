@@ -1,6 +1,6 @@
 import styled from "styled-components"
 import socket from "../../server/server.js"
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import Mediapipe from "../mediapipe/mediapipe.js";
