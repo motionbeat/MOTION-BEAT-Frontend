@@ -5,7 +5,6 @@ import axios from "axios";
 /* 기본적인 것들 로드하기 */
 export const Load = async (song, players) => {
 
-
   try {
     const results = await Promise.all([
       ingameSkin(),
@@ -43,25 +42,26 @@ const ingameSkin = async () => {
 const loadSongData = async (song, players) => {
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
   const myNickname = sessionStorage.getItem("nickname");
+  console.log(players);
   const playerObject = players.find(item => item.nickname === myNickname);
   let myNotes = [];
 
   try {
     const response = await axios.get(`${backendUrl}/api/songs/${song}`, {
-        headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
-            "UserId": sessionStorage.getItem("userId"),
-            "Nickname": sessionStorage.getItem("nickname")
-        }
+      headers: {
+        "Content-Type": "application/json",
+        "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
+        "UserId": sessionStorage.getItem("userId"),
+        "Nickname": sessionStorage.getItem("nickname")
+      }
     });
     const myInstrument = playerObject.instrument;
-    const findNotes = response.data.notes.find(item=> item.instrument === myInstrument);
+    const findNotes = response.data.notes.find(item => item.instrument === myInstrument);
     myNotes = findNotes.sequences;
-    // console.log("노트 정보", response.data);
-} catch (error) {
+    console.log("노트 정보", response.data);
+  } catch (error) {
     console.error("Error start res:", error);
-}
+  }
 
   /* 이 노래데이터, 유저데이터는 Webcam의 임시데이터 입니다. */
   let ingameData = { imageUrl: "https://i.namu.wiki/i/C7Pn4lj5y_bVOJ8oMyjvvqO2Pv2qach6uyVt2sss93xx-NNS3fWpsDavIVYzfcPX516sK2wcOS8clpyz6acFOtpe1WM6-RN6dWBU77m1z98tQ5UyRshbnJ4RPVic87oZdHPh7tR0ceU8Uq2RlRIApA.webp", songSound: `/song/${song}.mp3` }
