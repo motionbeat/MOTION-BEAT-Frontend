@@ -3,7 +3,7 @@ import { now } from "../../../utils/time.js";
 import styled, { keyframes } from "styled-components"
 
 
-export const Start = ({ data, eventKey, railRefs }) => {
+export const Start = ({ data, eventKey, railRefs, changeEnd }) => {
   console.log("게임 시작 로직 실행");
 
   if (!data?.songData?.ingameData) {
@@ -91,6 +91,7 @@ export const Start = ({ data, eventKey, railRefs }) => {
 
   const End = () => {
     console.log("게임 종료");
+    changeEnd(true);
     document.removeEventListener('keydown', playAudio);  // Clean up event listener
     audioPlayer.dataset.listenersAdded = false;
   };

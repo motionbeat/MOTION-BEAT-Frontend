@@ -1,6 +1,6 @@
 import styled from "styled-components"
 import socket from "../../server/server.js"
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import Mediapipe from "../mediapipe/mediapipe.js";
@@ -17,7 +17,7 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
     const [instrumentList, setInstrumentList] = useState([]);
     const [session, setSession] = useState(null);
     const [subscribers, setSubscribers] = useState([]);
-    const OV = new OpenVidu();
+    const OV = useRef(new OpenVidu());
 
     // 방장 시작버튼
     const startGameHandler = async () => {
@@ -152,16 +152,16 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
 
     // OpenVidu
     useEffect(() => {
-        const session = OV.initSession();
+        const session = OV.current.initSession();
         setSession(session);
     
         session.on('streamCreated', (event) => {
             const subscriber = session.subscribe(event.stream, undefined);
-            setSubscribers(prev => [...prev, subscriber]);
+            setSubscribers(prevSubscribers => [...prevSubscribers, subscriber]);
         });
     
         session.on('streamDestroyed', (event) => {
-            setSubscribers(prev => prev.filter(sub => sub !== event.stream.streamManager));
+            setSubscribers(subscribers => subscribers.filter(s => s !== event.stream.streamManager));
         });
     
         return () => {
