@@ -6,6 +6,7 @@ import socket from "../../../server/server.js";
 export const Start = ({ data, eventKey, railRefs, send }) => {
   console.log("게임 시작 로직 실행");
   console.log("TEST", send)
+  console.log(data);
 
   let audioTime
 
@@ -42,30 +43,35 @@ export const Start = ({ data, eventKey, railRefs, send }) => {
     const scheduleNotes = () => {
 
       audioTime = audioPlayer.currentTime * 1000;
-      const notes = data.songData.noteExactTime[`player${data.skinData.userData.myPosition}`];
+      
+
+      const notes = data.songData.myNotes;
+      let count = 0;
       for (const note of notes) {
-        const startTime = note.time - animationDuration;
+
+        const startTime = note.time - animationDuration - 1;
 
         if (startTime <= audioTime && !processedNotes.has(note)) {
-          GenerateNote(note, audioTime);  // 노트 생성 및 애니메이션 시작
+          GenerateNote(note, audioTime, count);  // 노트 생성 및 애니메이션 시작
           processedNotes.add(note);  // 노트를 처리된 상태로 표시
         }
+        count++;
       }
       requestAnimationFrame(scheduleNotes);
     };
     requestAnimationFrame(scheduleNotes);
   });
 
-  const GenerateNote = (note, start) => {
-    const { index, type, time, color } = note;
-    console.log("노트 생성", type, "eta", time, "ms");
+  const GenerateNote = (note, start, index) => {
+    const { motion, time } = note;
+    console.log("노트 생성", motion, "eta", time, "ms");
 
     const noteElement = document.createElement("div");
     noteElement.className = "Note";
-    noteElement.textContent = `${type}`;
-    noteElement.index = index;
-    noteElement.type = type;
-    noteElement.time = time;
+    noteElement.textContent = `${motion}`;
+    noteElement.setAttribute('data-motion', motion);
+    noteElement.setAttribute('data-time', time.toString());
+    noteElement.setAttribute('data-index', index.toString());
 
     const rail = railRefs.current[data.skinData.userData.myPosition].current;
     rail.appendChild(noteElement);

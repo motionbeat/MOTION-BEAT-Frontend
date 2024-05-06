@@ -45,26 +45,26 @@ const Ingame = () => {
   /* I/O 처리 */
   const divBGRef = useRef(null);
 
-  const [hittedNotes, setHittedNotes] = useState(0);
-  const [missedNotes, setMissedNotes] = useState(0);
-  const [judgedNotes, setJudgedNotes] = useState(0);
+  let hittedNotes = 0;
+  let missedNotes = 0;
+  let judgedNotes = 0;
 
   useEffect(() => {
     console.log(`판정된 점수: ${judgedNotes}, 히트: ${hittedNotes}, 미스: ${missedNotes}`);
   }, [judgedNotes, hittedNotes, missedNotes]);
 
   const updateScore = (result) => {
-    // console.log(result)
     if (result === "hit") {
-      setHittedNotes(prev => prev + 1);
-      setJudgedNotes(prev => prev + 1);
+      judgedNotes += 1;
+      hittedNotes += 1;
       return "hit";
-    } else if (result === "miss") {
-      setMissedNotes(prev => prev + 1);
-      setJudgedNotes(prev => prev + 1);
+    }
+    else if (result === "miss") {
+      judgedNotes += 1;
+      missedNotes += 1;
       return "miss";
     }
-  };
+  }
 
   useEffect(() => {
     if (loadedData) {
@@ -76,7 +76,6 @@ const Ingame = () => {
     if (event.key === "Enter" && loadedData) {
       setShowEnter(false); // Enter 후 ShowEnter 숨기기
       window.removeEventListener("keydown", handleEnterDown); // 이벤트 리스너 제거
-      console.log("TEST", sendData)
       Start({ data: loadedData, eventKey: event.key, railRefs: railRefs, send: sendData });
     }
   }, [loadedData]);
@@ -85,10 +84,10 @@ const Ingame = () => {
     // 게임 리소스 로딩
     const init = async () => {
       try {
-        console.log("게임데이터:", gameData);
+        // console.log("게임데이터:", gameData);
         const loadedData = await Load(gameData.song, gameData.players);
-        console.log("게임 리소스 로드 완료: " + loadedData);
-        console.log(loadedData);
+        // console.log("게임 리소스 로드 완료: " + loadedData);
+        // console.log(loadedData);
         dispatch(setGameloadData(loadedData));
 
         if (divBGRef.current && loadedData.songData.ingameData.imageUrl) {
@@ -172,9 +171,7 @@ const Ingame = () => {
 
   // 재생 상태 변경
   useEffect(() => {
-    // Colors 길이에 맞게 ref 배열 초기화, 데이터 로드 후 실행
     if (loadedData && loadedData.skinData && loadedData.skinData.colors) {
-      // Colors 길이에 맞게 ref 배열 초기화, 데이터 로드 후 실행
       if (loadedData.skinData.colors.length !== railRefs.current.length) {
         railRefs.current = loadedData.skinData.colors.map((_, index) => railRefs.current[index] || React.createRef());
       }
@@ -188,18 +185,16 @@ const Ingame = () => {
   let judge
 
   const SongSheet = ({ railRefs, myPosition, Colors }) => {
-    // console.log(railRefs);
-
     const [isActive, setIsActive] = useState(false);
 
     const handleKeyDown = useCallback((key, time) => {
       setIsActive(true);
 
-      const notes = document.querySelectorAll(".Note");
-      const judgeResult = Judge(key, time, judgedNotes, notes);
+      console.log("버튼눌림", key, time)
+      const judgeResult = Judge(key, time, judgedNotes, loadedData.songData.myNotes);
 
       judge = updateScore(judgeResult);
-    }, [judgedNotes]);
+    }, [judgedNotes, loadedData.songData.myNotes]);
 
     const handleKeyUp = useCallback(() => {
       setIsActive(false);
