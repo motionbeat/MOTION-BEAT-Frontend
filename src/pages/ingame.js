@@ -53,7 +53,7 @@ const Ingame = () => {
   }, [judgedNotes, hittedNotes, missedNotes]);
 
   const updateScore = (result) => {
-    console.log(result)
+    // console.log(result)
     if (result === "hit") {
       setHittedNotes(prev => prev + 1);
       setJudgedNotes(prev => prev + 1);
@@ -82,7 +82,8 @@ const Ingame = () => {
     // 게임 리소스 로딩
     const init = async () => {
       try {
-        const loadedData = await Load();
+        console.log("게임데이터:", gameData);
+        const loadedData = await Load(gameData.song, gameData.players);
         console.log("게임 리소스 로드 완료: " + loadedData);
         console.log(loadedData);
         dispatch(setGameloadData(loadedData));
@@ -237,11 +238,11 @@ const Ingame = () => {
     )
   }
 
-  console.log(loadedData);
-  console.log(loadedData.skinData);
-  console.log(loadedData.skinData.colors);
-  console.log(loadedData.skinData.userData);
-  console.log(gameEnded);
+  // console.log(loadedData);
+  // console.log(loadedData.skinData);
+  // console.log(loadedData.skinData.colors);
+  // console.log(loadedData.skinData.userData);
+  // console.log(gameEnded);
 
   // 노래 재생 끝났을 때의 함수
   const handleAudioEnd = () => {

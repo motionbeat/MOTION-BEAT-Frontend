@@ -72,7 +72,7 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
   const handleSongSelect = (song) => {
     setSelectedSong(song);
     const sendData = {
-      song, 
+      song,
       roomCode
     }
     socket.emit("changeSong", sendData, (res) => {
