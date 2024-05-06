@@ -32,6 +32,19 @@ class Mediapipe extends Component {
         this.initializeMediaStream(); // 비디오 스트림을 즉시 초기화합니다.
     }
 
+    dispatchKey(key) {
+        const event = new KeyboardEvent('keydown', {
+            key: key,
+            code: key.toUpperCase(),
+            which: key.charCodeAt(0),
+            keyCode: key.charCodeAt(0),
+            shiftKey: false,
+            ctrlKey: false,
+            metaKey: false
+        });
+        window.dispatchEvent(event);
+    }
+
     // startTimer = () => {
     //     setInterval(() => {
     //         if (this.state.bgmPlaying) {
@@ -103,8 +116,10 @@ class Mediapipe extends Component {
                 if (this.state.postureStatus !== newStatus) {
                     if (newStatus === 'A') {
                         this.soundA.play();
+                        this.dispatchKey('d')
                     } else if (newStatus === 'B') {
                         this.soundB.play();
+                        this.dispatchKey('f')
                     }
                     this.setState(prevState => ({
                         // hitCount: prevState.hitCount + 1,
