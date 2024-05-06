@@ -5,7 +5,8 @@ import { useNavigate } from 'react-router-dom';
 import axios from "axios";
 import Mediapipe from "../mediapipe/mediapipe.js";
 import "../../styles/room/webcam.scss"
-import OpenVidu from "openvidu-browser";
+import { OpenVidu } from "openvidu-browser";
+
 
 const WebCam = ({ players = [], hostName, roomCode }) => {
     const [playerStatuses, setPlayerStatuses] = useState({});
