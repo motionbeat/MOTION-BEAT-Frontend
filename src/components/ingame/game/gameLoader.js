@@ -66,32 +66,32 @@ const loadSongData = async (song, players) => {
   /* 이 노래데이터, 유저데이터는 Webcam의 임시데이터 입니다. */
   let ingameData = { imageUrl: "https://i.namu.wiki/i/C7Pn4lj5y_bVOJ8oMyjvvqO2Pv2qach6uyVt2sss93xx-NNS3fWpsDavIVYzfcPX516sK2wcOS8clpyz6acFOtpe1WM6-RN6dWBU77m1z98tQ5UyRshbnJ4RPVic87oZdHPh7tR0ceU8Uq2RlRIApA.webp", songSound: `/song/${song}.mp3` }
 
-  // let noteExactTime = {
-  //   player0: [
-  //     { "index": 0, "type": "A", "time": 1000 },
-  //     { "index": 1, "type": "B", "time": 2000 },
-  //     { "index": 2, "type": "A", "time": 2200 },
-  //     { "index": 3, "type": "A", "time": 2400 },
-  //     { "index": 4, "type": "B", "time": 2500 },
-  //     { "index": 5, "type": "C", "time": 10000 },
-  //   ],
-  //   player1: [
-  //     { "index": 0, "type": "A", "time": 2000 },
-  //     { "index": 1, "type": "B", "time": 3000 },
-  //     { "index": 2, "type": "C", "time": 10000 },
-  //   ],
-  //   player2: [
-  //     { "index": 0, "type": "D", "time": 8000 },
-  //     // { "index": 1, "type": "F", "time": 10000 },
-  //     // { "index": 2, "type": "D", "time": 11000 },
-  //     // { "index": 3, "type": "K", "time": 15000 },
-  //   ],
-  //   player3: [
-  //     { "index": 0, "type": "B", "time": 2000 },
-  //     { "index": 1, "type": "B", "time": 2500 },
-  //     { "index": 2, "type": "C", "time": 10000 },
-  //   ]
-  // };
+  let noteExactTime = {
+    player0: [
+      { "motion": "A", "time": 7000 },
+      { "motion": "B", "time": 8000 },
+      { "motion": "A", "time": 12000 },
+      { "motion": "A", "time": 13000 },
+      { "motion": "B", "time": 15000 },
+      { "motion": "C", "time": 10000 },
+    ],
+    player1: [
+      { "index": 0, "type": "A", "time": 2000 },
+      { "index": 1, "type": "B", "time": 3000 },
+      { "index": 2, "type": "C", "time": 10000 },
+    ],
+    player2: [
+      { "index": 0, "type": "D", "time": 8000 },
+      // { "index": 1, "type": "F", "time": 10000 },
+      // { "index": 2, "type": "D", "time": 11000 },
+      // { "index": 3, "type": "K", "time": 15000 },
+    ],
+    player3: [
+      { "index": 0, "type": "B", "time": 2000 },
+      { "index": 1, "type": "B", "time": 2500 },
+      { "index": 2, "type": "C", "time": 10000 },
+    ]
+  };
 
   await new Promise(resolve => setTimeout(() => {
     console.log("Song data loaded.");
