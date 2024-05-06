@@ -59,9 +59,9 @@ const loadSongData = async () => {
     ],
     player2: [
       { "index": 0, "type": "D", "time": 8000 },
-      // { "index": 1, "type": "F", "time": 10000 },
-      // { "index": 2, "type": "D", "time": 11000 },
-      // { "index": 3, "type": "K", "time": 15000 },
+      { "index": 1, "type": "F", "time": 10000 },
+      { "index": 2, "type": "D", "time": 11000 },
+      { "index": 3, "type": "K", "time": 15000 },
     ],
     player3: [
       { "index": 0, "type": "B", "time": 2000 },
