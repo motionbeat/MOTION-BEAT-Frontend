@@ -8,6 +8,7 @@ import Output from "../utils/output";
 import Notes from "../components/ingame/notes";
 import socket from "../server/server";
 import axios from "axios";
+import GameResult from "../components/ingame/gameResult";
 
 const Ingame = () => {
   /* I/O 처리 */
@@ -112,7 +113,7 @@ const Ingame = () => {
     <div style={{ position: "relative" }}>
       {gameEnded ? (
         <>
-          <div>게임이 끝났습니다. 여기에 새로운 내용을 표시할 수 있습니다.</div>
+          <GameResult />
           <button onClick={exitBtn}>나가기</button>
         </>
       ) : (
