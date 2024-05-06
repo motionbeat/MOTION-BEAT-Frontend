@@ -61,7 +61,12 @@ class Mediapipe extends Component {
         this.pose = new posedetection.Pose({
             locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
         });
-        this.pose.setOptions({ modelComplexity: 1, smoothLandmarks: true, enableSegmentation: false });
+        this.pose.setOptions({
+            upperBodyOnly: true,
+            modelComplexity: 0,
+            smoothLandmarks: true, 
+            enableSegmentation: false 
+        });
         this.setState({ isModelLoaded: true });
     }
 
