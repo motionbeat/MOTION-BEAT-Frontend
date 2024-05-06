@@ -2,7 +2,7 @@ import styled from "styled-components";
 import mainSeleceBar from "../../../../img/selectBar.png"
 import "../../../../styles/main/selectMenu.scss"
 
-const SelectMenu = ({mainMenu}) => {
+const SelectMenu = ({mainMenu, handleClick}) => {
   return (
     <>
       <SelectMenuWrapper style={{display:"flex", margin:"20px 0"}}>
@@ -10,7 +10,7 @@ const SelectMenu = ({mainMenu}) => {
           <img src={mainSeleceBar} alt="선택 테두리" />
         </SelectBars>
         <div className="selectCategory">
-          <span className="categoryText">{mainMenu}</span>
+          <span className="categoryText" onClick={() => handleClick(mainMenu)}>{mainMenu}</span>
         </div>
         <SelectBars>
           <img src={mainSeleceBar} alt="선택 테두리" />
@@ -25,21 +25,22 @@ const SelectMenuWrapper = styled.div`
   display: flex;
   justify-content: center;
   align-items: center;
-  margin: 20px 0;
+  padding: 10px 0;
 `
 
 const SelectBars = styled.div`
   width: 100px;
   height: 10px;
-  border-radius: 37px;
   align-items: center;
   opacity: 0.9;
-  display: flex;
-  // background-image: url(${mainSeleceBar});
-  // box-shadow: inset 0px 3px 5px rgba(255, 255, 255, 0.5);
+  display: none;
+  
+  ${SelectMenuWrapper}:hover & {
+    display: flex;
+  }
 
-  // img {
-  //   height: 100%;
-  //   width: auto;
-  // }
+  .selectCategory:hover {
+    transition: 0.3s;
+    filter: brightness(150%);
+  }
 `

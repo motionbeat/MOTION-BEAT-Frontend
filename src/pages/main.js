@@ -10,6 +10,8 @@ import Settings from "../components/main/settings";
 import Modal from "../components/modal";
 import Mypage from "../components/mypage";
 import FriendState from "../components/common/friendState.js";
+import "../styles/main/main.scss"
+import SelectMenu from "../components/common/atomic/main/selectMenu.js";
 
 const Main = () => {
   const navigate = useNavigate();
@@ -84,20 +86,20 @@ const Main = () => {
   //   }
   // };
 
-  const handleClick = (e) => {
+  const handleClick = (mainMenu) => {
     setIsMenuButtonSelected(true);
 
-    const btnName = e.target.id;
+    // const btnName = e.target.id;
 
-    switch (btnName) {
-      case "FRIENDS":
-        console.log("Friends 컴포넌트를 불러옵니다.");
-        openModal(<FriendState />);
-        break;
-      case "MYPAGE":
-        console.log("Mypage 컴포넌트를 불러옵니다.");
-        openModal(<Mypage />);
-        break;
+    switch (mainMenu) {
+      // case "FRIENDS":
+      //   console.log("Friends 컴포넌트를 불러옵니다.");
+      //   openModal(<FriendState />);
+      //   break;
+      // case "MYPAGE":
+      //   console.log("Mypage 컴포넌트를 불러옵니다.");
+      //   openModal(<Mypage />);
+      //   break;
 
       case "PLAY":
         console.log("Playtype 컴포넌트를 불러옵니다.");
@@ -144,23 +146,27 @@ const Main = () => {
   }
 
   return (
-    <div>
-      <div>
-        <button className="revert" onClick={logout}>{"<-"}</button>
-      </div>
-      <div style={{ display: "inline", float: "right" }}>
-        <button id="FRIENDS" onClick={handleStickyClick}>Friends</button>
-        <button id="MYPAGE" onClick={handleStickyClick}>Mypage</button>
-      </div>
+    <>
+      <div className="mainMenuWrapper">
+        <SelectMenu mainMenu="PLAY" handleClick={handleClick} />
+        <SelectMenu mainMenu="TUTORIAL" handleClick={handleClick} />
+        <SelectMenu mainMenu="RANKINGS" handleClick={handleClick} />
+        <SelectMenu mainMenu="SETTINGS" handleClick={handleClick} />
+        {/* <div>
+          <button className="revert" onClick={logout}>{"<-"}</button>
+        </div>
+        <div style={{ display: "inline", float: "right" }}>
+          <button id="FRIENDS" onClick={handleStickyClick}>Friends</button>
+          <button id="MYPAGE" onClick={handleStickyClick}>Mypage</button>
+        </div> */}
+      </div >
       <div>
         <Modal isOpen={isModalOpen} onClose={closeModal} children={currentElement} />
       </div>
-      <p>메인 페이지</p>
       <div className="buttonContainer">
         {isMenuButtonSelected ? currentView : <ButtonList />}
       </div>
-
-    </div >
+    </>
   )
 }
 

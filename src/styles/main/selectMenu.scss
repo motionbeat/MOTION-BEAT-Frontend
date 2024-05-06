@@ -11,13 +11,19 @@
   font-family: "LexendMega";
   color: white;
   text-align: center;
+
+  &:hover {
+    transition: 0.3s;
+    filter: brightness(120%); /* 호버 시 밝기를 150%로 설정하여 빛나는 효과 추가 */
+  }
 }
 
 .categoryText {
   display: inline-block;
-  -webkit-text-stroke-width: 5px;
+  -webkit-text-stroke-width: 6px;
   -webkit-text-stroke-color: transparent;
   background-image: linear-gradient(108.62deg, #FC92E4 2.2%, #00FFF0 115.74%);
   -webkit-background-clip: text;
   background-clip: text;
+  cursor: pointer;
 }
