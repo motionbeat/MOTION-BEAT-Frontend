@@ -14,3 +14,35 @@
   border: 2px solid white;
   border-radius: 15px;
 }
+
+.exitRoomBtn {
+  position: absolute;
+  top: 0;
+  left: 0;                          
+  padding: 15px;
+  background-color: white;
+  border-radius: 10px;
+  margin: 20px;
+  cursor: pointer;
+}
+
+// 노래 웹 캠 등의 전체 박스
+.roomMainWrapper {
+  width: 80%;
+  height: 80vh;
+  background-color: #CAFFF5;
+  margin: 10px auto 0 auto;
+  border-radius: 20px;
+}
+
+// 방 입장 코드
+.secretCode {
+  width: 200px;
+  height: 50px;
+  margin: 20px;
+  line-height: 3;
+  border: 2px solid #d9d9d9;
+  text-align: center;
+  border-radius: 10px;
+  background-color: white;
+}
