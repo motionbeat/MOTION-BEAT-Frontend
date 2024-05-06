@@ -64,7 +64,7 @@ class Mediapipe extends Component {
         this.pose.setOptions({
             upperBodyOnly: true,
             modelComplexity: 0,
-            smoothLandmarks: true, 
+            smoothLandmarks: false, 
             enableSegmentation: false 
         });
         this.setState({ isModelLoaded: true });
