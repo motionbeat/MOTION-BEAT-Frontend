@@ -185,7 +185,6 @@ const Ingame = () => {
   const SongSheet = ({ railRefs, myPosition, Colors }) => {
     // console.log(railRefs);
 
-
     const [isActive, setIsActive] = useState(false);
 
     const handleKeyDown = useCallback((key, time) => {
@@ -244,13 +243,13 @@ const Ingame = () => {
   // console.log(loadedData.skinData.userData);
   // console.log(gameEnded);
 
-  // 노래 재생 끝났을 때의 함수
-  const handleAudioEnd = () => {
-    console.log("노래 재생이 끝났습니다.");
-    setIsPlaying(false); // 노래 재생 상태 업데이트
-    socket.emit("gameEnded", sendData)
-    // 필요한 추가 동작 수행
-  };
+  // // 노래 재생 끝났을 때의 함수
+  // const handleAudioEnd = () => {
+  //   console.log("노래 재생이 끝났습니다.");
+  //   setIsPlaying(false); // 노래 재생 상태 업데이트
+  //   socket.emit("gameEnded", sendData)
+  //   // 필요한 추가 동작 수행
+  // };
 
   return (
     <>
