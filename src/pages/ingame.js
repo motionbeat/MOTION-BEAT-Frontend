@@ -17,8 +17,8 @@ const Ingame = () => {
   const audioRef = useRef(new Audio("/song/0.mp3")); // 노래 가져오기
   const location = useLocation(); // 이전 페이지에서 데이터 가져오기
   const gameState = location.state || {}; // 가져온 데이터 넣기
-  const [gameData, setGameData] = useState(gameState.game.nickname);
-  console.log("플레이어 데이터",gameData.players);
+  const [gameData, setGameData] = useState(gameState.game);
+  console.log("게임데이터플레이어", gameData.players);
   const [gameEnded, setGameEnded] = useState(false); // 게임 종료 상태
   const navigate = useNavigate();
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
@@ -117,7 +117,7 @@ const Ingame = () => {
         </>
       ) : (
         <>
-          <div ref={divRef} className="background-albumCover" />
+          {/* <div ref={divRef} className="background-albumCover" /> */}
           <p>인게임 페이지</p>
           <SongSheet otherColor={otherColor}>
             <Input onKeyPressed={handleKeyPressed} />

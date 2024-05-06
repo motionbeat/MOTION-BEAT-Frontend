@@ -142,13 +142,13 @@ class Mediapipe extends Component {
                 <div id="session" style={{ position: 'relative', width: '230px', height: '190px' }}>
                     <video ref={this.videoRef} style={{ width: '100%', height: '100%', position: 'absolute', top: '0', left: '0', zIndex: 1 }} playsInline autoPlay />
                     <canvas ref={this.canvasRef} style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%', opacity: 0.9, zIndex: 2 }} width="640" height="480" />
-                    <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
+                    {/* <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
                     <div>현재 자세: {postureStatus}</div>
                     <div>경과 시간: {this.state.timer}초</div>
                     <div>횟수: {hitCount}</div>
                     <button onClick={this.playBackgroundMusic}>BGM 재생</button>
                     <button onClick={this.pauseBackgroundMusic}>BGM 일시정지</button>
-                    <input type="range" min="0" max="1" step="0.01" value={backgroundMusicVolume} onChange={this.handleVolumeChange} />
+                    <input type="range" min="0" max="1" step="0.01" value={backgroundMusicVolume} onChange={this.handleVolumeChange} /> */}
                 </div>
             </div>
         );

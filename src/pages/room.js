@@ -16,6 +16,8 @@ const Room = () => {
     console.log("room 플레이어", room.players);
     const backendUrl = process.env.REACT_APP_BACK_API_URL;
 
+    console.log("룸플레이어",room.players);
+
     //joinRoom을 쏴줘야 함
     useEffect (() => {
       const updatePlayers = (updatedPlayers) => {

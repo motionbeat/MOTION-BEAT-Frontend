@@ -90,6 +90,8 @@ const WebCam = ({ players = [], hostName, roomCode}) => {
         instrument: instrumentName,
       },
     }));
+
+    // console.log("2",playerStatuses);
     // 악기 소켓에 전달
     const sendInstrument = async () => {
       try {
@@ -120,7 +122,7 @@ const WebCam = ({ players = [], hostName, roomCode}) => {
         userName: "asdf",
         sessionid: "abcd"
       };
-      await mediapipeInstance.joinSession(value);
+      await mediapipeInstance.joinSession;
     };
 
     initializeMediaStream();
