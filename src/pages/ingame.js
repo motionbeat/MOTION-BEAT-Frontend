@@ -73,7 +73,8 @@ const Ingame = () => {
     if (event.key === "Enter" && loadedData) {
       setShowEnter(false); // Enter 후 ShowEnter 숨기기
       window.removeEventListener("keydown", handleEnterDown); // 이벤트 리스너 제거
-      Start({ data: loadedData, eventKey: event.key, railRefs: railRefs });
+      Start({ data: loadedData, eventKey: event.key, railRefs: railRefs, changeEnd: setGameEnded });
+
     }
   }, [loadedData]);
 
@@ -239,6 +240,7 @@ const Ingame = () => {
   console.log(loadedData.skinData);
   console.log(loadedData.skinData.colors);
   console.log(loadedData.skinData.userData);
+  console.log(gameEnded);
 
   // 노래 재생 끝났을 때의 함수
   const handleAudioEnd = () => {
