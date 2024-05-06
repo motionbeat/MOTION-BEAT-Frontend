@@ -1,26 +1,45 @@
-import { useEffect, useState } from 'react';
+import React, { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { setInput } from "../redux/actions/inputActions";
+import { now } from "./time"
 
-const Input = ({ onKeyPressed }) => {
+
+const Input = ({ onKeyDown, onKeyUp }) => {
+  const dispatch = useDispatch();
+
   const inputKeyList = ["D", "F", "J", "K"]
-  const [inputEffect, setInputEffect] = useState("");
 
+  const handleKeyDown = (event) => {
+    const key = event.key.toUpperCase();
+    if (inputKeyList.includes(key)) {
+      const exactNow = now();
+      // console.log("키 누름: " + key + "시간 : " + now());
+      dispatch(setInput(key));
+      if (onKeyDown) {
+        onKeyDown(key, exactNow); // 외부로 키를 전달할 콜백 함수 호출
+      }
+    }
+  };
+
+  const handleKeyUp = (event) => {
+    const key = event.key.toUpperCase();
+    if (inputKeyList.includes(key)) {
+      // console.log(`Released key: ${key}`);
+      if (onKeyUp) {
+        onKeyUp();
+      }
+    }
+  };
 
   useEffect(() => {
-    const handleKeyDown = (event) => {
-      const key = event.key.toUpperCase();
-
-      if (inputKeyList.includes(key)) {
-        console.log(`Pressed key: ${key}`);
-        onKeyPressed(`Pressed key: ${key}`);
-      }
-    };
-
-    window.addEventListener('keydown', handleKeyDown);
-
+    window.addEventListener("keydown", handleKeyDown);
+    window.addEventListener("keyup", handleKeyUp);
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener("keydown", handleKeyDown);
+      window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [onKeyPressed]);
+  }, [onKeyDown, onKeyUp]);
+
 
   return <div className="keyBox" />;
 };

@@ -1,6 +1,9 @@
 import React from 'react';
+import { useSelector } from "react-redux";
 
-const Output = ({ message }) => {
+const Output = () => {
+  const message = useSelector(state => state.message.message);
+
   return (
     <div style={{
       zIndex: "1000",
