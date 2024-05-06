@@ -45,9 +45,8 @@ const loadSongData = async (song, players) => {
   console.log(players);
   const playerObject = players.find(item => item.nickname === myNickname);
   let myNotes = [];
-  console.log("드럼 나오야 해", playerObject.instrument);
+
   try {
-    console.log("api 들어오는지 확인");
     const response = await axios.get(`${backendUrl}/api/songs/${song}`, {
       headers: {
         "Content-Type": "application/json",

@@ -13,7 +13,7 @@ const Input = ({ onKeyDown, onKeyUp }) => {
     const key = event.key.toUpperCase();
     if (inputKeyList.includes(key)) {
       const audioPlayer = document.getElementById("audioPlayer");
-      console.log(audioPlayer.currentTime * 1000);
+      // console.log(audioPlayer.currentTime * 1000);
       dispatch(setInput(key));
       if (onKeyDown) {
         onKeyDown(key, audioPlayer.currentTime * 1000); // 외부로 키를 전달할 콜백 함수 호출
