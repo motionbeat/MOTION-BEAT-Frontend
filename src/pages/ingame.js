@@ -45,26 +45,7 @@ const Ingame = () => {
   /* I/O 처리 */
   const divBGRef = useRef(null);
 
-  let hittedNotes = 0;
-  let missedNotes = 0;
-  let judgedNotes = 0;
 
-  useEffect(() => {
-    console.log(`판정된 점수: ${judgedNotes}, 히트: ${hittedNotes}, 미스: ${missedNotes}`);
-  }, [judgedNotes, hittedNotes, missedNotes]);
-
-  const updateScore = (result) => {
-    if (result === "hit") {
-      judgedNotes += 1;
-      hittedNotes += 1;
-      return "hit";
-    }
-    else if (result === "miss") {
-      judgedNotes += 1;
-      missedNotes += 1;
-      return "miss";
-    }
-  }
 
   useEffect(() => {
     if (loadedData) {
@@ -173,7 +154,7 @@ const Ingame = () => {
         socket.emit("leaveRoom", gameData.code, (res) => {
           console.log("leaveRoom res", res);
         });
-  
+
         if (response2.data.message === "redirect") navigate("/main");
       }
     } catch (error) {
@@ -194,7 +175,8 @@ const Ingame = () => {
     return <p>Loading...</p>;
   }
 
-  let judge
+
+
 
   const SongSheet = ({ railRefs, myPosition, Colors }) => {
     const [isActive, setIsActive] = useState(false);
@@ -203,10 +185,9 @@ const Ingame = () => {
       setIsActive(true);
 
       console.log("버튼눌림", key, time)
-      const judgeResult = Judge(key, time, judgedNotes, loadedData.songData.myNotes);
+      Judge(key, time);
 
-      judge = updateScore(judgeResult);
-    }, [judgedNotes, loadedData.songData.myNotes]);
+    }, []);
 
     const handleKeyUp = useCallback(() => {
       setIsActive(false);
@@ -279,8 +260,8 @@ const Ingame = () => {
             <SongSheet railRefs={railRefs} myPosition={loadedData.skinData.userData.myPosition} Colors={loadedData.skinData.colors} >
             </SongSheet>
             <div style={{ position: "relative" }}>
-              {!judge ? null : <JudgeEffect judge={judge} />}
-              <Score hitted={hittedNotes} missed={missedNotes} />
+              {/* {!judge ? null : <JudgeEffect judge={judge} />} */}
+              <Score />
               <WebCamFrame />
               <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} />
             </div>
