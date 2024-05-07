@@ -85,7 +85,7 @@ export const Start = ({ data, eventKey, railRefs, send }) => {
         noteElement.style.left = `${100 - 100 * progress}%`;
         requestAnimationFrame(animateNote);
       } else {
-        rail.removeChild(noteElement); // 애니메이션 종료 후 노트 제거
+        noteElement.remove(); // 애니메이션 종료 후 노트 제거
       }
     };
 
