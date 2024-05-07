@@ -19,8 +19,8 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
     const [subscribers, setSubscribers] = useState([]);
     const OV = useRef(null);
     const myVideoRef = useRef(null);
-    // const otherVideosRef = useRef({});
-    const otherVideosRef = useRef([]);
+    const otherVideosRef = useRef({});
+    // const otherVideosRef = useRef([]);
 
     // 방장 시작버튼
     const startGameHandler = async () => {
@@ -311,20 +311,22 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
                     </InstrumentModal>
                 )}
             </div> */}
-            <div className="webCamBoxDiv">
-                <div ref={myVideoRef} className="webCamBoxInner">
-                    웹 캠 들어갈 부분
-                </div>
-                <p>인두</p>
-            </div>
-            {[...Array(3).keys()].map((index) => {
-                <div className="webCamBoxDiv">
-                    <div ref={otherVideosRef} className="webCamBoxInner">
-                        웹 캠 들어갈 부분
+
+            {Object.entries(playerStatuses).map(([nickname, { instrument, isReady }], index) => (
+                <div className="playerContainer" key={index}>
+                    <div className="webCamBoxDiv">
+                        <div ref={myVideoRef} className="webCamBoxInner"></div>
+                        <p>{nickname}</p>
+                        <p onClick={() => findingInstrument(nickname)}>{instrument}</p>
                     </div>
-                    <p>인두</p>
-                </div>;
-            })}
+                    <div className="webCamBoxDiv">
+                        <div ref={otherVideosRef} className="webCamBoxInner">
+                            웹 캠 들어갈 부분
+                        </div>
+                        <p>인두</p>
+                    </div>
+                </div>
+            ))}
         </>
     );
 };
