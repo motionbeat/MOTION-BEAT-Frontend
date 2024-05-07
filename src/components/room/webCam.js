@@ -20,7 +20,6 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
     const OV = useRef(null);
     const myVideoRef = useRef(null);
     const otherVideosRef = useRef({});
-    const isSelfRef = useRef(false);
 
     // 방장 시작버튼
     const startGameHandler = async () => {
@@ -152,7 +151,7 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
             videoElement.autoplay = true;
             videoElement.srcObject = event.stream.mediaStream;
 
-            const subscriber = session.subscribe(event.stream, undefined);
+            const subscriber = session.subscribe(event.stream, videoElement);
             const isSelf = event.stream.connection.connectionId === session.connection.connectionId;
             
             // if (
@@ -167,9 +166,7 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
             if (isSelf) {
                 myVideoRef.appendChild(videoElement);
             } else {
-                const userVideoRef = document.createElement("div");
-                otherVideosRef.current[event.stream.streamId] = userVideoRef;
-                userVideoRef.appendChild(videoElement);
+                otherVideosRef.current.appendChild(videoElement);
             }
 
             setSubscribers((prevSubscribers) => [
