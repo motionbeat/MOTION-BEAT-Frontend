@@ -9,7 +9,6 @@ const GameResult = ( roomCode ) => {
   useEffect(() => {
     const resultPrint = async () => {
       try {
-        console.log(roomCode);
         const response = await axios.post(`${backendUrl}/api/games/finished`, {
           code : roomCode.roomCode
           }, {

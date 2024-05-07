@@ -2,7 +2,13 @@ import { Log } from '../components/ingame/log';
 
 let offset = 0
 
-const now = () => window.performance && window.performance.now ? window.performance.now() : Date.now();
+const now = () => {
+  if (window.performance && window.performance.now) {
+    return window.performance.now();
+  } else {
+    throw new Error('High-resolution timer not supported');
+  }
+};
 
 const serverUrl = "TEST URL";
 

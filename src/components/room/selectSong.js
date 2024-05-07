@@ -6,6 +6,7 @@ import styled from "styled-components"
 import SongsModal from "./songsModal";
 import axios from "axios";
 import socket from "../../server/server.js"
+import "../../styles/room/room.scss";
 
 const SelectSong = ({ songNumber, hostName, roomCode }) => {
   console.log(roomCode);
@@ -72,7 +73,7 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
   const handleSongSelect = (song) => {
     setSelectedSong(song);
     const sendData = {
-      song, 
+      song,
       roomCode
     }
     socket.emit("changeSong", sendData, (res) => {
@@ -86,63 +87,28 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
   // const selectFavorite = () => {
 
   // }
-
+  
   return (
     <>
-      <RoomSelectSongBox>
-        <div onClick={selectMusic}><img src={LemonImg} alt="lemon" /></div>
+      <audio ref={audioRef} src="/song/0.mp3" />
+      <div className="showSongWrapper">
+        <div className="songImg" onClick={selectMusic}><img src={LemonImg} alt="lemon" /></div>
         {selectedSong.length > 0 && (
-          <RoomSelectSong>
+          <div className="roomSelectSongBox">
+            <button className="selectSongBtn" onClick={selectMusic}>노래 변경</button>
             <h2>{selectedSong[0]?.title}</h2>
-            <Artist>{selectedSong[0]?.artist}</Artist>
-            <Runtime>{selectedSong[0]?.runtime}</Runtime>
-            <SongBtn>
+            <p>{selectedSong[0]?.artist}</p>
+            {/* <Runtime>{selectedSong[0]?.runtime}</Runtime> */}
+            {/* <SongBtn>
               <img src={PlayBtn} alt="play" onClick={handlePlay} />
               <img src={StopBtn} alt="stop" onClick={handleStop} />
-            </SongBtn>
-            <Difficulty>{selectedSong[0]?.difficulty}</Difficulty>
-          </RoomSelectSong>
+            </SongBtn> */}
+            <p>{selectedSong[0]?.difficulty}</p>
+          </div>
         )}
-        <audio ref={audioRef} src="/song/0.mp3" />
-    </RoomSelectSongBox>
+    </div>
         <SongsModal modalOn={modalOn} handleSongSelect={handleSongSelect}  />
     </>
   )
 }
 export default SelectSong
-
-// 노래 정보 박스
-const RoomSelectSongBox = styled.div`
-  margin: 30px;
-  display: flex;
-`
-
-// 노래 정보
-const RoomSelectSong = styled.div`
-  margin-left: 30px;
-
-  h2 {
-    font-size: 30px;
-  }
-`
-
-const Artist = styled.p`
-  font-size: 19px;
-`
-
-const Runtime = styled.p`
-  font-size: 14px;
-`
-
-// 노래 재생, 일시정지
-const SongBtn = styled.div`
-  
-  img {
-    width: 25px;
-    margin: 20px 20px 20px 0;
-  }
-`
-
-const Difficulty = styled.p`
-  font-size: 24px;
-`

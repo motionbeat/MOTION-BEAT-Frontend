@@ -228,20 +228,51 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
 
     }, []);
 
-    return(
-        <div className="webCamBox">
-        {publisher && (
-            <div className="publisherContainer">
-                <video ref={videoRefs.current['publisher']} autoPlay={true} muted={true} />
+    return (
+        <>
+            {/* 플레이어 들어오면 div가 늘어나는 방식 */}
+            <div className="webCamBox">
+                {Object.entries(playerStatuses).map(([nickname, { instrument, isReady }], index) => (
+                    <div className="playerContainer" key={index}>
+                        <WebCamInfo>
+                            <WebCamTop>
+                                <Mediapipe />
+                                <HitMiss>
+                                    <p>0</p>
+                                    <p>0</p>
+                                </HitMiss>
+                            </WebCamTop>
+                            <div>
+                                <h2>{nickname}</h2>
+                                <h2 onClick={() => findingInstrument(nickname)}>{instrument}</h2>
+                            </div>
+                        </WebCamInfo>
+                        {nickname === hostName ? (
+                            <ReadyBtn onClick={() => startGameHandler()}>시작</ReadyBtn>
+                        ) : (
+                            <ReadyBtn
+                                isReady={isReady}
+                                onClick={() => readyBtnClick(nickname)}
+                            >
+                                {isReady ? "준비 완료" : "대기 중"}
+                            </ReadyBtn>
+                        )}
+                    </div>
+                ))}
+                {instruModal && (
+                    <InstrumentModal>
+                        {instrumentList.map((instrument) => (
+                            <ul key={instrument.id}>
+                                <li onClick={() => selectedInstrument(instrument.instrumentName)}>
+                                    {instrument.instrumentName}
+                                </li>
+                            </ul>
+                        ))}
+                    </InstrumentModal>
+                )}
             </div>
-        )}
-        {subscribers.map((subscriber, index) => (
-            <div className="subscriberContainer" key={index}>
-                <video ref={el => videoRefs.current[`subscriber-${index}`] = el} autoPlay={true} />
-            </div>
-        ))}
-    </div>
-    );
+        </>
+    )
 }
 export default WebCam
 

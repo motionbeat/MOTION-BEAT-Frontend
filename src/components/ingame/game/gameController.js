@@ -6,6 +6,9 @@ import socket from "../../../server/server.js";
 export const Start = ({ data, eventKey, railRefs, send }) => {
   console.log("게임 시작 로직 실행");
   console.log("TEST", send)
+  console.log(data);
+
+  let audioTime
 
   if (!data?.songData?.ingameData) {
     console.error("Invalid data passed to Start function");
@@ -18,14 +21,11 @@ export const Start = ({ data, eventKey, railRefs, send }) => {
     return;
   }
 
-  let audioTime;  // 오디오 시작 시간을 저장할 변수
-
   const playAudio = () => {
     audioPlayer.src = data.songData.ingameData.songSound;
     audioPlayer.currentTime = 0;
     audioPlayer.play()
       .then(() => {
-        audioTime = now();
         console.log("Audio started successfully");
       })
       .catch((error) => console.error("Error playing audio:", error));
@@ -42,44 +42,47 @@ export const Start = ({ data, eventKey, railRefs, send }) => {
 
     const scheduleNotes = () => {
 
-      const playTime = audioPlayer.currentTime * 1000;
+      audioTime = audioPlayer.currentTime * 1000;
 
-      const notes = data.songData.noteExactTime[`player${data.skinData.userData.myPosition}`];
+
+      const notes = data.songData.myNotes;
+      let count = 0;
       for (const note of notes) {
-        const startTime = note.time - animationDuration;
-        if (startTime <= playTime && !processedNotes.has(note)) {
-          GenerateNote(note);  // 노트 생성 및 애니메이션 시작
+
+        const startTime = note.time - animationDuration - 1;
+
+        if (startTime + 5000 <= audioTime && !processedNotes.has(note)) {
+          GenerateNote(note, audioTime, count);  // 노트 생성 및 애니메이션 시작
           processedNotes.add(note);  // 노트를 처리된 상태로 표시
+          console.log(note.time);
         }
+        count++;
       }
       requestAnimationFrame(scheduleNotes);
     };
     requestAnimationFrame(scheduleNotes);
   });
 
-  const GenerateNote = (note) => {
-    const { index, type, time, color } = note;
-    console.log("노트 생성", type, "eta", time, "ms");
+  const GenerateNote = (note, start, index) => {
+    const { motion, time } = note;
+    console.log("노트 생성", motion, "eta", time, "ms");
 
     const noteElement = document.createElement("div");
     noteElement.className = "Note";
-    noteElement.textContent = `${type}`;
-    noteElement.index = index;
-    noteElement.type = type;
-    noteElement.time = time;
+    noteElement.textContent = `${motion}`;
+    noteElement.setAttribute('data-motion', motion);
+    noteElement.setAttribute('data-time', (time + 5000).toString());
+    noteElement.setAttribute('data-index', index.toString());
 
     const rail = railRefs.current[data.skinData.userData.myPosition].current;
     rail.appendChild(noteElement);
 
-    const noteStartTime = audioTime + time - animationDuration;
-
-    // 7%의 오차가 있음
     const animateNote = () => {
-      const elapsedTime = now() - noteStartTime;
+      const elapsedTime = audioPlayer.currentTime * 1000 - start;
       const progress = elapsedTime / animationDuration;
 
       if (progress <= 1) {
-        noteElement.style.left = `${100 - 127 * progress}%`; // 100%에서 -20%로 이동
+        noteElement.style.left = `${100 - 100 * progress}%`;
         requestAnimationFrame(animateNote);
       } else {
         rail.removeChild(noteElement); // 애니메이션 종료 후 노트 제거
