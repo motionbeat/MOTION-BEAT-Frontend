@@ -148,11 +148,12 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
         setSession(session);
 
         session.on("streamCreated", (event) => {
-            const videoElement = document.createElement("div"); // 새로운 div를 생성
+            const videoElement = document.createElement("video"); // 새로운 div를 생성
             videoElement.autoplay = true;
+            videoElement.srcObject = event.stream.mediaStream;
 
-            const subscriber = session.subscribe(event.stream, videoElement);
-            isSelfRef.current = event.stream.connection.connectionId === session.connection.connectionId;
+            const subscriber = session.subscribe(event.stream, undefined);
+            const isSelf = event.stream.connection.connectionId === session.connection.connectionId;
             
             // if (
             //     event.stream.connection.connectionId ===
@@ -163,10 +164,12 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
             //     otherVideosRef.current.appendChild(videoElement);
             // }
 
-            const targetRef = isSelfRef.current ? myVideoRef.current : otherVideosRef.current[event.stream.streamId];
-
-            if (targetRef) {
-                targetRef.appendChild(videoElement);
+            if (isSelf) {
+                myVideoRef.appendChild(videoElement);
+            } else {
+                const userVideoRef = document.createElement("video");
+                otherVideosRef.current[event.stream.streamId] = userVideoRef;
+                userVideoRef.appendChild(videoElement);
             }
 
             setSubscribers((prevSubscribers) => [
@@ -324,10 +327,11 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
                 {Object.entries(playerStatuses).map(([nickname, { instrument, isReady }], index) => (
                     <div className="playerContainer" key={index}>
                         <div className="webCamBoxDiv">
-                            <div 
-                                ref={isSelfRef ? myVideoRef : otherVideosRef}
-                                className="webCamBoxInner">
-                            </div>
+                        {myNickname === nickname ? (
+                            <div ref={myVideoRef} className="webCamBoxInner"></div>
+                        ) : (
+                            <div ref={otherVideosRef} className="webCamBoxInner"></div>
+                        )}
                             <p>{nickname}</p>
                             <p onClick={() => findingInstrument(nickname)}>{instrument}</p>
                             {nickname === hostName ? (
