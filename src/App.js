@@ -34,6 +34,7 @@ import Setting from "./pages/setting";
 import Mediapipe from "./components/mediapipe/mediapipe";
 import AtomicTest from "./components/common/atomic/atomicTest";
 import Guitar from "./components/mediapipe/guitar";
+import Admin from "./pages/admin";
 
 const App = () => {
   return (
@@ -80,6 +81,8 @@ const App = () => {
 
           {/* 컴포넌트 테스트 */}
           <Route path="/atomic" element={<AtomicTest />} />
+          
+          <Route path="/admin" element={<Admin />} />
         </Routes>
       </Router>
     </>
