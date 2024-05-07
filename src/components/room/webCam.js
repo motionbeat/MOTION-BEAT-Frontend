@@ -20,7 +20,7 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
     const OV = useRef(null);
     const myVideoRef = useRef(null);
     const otherVideosRef = useRef({});
-    const [isSelf, setIsSelf] = useState(false);
+    const isSelfRef = useRef(false);
 
     // 방장 시작버튼
     const startGameHandler = async () => {
@@ -152,7 +152,7 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
             videoElement.autoplay = true;
 
             const subscriber = session.subscribe(event.stream, videoElement);
-            setIsSelf(event.stream.connection.connectionId === session.connection.connectionId);
+            isSelfRef.current = event.stream.connection.connectionId === session.connection.connectionId;
             
             // if (
             //     event.stream.connection.connectionId ===
@@ -163,8 +163,10 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
             //     otherVideosRef.current.appendChild(videoElement);
             // }
 
-            if (isSelf) {
-                isSelf.appendChild(videoElement);
+            const targetRef = isSelfRef.current ? myVideoRef.current : otherVideosRef.current[event.stream.streamId];
+
+            if (targetRef) {
+                targetRef.appendChild(videoElement);
             }
 
             setSubscribers((prevSubscribers) => [
@@ -318,28 +320,30 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
                 )}
             </div> */}
 
-            {Object.entries(playerStatuses).map(([nickname, { instrument, isReady }], index) => (
-                <div className="playerContainer" key={index}>
-                    <div className="webCamBoxDiv">
-                        <div 
-                            ref={isSelf ? myVideoRef : otherVideosRef}
-                            className="webCamBoxInner">
+            <div className="webCamBox">
+                {Object.entries(playerStatuses).map(([nickname, { instrument, isReady }], index) => (
+                    <div className="playerContainer" key={index}>
+                        <div className="webCamBoxDiv">
+                            <div 
+                                ref={isSelfRef ? myVideoRef : otherVideosRef}
+                                className="webCamBoxInner">
+                            </div>
+                            <p>{nickname}</p>
+                            <p onClick={() => findingInstrument(nickname)}>{instrument}</p>
+                            {nickname === hostName ? (
+                                <ReadyBtn onClick={() => startGameHandler()}>시작</ReadyBtn>
+                            ) : (
+                                <ReadyBtn
+                                    isReady={isReady}
+                                    onClick={() => readyBtnClick(nickname)}
+                                >
+                                    {isReady ? "준비 완료" : "대기 중"}
+                                </ReadyBtn>
+                            )}
                         </div>
-                        <p>{nickname}</p>
-                        <p onClick={() => findingInstrument(nickname)}>{instrument}</p>
-                        {nickname === hostName ? (
-                            <ReadyBtn onClick={() => startGameHandler()}>시작</ReadyBtn>
-                        ) : (
-                            <ReadyBtn
-                                isReady={isReady}
-                                onClick={() => readyBtnClick(nickname)}
-                            >
-                                {isReady ? "준비 완료" : "대기 중"}
-                            </ReadyBtn>
-                        )}
                     </div>
-                </div>
-            ))}
+                ))}
+            </div>
         </>
     );
 };
