@@ -9,6 +9,7 @@ import { OpenVidu } from "openvidu-browser";
 
 
 const WebCam = ({ players = [], hostName, roomCode }) => {
+
     const [playerStatuses, setPlayerStatuses] = useState({});
     const myNickname = sessionStorage.getItem("nickname");
     const navigate = useNavigate();
@@ -16,9 +17,11 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
     const [instruModal, setInstruModal] = useState(false);
     const [instrumentList, setInstrumentList] = useState([]);
     const [session, setSession] = useState(null);
+    const [publisher, setPublisher] = useState(null);
     const [subscribers, setSubscribers] = useState([]);
-    const OV = useRef(new OpenVidu());
-
+    const OV = useRef(null);
+    const videoRefs = useRef({});
+    
     // 방장 시작버튼
     const startGameHandler = async () => {
         if (myNickname === hostName) {
@@ -117,73 +120,73 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
         setInstruModal(false);
     };
 
-    // OpenVidu 세션 참가
-    const joinSession = async () => {
-        try {
-            const token = await fetchToken();
-            await session.connect(token, { clientData: myNickname });
-            const publisher = OV.initPublisher(undefined, {
-                audioSource: undefined,
-                videoSource: undefined,
-                publishAudio: true,
-                publishVideo: true,
-                resolution: '640x480',
-                frameRate: 30,
-                mirror: true
-            });
-            session.publish(publisher);
-        } catch (error) {
-            console.error("Error connecting to the session:", error);
-        }
-    };
+     // OpenVidu
+     useEffect(() => {
+        OV.current = new OpenVidu();
+        initSession();
+    }, []);
 
-    //토큰 생성 요청
-    const fetchToken = async () => {
-        try {
-            const response = await axios.post(`${backendUrl}/api/openvidu`, { sessionName: roomCode });
-            return response.data.token;
-        } catch (error) {
-            console.error("Error fetching token:", error);
-        }
-    };
-
-    // OpenVidu
-    useEffect(() => {
+    const initSession = async () => {
         const session = OV.current.initSession();
         setSession(session);
-    
-        session.on('streamCreated', (event) => {
+
+        session.on('streamCreated', event => {
             const subscriber = session.subscribe(event.stream, undefined);
             setSubscribers(prevSubscribers => [...prevSubscribers, subscriber]);
         });
-    
-        session.on('streamDestroyed', (event) => {
-            setSubscribers(subscribers => subscribers.filter(s => s !== event.stream.streamManager));
+
+        session.on('streamDestroyed', event => {
+            setSubscribers(subs => subs.filter(sub => sub !== event.stream.streamManager));
         });
-    
-        return () => {
-            session.disconnect();
-        };
-    }, []);
 
-    useEffect(() => {
-        if (session) {
-            joinSession();
+        const sessionId = await createSession(roomCode);
+        if (sessionId) {
+            const token = await createToken(sessionId);
+            if (token) {
+                session.connect(token)
+                    .then(() => {
+                        const publisher = OV.current.initPublisher(undefined, {
+                            audioSource: undefined,
+                            videoSource: undefined,
+                            publishAudio: true,
+                            publishVideo: true,
+                            resolution: '640x480',
+                            frameRate: 30,
+                            mirror: true
+                        });
+                        session.publish(publisher);
+                        setPublisher(publisher);
+                    })
+                    .catch(error => {
+                        console.error("Error connecting to the session:", error);
+                    });
+            }
         }
-    }, [session]);
+    };
 
-    useEffect(() => {
-        const initializeMediaStream = async () => {
-            const mediapipeInstance = new Mediapipe();
-            const value = {
-                userName: "asdf",
-                sessionid: "abcd"
-            };
-            await mediapipeInstance.joinSession;
-        };
+    const createSession = async (sessionId) => {
+        try {
+          const response = await axios.post(`https://motionbe.at:3001/api/openvidu/`, { customSessionId: sessionId }, {
+            headers: { 'Content-Type': 'application/json' },
+          });
+          return response.data; // The sessionId
+        } catch (error) {
+          console.error('Error creating session:', error);
+          return null;
+        }
+      };
 
-        initializeMediaStream();
-    }, []);
+    const createToken = async (sessionId) => {
+        try {
+          const response = await axios.post(`https://motionbe.at:3001/api/openvidu/${sessionId}/connections`, {}, {
+            headers: { 'Content-Type': 'application/json' },
+          });
+          return response.data; // The token
+        } catch (error) {
+          console.error('Error fetching token:', error);
+          return null;
+        }
+      };
 
     useEffect(() => {
         setPlayerStatuses(
@@ -225,51 +228,20 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
 
     }, []);
 
-    return (
-        <>
-            {/* 플레이어 들어오면 div가 늘어나는 방식 */}
-            <div className="webCamBox">
-                {Object.entries(playerStatuses).map(([nickname, { instrument, isReady }], index) => (
-                    <div className="playerContainer" key={index}>
-                        <WebCamInfo>
-                            <WebCamTop>
-                                <Mediapipe />
-                                <HitMiss>
-                                    <p>0</p>
-                                    <p>0</p>
-                                </HitMiss>
-                            </WebCamTop>
-                            <div>
-                                <h2>{nickname}</h2>
-                                <h2 onClick={() => findingInstrument(nickname)}>{instrument}</h2>
-                            </div>
-                        </WebCamInfo>
-                        {nickname === hostName ? (
-                            <ReadyBtn onClick={() => startGameHandler()}>시작</ReadyBtn>
-                        ) : (
-                            <ReadyBtn
-                                isReady={isReady}
-                                onClick={() => readyBtnClick(nickname)}
-                            >
-                                {isReady ? "준비 완료" : "대기 중"}
-                            </ReadyBtn>
-                        )}
-                    </div>
-                ))}
-                {instruModal && (
-                    <InstrumentModal>
-                        {instrumentList.map((instrument) => (
-                            <ul key={instrument.id}>
-                                <li onClick={() => selectedInstrument(instrument.instrumentName)}>
-                                    {instrument.instrumentName}
-                                </li>
-                            </ul>
-                        ))}
-                    </InstrumentModal>
-                )}
+    return(
+        <div className="webCamBox">
+        {publisher && (
+            <div className="publisherContainer">
+                <video ref={videoRefs.current['publisher']} autoPlay={true} muted={true} />
             </div>
-        </>
-    )
+        )}
+        {subscribers.map((subscriber, index) => (
+            <div className="subscriberContainer" key={index}>
+                <video ref={el => videoRefs.current[`subscriber-${index}`] = el} autoPlay={true} />
+            </div>
+        ))}
+    </div>
+    );
 }
 export default WebCam
 
