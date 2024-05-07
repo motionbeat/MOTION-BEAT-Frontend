@@ -148,7 +148,7 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
         setSession(session);
 
         session.on("streamCreated", (event) => {
-            const videoElement = document.createElement("video"); // 새로운 div를 생성
+            const videoElement = document.createElement("div"); // 새로운 div를 생성
             videoElement.autoplay = true;
             videoElement.srcObject = event.stream.mediaStream;
 
@@ -167,7 +167,7 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
             if (isSelf) {
                 myVideoRef.appendChild(videoElement);
             } else {
-                const userVideoRef = document.createElement("video");
+                const userVideoRef = document.createElement("div");
                 otherVideosRef.current[event.stream.streamId] = userVideoRef;
                 userVideoRef.appendChild(videoElement);
             }
