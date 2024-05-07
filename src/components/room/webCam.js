@@ -20,7 +20,7 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
     const OV = useRef(null);
     const myVideoRef = useRef(null);
     const otherVideosRef = useRef({});
-    // const otherVideosRef = useRef([]);
+    const [isSelf, setIsSelf] = useState(false);
 
     // 방장 시작버튼
     const startGameHandler = async () => {
@@ -152,13 +152,19 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
             videoElement.autoplay = true;
 
             const subscriber = session.subscribe(event.stream, videoElement);
-            if (
-                event.stream.connection.connectionId ===
-                session.connection.connectionId
-            ) {
-                myVideoRef.current.appendChild(videoElement);
-            } else {
-                otherVideosRef.current.appendChild(videoElement);
+            setIsSelf(event.stream.connection.connectionId === session.connection.connectionId);
+            
+            // if (
+            //     event.stream.connection.connectionId ===
+            //     session.connection.connectionId
+            // ) {
+            //     myVideoRef.current.appendChild(videoElement);
+            // } else {
+            //     otherVideosRef.current.appendChild(videoElement);
+            // }
+
+            if (isSelf) {
+                isSelf.appendChild(videoElement);
             }
 
             setSubscribers((prevSubscribers) => [
@@ -183,9 +189,9 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
                         const publisher = OV.current.initPublisher(undefined, {
                             audioSource: undefined,
                             videoSource: undefined,
-                            publishAudio: true,
+                            publishAudio: false,
                             publishVideo: true,
-                            resolution: "640x480",
+                            resolution: "214x184",
                             frameRate: 30,
                             mirror: true,
                         });
@@ -315,15 +321,22 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
             {Object.entries(playerStatuses).map(([nickname, { instrument, isReady }], index) => (
                 <div className="playerContainer" key={index}>
                     <div className="webCamBoxDiv">
-                        <div ref={myVideoRef} className="webCamBoxInner"></div>
+                        <div 
+                            ref={isSelf ? myVideoRef : otherVideosRef}
+                            className="webCamBoxInner">
+                        </div>
                         <p>{nickname}</p>
                         <p onClick={() => findingInstrument(nickname)}>{instrument}</p>
-                    </div>
-                    <div className="webCamBoxDiv">
-                        <div ref={otherVideosRef} className="webCamBoxInner">
-                            웹 캠 들어갈 부분
-                        </div>
-                        <p>인두</p>
+                        {nickname === hostName ? (
+                            <ReadyBtn onClick={() => startGameHandler()}>시작</ReadyBtn>
+                        ) : (
+                            <ReadyBtn
+                                isReady={isReady}
+                                onClick={() => readyBtnClick(nickname)}
+                            >
+                                {isReady ? "준비 완료" : "대기 중"}
+                            </ReadyBtn>
+                        )}
                     </div>
                 </div>
             ))}

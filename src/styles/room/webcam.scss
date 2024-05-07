@@ -12,18 +12,26 @@
 // 유저 각각의 박스
 .playerContainer {
   display: flex;
-  flex-direction: column;
-  align-items: center;
+  // flex-direction: column;
+  // align-items: center;
   margin-top: 20px;
 }
 
 .webCamBoxDiv {
   width: 250px;
-  height: 266px;
+  // height: 266px;
   border-radius: 24px;
   background-image: url("../../img/showWebCam.png");
+  background-repeat: no-repeat;
   display: flex;
   flex-direction: column;
+
+  video {
+    width: inherit;
+    height: inherit;
+    border-radius: 24px;
+  }
+
   p {
     color: white;
     font-size: 24px;
@@ -34,7 +42,7 @@
 
 .webCamBoxInner {
   width: 214px;
-  height: 184px;
+  height: 160px;
   border-radius: 16px;
   border: 1px solid white;
   margin: 20px auto 10px auto;
