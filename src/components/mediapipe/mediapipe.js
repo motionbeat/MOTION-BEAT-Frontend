@@ -131,7 +131,7 @@ class Mediapipe extends Component {
                         lastPlayedSound: newStatus,
                         postureStatus: newStatus
                     }), () => {
-                        setTimeout(() => this.setState({ postureStatus: "X" }), 100); // 자세 초기화 지연 시간 조정
+                        setTimeout(() => this.setState({ postureStatus: "X" }), 1000); // 자세 초기화 지연 시간 조정
                     });
                 }
             }

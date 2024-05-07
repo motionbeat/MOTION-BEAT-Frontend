@@ -37,10 +37,12 @@ const Main = () => {
   const ButtonList = () => {
     return (
       <>
-        <button id="PLAY" onClick={handleClick}>PLAY</button>
-        <button id="TUTORIAL" onClick={handleClick}>TUTORIAL</button>
-        <button id="RANKING" onClick={handleClick}>RANKING</button>
-        <button id="SETTINGS" onClick={handleClick}>SETTINGS</button>
+        <div className="mainMenuWrapper">
+          <SelectMenu mainMenu="PLAY" handleClick={handleClick} />
+          <SelectMenu mainMenu="TUTORIAL" handleClick={handleClick} />
+          <SelectMenu mainMenu="RANKINGS" handleClick={handleClick} />
+          <SelectMenu mainMenu="SETTINGS" handleClick={handleClick} />
+        </div>
       </>
     )
   };
@@ -147,11 +149,7 @@ const Main = () => {
 
   return (
     <>
-      <div className="mainMenuWrapper">
-        <SelectMenu mainMenu="PLAY" handleClick={handleClick} />
-        <SelectMenu mainMenu="TUTORIAL" handleClick={handleClick} />
-        <SelectMenu mainMenu="RANKINGS" handleClick={handleClick} />
-        <SelectMenu mainMenu="SETTINGS" handleClick={handleClick} />
+
         {/* <div>
           <button className="revert" onClick={logout}>{"<-"}</button>
         </div>
@@ -159,7 +157,6 @@ const Main = () => {
           <button id="FRIENDS" onClick={handleStickyClick}>Friends</button>
           <button id="MYPAGE" onClick={handleStickyClick}>Mypage</button>
         </div> */}
-      </div >
       <div>
         <Modal isOpen={isModalOpen} onClose={closeModal} children={currentElement} />
       </div>

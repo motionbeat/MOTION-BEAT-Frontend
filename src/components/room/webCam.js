@@ -234,10 +234,10 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
                         <WebCamInfo>
                             <WebCamTop>
                                 <Mediapipe />
-                                <HitMiss>
+                                {/* <HitMiss>
                                     <p>0</p>
                                     <p>0</p>
-                                </HitMiss>
+                                </HitMiss> */}
                             </WebCamTop>
                             <div>
                                 <h2>{nickname}</h2>

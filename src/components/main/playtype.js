@@ -4,12 +4,16 @@ import socket from "../../server/server.js";
 import MakeRoom from "./makeRoom"
 import Room from "../../pages/room"
 import { useNavigate } from "react-router-dom"
+import MainHeader from "../common/atomic/main/mainHeader.js";
+import randomPlay from "../../img/randomPlay.png"
+import friendPlay from "../../img/friendPlay.png"
 
 const Playtype = () => {
   const navigate = useNavigate();
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
   const [code, setCode] = useState(''); // 방 코드 받아올 때 사용
-  const [showModal, setShowModal] = useState(false); // 친구와 함께하기 클릭 시 모달창
+  // const [showModal, setShowModal] = useState(false); // 친구와 함께하기 클릭 시 모달창
+  const [playFriends, setPlayFriends] = useState(true);
 
   /* for TEST */
   const [isRoomAvailable, setIsRoomAvaliable] = useState(true);
@@ -39,7 +43,8 @@ const Playtype = () => {
   }
 
   const handlePlayFriendsClick = () => {
-    setShowModal(!showModal);
+    // setShowModal(!showModal);
+    setPlayFriends(!playFriends);
   }
 
   const handleDevClick = () => {
@@ -101,21 +106,34 @@ const Playtype = () => {
 
   return (
     <>
-      <div>플레이타입</div>
-      {/* for TEST */}
-      <button onClick={handleDevClick}>FOR DEV : TOGGLE. IS RANDOM ROOM AVALIABLE </button>
-      <div className="buttonContainer">
-        <button onClick={handleMatchingClick} style={{ display: "inline", height: "200px" }}>랜덤매칭</button>
-        <button onClick={handlePlayFriendsClick} style={{ display: "inline", height: "200px" }}>친구와 함께하기</button>
-      </div >
-      {showModal && (
-        <div>
-          <button onClick={inRoom}>방 만들기</button>
+      <MainHeader roomName="PLAY" backPath="main" />
+      {playFriends ? (
+        <div className="gameTypeBox">
+          <div className="gameType" onClick={handleMatchingClick}>
+            <h1>랜덤 매칭</h1>
+            <div><img src={randomPlay} alt="랜덤 매칭"/></div>
+          </div>
+          <div className="gameType" onClick={handlePlayFriendsClick}>
+            <h1>친구와 함께하기</h1>
+            <div><img src={friendPlay} alt="친구와 함께하기"/></div>
+          </div>
+        </div>
+      ) : (
+      <div className="gameTypeBox">
+        <div className="gameType">
+          <h1>방 만들기</h1>
+          <button className="btnbtn" onClick={inRoom}>생성</button>
+        </div>
+        <div className="roomType">
+          <h1>방 참여하기</h1>
           <form onSubmit={goRoom}>
-            <input type="text" placeholder="code" value={code} onChange={(e) => setCode(e.target.value)} />
-            <button type="submit">방 참여하기</button>
+            <div className="joinCode">
+              <input type="text" placeholder="code" value={code} onChange={(e) => setCode(e.target.value)} />
+            </div>
+            <button className="btnbtn" type="submit">입장</button>
           </form>
         </div>
+      </div>
       )}
     </>
   )

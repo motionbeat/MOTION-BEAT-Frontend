@@ -4,7 +4,6 @@ import socket from "../../../../server/server.js";
 import { useLocation, useNavigate } from "react-router-dom";
 
 const RoomHeader = ({room}) => {
-  console.log("room", room);
   const navigate = useNavigate();
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
 
