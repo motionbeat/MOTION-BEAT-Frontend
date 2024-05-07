@@ -45,8 +45,6 @@ const Ingame = () => {
   /* I/O 처리 */
   const divBGRef = useRef(null);
 
-
-
   useEffect(() => {
     if (loadedData) {
       window.addEventListener("keydown", handleEnterDown);
@@ -155,12 +153,12 @@ const Ingame = () => {
     //       console.log("leaveRoom res", res);
     //     });
 
-        // if (response2.data.message === "redirect") navigate("/main");
-      navigate("/main");
+    // if (response2.data.message === "redirect") navigate("/main");
+    navigate("/main");
   }
-    // } catch (error) {
-    //   console.error("leave room error", error);
-    // }
+  // } catch (error) {
+  //   console.error("leave room error", error);
+  // }
 
   // 재생 상태 변경
   useEffect(() => {
@@ -256,14 +254,13 @@ const Ingame = () => {
         ) : (
           <>
             <div ref={divBGRef} className="background-albumCover" />
-            <p>인게임 페이지</p>
             <SongSheet railRefs={railRefs} myPosition={loadedData.skinData.userData.myPosition} Colors={loadedData.skinData.colors} >
             </SongSheet>
             <div style={{ position: "relative" }}>
               {/* {!judge ? null : <JudgeEffect judge={judge} />} */}
-              <Score />
-              <WebCamFrame />
-              <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} />
+              <WebCamFrame>
+                <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} />
+              </WebCamFrame>
             </div>
           </>
         )}

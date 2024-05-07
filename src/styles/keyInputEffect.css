@@ -8,5 +8,6 @@
 }
 
 .active {
-  background-color: yellow; /* 빛나는 효과를 위한 색 변경 */
+  background-color: yellow;
+  /* 빛나는 효과를 위한 색 변경 */
 }
