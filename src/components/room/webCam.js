@@ -148,8 +148,11 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
 
         session.on("streamCreated", (event) => {
             const videoElement = document.createElement("div"); // 새로운 div를 생성
+            videoElement.className = "video-element";
             videoElement.autoplay = true;
             videoElement.srcObject = event.stream.mediaStream;
+            // videoElement.style.display = "inline";
+            videoElement.style.position = "absolute";
 
             const subscriber = session.subscribe(event.stream, videoElement);
             const isSelf = event.stream.connection.connectionId === session.connection.connectionId;
