@@ -126,43 +126,43 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
 
   // OpenVidu
   useEffect(() => {
-    const session = OV.current.initSession();
-    setSession(session);
+    if (ingame) {
+      const session = OV.current.initSession();
+      setSession(session);
 
-    session.on("streamCreated", (event) => {
-      const videoElement = document.createElement("div"); // 새로운 div를 생성
-      videoElement.autoplay = true;
-      videoElement.srcObject = event.stream.mediaStream;
+      session.on("streamCreated", (event) => {
+        const videoElement = document.createElement("div"); // 새로운 div를 생성
+        videoElement.autoplay = true;
+        videoElement.srcObject = event.stream.mediaStream;
 
-      const subscriber = session.subscribe(event.stream, videoElement);
-      const isSelf = event.stream.connection.connectionId === session.connection.connectionId;
+        const subscriber = session.subscribe(event.stream, videoElement);
+        const isSelf = event.stream.connection.connectionId === session.connection.connectionId;
 
-      if (isSelf) {
-        myVideoRef.appendChild(videoElement);
-      } else {
-        otherVideosRef.current.appendChild(videoElement);
-      }
+        if (isSelf) {
+          myVideoRef.appendChild(videoElement);
+        } else {
+          otherVideosRef.current.appendChild(videoElement);
+        }
 
-      setSubscribers((prevSubscribers) => [
-        ...prevSubscribers,
-        subscriber,
-      ]);
-    });
+        setSubscribers((prevSubscribers) => [
+          ...prevSubscribers,
+          subscriber,
+        ]);
+      });
 
-    session.on("streamDestroyed", (event) => {
-      setSubscribers((subs) =>
-        subs.filter((sub) => sub !== event.stream.streamManager)
-      );
-    });
+      session.on("streamDestroyed", (event) => {
+        setSubscribers((subs) =>
+          subs.filter((sub) => sub !== event.stream.streamManager)
+        );
+      });
 
-    initSession(roomCode, session);
-
+      initSession(roomCode, session);
+    }
     return () => {
-      if(ingame && session){
+      if (ingame && session) {
         session.disconnect();
       }
     }
-
   }, [ingame, roomCode]);
 
   const initSession = async (roomCode, session) => {
