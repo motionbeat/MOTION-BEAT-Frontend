@@ -21,6 +21,9 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
   const OV = useRef(new OpenVidu());
   const myVideoRef = useRef(null);
   const otherVideosRef = useRef({});
+  const videoRef1 = useRef(null);
+  const videoRef2 = useRef(null);
+  const videoRef3 = useRef(null);
 
   // 방장 시작버튼
   const startGameHandler = async () => {
@@ -141,8 +144,16 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
 
         if (isSelf) {
           myVideoRef.appendChild(videoElement);
-        } else {
-          otherVideosRef.current.appendChild(videoElement);
+        }
+        else if(videoRef1.current === null) {
+          videoRef1.current.appendChild(videoElement);
+        }
+        else if(videoRef2.current === null) {
+          videoRef2.current.appendChild(videoElement);
+        }
+        else if(videoRef3.current === null) {
+          videoRef3.current.appendChild(videoElement);
+          // otherVideosRef.current.appendChild(videoElement);
         }
 
         setSubscribers((prevSubscribers) => [
@@ -275,10 +286,10 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
             <div className="webCamBoxDiv">
               {myNickname === nickname ? (
                 // <div ref={myVideoRef} className="webCamBoxInner"/>
-                ingame ? <Guitar /> : <div ref={myVideoRef} className="webCamBoxInner"/>
+                ingame ? <Guitar /> : <div ref={otherVideosRef} className="webCamBoxInner"/>
                 // </div>
               ) : (
-                <div ref={otherVideosRef} className="webCamBoxInner"></div>
+                <div ref={videoRef1} className="webCamBoxInner"></div>
               )}
               <p>{nickname}</p>
               <p onClick={() => findingInstrument(nickname)}>{instrument}</p>
