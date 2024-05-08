@@ -260,7 +260,7 @@ const Ingame = () => {
             <div style={{ position: "relative" }}>
               {/* {!judge ? null : <JudgeEffect judge={judge} />} */}
               <WebCamFrame>
-                <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} />
+                <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} ingame={true} />
               </WebCamFrame>
             </div>
           </>
