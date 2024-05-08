@@ -275,11 +275,11 @@ const Ingame = () => {
             <p>인게임 페이지</p>
             <SongSheet railRefs={railRefs} myPosition={myPosition} Colors={gameData.players.length} >
             </SongSheet>
-            <div style={{ position: "relative" }}>
-              <JudgeEffectV2 />
-              <WebCamFrame myColor={myColor} roomCode={gameData.code}/>
-                <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} ingame={true} />
-              
+            <div style={{ display: "inline", position: "relative" }}>
+
+              <WebCamFrame myColor={myColor} roomCode={gameData.code} />
+              <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} ingame={true} />
+
             </div>
           </>
         )}
