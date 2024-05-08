@@ -45,5 +45,5 @@ export const Judge = (key, time) => {
     console.log("HIT!")
     dispatch("hit");
   }
-  closestNote.style.display = "none";  // 해당 노트를 화면에서 숨김
+  closestNote.remove();  // 해당 노트를 화면에서 숨김
 }

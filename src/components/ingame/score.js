@@ -26,7 +26,7 @@ const Score = () => {
     };
   }, []);
   return (
-    <div style={{ position: "absolute", top: "10%", left: "25%", }}>
+    <div style={{ position: "absolute", top: "0%", right: "0%", }}>
       <p style={{ width: "5vw", height: "5vh", fontSize: '24px', border: "1px solid black", color: "green", textAlign: "center" }}>
         {hittedNotes}
       </p>

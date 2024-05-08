@@ -50,101 +50,90 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
         }
     };
 
-    // 레디 버튼
-    const readyBtnClick = (nickname) => {
-        if (myNickname === nickname) {
-            socket.emit("ready", (res) => {
-                console.log("ready res", res);
-            });
+  // 레디 버튼
+  const readyBtnClick = (nickname) => {
+    if (myNickname === nickname) {
+      socket.emit("ready", (res) => {
+        console.log("ready res", res);
+      })
 
-            setPlayerStatuses((prevStatuses) => ({
-                ...prevStatuses,
-                [nickname]: {
-                    ...prevStatuses[nickname],
-                    isReady: !prevStatuses[nickname].isReady,
-                },
-            }));
-        } else {
-            return;
+      setPlayerStatuses(prevStatuses => ({
+        ...prevStatuses,
+        [nickname]: {
+          ...prevStatuses[nickname],
+          isReady: !prevStatuses[nickname].isReady
         }
-    };
+      }));
+    } else {
+      return;
+    }
+  }
 
-    // 악기 선택
-    const findingInstrument = (nickname) => {
-        if (myNickname === nickname) {
-            const findInstrument = async () => {
-                try {
-                    const response = await axios.get(
-                        `${backendUrl}/api/instruments`,
-                        {
-                            headers: {
-                                "Content-Type": "application/json",
-                                Authorization: `Bearer ${sessionStorage.getItem(
-                                    "userToken"
-                                )}`,
-                                UserId: sessionStorage.getItem("userId"),
-                                Nickname: sessionStorage.getItem("nickname"),
-                            },
-                        }
-                    );
-                    setInstrumentList(response.data);
-                } catch (error) {
-                    console.error("Error start res:", error);
-                }
-            };
-            findInstrument();
-            setInstruModal(!instruModal);
-        }
-    };
-
-    // 악기를 골랐을 때
-    const selectedInstrument = (instrumentName) => {
-        setPlayerStatuses((prevStatuses) => ({
-            ...prevStatuses,
-            [myNickname]: {
-                ...prevStatuses[myNickname],
-                instrument: instrumentName,
-            },
-        }));
-
-        // console.log("2",playerStatuses);
-        // 악기 소켓에 전달
-        const sendInstrument = async () => {
-            try {
-                const response = await axios.patch(
-                    `${backendUrl}/api/instruments/select`,
-                    {
-                        instrumentName,
-                    },
-                    {
-                        headers: {
-                            "Content-Type": "application/json",
-                            Authorization: `Bearer ${sessionStorage.getItem(
-                                "userToken"
-                            )}`,
-                            UserId: sessionStorage.getItem("userId"),
-                            Nickname: sessionStorage.getItem("nickname"),
-                        },
-                    }
-                );
-            } catch (error) {
-                console.error("Error start res:", error);
+  // 악기 선택
+  const findingInstrument = (nickname) => {
+    if (myNickname === nickname) {
+      const findInstrument = async () => {
+        try {
+          const response = await axios.get(`${backendUrl}/api/instruments`, {
+            headers: {
+              "Content-Type": "application/json",
+              "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
+              "UserId": sessionStorage.getItem("userId"),
+              "Nickname": sessionStorage.getItem("nickname")
             }
-        };
+          });
+          setInstrumentList(response.data);
+        } catch (error) {
+          console.error("Error start res:", error);
+        }
+      };
+      findInstrument();
+      setInstruModal(!instruModal);
+    }
+  }
 
-        sendInstrument();
-        setInstruModal(false);
+  // 악기를 골랐을 때
+  const selectedInstrument = (instrumentName) => {
+    setPlayerStatuses((prevStatuses) => ({
+      ...prevStatuses,
+      [myNickname]: {
+        ...prevStatuses[myNickname],
+        instrument: instrumentName,
+      },
+    }));
+
+    // console.log("2",playerStatuses);
+    // 악기 소켓에 전달
+    const sendInstrument = async () => {
+      try {
+        const response = await axios.patch(`${backendUrl}/api/instruments/select`, {
+          instrumentName
+        }, {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
+            "UserId": sessionStorage.getItem("userId"),
+            "Nickname": sessionStorage.getItem("nickname")
+          }
+        });
+      } catch (error) {
+        console.error("Error start res:", error);
+      }
     };
 
-    // OpenVidu
-    useEffect(() => {
-        OV.current = new OpenVidu();
-        initSession();
-    }, []);
+    sendInstrument();
+    setInstruModal(false);
+  };
 
-    const initSession = async () => {
-        const session = OV.current.initSession();
-        setSession(session);
+  // OpenVidu
+  useEffect(() => {
+    OV.current = new OpenVidu();
+    initSession();
+  }, []);
+
+  const initSession = async () => {
+    const session = OV.current.initSession();
+    setSession(session);
 
         session.on("streamCreated", (event) => {
             const videoElement = document.createElement("div"); // 새로운 div를 생성
@@ -358,19 +347,20 @@ const WebCamTop = styled.div`
     }
 `;
 
-const HitMiss = styled.div`
-    width: 20%;
-    font-size: 1.8rem;
-    text-align: center;
+// const HitMiss = styled.div`
+//   width: 20%;
+//   font-size: 1.8rem;
+//   text-align: center;
 
-    p:first-child {
-        color: green;
-    }
+//   p:first-child {
+//     color: green;
+//   }
 
-    p:last-child {
-        color: red;
-    }
-`;
+//   p:last-child {
+//     color: red;
+//   }
+// `
+
 
 const ReadyBtn = styled.button`
     background-color: ${(props) => (props.isReady ? "#6EDACD" : "#CB0000")};
