@@ -15,6 +15,7 @@ const Room = () => {
     const { roomData } = location.state || {};
     const [room, setRoom] = useState(roomData);
     const backendUrl = process.env.REACT_APP_BACK_API_URL;
+    const myNickname = sessionStorage.getItem("nickname")
 
     //joinRoom을 쏴줘야 함
     useEffect (() => {
@@ -55,6 +56,35 @@ const Room = () => {
       };
     }, [room.code, navigate])
 
+        // 방장 시작버튼
+        const startGameHandler = async () => {
+          if (myNickname === room.hostName) {
+              const gameStart = async () => {
+                  try {
+                      const response = await axios.post(
+                          `${backendUrl}/api/games/start`,
+                          {
+                              code: room.code,
+                          },
+                          {
+                              headers: {
+                                  "Content-Type": "application/json",
+                                  Authorization: `Bearer ${sessionStorage.getItem(
+                                      "userToken"
+                                  )}`,
+                                  UserId: sessionStorage.getItem("userId"),
+                                  Nickname: sessionStorage.getItem("nickname"),
+                              },
+                          }
+                      );
+                  } catch (error) {
+                      console.error("Error start res:", error);
+                  }
+              };
+              gameStart();
+          }
+      };
+
     return (
         <>
             <div className="room-wrapper">
@@ -64,7 +94,7 @@ const Room = () => {
                     <div className="roomMiddleWrapper">
                       <SelectSong songNumber={room.song} hostName={room.hostName} roomCode={room.code} />
                       <div className="roomMiddleRight">
-                        <button className="gameStartBtn">게임 시작</button>
+                        <button className="gameStartBtn" onClick={() => startGameHandler()}>게임 시작</button>
                         {room.type !== 'match' &&
                           <div className="secretCodeWrapper">
                             <div className="secretCode">입장코드 : {room.code}</div>
@@ -74,7 +104,7 @@ const Room = () => {
                         <button className="chattingBtn">채팅하기</button>
                       </div>
                     </div>
-                    <WebCam players={room.players} hostName={room.hostName} roomCode={room.code} />
+                    {/* <WebCam players={room.players} hostName={room.hostName} roomCode={room.code} /> */}
                   </div>
                 </div>
                 <RoomChatting roomCode = {room.code} />

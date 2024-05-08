@@ -21,34 +21,34 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
     const myVideoRef = useRef(null);
     const otherVideosRef = useRef({});
 
-    // 방장 시작버튼
-    const startGameHandler = async () => {
-        if (myNickname === hostName) {
-            const gameStart = async () => {
-                try {
-                    const response = await axios.post(
-                        `${backendUrl}/api/games/start`,
-                        {
-                            code: roomCode,
-                        },
-                        {
-                            headers: {
-                                "Content-Type": "application/json",
-                                Authorization: `Bearer ${sessionStorage.getItem(
-                                    "userToken"
-                                )}`,
-                                UserId: sessionStorage.getItem("userId"),
-                                Nickname: sessionStorage.getItem("nickname"),
-                            },
-                        }
-                    );
-                } catch (error) {
-                    console.error("Error start res:", error);
-                }
-            };
-            gameStart();
-        }
-    };
+    // // 방장 시작버튼
+    // const startGameHandler = async () => {
+    //     if (myNickname === hostName) {
+    //         const gameStart = async () => {
+    //             try {
+    //                 const response = await axios.post(
+    //                     `${backendUrl}/api/games/start`,
+    //                     {
+    //                         code: roomCode,
+    //                     },
+    //                     {
+    //                         headers: {
+    //                             "Content-Type": "application/json",
+    //                             Authorization: `Bearer ${sessionStorage.getItem(
+    //                                 "userToken"
+    //                             )}`,
+    //                             UserId: sessionStorage.getItem("userId"),
+    //                             Nickname: sessionStorage.getItem("nickname"),
+    //                         },
+    //                     }
+    //                 );
+    //             } catch (error) {
+    //                 console.error("Error start res:", error);
+    //             }
+    //         };
+    //         gameStart();
+    //     }
+    // };
 
     // 레디 버튼
     const readyBtnClick = (nickname) => {
@@ -333,7 +333,7 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
                         )}
                             <p>{nickname}</p>
                             <p onClick={() => findingInstrument(nickname)}>{instrument}</p>
-                            {nickname === hostName ? (
+                            {/* {nickname === hostName ? (
                                 <ReadyBtn onClick={() => startGameHandler()}>시작</ReadyBtn>
                             ) : (
                                 <ReadyBtn
@@ -342,6 +342,17 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
                                 >
                                     {isReady ? "준비 완료" : "대기 중"}
                                 </ReadyBtn>
+                            )} */}
+                            {instruModal && (
+                                <InstrumentModal>
+                                    {instrumentList.map((instrument) => (
+                                        <ul key={instrument.id}>
+                                            <li onClick={() => selectedInstrument(instrument.instrumentName)}>
+                                                {instrument.instrumentName}
+                                            </li>
+                                        </ul>
+                                    ))}
+                                </InstrumentModal>
                             )}
                         </div>
                     </div>
