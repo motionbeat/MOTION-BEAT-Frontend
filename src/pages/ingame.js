@@ -46,16 +46,6 @@ const Ingame = () => {
   const [showEnter, setShowEnter] = useState(true);
   const [gameData, setGameData] = useState(gameState.game);
   console.log("인게임 데이터 확인", gameData);
-
-  /* Storage */
-  const myNickname = sessionStorage.getItem("nickname");
-
-  /* Ref */
-  const railRefs = useRef([]);
-  const location = useLocation(); // 이전 페이지에서 데이터 가져오기
-  const gameState = location.state || {}; // 가져온 데이터 넣기
-  const [gameData, setGameData] = useState(gameState.game);
-
   /* Storage */
   const myNickname = sessionStorage.getItem("nickname");
 
@@ -276,7 +266,8 @@ const Ingame = () => {
             </SongSheet>
             <div style={{ position: "relative" }}>
               {/* {!judge ? null : <JudgeEffect judge={judge} />} */}
-              <WebCamFrame roomCode={gameData.code} myColor={myColor}>
+              <Score />
+              <WebCamFrame myColor={myColor} roomCode={gameData.code} >
                 <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} ingame={true} />
               </WebCamFrame>
             </div>
