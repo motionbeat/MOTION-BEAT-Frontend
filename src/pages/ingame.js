@@ -45,7 +45,7 @@ const Ingame = () => {
   const [gameEnded, setGameEnded] = useState(false); // 게임 종료 상태
   const [showEnter, setShowEnter] = useState(true);
   const [gameData, setGameData] = useState(gameState.game);
-
+  console.log("인게임 데이터 확인", gameData);
   /* Storage */
   const myNickname = sessionStorage.getItem("nickname");
 
@@ -139,39 +139,38 @@ const Ingame = () => {
   };
 
   const exitBtn = async () => {
-    // try {
-    //   const response1 = await axios.patch(`${backendUrl}/api/rooms/leave`, {
-    //     code: gameData ? gameData.code : "",
-    //   }, {
-    //     headers: {
-    //       "Content-Type": "application/json",
-    //       "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
-    //       "UserId": sessionStorage.getItem("userId"),
-    //       "Nickname": sessionStorage.getItem("nickname")
-    //     }
-    //   });
+    try {
+      const response1 = await axios.patch(`${backendUrl}/api/rooms/leave`, {
+        code: gameData ? gameData.code : "",
+      }, {
+        headers: {
+          "Content-Type": "application/json",
+          "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
+          "UserId": sessionStorage.getItem("userId"),
+          "Nickname": sessionStorage.getItem("nickname")
+        }
+      });
 
-    //   if (response1.data.message === "redirect") {
-    //     const response2 = await axios.patch(`${backendUrl}/api/games/leave`, {
-    //       code: gameData ? gameData.code : "",
-    //     }, {
-    //       headers: {
-    //         "Content-Type": "application/json",
-    //         "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
-    //         "UserId": sessionStorage.getItem("userId"),
-    //         "Nickname": sessionStorage.getItem("nickname")
-    //       }
-    //     });
-    //     socket.emit("leaveRoom", gameData.code, (res) => {
-    //       console.log("leaveRoom res", res);
-    //     });
-
-    // if (response2.data.message === "redirect") navigate("/main");
-    navigate("/main");
+      if (response1.data.message === "redirect") {
+        const response2 = await axios.patch(`${backendUrl}/api/games/leave`, {
+          code: gameData ? gameData.code : "",
+        }, {
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
+            "UserId": sessionStorage.getItem("userId"),
+            "Nickname": sessionStorage.getItem("nickname")
+          }
+        });
+        socket.emit("leaveRoom", gameData.code, (res) => {
+          console.log("leaveRoom res", res);
+        });
+        if (response2.data.message === "redirect") navigate("/main");
+      }
+    } catch (error) {
+      console.error("leave room error", error);
+    }
   }
-  // } catch (error) {
-  //   console.error("leave room error", error);
-  // }
 
   // 재생 상태 변경
   useEffect(() => {
@@ -268,8 +267,8 @@ const Ingame = () => {
             <div style={{ position: "relative" }}>
               {/* {!judge ? null : <JudgeEffect judge={judge} />} */}
               <Score />
-              <WebCamFrame myColor={myColor}>
-                <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} ingame={true}/>
+              <WebCamFrame myColor={myColor} roomCode={gameData.code} >
+              <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} ingame={true} />
               </WebCamFrame>
             </div>
           </>

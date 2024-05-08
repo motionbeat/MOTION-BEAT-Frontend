@@ -1,15 +1,12 @@
 import { JudgeEffect, JudgeEffectV2 } from "./judgeEffect";
 import Score from "./score";
 
-export const WebCamFrame = ({ children, myColor }) => {
+const WebCamFrame = ({ children, roomCode, myColor }) => {
 
   return (
     <div style={{ display: "inline-block" }}>
-      <div style={{ border: `10px solid rgb(${myColor})`, position: "relative", display: "block" }}>
-        <Score />
-        <JudgeEffect />
-        <JudgeEffectV2 />
-        {children}
+      <div style={{ border: "10px solid black", position: "relative", display: "block" }}>
+        <Score roomCode={roomCode} />
       </div>
     </div>
   );

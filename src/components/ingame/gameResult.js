@@ -19,6 +19,7 @@ const GameResult = ( roomCode ) => {
             "Nickname": sessionStorage.getItem("nickname")
           }
         });
+        console.log("게임 끝나면 몇번 불리는지");
         const sortedData = response.data.players.sort((a, b) => b.score - a.score);
         setResultData(sortedData);
       } catch (error) {
@@ -27,7 +28,7 @@ const GameResult = ( roomCode ) => {
     };
 
     resultPrint();
-  })
+  }, [roomCode] );
   
 
   return (
@@ -37,7 +38,7 @@ const GameResult = ( roomCode ) => {
         <button>즐겨찾기 추가</button>
         <div>
         {resultData.map((player, index) => (
-          <div key={index}>
+          <div key={index} style={{fontSize: "3rem", textAlign:"center", color:"white"}}>
             <p>{player.nickname}</p>
             <p>{player.score}</p>
           </div>

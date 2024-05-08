@@ -27,7 +27,7 @@ export const JudgeEffect = ({ judge }) => {
       setShowEffect(true);
       setTimeout(() => {
         setShowEffect(false);
-      }, 1000);
+      }, 500);
     }
   }, [judge]);
 
@@ -43,19 +43,22 @@ export const JudgeEffect = ({ judge }) => {
 }
 
 export const JudgeEffectV2 = ({ judge }) => {
+  const [effectType, setEffectType] = useState("");
   const [showEffect, setShowEffect] = useState(false);
 
   // 키 입력을 감지하여 이펙트를 트리거
   useEffect(() => {
-    const handleKeyDown = () => {
+    const handleScoreEffectParticle = () => {
+      if (judge === "hit") setEffectType("+1");
+      if (judge === "miss") setEffectType("-1");
       setShowEffect(true);
       setTimeout(() => setShowEffect(false), 500); // 500ms 후에 이펙트 숨기기
     };
 
-    window.addEventListener('keydown', handleKeyDown);
+    window.addEventListener('scoreUpdate', handleScoreEffectParticle);
 
     return () => {
-      window.removeEventListener('keydown', handleKeyDown);
+      window.removeEventListener('scoreUpdate', handleScoreEffectParticle);
     };
   }, []);
 
