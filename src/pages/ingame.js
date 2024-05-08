@@ -68,8 +68,8 @@ const Ingame = () => {
         // console.log("게임데이터:", gameData);
         const loadedData = await Load(gameData.song, gameData.players);
         // console.log("게임 리소스 로드 완료: " + loadedData);
-        console.log(gameData);
-        console.log(loadedData);
+        // console.log(gameData);
+        // console.log(loadedData);
         dispatch(setGameloadData(loadedData));
 
         // if (divBGRef.current && loadedData.songData.ingameData.imageUrl) {
@@ -199,12 +199,12 @@ const Ingame = () => {
       setIsActive(false);
     }, []);
 
-    console.log(gameData);
-    console.log(gameData.players);
-    console.log(gameData.players[0]);
-    console.log(gameData.players[0].instrument);
+    // console.log(gameData);
+    // console.log(gameData.players);
+    // console.log(gameData.players[0]);
+    // console.log(gameData.players[0].instrument);
 
-    console.log(gameData.players.length);
+    // console.log(gameData.players.length);
 
     return (
       <div className="background-songSheet">
@@ -276,12 +276,10 @@ const Ingame = () => {
             <SongSheet railRefs={railRefs} myPosition={myPosition} Colors={gameData.players.length} >
             </SongSheet>
             <div style={{ position: "relative" }}>
-              {/* {!judge ? null : <JudgeEffect judge={judge} />} */}
-              <Score />
-              <WebCamFrame myColor={myColor} roomCode={gameData.code} />
-              <WebCamFrame myColor={myColor} roomCode={gameData.code} />
-              <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} ingame={true} />
-              {/* </WebCamFrame> */}
+              <JudgeEffectV2 />
+              <WebCamFrame myColor={myColor} roomCode={gameData.code}>
+                <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} ingame={true} />
+              </WebCamFrame>
             </div>
           </>
         )}

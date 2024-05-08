@@ -70,15 +70,15 @@ export const Start = ({ data, eventKey, railRefs, send, myPosition }) => {
     noteElement.className = "Note";
     noteElement.textContent = `${motion}`;
     noteElement.setAttribute('data-motion', motion);
-    noteElement.setAttribute('data-time', (time).toString());
+    noteElement.setAttribute('data-time', (time + 5000).toString());
     noteElement.setAttribute('data-instrument', note.instrument);
 
     noteElement.setAttribute('data-index', index.toString());
 
-    console.log(railRefs.current[0].current.dataset.instrument)
+    // console.log(railRefs.current[0].current.dataset.instrument)
 
     for (const idx in railRefs.current) {
-      console.log(railRefs.current[idx].current?.dataset.instrument)
+      // console.log(railRefs.current[idx].current?.dataset.instrument)
       if (railRefs.current[idx].current?.dataset.instrument === note.instrument)
         railRefs.current[idx].current.appendChild(noteElement);
     }
