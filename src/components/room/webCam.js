@@ -21,34 +21,34 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
     const myVideoRef = useRef(null);
     const otherVideosRef = useRef({});
 
-    // // 방장 시작버튼
-    // const startGameHandler = async () => {
-    //     if (myNickname === hostName) {
-    //         const gameStart = async () => {
-    //             try {
-    //                 const response = await axios.post(
-    //                     `${backendUrl}/api/games/start`,
-    //                     {
-    //                         code: roomCode,
-    //                     },
-    //                     {
-    //                         headers: {
-    //                             "Content-Type": "application/json",
-    //                             Authorization: `Bearer ${sessionStorage.getItem(
-    //                                 "userToken"
-    //                             )}`,
-    //                             UserId: sessionStorage.getItem("userId"),
-    //                             Nickname: sessionStorage.getItem("nickname"),
-    //                         },
-    //                     }
-    //                 );
-    //             } catch (error) {
-    //                 console.error("Error start res:", error);
-    //             }
-    //         };
-    //         gameStart();
-    //     }
-    // };
+    // 방장 시작버튼
+    const startGameHandler = async () => {
+        if (myNickname === hostName) {
+            const gameStart = async () => {
+                try {
+                    const response = await axios.post(
+                        `${backendUrl}/api/games/start`,
+                        {
+                            code: roomCode,
+                        },
+                        {
+                            headers: {
+                                "Content-Type": "application/json",
+                                Authorization: `Bearer ${sessionStorage.getItem(
+                                    "userToken"
+                                )}`,
+                                UserId: sessionStorage.getItem("userId"),
+                                Nickname: sessionStorage.getItem("nickname"),
+                            },
+                        }
+                    );
+                } catch (error) {
+                    console.error("Error start res:", error);
+                }
+            };
+            gameStart();
+        }
+    };
 
     // 레디 버튼
     const readyBtnClick = (nickname) => {
@@ -147,23 +147,27 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
         setSession(session);
 
         session.on("streamCreated", (event) => {
-            const nickname = event.stream.connection.data.split("\"nickname\":\"")[1].split("\"")[0];
-            const videoElement = document.createElement("video");
+            const videoElement = document.createElement("div"); // 새로운 div를 생성
             videoElement.autoplay = true;
-            videoElement.playsInline = true;
-
-            if (nickname === myNickname) {
-                myVideoRef.current = videoElement;
-                myVideoRef.current.appendChild(videoElement);
-            } else {
-                if (!otherVideosRef.current[nickname]) {
-                    otherVideosRef.current[nickname] = document.createElement('div');
-                    document.body.appendChild(otherVideosRef.current[nickname]); // DOM에 실제로 추가
-                }
-                otherVideosRef.current[nickname].appendChild(videoElement);
-            }
+            videoElement.srcObject = event.stream.mediaStream;
 
             const subscriber = session.subscribe(event.stream, videoElement);
+            const isSelf = event.stream.connection.connectionId === session.connection.connectionId;
+
+            // if (
+            //     event.stream.connection.connectionId ===
+            //     session.connection.connectionId
+            // ) {
+            //     myVideoRef.current.appendChild(videoElement);
+            // } else {
+            //     otherVideosRef.current.appendChild(videoElement);
+            // }
+
+            if (isSelf) {
+                myVideoRef.appendChild(videoElement);
+            } else {
+                otherVideosRef.current.appendChild(videoElement);
+            }
 
             setSubscribers((prevSubscribers) => [
                 ...prevSubscribers,
@@ -172,12 +176,9 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
         });
 
         session.on("streamDestroyed", (event) => {
-            const nickname = event.stream.connection.data.split("\"nickname\":\"")[1].split("\"")[0];
-
             setSubscribers((subs) =>
                 subs.filter((sub) => sub !== event.stream.streamManager)
             );
-            delete otherVideosRef.current[nickname];
         });
 
         const sessionId = await createSession(roomCode);
@@ -185,7 +186,7 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
             const token = await createToken(sessionId);
             if (token) {
                 session
-                    .connect(token, { nickname: myNickname })
+                    .connect(token)
                     .then(() => {
                         const publisher = OV.current.initPublisher(undefined, {
                             audioSource: undefined,
@@ -282,56 +283,29 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
 
     return (
         <>
-            {/* <div className="webCamBox">
-                {Object.entries(playerStatuses).map(([nickname, { instrument, isReady }], index) => (
-                    <div className="playerContainer" key={index}>
-                        <WebCamInfo>
-                            <WebCamTop>
-                                <Mediapipe />
-                            </WebCamTop>
-                            <div>
-                                <h2>{nickname}</h2>
-                                <h2 onClick={() => findingInstrument(nickname)}>{instrument}</h2>
-                            </div>
-                        </WebCamInfo>
-                        {nickname === hostName ? (
-                            <ReadyBtn onClick={() => startGameHandler()}>시작</ReadyBtn>
-                        ) : (
-                            <ReadyBtn
-                                isReady={isReady}
-                                onClick={() => readyBtnClick(nickname)}
-                            >
-                                {isReady ? "준비 완료" : "대기 중"}
-                            </ReadyBtn>
-                        )}
-                    </div>
-                ))}
-                {instruModal && (
-                    <InstrumentModal>
-                        {instrumentList.map((instrument) => (
-                            <ul key={instrument.id}>
-                                <li onClick={() => selectedInstrument(instrument.instrumentName)}>
-                                    {instrument.instrumentName}
-                                </li>
-                            </ul>
-                        ))}
-                    </InstrumentModal>
-                )}
-            </div> */}
-
             <div className="webCamBox">
                 {Object.entries(playerStatuses).map(([nickname, { instrument, isReady }], index) => (
                     <div className="playerContainer" key={index}>
                         <div className="webCamBoxDiv">
                             {myNickname === nickname ? (
-                                <div ref={(el) => (myVideoRef.current = el)} className="webCamBoxInner">
-                                    <Mediapipe />
-                                </div>
+                                // <div ref={myVideoRef} className="webCamBoxInner">
+                                <Mediapipe />
+                                // </div>
                             ) : (
-                                <div ref={(el) => (otherVideosRef.current[nickname] = el)} className="webCamBoxInner"></div>
+                                <div ref={otherVideosRef} className="webCamBoxInner"></div>
                             )}
                             <p>{nickname}</p>
                             <p onClick={() => findingInstrument(nickname)}>{instrument}</p>
+                            {nickname === hostName ? (
+                                <ReadyBtn onClick={() => startGameHandler()}>시작</ReadyBtn>
+                            ) : (
+                                <ReadyBtn
+                                    isReady={isReady}
+                                    onClick={() => readyBtnClick(nickname)}
+                                >
+                                    {isReady ? "준비 완료" : "대기 중"}
+                                </ReadyBtn>
+                            )}
                             {instruModal && (
                                 <InstrumentModal>
                                     {instrumentList.map((instrument) => (
