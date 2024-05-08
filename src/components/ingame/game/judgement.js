@@ -1,14 +1,16 @@
 import { Parser } from "../../../utils/parser";
-export const Judge = (key, time) => {
+export const Judge = (key, time, instrument) => {
   let result = "ignore"; // 기본 결과를 "ignore"로 설정
 
   console.log("TEST1");
+  console.log(instrument);
   const dispatch = (result) => {
     const event = new CustomEvent('scoreUpdate', { detail: { result } });
     window.dispatchEvent(event);
   };
 
-  const notes = document.querySelectorAll('.Note'); // 모든 노트 요소 검색
+  const notes = document.querySelectorAll(`.Note[data-instrument="${instrument}"]`);
+  console.log(notes)
   let closestNote = null;
   let minIndex = Infinity;
 

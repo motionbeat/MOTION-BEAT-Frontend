@@ -10,7 +10,7 @@ export const Start = ({ data, eventKey, railRefs, send, myPosition }) => {
 
   let audioTime
 
-  if (!data?.songData?.ingameData) {
+  if (!data?.musicData) {
     console.error("Invalid data passed to Start function");
     return;  // Early return to prevent further errors
   }
@@ -22,7 +22,8 @@ export const Start = ({ data, eventKey, railRefs, send, myPosition }) => {
   }
 
   const playAudio = () => {
-    audioPlayer.src = data.songData.ingameData.songSound;
+    audioPlayer.src = data.musicData.sound;
+    console.log(audioPlayer.src)
     audioPlayer.currentTime = 0;
     audioPlayer.play()
       .then(() => {
@@ -45,16 +46,14 @@ export const Start = ({ data, eventKey, railRefs, send, myPosition }) => {
       audioTime = audioPlayer.currentTime * 1000;
 
 
-      const notes = data.songData.myNotes;
+      const notes = data.musicData.notes;
       let count = 0;
       for (const note of notes) {
-
         const startTime = note.time - animationDuration - 1;
 
         if (startTime + 5000 <= audioTime && !processedNotes.has(note)) {
           GenerateNote(note, audioTime, count);  // 노트 생성 및 애니메이션 시작
           processedNotes.add(note);  // 노트를 처리된 상태로 표시
-          console.log(note.time);
         }
         count++;
       }
@@ -71,15 +70,18 @@ export const Start = ({ data, eventKey, railRefs, send, myPosition }) => {
     noteElement.className = "Note";
     noteElement.textContent = `${motion}`;
     noteElement.setAttribute('data-motion', motion);
-    noteElement.setAttribute('data-time', (time + 5000).toString());
+    noteElement.setAttribute('data-time', (time).toString());
+    noteElement.setAttribute('data-instrument', note.instrument);
+
     noteElement.setAttribute('data-index', index.toString());
 
-    console.log(railRefs)
-    console.log(railRefs.current)
-    console.log(myPosition)
+    console.log(railRefs.current[0].current.dataset.instrument)
 
-    const rail = railRefs.current[myPosition].current;
-    rail.appendChild(noteElement);
+    for (const idx in railRefs.current) {
+      console.log(railRefs.current[idx].current?.dataset.instrument)
+      if (railRefs.current[idx].current?.dataset.instrument === note.instrument)
+        railRefs.current[idx].current.appendChild(noteElement);
+    }
 
     const animateNote = () => {
       const elapsedTime = audioPlayer.currentTime * 1000 - start;

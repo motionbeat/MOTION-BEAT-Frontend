@@ -11,16 +11,16 @@ export const Load = async (song, players) => {
   try {
     const results = await Promise.all([
       loadMyData(),
-      loadSongData(song, players),
+      loadNotes(song, players),
       connectServer(),
-      connectPeer(),
+      connectPeer(players),
       syncPeer(),
       audio()
     ]);
 
-    const [userDataFromServer, songData, serverData, peerData, syncData, audioData] = results;
+    const [userDataFromServer, musicData, serverData, peerData, syncData, audioData] = results;
     console.log("시스템 준비");
-    return { userDataFromServer, songData, serverData, peerData, syncData, audioData };
+    return { userDataFromServer, musicData, serverData, peerData, syncData, audioData };
 
   } catch (error) {
     console.error("로드 실패");
@@ -41,13 +41,13 @@ const loadMyData = async () => {
   return { userData };
 };
 
-const loadSongData = async (song, players) => {
+const loadNotes = async (song, players) => {
   const myNickname = sessionStorage.getItem("nickname");
   console.log(players);
   /* 플레이어들 정보: [{nickname, inst, score} ...] */
   const playerObject = players.find(item => item.nickname === myNickname);
 
-  let myNotes = [];
+  let notes = [];
   try {
     const response = await axios.get(`${backendUrl}/api/songs/${song}`, {
       headers: {
@@ -58,16 +58,15 @@ const loadSongData = async (song, players) => {
       }
     });
     /* 내 악기 */
-    const myInstrument = playerObject.instrument;
-    myNotes = await response.data.notes.find(item => item.instrument === myInstrument)?.sequences;
+    notes = await response.data.notes
 
-    console.log("노트 정보", response.data);
+    console.log("노트 정보", response.data.notes);
   } catch (error) {
     console.error("Error start res:", error);
   }
 
   /* 이 노래데이터, 유저데이터는 Webcam의 임시데이터 입니다. */
-  let ingameData = { imageUrl: "https://i.namu.wiki/i/C7Pn4lj5y_bVOJ8oMyjvvqO2Pv2qach6uyVt2sss93xx-NNS3fWpsDavIVYzfcPX516sK2wcOS8clpyz6acFOtpe1WM6-RN6dWBU77m1z98tQ5UyRshbnJ4RPVic87oZdHPh7tR0ceU8Uq2RlRIApA.webp", songSound: `/song/${song}.mp3` }
+  let sound = `/song/${song}.mp3`
 
   // let noteExactTime = {
   //   player0: [
@@ -100,7 +99,7 @@ const loadSongData = async (song, players) => {
     console.log("Song data loaded.");
     resolve();
   }, 800));
-  return { ingameData, myNotes };
+  return { notes, sound };
 };
 
 const connectServer = async () => {
