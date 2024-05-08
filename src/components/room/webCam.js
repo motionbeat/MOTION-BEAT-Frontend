@@ -7,48 +7,48 @@ import Mediapipe from "../mediapipe/mediapipe.js";
 import "../../styles/room/webcam.scss";
 import { OpenVidu } from "openvidu-browser";
 
-const WebCam = ({ players = [], hostName, roomCode }) => {
-    const [playerStatuses, setPlayerStatuses] = useState({});
-    const myNickname = sessionStorage.getItem("nickname");
-    const navigate = useNavigate();
-    const backendUrl = process.env.REACT_APP_BACK_API_URL;
-    const [instruModal, setInstruModal] = useState(false);
-    const [instrumentList, setInstrumentList] = useState([]);
-    const [session, setSession] = useState(null);
-    const [publisher, setPublisher] = useState(null);
-    const [subscribers, setSubscribers] = useState([]);
-    const OV = useRef(null);
-    const myVideoRef = useRef(null);
-    const otherVideosRef = useRef({});
+const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
+  const [playerStatuses, setPlayerStatuses] = useState({});
+  const myNickname = sessionStorage.getItem("nickname");
+  const navigate = useNavigate();
+  const backendUrl = process.env.REACT_APP_BACK_API_URL;
+  const [instruModal, setInstruModal] = useState(false);
+  const [instrumentList, setInstrumentList] = useState([]);
+  const [session, setSession] = useState(null);
+  const [publisher, setPublisher] = useState(null);
+  const [subscribers, setSubscribers] = useState([]);
+  const OV = useRef(new OpenVidu());
+  const myVideoRef = useRef(null);
+  const otherVideosRef = useRef({});
 
-    // 방장 시작버튼
-    const startGameHandler = async () => {
-        if (myNickname === hostName) {
-            const gameStart = async () => {
-                try {
-                    const response = await axios.post(
-                        `${backendUrl}/api/games/start`,
-                        {
-                            code: roomCode,
-                        },
-                        {
-                            headers: {
-                                "Content-Type": "application/json",
-                                Authorization: `Bearer ${sessionStorage.getItem(
-                                    "userToken"
-                                )}`,
-                                UserId: sessionStorage.getItem("userId"),
-                                Nickname: sessionStorage.getItem("nickname"),
-                            },
-                        }
-                    );
-                } catch (error) {
-                    console.error("Error start res:", error);
-                }
-            };
-            gameStart();
+  // 방장 시작버튼
+  const startGameHandler = async () => {
+    if (myNickname === hostName) {
+      const gameStart = async () => {
+        try {
+          const response = await axios.post(
+            `${backendUrl}/api/games/start`,
+            {
+              code: roomCode,
+            },
+            {
+              headers: {
+                "Content-Type": "application/json",
+                Authorization: `Bearer ${sessionStorage.getItem(
+                  "userToken"
+                )}`,
+                UserId: sessionStorage.getItem("userId"),
+                Nickname: sessionStorage.getItem("nickname"),
+              },
+            }
+          );
+        } catch (error) {
+          console.error("Error start res:", error);
         }
-    };
+      };
+      gameStart();
+    }
+  };
 
   // 레디 버튼
   const readyBtnClick = (nickname) => {
@@ -102,7 +102,6 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
       },
     }));
 
-    // console.log("2",playerStatuses);
     // 악기 소켓에 전달
     const sendInstrument = async () => {
       try {
@@ -127,211 +126,190 @@ const WebCam = ({ players = [], hostName, roomCode }) => {
 
   // OpenVidu
   useEffect(() => {
-    OV.current = new OpenVidu();
-    initSession();
+    if (ingame) {
+      const session = OV.current.initSession();
+      setSession(session);
+
+      session.on("streamCreated", (event) => {
+        const videoElement = document.createElement("div"); // 새로운 div를 생성
+        videoElement.autoplay = true;
+        videoElement.srcObject = event.stream.mediaStream;
+
+        const subscriber = session.subscribe(event.stream, videoElement);
+        const isSelf = event.stream.connection.connectionId === session.connection.connectionId;
+
+        if (isSelf) {
+          myVideoRef.appendChild(videoElement);
+        } else {
+          otherVideosRef.current.appendChild(videoElement);
+        }
+
+        setSubscribers((prevSubscribers) => [
+          ...prevSubscribers,
+          subscriber,
+        ]);
+      });
+
+      session.on("streamDestroyed", (event) => {
+        setSubscribers((subs) =>
+          subs.filter((sub) => sub !== event.stream.streamManager)
+        );
+      });
+
+      initSession(roomCode, session);
+    }
+    return () => {
+      if (ingame && session) {
+        session.disconnect();
+      }
+    }
+  }, [ingame, roomCode]);
+
+  const initSession = async (roomCode, session) => {
+    const sessionId = await createSession(roomCode);
+    if (sessionId) {
+      const token = await createToken(sessionId);
+      if (token) {
+        session
+          .connect(token)
+          .then(() => {
+            const publisher = OV.current.initPublisher(undefined, {
+              audioSource: undefined,
+              videoSource: undefined,
+              publishAudio: false,
+              publishVideo: true,
+              resolution: "214x184",
+              frameRate: 30,
+              mirror: true,
+            });
+            session.publish(publisher);
+            setPublisher(publisher);
+          })
+          .catch((error) => {
+            console.error(
+              "Error connecting to the session:",
+              error
+            );
+          });
+      }
+    }
+  };
+
+  const createSession = async (sessionId) => {
+    try {
+      const response = await axios.post(
+        `https://motionbe.at:3001/api/openvidu/`,
+        { customSessionId: sessionId },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      return response.data; // The sessionId
+    } catch (error) {
+      console.error("Error creating session:", error);
+      return null;
+    }
+  };
+
+  const createToken = async (sessionId) => {
+    try {
+      const response = await axios.post(
+        `https://motionbe.at:3001/api/openvidu/${sessionId}/connections`,
+        {},
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      return response.data; // The token
+    } catch (error) {
+      console.error("Error fetching token:", error);
+      return null;
+    }
+  };
+
+  useEffect(() => {
+    setPlayerStatuses(
+      players.reduce((acc, player) => {
+        acc[player.nickname] = {
+          nickname: player.nickname,
+          instrument: player.instrument,
+          isReady: false,
+        };
+        return acc;
+      }, {})
+    );
+  }, [players]);
+
+  useEffect(() => {
+    socket.on("readyStatus", (userReady) => {
+      setPlayerStatuses((prevStatuses) => ({
+        ...prevStatuses,
+        [userReady.nickname]: {
+          ...prevStatuses[userReady.nickname],
+          isReady: userReady.isReady,
+        },
+      }));
+    });
+
+    socket.on("instrumentStatus", (res) => {
+      setPlayerStatuses((prevStatuses) => ({
+        ...prevStatuses,
+        [res.nickname]: {
+          ...prevStatuses[res.nickname],
+          instrument: res.instrument,
+        },
+      }));
+    });
+
+    return () => {
+      socket.off("readyStatus");
+    };
   }, []);
 
-  const initSession = async () => {
-    const session = OV.current.initSession();
-    setSession(session);
-
-        session.on("streamCreated", (event) => {
-            const videoElement = document.createElement("div"); // 새로운 div를 생성
-            videoElement.autoplay = true;
-            videoElement.srcObject = event.stream.mediaStream;
-
-            const subscriber = session.subscribe(event.stream, videoElement);
-            const isSelf = event.stream.connection.connectionId === session.connection.connectionId;
-
-            // if (
-            //     event.stream.connection.connectionId ===
-            //     session.connection.connectionId
-            // ) {
-            //     myVideoRef.current.appendChild(videoElement);
-            // } else {
-            //     otherVideosRef.current.appendChild(videoElement);
-            // }
-
-            if (isSelf) {
-                myVideoRef.appendChild(videoElement);
-            } else {
-                otherVideosRef.current.appendChild(videoElement);
-            }
-
-            setSubscribers((prevSubscribers) => [
-                ...prevSubscribers,
-                subscriber,
-            ]);
-        });
-
-        session.on("streamDestroyed", (event) => {
-            setSubscribers((subs) =>
-                subs.filter((sub) => sub !== event.stream.streamManager)
-            );
-        });
-
-        const sessionId = await createSession(roomCode);
-        if (sessionId) {
-            const token = await createToken(sessionId);
-            if (token) {
-                session
-                    .connect(token)
-                    .then(() => {
-                        const publisher = OV.current.initPublisher(undefined, {
-                            audioSource: undefined,
-                            videoSource: undefined,
-                            publishAudio: false,
-                            publishVideo: true,
-                            resolution: "214x184",
-                            frameRate: 30,
-                            mirror: true,
-                        });
-                        session.publish(publisher);
-                        setPublisher(publisher);
-                    })
-                    .catch((error) => {
-                        console.error(
-                            "Error connecting to the session:",
-                            error
-                        );
-                    });
-            }
-        }
-    };
-
-    const createSession = async (sessionId) => {
-        try {
-            const response = await axios.post(
-                `https://motionbe.at:3001/api/openvidu/`,
-                { customSessionId: sessionId },
-                {
-                    headers: { "Content-Type": "application/json" },
-                }
-            );
-            return response.data; // The sessionId
-        } catch (error) {
-            console.error("Error creating session:", error);
-            return null;
-        }
-    };
-
-    const createToken = async (sessionId) => {
-        try {
-            const response = await axios.post(
-                `https://motionbe.at:3001/api/openvidu/${sessionId}/connections`,
-                {},
-                {
-                    headers: { "Content-Type": "application/json" },
-                }
-            );
-            return response.data; // The token
-        } catch (error) {
-            console.error("Error fetching token:", error);
-            return null;
-        }
-    };
-
-    useEffect(() => {
-        setPlayerStatuses(
-            players.reduce((acc, player) => {
-                acc[player.nickname] = {
-                    nickname: player.nickname,
-                    instrument: player.instrument,
-                    isReady: false,
-                };
-                return acc;
-            }, {})
-        );
-    }, [players]);
-
-    useEffect(() => {
-        socket.on("readyStatus", (userReady) => {
-            setPlayerStatuses((prevStatuses) => ({
-                ...prevStatuses,
-                [userReady.nickname]: {
-                    ...prevStatuses[userReady.nickname],
-                    isReady: userReady.isReady,
-                },
-            }));
-        });
-
-        socket.on("instrumentStatus", (res) => {
-            setPlayerStatuses((prevStatuses) => ({
-                ...prevStatuses,
-                [res.nickname]: {
-                    ...prevStatuses[res.nickname],
-                    instrument: res.instrument,
-                },
-            }));
-        });
-
-        return () => {
-            socket.off("readyStatus");
-        };
-    }, []);
-
-    return (
-        <>
-            <div className="webCamBox">
-                {Object.entries(playerStatuses).map(([nickname, { instrument, isReady }], index) => (
-                    <div className="playerContainer" key={index}>
-                        <div className="webCamBoxDiv">
-                            {myNickname === nickname ? (
-                                // <div ref={myVideoRef} className="webCamBoxInner">
-                                <Mediapipe />
-                                // </div>
-                            ) : (
-                                <div ref={otherVideosRef} className="webCamBoxInner"></div>
-                            )}
-                            <p>{nickname}</p>
-                            <p onClick={() => findingInstrument(nickname)}>{instrument}</p>
-                            {nickname === hostName ? (
-                                <ReadyBtn onClick={() => startGameHandler()}>시작</ReadyBtn>
-                            ) : (
-                                <ReadyBtn
-                                    isReady={isReady}
-                                    onClick={() => readyBtnClick(nickname)}
-                                >
-                                    {isReady ? "준비 완료" : "대기 중"}
-                                </ReadyBtn>
-                            )}
-                            {instruModal && (
-                                <InstrumentModal>
-                                    {instrumentList.map((instrument) => (
-                                        <ul key={instrument.id}>
-                                            <li onClick={() => selectedInstrument(instrument.instrumentName)}>
-                                                {instrument.instrumentName}
-                                            </li>
-                                        </ul>
-                                    ))}
-                                </InstrumentModal>
-                            )}
-                        </div>
-                    </div>
-                ))}
+  return (
+    <>
+      <div className="webCamBox">
+        {Object.entries(playerStatuses).map(([nickname, { instrument, isReady }], index) => (
+          <div className="playerContainer" key={index}>
+            <div className="webCamBoxDiv">
+              {myNickname === nickname ? (
+                // <div ref={myVideoRef} className="webCamBoxInner">
+                <Mediapipe />
+                // </div>
+              ) : (
+                <div ref={otherVideosRef} className="webCamBoxInner"></div>
+              )}
+              <p>{nickname}</p>
+              <p onClick={() => findingInstrument(nickname)}>{instrument}</p>
+              {nickname === hostName ? (
+                <ReadyBtn onClick={() => startGameHandler()}>시작</ReadyBtn>
+              ) : (
+                <ReadyBtn
+                  isReady={isReady}
+                  onClick={() => readyBtnClick(nickname)}
+                >
+                  {isReady ? "준비 완료" : "대기 중"}
+                </ReadyBtn>
+              )}
+              {instruModal && (
+                <InstrumentModal>
+                  {instrumentList.map((instrument) => (
+                    <ul key={instrument.id}>
+                      <li onClick={() => selectedInstrument(instrument.instrumentName)}>
+                        {instrument.instrumentName}
+                      </li>
+                    </ul>
+                  ))}
+                </InstrumentModal>
+              )}
             </div>
-        </>
-    );
+          </div>
+        ))}
+      </div>
+    </>
+  );
 };
 export default WebCam;
-
-// const PlayerContainer = styled.div`
-//     display: flex;
-//     flex-direction: column;
-//     align-items: center;
-//     margin-top: 20px;
-// `;
-
-// // 웹 캠
-// const WebCamBox = styled.div`
-//     width: 100%;
-//     display: flex;
-
-//     h2 {
-//       margin: 0;
-//       text-align: center;
-//       }
-// `
 
 const WebCamInfo = styled.div`
     width: 230px;
@@ -346,21 +324,6 @@ const WebCamTop = styled.div`
         // margin: 15px;
     }
 `;
-
-// const HitMiss = styled.div`
-//   width: 20%;
-//   font-size: 1.8rem;
-//   text-align: center;
-
-//   p:first-child {
-//     color: green;
-//   }
-
-//   p:last-child {
-//     color: red;
-//   }
-// `
-
 
 const ReadyBtn = styled.button`
     background-color: ${(props) => (props.isReady ? "#6EDACD" : "#CB0000")};

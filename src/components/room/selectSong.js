@@ -9,9 +9,8 @@ import socket from "../../server/server.js"
 import "../../styles/room/room.scss";
 
 const SelectSong = ({ songNumber, hostName, roomCode }) => {
-  console.log(roomCode);
   const [modalOn, setModalOn] = useState(false);
-  const [selectedSong, setSelectedSong] = useState([]);
+  const [selectedSong, setSelectedSong] = useState();
   const [selectFavorite, setSelectFavorite] = useState(false);
   const audioRef = useRef(null); // 노래 가져오기
   
@@ -38,6 +37,7 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
     }
   }
 
+
   useEffect(() => {
     const findSong = async () => {
       try {
@@ -49,7 +49,8 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
             "Nickname": sessionStorage.getItem("nickname")
           }
         });
-        setSelectedSong(response.data);
+        const firstSong = response.data
+        setSelectedSong(firstSong);
       } catch (error) {
         console.error("Error random songs:", error);
       }
@@ -59,7 +60,7 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
 
     const handleSongChange = (song) => {
       console.log("received");
-      setSelectedSong([song]);
+      setSelectedSong(song);
     };
     socket.on(`songChanged`, handleSongChange);
 
@@ -68,6 +69,7 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
     };
     
   }, [backendUrl, songNum]);
+
 
   // 노래 선택
   const handleSongSelect = (song) => {
@@ -93,17 +95,17 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
       <audio ref={audioRef} src="/song/0.mp3" />
       <div className="showSongWrapper">
         <div className="songImg" onClick={selectMusic}><img src={LemonImg} alt="lemon" /></div>
-        {selectedSong.length > 0 && (
+        {selectedSong && (
           <div className="roomSelectSongBox">
             <button className="selectSongBtn" onClick={selectMusic}>노래 변경</button>
-            <h2>{selectedSong[0]?.title}</h2>
-            <p>{selectedSong[0]?.artist}</p>
+            <h2>{selectedSong.title}</h2>
+            <p>{selectedSong.artist}</p>
             {/* <Runtime>{selectedSong[0]?.runtime}</Runtime> */}
             {/* <SongBtn>
               <img src={PlayBtn} alt="play" onClick={handlePlay} />
               <img src={StopBtn} alt="stop" onClick={handleStop} />
             </SongBtn> */}
-            <p>{selectedSong[0]?.difficulty}</p>
+            <p>{selectedSong.difficulty}</p>
           </div>
         )}
     </div>
