@@ -275,7 +275,7 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
             <div className="webCamBoxDiv">
               {myNickname === nickname ? (
                 // <div ref={myVideoRef} className="webCamBoxInner"/>
-                ingame ? <Guitar /> : <div ref={myVideoRef} className="webCamBoxInner"/>
+                ingame ? <Guitar /> : <div ref={myVideoRef} className="webCamBoxInner" />
                 // </div>
               ) : (
                 <div ref={otherVideosRef} className="webCamBoxInner"></div>

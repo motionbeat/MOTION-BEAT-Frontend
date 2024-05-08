@@ -10,7 +10,7 @@ export const Judge = (key, time, instrument) => {
   };
 
   const notes = document.querySelectorAll(`.Note[data-instrument="${instrument}"]`);
-  console.log(notes)
+  // console.log(notes)
   let closestNote = null;
   let minIndex = Infinity;
 
