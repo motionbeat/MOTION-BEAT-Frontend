@@ -13,3 +13,37 @@
 .show {
   opacity: 1;
 }
+.score-container {
+  position: relative;
+  width: 100px;
+  height: 50px;
+  border: 1px solid white;
+  margin: auto;
+}
+
+.score-effect {
+  position: absolute;
+  top: 0%;
+  color: white;
+  font-size: 20px;
+  opacity: 0;
+  animation: fadeInOut 0.5s ease-out forwards;
+  border: 1px solid white;
+}
+
+@keyframes fadeInOut {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+
+  50% {
+    opacity: 1;
+    transform: translateY(-20px);
+  }
+
+  100% {
+    opacity: 0;
+    transform: translateY(-40px);
+  }
+}

@@ -20,46 +20,44 @@ import Output from "../utils/output";
 import socket from "../server/server";
 import axios from "axios";
 import GameResult from "../components/ingame/gameResult";
-import { JudgeEffect } from "../components/ingame/judgeEffect.js";
+import { JudgeEffect, JudgeEffectV2 } from "../components/ingame/judgeEffect.js";
 
 const staticColorsArray
   = ["255,0,0", "255, 255, 0", "0, 255, 0", "14, 128, 255"];
-let myPosition = 0;
-let playerNumber;
+let myPosition;
+let playerNumber = staticColorsArray.length;
+const backendUrl = process.env.REACT_APP_BACK_API_URL;
+let myColor
 
 const Ingame = () => {
-  const [message, setMessage] = useState("");
-  const [isPlaying, setIsPlaying] = useState(false);
-  const myNickname = sessionStorage.getItem("nickname");
-
-  const dispatch = useDispatch();
-  const loadedData = useSelector(state => state.gameloadData);
-  const [showEnter, setShowEnter] = useState(true);
-  const railRefs = useRef([]);
+  /* Router */
+  const navigate = useNavigate();
   const location = useLocation(); // 이전 페이지에서 데이터 가져오기
   const gameState = location.state || {}; // 가져온 데이터 넣기
+
+  /* Redux */
+  const dispatch = useDispatch();
+  const loadedData = useSelector(state => state.gameloadData);
+
+  /* State */
+  const [message, setMessage] = useState("");
+  const [isPlaying, setIsPlaying] = useState(false);
+  const [gameEnded, setGameEnded] = useState(false); // 게임 종료 상태
+  const [showEnter, setShowEnter] = useState(true);
   const [gameData, setGameData] = useState(gameState.game);
 
-  const [gameEnded, setGameEnded] = useState(false); // 게임 종료 상태
-  const navigate = useNavigate();
-  const backendUrl = process.env.REACT_APP_BACK_API_URL;
+  /* Storage */
+  const myNickname = sessionStorage.getItem("nickname");
 
-  const divRef = useRef(null);
+  /* Ref */
+  const railRefs = useRef([]);
 
   /* I/O 처리 */
-  const divBGRef = useRef(null);
 
+  /* useEffect 순서를 변경하지 마세요*/
   useEffect(() => {
     if (loadedData) {
       window.addEventListener("keydown", handleEnterDown);
-    }
-  }, [loadedData]);
-
-  const handleEnterDown = useCallback((event) => {
-    if (event.key === "Enter" && loadedData) {
-      setShowEnter(false); // Enter 후 ShowEnter 숨기기
-      window.removeEventListener("keydown", handleEnterDown); // 이벤트 리스너 제거
-      Start({ data: loadedData, eventKey: event.key, railRefs: railRefs, send: sendData, myPosition: myPosition });
     }
   }, [loadedData]);
 
@@ -73,9 +71,9 @@ const Ingame = () => {
         // console.log(loadedData);
         dispatch(setGameloadData(loadedData));
 
-        if (divBGRef.current && loadedData.songData.ingameData.imageUrl) {
-          divBGRef.current.style.setProperty('--background-url', `url(${loadedData.songData.ingameData.imageUrl})`);
-        }
+        // if (divBGRef.current && loadedData.songData.ingameData.imageUrl) {
+        //   divBGRef.current.style.setProperty('--background-url', `url(${loadedData.songData.ingameData.imageUrl})`);
+        // }
 
       } catch (error) {
         console.error('Loading failed:', error);
@@ -91,6 +89,8 @@ const Ingame = () => {
     socket.emit(`playerLoaded`, sendData)
 
     playerNumber = gameData.players.length
+    myPosition = gameData.players.findIndex(item => item.nickname === myNickname)
+    myColor = staticColorsArray[myPosition]
     // currentAudio.addEventListener('ended', handleAudioEnd);
 
     // 방에서 나갈 때 상태 업데이트
@@ -117,6 +117,14 @@ const Ingame = () => {
       socket.off(`leftRoom${gameData.code}`, updatePlayersAfterLeave);
     };
   }, []);
+
+  const handleEnterDown = useCallback((event) => {
+    if (event.key === "Enter" && loadedData) {
+      setShowEnter(false); // Enter 후 ShowEnter 숨기기
+      window.removeEventListener("keydown", handleEnterDown); // 이벤트 리스너 제거
+      Start({ data: loadedData, eventKey: event.key, railRefs: railRefs, send: sendData, myPosition: myPosition });
+    }
+  }, [loadedData]);
 
   // 아마 입력 감지
   const handleKeyPressed = (msg) => {
@@ -182,7 +190,7 @@ const Ingame = () => {
     const handleKeyDown = useCallback((key, time) => {
       setIsActive(true);
 
-      console.log("버튼눌림", key, time)
+      console.log(key, "버튼눌림 at : ", time)
       Judge(key, time);
 
     }, []);
@@ -253,13 +261,14 @@ const Ingame = () => {
           </>
         ) : (
           <>
-            <div ref={divBGRef} className="background-albumCover" />
+            {/* <div ref={divBGRef} className="background-albumCover" /> */}
             <p>인게임 페이지</p>
             <SongSheet railRefs={railRefs} myPosition={myPosition} Colors={staticColorsArray} >
             </SongSheet>
             <div style={{ position: "relative" }}>
               {/* {!judge ? null : <JudgeEffect judge={judge} />} */}
-              <WebCamFrame>
+              <Score />
+              <WebCamFrame myColor={myColor}>
                 <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} />
               </WebCamFrame>
             </div>
