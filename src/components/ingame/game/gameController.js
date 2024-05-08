@@ -3,7 +3,7 @@ import { now } from "../../../utils/time.js";
 import styled, { keyframes } from "styled-components"
 import socket from "../../../server/server.js";
 
-export const Start = ({ data, eventKey, railRefs, send }) => {
+export const Start = ({ data, eventKey, railRefs, send, myPosition }) => {
   console.log("게임 시작 로직 실행");
   console.log("TEST", send)
   console.log(data);
@@ -74,7 +74,7 @@ export const Start = ({ data, eventKey, railRefs, send }) => {
     noteElement.setAttribute('data-time', (time + 5000).toString());
     noteElement.setAttribute('data-index', index.toString());
 
-    const rail = railRefs.current[data.skinData.userData.myPosition].current;
+    const rail = railRefs.current[myPosition].current;
     rail.appendChild(noteElement);
 
     const animateNote = () => {

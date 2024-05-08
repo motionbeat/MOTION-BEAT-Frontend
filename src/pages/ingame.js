@@ -22,6 +22,11 @@ import axios from "axios";
 import GameResult from "../components/ingame/gameResult";
 import { JudgeEffect } from "../components/ingame/judgeEffect.js";
 
+const staticColorsArray
+  = ["255,0,0", "255, 255, 0", "0, 255, 0", "14, 128, 255"];
+let myPosition = 0;
+let playerNumber;
+
 const Ingame = () => {
   const [message, setMessage] = useState("");
   const [isPlaying, setIsPlaying] = useState(false);
@@ -40,7 +45,6 @@ const Ingame = () => {
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
 
   const divRef = useRef(null);
-  const otherColor = "255, 0, 0";
 
   /* I/O 처리 */
   const divBGRef = useRef(null);
@@ -55,7 +59,7 @@ const Ingame = () => {
     if (event.key === "Enter" && loadedData) {
       setShowEnter(false); // Enter 후 ShowEnter 숨기기
       window.removeEventListener("keydown", handleEnterDown); // 이벤트 리스너 제거
-      Start({ data: loadedData, eventKey: event.key, railRefs: railRefs, send: sendData });
+      Start({ data: loadedData, eventKey: event.key, railRefs: railRefs, send: sendData, myPosition: myPosition });
     }
   }, [loadedData]);
 
@@ -86,6 +90,7 @@ const Ingame = () => {
   useEffect(() => {
     socket.emit(`playerLoaded`, sendData)
 
+    playerNumber = gameData.players.length
     // currentAudio.addEventListener('ended', handleAudioEnd);
 
     // 방에서 나갈 때 상태 업데이트
@@ -162,19 +167,14 @@ const Ingame = () => {
 
   // 재생 상태 변경
   useEffect(() => {
-    if (loadedData && loadedData.skinData && loadedData.skinData.colors) {
-      if (loadedData.skinData.colors.length !== railRefs.current.length) {
-        railRefs.current = loadedData.skinData.colors.map((_, index) => railRefs.current[index] || React.createRef());
-      }
+    if (playerNumber !== railRefs.current.length) {
+      railRefs.current = staticColorsArray.map((_, index) => railRefs.current[index] || React.createRef());
     }
   }, [loadedData]);
 
-  if (!loadedData?.skinData?.colors) {
+  if (!staticColorsArray) {
     return <p>Loading...</p>;
   }
-
-
-
 
   const SongSheet = ({ railRefs, myPosition, Colors }) => {
     const [isActive, setIsActive] = useState(false);
@@ -254,7 +254,8 @@ const Ingame = () => {
         ) : (
           <>
             <div ref={divBGRef} className="background-albumCover" />
-            <SongSheet railRefs={railRefs} myPosition={loadedData.skinData.userData.myPosition} Colors={loadedData.skinData.colors} >
+            <p>인게임 페이지</p>
+            <SongSheet railRefs={railRefs} myPosition={myPosition} Colors={staticColorsArray} >
             </SongSheet>
             <div style={{ position: "relative" }}>
               {/* {!judge ? null : <JudgeEffect judge={judge} />} */}
