@@ -12,11 +12,11 @@ class Guitar extends Component {
             leftWristY: null,
             rightWristY: null,
             postureStatus: "X",
-            backgroundMusicVolume: 0.2,
-            timer: 0,
-            bgmPlaying: false,
-            soundTimes: [],
-            hitCount: 0,
+            // backgroundMusicVolume: 0.2,
+            // timer: 0,
+            // bgmPlaying: false,
+            // soundTimes: [],
+            // hitCount: 0,
             lastPlayedSound: null
         };
 
@@ -25,34 +25,47 @@ class Guitar extends Component {
         this.pose = undefined;
         this.soundA = new Audio('/effect/tom.mp3');
         this.soundB = new Audio('/effect/snare.mp3');
-        this.backgroundMusic = new Audio('/song/본능적으로.mp4');
+        // this.backgroundMusic = new Audio('/song/본능적으로.mp4');
     }
 
     componentDidMount() {
         this.initializePose();
-        this.startTimer();
+        // this.startTimer();
         this.initializeMediaStream(); // 바로 미디어 스트림을 시작합니다.
     }
 
-    startTimer = () => {
-        setInterval(() => {
-            if (this.state.bgmPlaying) {
-                this.setState(prevState => ({ timer: prevState.timer + 1 }));
-            }
-        }, 1000);
+    dispatchKey(key) {
+        const event = new KeyboardEvent('keydown', {
+            key: key,
+            code: key.toUpperCase(),
+            which: key.charCodeAt(0),
+            keyCode: key.charCodeAt(0),
+            shiftKey: false,
+            ctrlKey: false,
+            metaKey: false
+        });
+        window.dispatchEvent(event);
     }
 
-    toggleBgmPlaying = () => {
-        this.setState(prevState => ({ bgmPlaying: !prevState.bgmPlaying }));
-    }
+    // startTimer = () => {
+    //     setInterval(() => {
+    //         if (this.state.bgmPlaying) {
+    //             this.setState(prevState => ({ timer: prevState.timer + 1 }));
+    //         }
+    //     }, 1000);
+    // }
+
+    // toggleBgmPlaying = () => {
+    //     this.setState(prevState => ({ bgmPlaying: !prevState.bgmPlaying }));
+    // }
 
     initializePose() {
         this.pose = new posedetection.Pose({
             locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
         });
         this.pose.setOptions({
-            modelComplexity: 1,
-            smoothLandmarks: true,
+            modelComplexity: 0,
+            smoothLandmarks: false,
             enableSegmentation: false
         });
         this.setState({ isModelLoaded: true });
@@ -96,51 +109,54 @@ class Guitar extends Component {
     }
 
     detectWristMovement(leftWristY, rightWristY, leftShoulderY, leftElbowY, rightElbowY, previousRightWristY) {
-        if (!this.state.bgmPlaying) return;
+        if (leftWristY == null) return;
 
         let newStatus = "X"; // 기본값은 'X'
-        const movementThreshold = 0.05; // 오른쪽 손목의 움직임 감지 임계값
+        const movementThreshold = 0.2; // 오른쪽 손목의 움직임 감지 임계값
         let rightWristMovementDetected = Math.abs(rightWristY - previousRightWristY) > movementThreshold; // 오른쪽 손목 움직임 감지
 
         // 자세 판단 로직
         if (leftWristY < leftShoulderY && rightWristMovementDetected) {
             newStatus = 'A';
-        } else if (leftWristY > leftShoulderY && leftWristY < leftElbowY && rightWristMovementDetected) {
+        } else if (leftWristY > leftShoulderY && rightWristMovementDetected) {
             newStatus = 'B';
-        } else if (leftWristY > rightElbowY && rightWristMovementDetected) {
-            newStatus = 'C';
-        }
+        } 
+        // else if (leftWristY > rightElbowY && rightWristMovementDetected) {
+        //     newStatus = 'C';
+        // }
 
         if (newStatus !== this.state.postureStatus) {
             if (newStatus === 'A') {
                 this.soundA.play();
+                this.dispatchKey('d')
             } else if (newStatus === 'B') {
                 this.soundB.play();
+                this.dispatchKey('f')
             }
             this.setState({
                 postureStatus: newStatus,
                 lastPlayedSound: newStatus,
-                hitCount: this.state.hitCount + 1,
+                // hitCount: this.state.hitCount + 1,
                 rightWristY: rightWristY // 현재 오른쪽 손목의 Y 위치를 저장
-            });
+            })
         }
     }
 
-    playBackgroundMusic = () => {
-        this.backgroundMusic.play();
-        this.setState({ bgmPlaying: true });
-    }
+    // playBackgroundMusic = () => {
+    //     this.backgroundMusic.play();
+    //     this.setState({ bgmPlaying: true });
+    // }
 
-    pauseBackgroundMusic = () => {
-        this.backgroundMusic.pause();
-        this.setState({ bgmPlaying: false });
-    }
+    // pauseBackgroundMusic = () => {
+    //     this.backgroundMusic.pause();
+    //     this.setState({ bgmPlaying: false });
+    // }
 
-    handleVolumeChange = (event) => {
-        const volume = event.target.value;
-        this.setState({ backgroundMusicVolume: volume });
-        this.backgroundMusic.volume = volume;
-    }
+    // handleVolumeChange = (event) => {
+    //     const volume = event.target.value;
+    //     this.setState({ backgroundMusicVolume: volume });
+    //     this.backgroundMusic.volume = volume;
+    // }
 
     render() {
         const { postureStatus, backgroundMusicVolume, hitCount } = this.state;
@@ -149,13 +165,13 @@ class Guitar extends Component {
                 <div id="session" style={{ position: 'relative', width: '230px', height: '190px' }}>
                     <video ref={this.videoRef} style={{ width: '100%', height: '100%', position: 'absolute', top: '0', left: '0', zIndex: 1 }} playsInline autoPlay />
                     <canvas ref={this.canvasRef} style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%', opacity: 0.9, zIndex: 2 }} width="640" height="480" />
-                    <br/><br/><br/><br/><br/><br/><br/><br/><br/>
+                    {/* <br/><br/><br/><br/><br/><br/><br/><br/><br/>
                     <div>현재 자세: {postureStatus}</div>
                     <div>경과 시간: {this.state.timer}초</div>
                     <div>횟수: {hitCount}</div>
                     <button onClick={this.playBackgroundMusic}>BGM 재생</button>
                     <button onClick={this.pauseBackgroundMusic}>BGM 일시정지</button>
-                    <input type="range" min="0" max="1" step="0.01" value={backgroundMusicVolume} onChange={this.handleVolumeChange} />
+                    <input type="range" min="0" max="1" step="0.01" value={backgroundMusicVolume} onChange={this.handleVolumeChange} /> */}
                 </div>
             </div>
         );
