@@ -277,9 +277,9 @@ const Ingame = () => {
             </SongSheet>
             <div style={{ position: "relative" }}>
               <JudgeEffectV2 />
-              <WebCamFrame myColor={myColor} roomCode={gameData.code}>
+              <WebCamFrame myColor={myColor} roomCode={gameData.code}/>
                 <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} ingame={true} />
-              </WebCamFrame>
+              
             </div>
           </>
         )}
