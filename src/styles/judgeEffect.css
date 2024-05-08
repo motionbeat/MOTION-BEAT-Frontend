@@ -1,18 +1,18 @@
 .judgeEffect {
   position: "absolute";
-  top: "50%";
-  left: "50%";
-  transform: "translate(-50%, -50%)";
+  top: 0%;
   color: white;
   font-size: 30px;
   height: 20px;
-  opacity: 1;
-  transition: opacity 1s ease-out;
+  opacity: 0;
+  transition: fadeInOut 1s ease-out forwards;
+  border: 1px solid white;
 }
 
 .show {
   opacity: 1;
 }
+
 .score-container {
   position: relative;
   width: 100px;
