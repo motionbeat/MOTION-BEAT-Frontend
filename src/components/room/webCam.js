@@ -6,6 +6,7 @@ import axios from "axios";
 import Mediapipe from "../mediapipe/mediapipe.js";
 import "../../styles/room/webcam.scss";
 import { OpenVidu } from "openvidu-browser";
+import Guitar from "../mediapipe/guitar.js";
 
 const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
   const [playerStatuses, setPlayerStatuses] = useState({});
@@ -274,7 +275,7 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
             <div className="webCamBoxDiv">
               {myNickname === nickname ? (
                 // <div ref={myVideoRef} className="webCamBoxInner">
-                <Mediapipe />
+                ingame ? <Guitar /> : <div/>
                 // </div>
               ) : (
                 <div ref={otherVideosRef} className="webCamBoxInner"></div>

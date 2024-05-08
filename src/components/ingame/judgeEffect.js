@@ -41,3 +41,31 @@ export const JudgeEffect = ({ judge }) => {
     </div >
   );
 }
+
+export const JudgeEffectV2 = ({ judge }) => {
+  const [showEffect, setShowEffect] = useState(false);
+
+  // 키 입력을 감지하여 이펙트를 트리거
+  useEffect(() => {
+    const handleKeyDown = () => {
+      setShowEffect(true);
+      setTimeout(() => setShowEffect(false), 500); // 500ms 후에 이펙트 숨기기
+    };
+
+    window.addEventListener('keydown', handleKeyDown);
+
+    return () => {
+      window.removeEventListener('keydown', handleKeyDown);
+    };
+  }, []);
+
+  const effectClass = `judgeEffect ${showEffect ? "show" : ""}`;
+
+  return (
+    <div className="score-container">
+      <div className={effectClass}>
+        {showEffect && <div className="score-effect">{judge}</div>}
+      </div>
+    </div>
+  );
+}

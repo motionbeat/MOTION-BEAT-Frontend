@@ -74,6 +74,10 @@ export const Start = ({ data, eventKey, railRefs, send, myPosition }) => {
     noteElement.setAttribute('data-time', (time + 5000).toString());
     noteElement.setAttribute('data-index', index.toString());
 
+    console.log(railRefs)
+    console.log(railRefs.current)
+    console.log(myPosition)
+
     const rail = railRefs.current[myPosition].current;
     rail.appendChild(noteElement);
 
