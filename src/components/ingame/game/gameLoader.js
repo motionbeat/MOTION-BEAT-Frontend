@@ -44,6 +44,7 @@ const loadMyData = async () => {
 const loadSongData = async (song, players) => {
   const myNickname = sessionStorage.getItem("nickname");
   console.log(players);
+  /* 플레이어들 정보: [{nickname, inst, score} ...] */
   const playerObject = players.find(item => item.nickname === myNickname);
 
   let myNotes = [];
@@ -56,6 +57,7 @@ const loadSongData = async (song, players) => {
         "Nickname": sessionStorage.getItem("nickname")
       }
     });
+    /* 내 악기 */
     const myInstrument = playerObject.instrument;
     myNotes = await response.data.notes.find(item => item.instrument === myInstrument)?.sequences;
 
