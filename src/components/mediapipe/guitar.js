@@ -23,8 +23,8 @@ class Guitar extends Component {
         this.videoRef = React.createRef();
         this.canvasRef = React.createRef();
         this.pose = undefined;
-        this.soundA = new Audio('/effect/tom.mp3');
-        this.soundB = new Audio('/effect/snare.mp3');
+        this.soundA = new Audio('/effect/guitar_1.mp3');
+        this.soundB = new Audio('/effect/guitar_2.mp3');
         // this.backgroundMusic = new Audio('/song/본능적으로.mp4');
     }
 
