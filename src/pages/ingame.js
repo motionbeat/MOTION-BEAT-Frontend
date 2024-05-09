@@ -21,6 +21,7 @@ import socket from "../server/server";
 import axios from "axios";
 import GameResult from "../components/ingame/gameResult";
 import { JudgeEffect, JudgeEffectV2 } from "../components/ingame/judgeEffect.js";
+import SecondScore from "../components/ingame/secondScore.js";
 
 const staticColorsArray
   = ["255,0,0", "255, 255, 0", "0, 255, 0", "14, 128, 255"];
@@ -45,7 +46,12 @@ const Ingame = () => {
   const [gameEnded, setGameEnded] = useState(false); // 게임 종료 상태
   const [showEnter, setShowEnter] = useState(true);
   const [gameData, setGameData] = useState(gameState.game);
-  console.log("인게임 데이터 확인", gameData);
+  const [scores, setScores] = useState({});
+
+  const handleScoresUpdate = (newScores) => {
+    setScores(newScores);
+  };
+
   /* Storage */
   const myNickname = sessionStorage.getItem("nickname");
 
@@ -136,7 +142,7 @@ const Ingame = () => {
   const sendData = {
     nickname: myNickname,
     code: gameData.code,
-    score: 5,
+    score: scores,
   };
 
   const exitBtn = async () => {
@@ -198,6 +204,8 @@ const Ingame = () => {
     const handleKeyUp = useCallback(() => {
       setIsActive(false);
     }, []);
+
+    
 
     // console.log(gameData);
     // console.log(gameData.players);
@@ -276,10 +284,9 @@ const Ingame = () => {
             <SongSheet railRefs={railRefs} myPosition={myPosition} Colors={gameData.players.length} >
             </SongSheet>
             <div style={{ display: "inline", position: "relative" }}>
-
               <WebCamFrame myColor={myColor} roomCode={gameData.code} />
               <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} ingame={true} />
-
+              <SecondScore gameData={gameData} onScoresUpdate={handleScoresUpdate} />
             </div>
           </>
         )}
