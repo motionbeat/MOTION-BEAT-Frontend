@@ -286,7 +286,7 @@ const Ingame = () => {
             <div style={{ display: "inline", position: "relative" }}>
               <WebCamFrame myColor={myColor} roomCode={gameData.code} />
               <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} ingame={true} />
-              <SecondScore gameData={gameData} onScoresUpdate={handleScoresUpdate} />
+              {/* <SecondScore gameData={gameData} onScoresUpdate={handleScoresUpdate} /> */}
             </div>
           </>
         )}
