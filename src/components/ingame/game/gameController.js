@@ -36,7 +36,7 @@ export const Start = ({ data, eventKey, railRefs, send, myPosition }) => {
     playAudio();
   }
 
-  const animationDuration = 6000;
+  const animationDuration = 5000;
 
   audioPlayer.addEventListener("play", () => {
     const processedNotes = new Set(); // 처리된 노트들을 추적하는 집합
@@ -49,8 +49,9 @@ export const Start = ({ data, eventKey, railRefs, send, myPosition }) => {
       const notes = data.musicData.notes;
       let count = 0;
       for (const note of notes) {
-        const startTime = note.time - animationDuration - 1;
+        const startTime = note.time - animationDuration;
 
+        /* 주의 : 생성시간과 연관됨 */
         if (startTime + 5000 <= audioTime && !processedNotes.has(note)) {
           GenerateNote(note, audioTime, count);  // 노트 생성 및 애니메이션 시작
           processedNotes.add(note);  // 노트를 처리된 상태로 표시
@@ -64,12 +65,14 @@ export const Start = ({ data, eventKey, railRefs, send, myPosition }) => {
 
   const GenerateNote = (note, start, index) => {
     const { motion, time } = note;
-    console.log("노트 생성", motion, "eta", time, "ms");
+    /* 주의 : 생성시간과 연관됨 */
+    console.log("노트 생성", motion, "eta", time + 5000, "ms");
 
     const noteElement = document.createElement("div");
     noteElement.className = "Note";
     noteElement.textContent = `${motion}`;
     noteElement.setAttribute('data-motion', motion);
+    /* 주의 : 생성시간과 연관됨 */
     noteElement.setAttribute('data-time', (time + 5000).toString());
     noteElement.setAttribute('data-instrument', note.instrument);
 
@@ -87,7 +90,7 @@ export const Start = ({ data, eventKey, railRefs, send, myPosition }) => {
       const elapsedTime = audioPlayer.currentTime * 1000 - start;
       const progress = elapsedTime / animationDuration;
 
-      if (progress <= 1) {
+      if (progress <= 1.2) {
         noteElement.style.left = `${100 - 100 * progress}%`;
         requestAnimationFrame(animateNote);
       } else {
