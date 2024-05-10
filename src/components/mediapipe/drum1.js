@@ -58,7 +58,7 @@ class Drum1 extends Component {
 
     initializePose() {
         this.pose = new posedetection.Pose({
-            locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+            locateFile: (file) => `https://fastly.jsdelivr.net/npm/@mediapipe/pose/${file}`
         });
         this.pose.setOptions({
             upperBodyOnly: true,

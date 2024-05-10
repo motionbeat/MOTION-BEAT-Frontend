@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as posedetection from '@mediapipe/pose';
 
-class Drum1 extends Component {
+class Drum3 extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -58,7 +58,7 @@ class Drum1 extends Component {
 
     initializePose() {
         this.pose = new posedetection.Pose({
-            locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
+            locateFile: (file) => `https://fastly.jsdelivr.net/npm/@mediapipe/pose/${file}`
         });
         this.pose.setOptions({
             upperBodyOnly: true,
@@ -174,4 +174,4 @@ class Drum1 extends Component {
     }
 }
 
-export default Drum1;
+export default Drum3;
