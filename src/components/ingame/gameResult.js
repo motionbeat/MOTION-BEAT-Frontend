@@ -4,18 +4,22 @@ import socket from "../../server/server.js";
 import { useNavigate } from "react-router-dom";
 import ExitBtn from "../common/atomic/room/exitBtn.js";
 import FirstCrown from "../../img/crown.png"
+import "../../styles/ingame/gameResult.scss"
+import GameExitBtn from "../common/atomic/room/gameExitBtn.js";
 
-const GameResult = ( roomCode ) => {
+const GameResult = ( {roomCode} ) => {
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
   const [resultData, setResultData] = useState([]);
   const navigate = useNavigate();
+  const songTitle = sessionStorage.getItem("songTitle");
+  const songArtist = sessionStorage.getItem("songArtist");
 
   // 결과창 출력
   useEffect(() => {
     const resultPrint = async () => {
       try {
         const response = await axios.post(`${backendUrl}/api/games/finished`, {
-          code : roomCode.roomCode
+          code : roomCode
           }, {
           headers: {
             "Content-Type": "application/json",
@@ -35,58 +39,43 @@ const GameResult = ( roomCode ) => {
     resultPrint();
   }, [roomCode] );
 
-  const exitBtn = async () => {
-    try {
-      const response1 = await axios.patch(`${backendUrl}/api/rooms/leave`, {
-        code: roomCode ? roomCode : "",
-      }, {
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
-          "UserId": sessionStorage.getItem("userId"),
-          "Nickname": sessionStorage.getItem("nickname")
-        }
-      });
-
-      if (response1.data.message === "redirect") {
-        const response2 = await axios.patch(`${backendUrl}/api/games/leave`, {
-          code: roomCode ? roomCode : "",
-        }, {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
-            "UserId": sessionStorage.getItem("userId"),
-            "Nickname": sessionStorage.getItem("nickname")
-          }
-        });
-        socket.emit("leaveRoom", roomCode, (res) => {
-          console.log("leaveRoom res", res);
-        });
-        if (response2.data.message === "redirect") navigate("/main");
-      }
-    } catch (error) {
-      console.error("leave room error", error);
-    }
-  }
-  
-
   return (
     <>
-      <div>
-        <div>SSS</div>
-        <button>즐겨찾기에 추가</button>
-        <div style={{width: "20%", margin: "0 auto", position: "relative"}}>
-          <div style={{position: "absolute", top: "-20%"}}>
-            <img src={FirstCrown} alt="1등 전용" />
-          </div>
-          {resultData.map((player, index) => (
-            <div key={index} style={{fontSize: "3rem", textAlign:"center", color:"white"}}>
-              <p>{player.nickname}: {player.score}</p>
-            </div>
-          ))}
+      <div className="gameResultWrapper">
+        <div className="exitBtnWrapper">
+          <GameExitBtn roomCode={roomCode} />
         </div>
-        <div style={{width: "205px", margin: "0 auto"}}>
-          <ExitBtn onClick={exitBtn} />
+        <div className="scoreGradeWrapper">
+          <div className="scoreGrade">SSS</div>
+        </div>
+        <div className="gameResultMainWrapper">
+          <div>
+            <div className="songWrapper">
+              <img src="#"/>
+              <div className="songInfo">
+                <h1>{songTitle}</h1>
+                <p>{songArtist}</p>
+              </div>
+            </div>
+            <button className="addFavorite">즐겨찾기에 추가</button>
+          </div>
+          <div className="scoreRankingWrapper">
+            {/* <div className="crown">
+              <img src={FirstCrown} alt="1등 전용" />
+            </div> */}
+            {resultData.map((player, index) => (
+              <div className="scoreRanking" key={index}>
+                {index === 0 ? (
+                  <>
+                    <img className="crown" src={FirstCrown} alt="1등 전용" />
+                    <p>{player.nickname}: {player.score}</p>
+                  </>
+                ) : (
+                  <p>{player.nickname}: {player.score}</p>
+                )}
+              </div>
+            ))}
+          </div>
         </div>
       </div>
     </>

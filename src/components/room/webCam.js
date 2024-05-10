@@ -281,7 +281,7 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
                 <div ref={myVideoRef} className="webCamBoxInner" />
                 // </div>
               ) : (
-                <div ref={(el) => (otherVideosRef.current[nickname] = el)} className="webCamBoxInner"></div>
+                <div ref={otherVideosRef} className="webCamBoxInner"></div>
               )}
               <p>{nickname}</p>
               <p onClick={() => findingInstrument(nickname)}>{instrument}</p>

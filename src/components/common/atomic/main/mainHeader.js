@@ -1,16 +1,23 @@
 import axios from "axios";
-import "../../../../styles/room/room.scss";
+// import "../../../../styles/room/room.scss";
+import "../../../../styles/common/mainHeader.scss"
 import socket from "../../../../server/server.js";
 import { useLocation, useNavigate } from "react-router-dom";
-import FriendState from "../../friendState.js";
 import { useState } from "react";
+import FriendBox from "./friendBox.js";
+import MypageBox from "./mypageBox.js";
 
 const MainHeader = ({ roomName, backPath }) => {
   const navigate = useNavigate();
   const [openFriends, setOpenFriends] = useState(false);
+  const [openMypage, setOpenMypage] = useState(false);
 
   const friendToggle = () => {
     setOpenFriends(!openFriends);
+  }
+
+  const myPageToggle = () => {
+    setOpenMypage(!openMypage);
   }
 
 
@@ -20,14 +27,17 @@ const MainHeader = ({ roomName, backPath }) => {
 
   return (
     <>
-      <div className="roomHeaderWrapper">
+      <div className="allHeaderWrapper">
         <button className="exitRoomBtn" onClick={goBack}>나가기</button>
-        <h1 className="room-title">{roomName}</h1>
+        <h1 className="allTitle">{roomName}</h1>
         <div className="btnWrapper">
-          <div className="friendsBtn" onClick={friendToggle}>
-            {openFriends && <FriendState />}
+          <div style={{position: "relative"}}>
+            <div className="friendsBtn" onClick={friendToggle}></div>
+            {openFriends && <FriendBox />}
           </div>
-          <div className="mypageBtn">
+          <div style={{position: "relative"}}>
+            <div className="mypageBtn" onClick={myPageToggle}></div>
+            {openMypage && <MypageBox />}
           </div>
         </div>
       </div>

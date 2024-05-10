@@ -1,6 +1,6 @@
 @font-face {
   font-family: "Pretendard";
-  src: url("../../fonts/pretendard/Pretendard-Black.ttf");
+  src: url("../../fonts/pretendard/Pretendard-SemiBold.ttf");
 }
 
 .friendBoxWrapper {
@@ -12,7 +12,10 @@
   background-size: cover;
   color: white;
   font-family: "LexendMega";
-  position: relative;
+  position: absolute;
+  left: -295%;
+  top: 105%;
+  z-index: 5;
 }
 
 // 헤더 부분
@@ -56,15 +59,15 @@
   font-weight: 400;
   margin-bottom: 20px;
 
-  div {
-    &:nth-child(1) {
-      font-size: 22px;
-      line-height: 2.7;
-    }
 
-    &:nth-child(2) {
-      font-size: 18px;
-      line-height: 3.3;
-    }
+  div {
+    font-size: 22px;
+    line-height: 2.7;
+    font-family: "Pretendard";
+  }
+
+  p {
+    font-size: 18px;
+    line-height: 3.3;
   }
 }
