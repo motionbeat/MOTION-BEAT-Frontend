@@ -2,13 +2,13 @@ import { useSelector, useCallback } from "react-redux";
 import { now } from "../../../utils/time.js";
 import styled, { keyframes } from "styled-components"
 import socket from "../../../server/server.js";
+import { useState } from "react";
 
-export const Start = ({ data, eventKey, railRefs, send, myPosition }) => {
+export const Start = ({ data, eventKey, railRefs, send, myPositio, roomCode}) => {
+  // const sendData = useSelector(state => state.sendData); 
   console.log("게임 시작 로직 실행");
-  console.log("TEST", send)
-  console.log(data);
 
-  let audioTime
+  let audioTime;
 
   if (!data?.musicData) {
     console.error("Invalid data passed to Start function");
@@ -20,6 +20,7 @@ export const Start = ({ data, eventKey, railRefs, send, myPosition }) => {
     console.error("Audio player not found");
     return;
   }
+
 
   const playAudio = () => {
     audioPlayer.src = data.musicData.sound;
@@ -100,10 +101,19 @@ export const Start = ({ data, eventKey, railRefs, send, myPosition }) => {
 
     requestAnimationFrame(animateNote);
   };
-
-
+  
   const End = () => {
     console.log("게임 종료");
+    const sendData = {
+      score: sessionStorage.getItem("hitNote"),
+      nickname: sessionStorage.getItem("nickname"),
+      code: roomCode
+    }
+
+    socket.emit("gameEnded", (sendData));
+
+    sessionStorage.removeItem("hitNote");
+
     document.removeEventListener('keydown', playAudio);  // Clean up event listener
     audioPlayer.dataset.listenersAdded = false;
   };
@@ -114,7 +124,6 @@ export const Start = ({ data, eventKey, railRefs, send, myPosition }) => {
 
   audioPlayer.addEventListener("ended", () => {
     console.log("노래 재생이 끝났습니다. End 함수를 호출하기 전 5초 대기합니다.");
-    socket.emit("gameEnded", send)
     setTimeout(() => End(), 5000);  // 5초 후 게임 종료
   });
 

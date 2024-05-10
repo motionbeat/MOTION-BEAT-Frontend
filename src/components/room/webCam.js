@@ -11,6 +11,7 @@ import Guitar from "../mediapipe/guitar.js";
 const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
   const [playerStatuses, setPlayerStatuses] = useState({});
   const myNickname = sessionStorage.getItem("nickname");
+  const other_players = players.filter((player) => player.nickname !== myNickname);
   const navigate = useNavigate();
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
   const [instruModal, setInstruModal] = useState(false);
@@ -275,10 +276,12 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
             <div className="webCamBoxDiv">
               {myNickname === nickname ? (
                 // <div ref={myVideoRef} className="webCamBoxInner"/>
-                ingame ? <Mediapipe /> : <div ref={myVideoRef} className="webCamBoxInner" />
+                ingame && instrument === 'drums' ? <Mediapipe /> :
+                ingame && instrument === 'guitar' ? <Guitar /> :
+                <div ref={myVideoRef} className="webCamBoxInner" />
                 // </div>
               ) : (
-                <div ref={otherVideosRef} className="webCamBoxInner"></div>
+                <div ref={(el) => (otherVideosRef.current[nickname] = el)} className="webCamBoxInner"></div>
               )}
               <p>{nickname}</p>
               <p onClick={() => findingInstrument(nickname)}>{instrument}</p>
