@@ -109,6 +109,8 @@ export const Start = ({ data, eventKey, railRefs, send, myPositio, roomCode}) =>
 
     socket.emit("gameEnded", (sendData));
 
+    sessionStorage.removeItem("hitNote");
+
     document.removeEventListener('keydown', playAudio);  // Clean up event listener
     audioPlayer.dataset.listenersAdded = false;
   };

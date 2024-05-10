@@ -93,8 +93,6 @@ const Ingame = () => {
 
   /* 네트워크 */
   useEffect(() => {
-    socket.emit(`playerLoaded`, sendData)
-
     playerNumber = gameData.players.length
     myPosition = gameData.players.findIndex(item => item.nickname === myNickname)
     myColor = staticColorsArray[myPosition]
@@ -126,6 +124,7 @@ const Ingame = () => {
 
   const handleEnterDown = useCallback((event) => {
     if (event.key === "Enter" && loadedData) {
+      socket.emit(`playerLoaded`, sendData);
       setShowEnter(false); // Enter 후 ShowEnter 숨기기
       window.removeEventListener("keydown", handleEnterDown); // 이벤트 리스너 제거
       Start({ data: loadedData, eventKey: event.key, railRefs: railRefs, send: sendData, myPosition: myPosition, roomCode: gameData.code });
