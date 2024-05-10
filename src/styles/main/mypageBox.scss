@@ -1,0 +1,55 @@
+@font-face {
+  font-family: "Pretendard";
+  src: url("../../fonts/pretendard/Pretendard-SemiBold.ttf");
+}
+
+.mypageBoxWrapper {
+  width: 594px;
+  height: 748px;
+  background-image: url("../../img/mypageBox.png");
+  border-radius: 20px;
+  position: absolute;
+  top: 50%;
+  left: -1062%;
+  z-index: 5;
+  padding: 30px;
+  color: white;
+}
+
+// 마이페이지 닉네임
+.mypageNickname {
+  width: 522px;
+  height: 56px;
+  border-radius: 100px;
+  background-image: url("../../img/mypageTitle.png");
+  
+  p {
+    font-family: "Pretendard";
+    font-size: 32px;
+    margin-left: 35px;
+    line-height: 1.5;
+  }
+}
+
+// 메인 기능
+.mypageMainBox {
+  width: 300px; /* div의 너비 설정 */
+  height: 100px; /* div의 높이 설정 */
+  border-radius: 26px;
+  position: relative;
+  margin-top: 60px;
+} 
+
+.mypageFavorite {
+  width: 522px;
+  height: 485px;
+  position: absolute;
+  background-image: url("../../img/mypageFavorite.png");
+}
+
+.mypageRecently {
+  width: 522px;
+  height: 485px;
+  position: absolute;
+  background-image: url("../../img/mypageRecently.png");
+}

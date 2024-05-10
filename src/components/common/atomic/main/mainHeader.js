@@ -17,7 +17,7 @@ const MainHeader = ({ roomName, backPath }) => {
   }
 
   const myPageToggle = () => {
-    setOpenFriends(!openFriends);
+    setOpenMypage(!openMypage);
   }
 
 
@@ -36,9 +36,8 @@ const MainHeader = ({ roomName, backPath }) => {
             {openFriends && <FriendBox />}
           </div>
           <div style={{position: "relative"}}>
-            <div className="mypageBtn" onClick={myPageToggle}>
+            <div className="mypageBtn" onClick={myPageToggle}></div>
             {openMypage && <MypageBox />}
-          </div>
           </div>
         </div>
       </div>

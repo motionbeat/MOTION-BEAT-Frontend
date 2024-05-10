@@ -1,9 +1,12 @@
 import axios from "axios";
 import { useEffect, useState } from "react"
+import "../../../../styles/main/mypageBox.scss"
 
 const MypageBox = () => {
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
+  const myNickname = sessionStorage.getItem("nickname");
   const [recentSongList, setRecentSongList] = useState([]);
+  // const [favorite]
 
   useEffect(() => {
     const recentSongs = async () => {
@@ -16,8 +19,7 @@ const MypageBox = () => {
             "Nickname": sessionStorage.getItem("nickname")
           }
         });
-        console.log("최근 곡");
-        console.log(response.data)
+        setRecentSongList(response.data.recentlyPlayed);
       } catch (error) {
         console.error("leave room error", error);
       }
@@ -28,12 +30,27 @@ const MypageBox = () => {
 
   return (
     <>
-      <div>
-        <ul>
-          <li>1</li>
-          <li>2</li>
-          <li>3</li>
-        </ul>
+      <div className="mypageBoxWrapper">
+        <div className="mypageNickname">
+          <p>{myNickname}</p>
+        </div>
+
+        <div className="mypageMainBox">
+          <div className="mypageFavorite"></div>
+          <div className="mypageRecently">
+            <ul style={{fontSize: "2rem", color: "white"}}>
+            {recentSongList.map((song, index) => (
+              <li key={index}>
+                <p>{song.title}</p>
+                <p>{song.artist}</p>
+                <p>{song.difficulty}</p>
+                </li>
+            ))}
+          </ul>
+          </div>
+        </div>
+
+
       </div>
     </>
   )
