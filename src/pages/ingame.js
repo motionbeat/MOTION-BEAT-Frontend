@@ -32,7 +32,6 @@ let myColor
 
 const Ingame = () => {
   /* Router */
-  const navigate = useNavigate();
   const location = useLocation(); // 이전 페이지에서 데이터 가져오기
   const gameState = location.state || {}; // 가져온 데이터 넣기
 
@@ -107,7 +106,19 @@ const Ingame = () => {
 
     };
 
-    socket.on(`allPlayersLoaded${sendData.code}`, () => {
+    socket.on(`allPlayersLoaded${sendData.code}`, (serverTime) => {
+      const date = new Date(serverTime);
+
+      const hours = date.getHours().toString().padStart(2, '0');
+      const minutes = date.getMinutes().toString().padStart(2, '0');
+      const seconds = date.getSeconds().toString().padStart(2, '0');
+
+      const formattedTime = `${hours}:${minutes}:${seconds}`;
+
+      sessionStorage.setItem("serverTime", formattedTime);
+      console.log("서버타임", serverTime);
+      console.log("서버타임 변환", formattedTime);
+
       setIsPlaying(true);
     })
 
@@ -143,39 +154,7 @@ const Ingame = () => {
     score: 0,
   };
 
-  const exitBtn = async () => {
-    try {
-      const response1 = await axios.patch(`${backendUrl}/api/rooms/leave`, {
-        code: gameData ? gameData.code : "",
-      }, {
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
-          "UserId": sessionStorage.getItem("userId"),
-          "Nickname": sessionStorage.getItem("nickname")
-        }
-      });
-
-      if (response1.data.message === "redirect") {
-        const response2 = await axios.patch(`${backendUrl}/api/games/leave`, {
-          code: gameData ? gameData.code : "",
-        }, {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
-            "UserId": sessionStorage.getItem("userId"),
-            "Nickname": sessionStorage.getItem("nickname")
-          }
-        });
-        socket.emit("leaveRoom", gameData.code, (res) => {
-          console.log("leaveRoom res", res);
-        });
-        if (response2.data.message === "redirect") navigate("/main");
-      }
-    } catch (error) {
-      console.error("leave room error", error);
-    }
-  }
+  
 
   // 재생 상태 변경
   useEffect(() => {
@@ -269,11 +248,10 @@ const Ingame = () => {
 
   return (
     <>
-      <div style={{ position: "relative" }}>
+      <div style={{ position: "relative", overflow: "hidden"}}>
         {gameEnded ? (
           <>
             <GameResult roomCode={gameData.code} />
-            <button onClick={exitBtn}>나가기</button>
           </>
         ) : (
           <>
