@@ -110,11 +110,10 @@ const Ingame = () => {
     };
 
     socket.on(`allPlayersLoaded${sendData.code}`, () => {
-      console.log("들어옴");
       setIsPlaying(true);
     })
 
-    socket.on(`allPlayersEnded${sendData.code}`, () => {
+    socket.on(`allPlayersEnded${gameData.code}`, (res) => {
       console.log("전체 플레이어 게임 끝");
       setGameEnded(true);
     })
@@ -129,7 +128,7 @@ const Ingame = () => {
     if (event.key === "Enter" && loadedData) {
       setShowEnter(false); // Enter 후 ShowEnter 숨기기
       window.removeEventListener("keydown", handleEnterDown); // 이벤트 리스너 제거
-      Start({ data: loadedData, eventKey: event.key, railRefs: railRefs, send: sendData, myPosition: myPosition });
+      Start({ data: loadedData, eventKey: event.key, railRefs: railRefs, send: sendData, myPosition: myPosition, roomCode: gameData.code });
     }
   }, [loadedData]);
 
@@ -138,11 +137,11 @@ const Ingame = () => {
     setMessage(msg);
   };
 
-  // 서버에 보낼 데이터
+  // 서버에 보낼 데이터(시작시 기본값)
   const sendData = {
     nickname: myNickname,
     code: gameData.code,
-    score: scores,
+    score: 0,
   };
 
   const exitBtn = async () => {
@@ -286,7 +285,7 @@ const Ingame = () => {
             <div style={{ display: "inline", position: "relative" }}>
               <WebCamFrame myColor={myColor} roomCode={gameData.code} />
               <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} ingame={true} />
-              {/* <SecondScore gameData={gameData} onScoresUpdate={handleScoresUpdate} /> */}
+              <SecondScore gameData={gameData} />
             </div>
           </>
         )}

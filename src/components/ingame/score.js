@@ -1,11 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import socket from '../../server/server';
+import { ingameSendData} from '../../redux/actions/sendDataAction';
+import { useDispatch, useSelector } from 'react-redux';
 
 const Score = ({roomCode}) => {
   const [hittedNotes, setHittedNotes] = useState(0);
   const [missedNotes, setMissedNotes] = useState(0);
-
+  const dispatch = useDispatch();
+  const sendData = useSelector(state => state.sendData);
   const myNickname = sessionStorage.getItem("nickname");
+
+  useEffect(() => {
+    dispatch(ingameSendData({ code: roomCode, nickname: myNickname, score: hittedNotes }));
+    console.log("데이터 보내기", sendData);
+  }, [hittedNotes, dispatch, roomCode, myNickname]);
 
   // 점수를 업데이트하는 함수
   const updateScore = (result) => {
@@ -32,9 +40,6 @@ const Score = ({roomCode}) => {
 
   useEffect(() => {
     // console.log("노트 받는지 response:", hittedNotes);
-    console.log("방코드",roomCode);
-    console.log("닉네암",myNickname);
-    console.log("히트노드",hittedNotes);
     const sendData = { 
       code: roomCode, 
       nickname: myNickname, 
@@ -43,6 +48,8 @@ const Score = ({roomCode}) => {
     socket.emit("hit", sendData, (res) => {
       console.log("Hit update response:", res);
     });
+
+    sessionStorage.setItem("hitNote", hittedNotes);
 
   }, [hittedNotes, missedNotes])
 
