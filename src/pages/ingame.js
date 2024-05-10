@@ -248,7 +248,7 @@ const Ingame = () => {
 
   return (
     <>
-      <div style={{ position: "relative", overflow: "hidden"}}>
+      <div style={{ position: "relative"}}>
         {gameEnded ? (
           <>
             <GameResult roomCode={gameData.code} />

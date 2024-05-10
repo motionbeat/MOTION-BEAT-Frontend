@@ -35,17 +35,26 @@ export const Judge = (key, time, instrument) => {
   const timeDiff = noteTime - time;
 
   console.log("TEST4");
-  if (timeDiff > 1000 || closestNote.getAttribute('data-motion') !== Parser(key)) {
+  if (timeDiff > 500 || closestNote.getAttribute('data-motion') !== Parser(key)) {
     console.log("IGNORE")
     return dispatch(result);
   }
 
-  if (((timeDiff > 500 && timeDiff < 1000) || (timeDiff < -500 && timeDiff > -1000)) && closestNote.getAttribute('data-motion') === Parser(key)) {
-    console.log("MISS!")
-    dispatch("miss");
-  } else if (timeDiff >= -500 && timeDiff <= 500 && closestNote.getAttribute('data-motion') === Parser(key)) {
+  // if (((timeDiff > 500 && timeDiff < 1000) || (timeDiff < -500 && timeDiff > -1000)) && closestNote.getAttribute('data-motion') === Parser(key)) {
+  //   console.log("MISS!")
+  //   dispatch("miss");
+  // } else
+
+  if (timeDiff >= 0 && timeDiff <= 500 && closestNote.getAttribute('data-motion') === Parser(key)) {
     console.log("HIT!")
     dispatch("hit");
   }
+  else {
+    console.log("IGNORED");
+    // dispatch("ignore");
+
+  }
+
+
   closestNote.remove();  // 해당 노트를 화면에서 숨김
 }
