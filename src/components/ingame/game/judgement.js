@@ -1,5 +1,8 @@
 import { Parser } from "../../../utils/parser";
-export const Judge = (key, time, instrument) => {
+import { useSelector } from "react-redux";
+
+export const Judge = (key, time, instrument, audio) => {
+
   let result = "ignore"; // 기본 결과를 "ignore"로 설정
 
   console.log("TEST1");
@@ -28,14 +31,15 @@ export const Judge = (key, time, instrument) => {
     return result;
   }
 
-  console.log("TEST3");
   const noteTime = parseInt(closestNote.getAttribute('data-time'), 10);
 
-  console.log("MININDEX:" + minIndex + "JUDGEDNOTES:")
+  // console.log("MININDEX:" + minIndex + "JUDGEDNOTES:")
   const timeDiff = noteTime - time;
 
-  console.log("TEST4");
-  if (timeDiff > 500 || closestNote.getAttribute('data-motion') !== Parser(key)) {
+  /* timeDiff가 0.5이상 차이나거나, 같은 모션 키를 입력하지 않았을 경우 */
+  if (
+    (timeDiff > 500) || (closestNote.getAttribute('data-motion') !== Parser(key))
+  ) {
     console.log("IGNORE")
     return dispatch(result);
   }
@@ -45,16 +49,23 @@ export const Judge = (key, time, instrument) => {
   //   dispatch("miss");
   // } else
 
-  if (timeDiff >= 0 && timeDiff <= 500 && closestNote.getAttribute('data-motion') === Parser(key)) {
-    console.log("HIT!")
-    dispatch("hit");
+  /* timeDiff가 >=0,<=500 사이에 있고, 같은 모션 키를 입력했을 경우  */
+  if (
+    (timeDiff >= 0 && timeDiff <= 500) && (closestNote.getAttribute('data-motion') === Parser(key))
+  ) {
+    console.log(audio);
+    PlayKeySound();
+    console.log("HIT")
+    result = "hit"
+    dispatch(result);
   }
-  else {
-    console.log("IGNORED");
-    // dispatch("ignore");
-
-  }
-
+  // console.log("IGNORED");
+  // dispatch("ignore");
 
   closestNote.remove();  // 해당 노트를 화면에서 숨김
+}
+
+const PlayKeySound = () => {
+  const audioPlayer = document.getElementById("keySound");
+  audioPlayer.src = audio[0].url;
 }
