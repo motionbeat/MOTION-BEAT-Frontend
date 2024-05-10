@@ -1,8 +1,7 @@
 import React, { Component } from 'react';
 import * as posedetection from '@mediapipe/pose';
-import * as drawingUtils from '@mediapipe/drawing_utils';
 
-class Mediapipe extends Component {
+class Drum1 extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -21,8 +20,8 @@ class Mediapipe extends Component {
         this.videoRef = React.createRef();
         this.canvasRef = React.createRef();
         this.pose = undefined;
-        this.soundA = new Audio('/effect/tom.mp3');
-        this.soundB = new Audio('/effect/snare.mp3');
+        // this.soundA = new Audio('/effect/tom.mp3');
+        // this.soundB = new Audio('/effect/snare.mp3');
         // this.backgroundMusic = new Audio('/song/본능적으로.mp4');
     }
 
@@ -120,10 +119,10 @@ class Mediapipe extends Component {
                 
                 if (this.state.postureStatus !== newStatus) {
                     if (newStatus === 'A') {
-                        this.soundA.play();
+                        // this.soundA.play();
                         this.dispatchKey('d')
                     } else if (newStatus === 'B') {
-                        this.soundB.play();
+                        // this.soundB.play();
                         this.dispatchKey('f')
                     }
                     this.setState(prevState => ({
@@ -175,4 +174,4 @@ class Mediapipe extends Component {
     }
 }
 
-export default Mediapipe;
+export default Drum1;

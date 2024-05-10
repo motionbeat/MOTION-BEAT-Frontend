@@ -3,10 +3,12 @@ import socket from "../../server/server.js";
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import Mediapipe from "../mediapipe/mediapipe.js";
+import Drum1 from "../mediapipe/drum1.js";
 import "../../styles/room/webcam.scss";
 import { OpenVidu } from "openvidu-browser";
-import Guitar from "../mediapipe/guitar.js";
+import Drum2 from "../mediapipe/drum2.js";
+import Drum3 from "../mediapipe/drum3.js";
+import Drum4 from "../mediapipe/drum4.js";
 
 const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
   const [playerStatuses, setPlayerStatuses] = useState({});
@@ -283,9 +285,11 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
             <div className="webCamBoxDiv">
               {myNickname === nickname ? (
                 // <div ref={myVideoRef} className="webCamBoxInner"/>
-                ingame && instrument === 'drums' ? <Mediapipe /> :
-                  ingame && instrument === 'guitar' ? <Guitar /> :
-                    <div ref={myVideoRef} className="webCamBoxInner" />
+                ingame && instrument === 'drum1' ? <Drum1 /> :
+                ingame && instrument === 'drum2' ? <Drum2 /> :
+                ingame && instrument === 'drum3' ? <Drum3 /> :
+                ingame && instrument === 'drum4' ? <Drum4 /> :
+                <div ref={myVideoRef} className="webCamBoxInner" />
                 // </div>
               ) : (
                 <div

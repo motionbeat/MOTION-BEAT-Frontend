@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as posedetection from '@mediapipe/pose';
 
-class Guitar extends Component {
+class Drum2 extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -23,8 +23,8 @@ class Guitar extends Component {
         this.videoRef = React.createRef();
         this.canvasRef = React.createRef();
         this.pose = undefined;
-        this.soundA = new Audio('/effect/guitar_1.mp3');
-        this.soundB = new Audio('/effect/guitar_2.mp3');
+        // this.soundA = new Audio('/effect/Drum2_1.mp3');
+        // this.soundB = new Audio('/effect/guitar_2.mp3');
         // this.backgroundMusic = new Audio('/song/본능적으로.mp4');
     }
 
@@ -127,10 +127,10 @@ class Guitar extends Component {
 
         if (newStatus !== this.state.postureStatus) {
             if (newStatus === 'A') {
-                this.soundA.play();
+                // this.soundA.play();
                 this.dispatchKey('d')
             } else if (newStatus === 'B') {
-                this.soundB.play();
+                // this.soundB.play();
                 this.dispatchKey('f')
             }
             this.setState({
@@ -178,7 +178,7 @@ class Guitar extends Component {
     }
 }
 
-export default Guitar;
+export default Drum2;
 
 // function Guitar() {
 //   const webcamRef = useRef(null); // Creating a reference for the webcam element

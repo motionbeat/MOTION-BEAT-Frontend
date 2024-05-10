@@ -31,10 +31,12 @@ import NotFound from "./pages/notFound";
 import AddSong from "./pages/addSong";
 import PrivateRoute from "./utils/checkAuth";
 import Setting from "./pages/setting";
-import Mediapipe from "./components/mediapipe/mediapipe";
+import Drum1 from "./components/mediapipe/drum1";
 import AtomicTest from "./components/common/atomic/atomicTest";
-import Guitar from "./components/mediapipe/guitar";
+import Drum2 from "./components/mediapipe/drum2";
 import Admin from "./pages/admin";
+
+
 
 const App = () => {
   return (
@@ -66,8 +68,8 @@ const App = () => {
           <Route path="/ingame" element={<Ingame />} />
 
           {/* 인게임 */}
-          <Route path="/cam/drum" element={<Mediapipe />} />
-          <Route path="/cam/guitar" element={<Guitar />} />
+          <Route path="/cam/drum" element={<Drum1 />} />
+          <Route path="/cam/guitar" element={<Drum2 />} />
 
           {/* ### */}
           {/* </Route> */}
