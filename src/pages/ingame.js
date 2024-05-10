@@ -9,7 +9,7 @@ import "../styles/songSheet.css"
 import styled, { keyframes } from "styled-components"
 
 import Load from "../components/ingame/game/gameLoader.js";
-import Start from "../components/ingame/game/gameController.js";
+import { Start } from "../components/ingame/game/gameController.js";
 import { setGameloadData } from "../redux/actions/saveActions.js";
 
 import WebCamFrame from "../components/ingame/webCamFrame.js";
@@ -30,6 +30,8 @@ let playerNumber = staticColorsArray.length;
 const backendUrl = process.env.REACT_APP_BACK_API_URL;
 let myColor
 
+
+
 const Ingame = () => {
   /* Router */
   const location = useLocation(); // 이전 페이지에서 데이터 가져오기
@@ -41,7 +43,6 @@ const Ingame = () => {
 
   /* State */
   const [message, setMessage] = useState("");
-  const [isPlaying, setIsPlaying] = useState(false);
   const [gameEnded, setGameEnded] = useState(false); // 게임 종료 상태
   const [showEnter, setShowEnter] = useState(true);
   const [gameData, setGameData] = useState(gameState.game);
@@ -50,9 +51,17 @@ const Ingame = () => {
   const handleScoresUpdate = (newScores) => {
     setScores(newScores);
   };
+  const [modalStatus, setModalStatus] = useState("NotReady");
 
   /* Storage */
   const myNickname = sessionStorage.getItem("nickname");
+
+  // 서버에 보낼 데이터(시작시 기본값)
+  const sendData = {
+    nickname: myNickname,
+    code: gameData.code,
+    score: 0,
+  };
 
   /* Ref */
   const railRefs = useRef([]);
@@ -63,6 +72,7 @@ const Ingame = () => {
   useEffect(() => {
     if (loadedData) {
       window.addEventListener("keydown", handleEnterDown);
+      ShowModal("NotReady")
     }
   }, [loadedData]);
 
@@ -71,11 +81,13 @@ const Ingame = () => {
     const init = async () => {
       try {
         // console.log("게임데이터:", gameData);
-        const loadedData = await Load(gameData.song, gameData.players);
+        const loadedData = await Load(gameData.song, gameData.players, gameData.players.instrument);
         // console.log("게임 리소스 로드 완료: " + loadedData);
-        // console.log(gameData);
+        console.log(gameData);
         // console.log(loadedData);
         dispatch(setGameloadData(loadedData));
+        // console.log(loadedData)
+        // console.log(loadedData.audioData)
 
         // if (divBGRef.current && loadedData.songData.ingameData.imageUrl) {
         //   divBGRef.current.style.setProperty('--background-url', `url(${loadedData.songData.ingameData.imageUrl})`);
@@ -88,7 +100,7 @@ const Ingame = () => {
 
     init();
 
-  }, [dispatch]);
+  }, []);
 
   /* 네트워크 */
   useEffect(() => {
@@ -106,22 +118,6 @@ const Ingame = () => {
 
     };
 
-    socket.on(`allPlayersLoaded${sendData.code}`, (serverTime) => {
-      const date = new Date(serverTime);
-
-      const hours = date.getHours().toString().padStart(2, '0');
-      const minutes = date.getMinutes().toString().padStart(2, '0');
-      const seconds = date.getSeconds().toString().padStart(2, '0');
-
-      const formattedTime = `${hours}:${minutes}:${seconds}`;
-
-      sessionStorage.setItem("serverTime", formattedTime);
-      console.log("서버타임", serverTime);
-      console.log("서버타임 변환", formattedTime);
-
-      setIsPlaying(true);
-    })
-
     socket.on(`allPlayersEnded${gameData.code}`, (res) => {
       console.log("전체 플레이어 게임 끝");
       setGameEnded(true);
@@ -133,28 +129,61 @@ const Ingame = () => {
     };
   }, []);
 
+  const WhenSocketOn = (serverTime) => {
+    // const date = new Date(serverTime);
+    // const data3 = Date.now();
+    // console.log(date);
+    // console.log(data3);
+    // 여기에는 시작시간 딜레이가 포함됨
+    const timeDiff = serverTime - Date.now()
+
+    // const hours = date.getHours().toString().padStart(2, '0');
+    // const minutes = date.getMinutes().toString().padStart(2, '0');
+    // const seconds = date.getSeconds().toString().padStart(2, '0');
+
+    // const formattedTime = `${hours}:${minutes}:${seconds}`;
+
+    // sessionStorage.setItem("serverTime");
+    // console.log("서버타임", serverTime);
+    // console.log("서버타임 변환", formattedTime);
+
+    console.log(timeDiff);
+    setModalStatus("Hide");
+
+    return timeDiff
+  }
+
   const handleEnterDown = useCallback((event) => {
     if (event.key === "Enter" && loadedData) {
+      console.log("시행됨")
       socket.emit(`playerLoaded`, sendData);
-      setShowEnter(false); // Enter 후 ShowEnter 숨기기
+      console.log(sendData)
+
+      setModalStatus("Ready");
       window.removeEventListener("keydown", handleEnterDown); // 이벤트 리스너 제거
-      Start({ data: loadedData, eventKey: event.key, railRefs: railRefs, send: sendData, myPosition: myPosition, roomCode: gameData.code });
+
+      const waitForAllPlayers = new Promise((resolve) => {
+        socket.on(`allPlayersLoaded${sendData.code}`, (data) => {
+          resolve(data);
+        })
+      })
+
+      waitForAllPlayers.then((data) => {
+        const synchedStartTime = WhenSocketOn(data);
+
+        Start({ stime: synchedStartTime, data: loadedData, eventKey: event.key, railRefs: railRefs, send: sendData, myPosition: myPosition, roomCode: gameData.code });
+      }).catch((err) => {
+        console.error("Error", err);
+      });
     }
-  }, [loadedData]);
+  }, [loadedData, sendData.code, sendData]);
 
   // 아마 입력 감지
   const handleKeyPressed = (msg) => {
     setMessage(msg);
   };
 
-  // 서버에 보낼 데이터(시작시 기본값)
-  const sendData = {
-    nickname: myNickname,
-    code: gameData.code,
-    score: 0,
-  };
 
-  
 
   // 재생 상태 변경
   useEffect(() => {
@@ -174,7 +203,7 @@ const Ingame = () => {
       setIsActive(true);
 
       console.log(key, "버튼눌림 at : ", time)
-      Judge(key, time, gameData.players[myPosition].instrument);
+      Judge(key, time, gameData.players[myPosition].instrument, loadedData.audioData);
 
     }, []);
 
@@ -182,7 +211,7 @@ const Ingame = () => {
       setIsActive(false);
     }, []);
 
-    
+
 
     // console.log(gameData);
     // console.log(gameData.players);
@@ -207,11 +236,14 @@ const Ingame = () => {
               key={index}>
               {index === myPosition ? (
                 <>
-                  <JudgeBox isactive={isActive} height="100%" key={index} />
+                  <Indicator
+
+                  />
+                  <JudgeBox isactive={isActive} key={index} />
                   <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
                   <Output />
                 </>
-              ) : <JudgeBox height="100%" key={index} />}
+              ) : <JudgeBox key={index} />}
             </VerticalRail>
           );
         })}
@@ -219,15 +251,29 @@ const Ingame = () => {
     );
   };
 
-  const ShowEnter = () => {
-    return (
-      <div style={{
-        position: "fixed", top: "0", right: "0", height: "100vh", width: "100vw", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)", zIndex: "5000"
-      }
-      }>
-        <p style={{ color: "white", fontSize: "100px" }}>Enter "Enter"</p>
-      </div >
-    )
+  const ShowModal = (strings) => {
+    switch (strings) {
+      case "Hide":
+        return null;
+      case "NotReady":
+        return (
+          <div style={{
+            position: "fixed", top: "0", right: "0", height: "100vh", width: "100vw", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)", zIndex: "5000"
+          }}>
+            <p style={{ color: "white", fontSize: "100px" }}>Enter "Enter"</p>
+          </div >
+        );
+      case "Ready":
+        return (
+          <div style={{
+            position: "fixed", top: "0", right: "0", height: "100vh", width: "100vw", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)", zIndex: "5000"
+          }}>
+            <p style={{ color: "white", fontSize: "100px" }}>Waiting...</p>
+          </div >
+        );
+      default:
+        return <>Error</>;
+    }
   }
 
   // console.log(loadedData);
@@ -244,11 +290,9 @@ const Ingame = () => {
   //   // 필요한 추가 동작 수행
   // };
 
-
-
   return (
     <>
-      <div style={{ position: "relative"}}>
+      <div style={{ position: "relative" }}>
         {gameEnded ? (
           <>
             <GameResult roomCode={gameData.code} />
@@ -267,7 +311,7 @@ const Ingame = () => {
           </>
         )}
       </div>
-      {showEnter && ShowEnter()}
+      {ShowModal(modalStatus)}
     </>
   )
 };
@@ -284,10 +328,19 @@ const VerticalRail = styled.div`
   background: ${({ color }) => color};
 `;
 
+const Indicator = styled.div`
+  position: absolute;
+  top: 0%;
+  height: 100%;
+  width: 5px;
+  margin-left: 150px;
+  background-color: white;
+`
+
 const JudgeBox = styled.div`
   position: absolute;
   top: 0%;
-  height: ${({ height }) => height};
+  height: 100%;
   width: 20px;
   background-color: ${({ isactive, color }) => isactive ? 'yellow' : 'rgba(0,0,0,1)'};
   box-shadow: ${({ isactive }) => isactive ? '0 0 10px 5px yellow' : 'none'};

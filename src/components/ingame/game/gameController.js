@@ -4,9 +4,24 @@ import styled, { keyframes } from "styled-components"
 import socket from "../../../server/server.js";
 import { useState } from "react";
 
-export const Start = ({ data, eventKey, railRefs, send, myPositio, roomCode}) => {
-  // const sendData = useSelector(state => state.sendData); 
-  console.log("게임 시작 로직 실행");
+const audioPlayer = document.getElementById("audioPlayer");
+
+if (!audioPlayer) {
+  console.error("Audio player not found");
+}
+
+const playAudio = (data) => {
+  audioPlayer.src = data.musicData.sound;
+  console.log(audioPlayer.src)
+  audioPlayer.currentTime = 0;
+  audioPlayer.play()
+    .then(() => {
+      console.log("Audio started successfully");
+    })
+    .catch((error) => console.error("Error playing audio:", error));
+};
+
+export const Start = ({ stime, data, eventKey, railRefs, send, myPositio, roomCode }) => {
 
   let audioTime;
 
@@ -15,27 +30,9 @@ export const Start = ({ data, eventKey, railRefs, send, myPositio, roomCode}) =>
     return;  // Early return to prevent further errors
   }
 
-  const audioPlayer = document.getElementById("audioPlayer");
-  if (!audioPlayer) {
-    console.error("Audio player not found");
-    return;
-  }
-
-
-  const playAudio = () => {
-    audioPlayer.src = data.musicData.sound;
-    console.log(audioPlayer.src)
-    audioPlayer.currentTime = 0;
-    audioPlayer.play()
-      .then(() => {
-        console.log("Audio started successfully");
-      })
-      .catch((error) => console.error("Error playing audio:", error));
-  };
-
-  if (eventKey === "Enter") {
-    playAudio();
-  }
+  setTimeout(() => {
+    playAudio(data);
+  }, stime)
 
   const animationDuration = 5000;
 
@@ -46,14 +43,13 @@ export const Start = ({ data, eventKey, railRefs, send, myPositio, roomCode}) =>
 
       audioTime = audioPlayer.currentTime * 1000;
 
-
       const notes = data.musicData.notes;
       let count = 0;
       for (const note of notes) {
         const startTime = note.time - animationDuration;
 
         /* 주의 : 생성시간과 연관됨 */
-        if (startTime + 5000 <= audioTime && !processedNotes.has(note)) {
+        if (startTime <= audioTime && !processedNotes.has(note)) {
           GenerateNote(note, audioTime, count);  // 노트 생성 및 애니메이션 시작
           processedNotes.add(note);  // 노트를 처리된 상태로 표시
         }
@@ -67,14 +63,14 @@ export const Start = ({ data, eventKey, railRefs, send, myPositio, roomCode}) =>
   const GenerateNote = (note, start, index) => {
     const { motion, time } = note;
     /* 주의 : 생성시간과 연관됨 */
-    console.log("노트 생성", motion, "eta", time + 5000, "ms");
+    console.log("노트 생성", motion, "eta", time, "ms");
 
     const noteElement = document.createElement("div");
     noteElement.className = "Note";
     noteElement.textContent = `${motion}`;
     noteElement.setAttribute('data-motion', motion);
     /* 주의 : 생성시간과 연관됨 */
-    noteElement.setAttribute('data-time', (time + 5000).toString());
+    noteElement.setAttribute('data-time', (time).toString());
     noteElement.setAttribute('data-instrument', note.instrument);
 
     noteElement.setAttribute('data-index', index.toString());
@@ -101,7 +97,7 @@ export const Start = ({ data, eventKey, railRefs, send, myPositio, roomCode}) =>
 
     requestAnimationFrame(animateNote);
   };
-  
+
   const End = () => {
     console.log("게임 종료");
     const sendData = {
@@ -129,5 +125,3 @@ export const Start = ({ data, eventKey, railRefs, send, myPositio, roomCode}) =>
 
   return { End };
 };
-
-export default Start;
