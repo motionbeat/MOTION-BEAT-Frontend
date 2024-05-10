@@ -1,11 +1,11 @@
 .Note {
-  position: relative;
+  position: absolute;
   display: inline-block;
   top: 0px;
 
   height: 100%;
   width: 50px;
-  border-radius: 25px;
+  border-radius: 50px;
 
   z-index: 1200;
   background-color: rgba(255, 255, 255, 0.649);
