@@ -133,17 +133,24 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
       setSession(session);
 
       session.on("streamCreated", (event) => {
-        const videoElement = document.createElement("div"); // 새로운 div를 생성
-        videoElement.autoplay = true;
-        videoElement.srcObject = event.stream.mediaStream;
+        // const videoElement = document.createElement("div"); // 새로운 div를 생성
+        // videoElement.autoplay = true;
+        // videoElement.srcObject = event.stream.mediaStream;
 
-        const subscriber = session.subscribe(event.stream, videoElement);
         const isSelf = event.stream.connection.connectionId === session.connection.connectionId;
+        let videoContainer = document.createElement("div"); // 비디오를 위한 새로운 div 생성
+        videoContainer.className = "videoContainer"; // 클래스 이름 설정(스타일링 용)
+
+        const subscriber = session.subscribe(event.stream, videoContainer);
 
         if (isSelf) {
-          myVideoRef.appendChild(videoElement);
+          myVideoRef.current.appendChild(subscriber.videos[0].video);
         } else {
-          otherVideosRef.current.appendChild(videoElement);
+          const streamNickname = event.stream.connection.data.split(' ')[0]; // 닉네임 데이터 추출
+          if (!otherVideosRef.current[streamNickname]) {
+            otherVideosRef.current[streamNickname] = document.createElement("div");
+          }
+          otherVideosRef.current[streamNickname].appendChild(videoContainer);
         }
 
         setSubscribers((prevSubscribers) => [
@@ -173,7 +180,7 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
       const token = await createToken(sessionId);
       if (token) {
         session
-          .connect(token)
+          .connect(token, myNickname)
           .then(() => {
             const publisher = OV.current.initPublisher(undefined, {
               audioSource: undefined,
@@ -277,11 +284,14 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
               {myNickname === nickname ? (
                 // <div ref={myVideoRef} className="webCamBoxInner"/>
                 ingame && instrument === 'drums' ? <Mediapipe /> :
-                ingame && instrument === 'guitar' ? <Guitar /> :
-                <div ref={myVideoRef} className="webCamBoxInner" />
+                  ingame && instrument === 'guitar' ? <Guitar /> :
+                    <div ref={myVideoRef} className="webCamBoxInner" />
                 // </div>
               ) : (
-                <div ref={otherVideosRef} className="webCamBoxInner"></div>
+                <div
+                  ref={(el) => (otherVideosRef.current[nickname] = el)}
+                  className="webCamBoxInner"
+                />
               )}
               <p>{nickname}</p>
               <p onClick={() => findingInstrument(nickname)}>{instrument}</p>
