@@ -1,0 +1,36 @@
+.hit-effect {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 0;
+  height: 0;
+  border: 20px dashed rgba(255, 255, 255, 1);
+  border-radius: 50%;
+  display: none;
+  opacity: 1;
+  z-index: 10;
+}
+
+.hit-effect.active {
+  display: block;
+  animation: hitAnimation 0.7s ease-in forwards;
+}
+
+@keyframes hitAnimation {
+  0% {
+    width: 0;
+    height: 0;
+    opacity: 1;
+    border-width: 5px;
+    transform: translate(-50%, -50%) rotate(0deg);
+  }
+
+  100% {
+    width: 300px;
+    height: 300px;
+    opacity: 0;
+    border-width: 30px;
+    transform: translate(-50%, -50%) rotate(360deg);
+  }
+}
