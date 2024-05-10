@@ -1,11 +1,10 @@
 import { useEffect, useState } from "react";
 import socket from "../../server/server.js";
+import { useSelector } from "react-redux";
 
 
-const SecondScore = ({gameData, onScoresUpdate}) => {
+const SecondScore = ({gameData}) => {
   const [playerScores, setPlayerScores] = useState({});
-  // const myNickname = sessionStorage.getItem("nickname");
-
 
   // // 핸들 스코어
   // const handleScore = (res) => {
@@ -27,7 +26,6 @@ const SecondScore = ({gameData, onScoresUpdate}) => {
         ...prevScores,
         [res.nickname]: res.score
       };
-      onScoresUpdate(updatedScores);  // 상위 컴포넌트의 상태 업데이트
       return updatedScores;
     });
   };
@@ -42,35 +40,13 @@ const SecondScore = ({gameData, onScoresUpdate}) => {
       return eventName;
     });
 
-    // console.log("점수 잘 넣어지나",playerScores.nickname)
-    // } else if (gameData.players.length === 2){
-    //   socket.on(`liveScore${gameData.players[0].nickname}`, handleScore)
-    //   socket.on(`liveScore${gameData.players[1].nickname}`, handleScore)
-    // } else if (gameData.players.length === 3){
-    //   socket.on(`liveScore${gameData.players[0].nickname}`, handleScore)
-    //   socket.on(`liveScore${gameData.players[1].nickname}`, handleScore)
-    //   socket.on(`liveScore${gameData.players[2].nickname}`, handleScore)
-    // } else if (gameData.players.length === 4){
-    //   socket.on(`liveScore${gameData.players[0].nickname}`, handleScore)
-    //   socket.on(`liveScore${gameData.players[1].nickname}`, handleScore)
-    //   socket.on(`liveScore${gameData.players[2].nickname}`, handleScore)
-    //   socket.on(`liveScore${gameData.players[3].nickname}`, handleScore)
-    // }
-
-
-  
-    // gameData.players.forEach((player) => {
-    //   const eventName = `liveScore${player.nickname}`;
-    //   socket.on(eventName, handleScore);
-    //   handlers.push({ eventName, handleScore });
-    // });
-
     return () => {
       scoreUpdateEvents.forEach(eventName => {
         socket.off(eventName);
       });
     };
   }, [gameData.players]); 
+  
     return (
         <>
             <div style={{ display: "flex" }}>
