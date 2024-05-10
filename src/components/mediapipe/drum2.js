@@ -1,14 +1,11 @@
 import React, { Component } from 'react';
 import * as posedetection from '@mediapipe/pose';
 
-class Drum2 extends Component {
+class Drum1 extends Component {
     constructor(props) {
         super(props);
         this.state = {
             isModelLoaded: false,
-            leftShoulderY: null,
-            leftElbowY: null,
-            rightElbowY: null,
             leftWristY: null,
             rightWristY: null,
             postureStatus: "X",
@@ -23,15 +20,15 @@ class Drum2 extends Component {
         this.videoRef = React.createRef();
         this.canvasRef = React.createRef();
         this.pose = undefined;
-        // this.soundA = new Audio('/effect/Drum2_1.mp3');
-        // this.soundB = new Audio('/effect/guitar_2.mp3');
+        // this.soundA = new Audio('/effect/tom.mp3');
+        // this.soundB = new Audio('/effect/snare.mp3');
         // this.backgroundMusic = new Audio('/song/본능적으로.mp4');
     }
 
     componentDidMount() {
         this.initializePose();
         // this.startTimer();
-        this.initializeMediaStream(); // 바로 미디어 스트림을 시작합니다.
+        this.initializeMediaStream(); // 비디오 스트림을 즉시 초기화합니다.
     }
 
     dispatchKey(key) {
@@ -64,9 +61,10 @@ class Drum2 extends Component {
             locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`
         });
         this.pose.setOptions({
+            upperBodyOnly: true,
             modelComplexity: 0,
-            smoothLandmarks: false,
-            enableSegmentation: false
+            smoothLandmarks: false, 
+            enableSegmentation: false 
         });
         this.setState({ isModelLoaded: true });
     }
@@ -90,13 +88,13 @@ class Drum2 extends Component {
                     const canvasContext = canvas.getContext('2d');
                     canvasContext.clearRect(0, 0, canvas.width, canvas.height);
 
-                    const leftShoulderY = results.poseLandmarks?.[posedetection.POSE_LANDMARKS.LEFT_SHOULDER]?.y;
-                    const leftElbowY = results.poseLandmarks?.[posedetection.POSE_LANDMARKS.LEFT_ELBOW]?.y;
-                    const rightElbowY = results.poseLandmarks?.[posedetection.POSE_LANDMARKS.RIGHT_ELBOW]?.y;
                     const leftWristY = results.poseLandmarks?.[posedetection.POSE_LANDMARKS.LEFT_WRIST]?.y;
                     const rightWristY = results.poseLandmarks?.[posedetection.POSE_LANDMARKS.RIGHT_WRIST]?.y;
 
-                    this.detectWristMovement(leftWristY, rightWristY, leftShoulderY, leftElbowY, rightElbowY, this.state.rightWristY);
+                    if (typeof leftWristY === 'number' && typeof rightWristY === 'number') {
+                        this.detectWristMovement('left', leftWristY);
+                        this.detectWristMovement('right', rightWristY);
+                    }
                 });
 
                 onFrame();
@@ -108,38 +106,36 @@ class Drum2 extends Component {
         }
     }
 
-    detectWristMovement(leftWristY, rightWristY, leftShoulderY, leftElbowY, rightElbowY, previousRightWristY) {
-        if (leftWristY == null) return;
-
-        let newStatus = "X"; // 기본값은 'X'
-        const movementThreshold = 0.2; // 오른쪽 손목의 움직임 감지 임계값
-        let rightWristMovementDetected = Math.abs(rightWristY - previousRightWristY) > movementThreshold; // 오른쪽 손목 움직임 감지
-
-        // 자세 판단 로직
-        if (leftWristY < leftShoulderY && rightWristMovementDetected) {
-            newStatus = 'A';
-        } else if (leftWristY > leftShoulderY && rightWristMovementDetected) {
-            newStatus = 'B';
-        } 
-        // else if (leftWristY > rightElbowY && rightWristMovementDetected) {
-        //     newStatus = 'C';
-        // }
-
-        if (newStatus !== this.state.postureStatus) {
-            if (newStatus === 'A') {
-                // this.soundA.play();
-                this.dispatchKey('d')
-            } else if (newStatus === 'B') {
-                // this.soundB.play();
-                this.dispatchKey('f')
+    detectWristMovement(wrist, currentY) {
+        if (currentY === null) return;
+        const stateKey = wrist + 'WristY';
+        const previousY = this.state[stateKey];
+        const threshold = 0.045; // 감도 조정
+    
+        if (previousY !== null) {
+            const movement = currentY < previousY ? 'up' : 'down';
+            if (movement === 'down' && currentY > previousY + threshold) {
+                const newStatus = wrist === 'left' ? 'A' : 'B';
+                
+                if (this.state.postureStatus !== newStatus) {
+                    if (newStatus === 'A') {
+                        // this.soundA.play();
+                        this.dispatchKey('d')
+                    } else if (newStatus === 'B') {
+                        // this.soundB.play();
+                        this.dispatchKey('f')
+                    }
+                    this.setState(prevState => ({
+                        // hitCount: prevState.hitCount + 1,
+                        lastPlayedSound: newStatus,
+                        postureStatus: newStatus
+                    }), () => {
+                        setTimeout(() => this.setState({ postureStatus: "X" }), 1000); // 자세 초기화 지연 시간 조정
+                    });
+                }
             }
-            this.setState({
-                postureStatus: newStatus,
-                lastPlayedSound: newStatus,
-                // hitCount: this.state.hitCount + 1,
-                rightWristY: rightWristY // 현재 오른쪽 손목의 Y 위치를 저장
-            })
         }
+        this.setState({ [stateKey]: currentY });
     }
 
     // playBackgroundMusic = () => {
@@ -165,7 +161,7 @@ class Drum2 extends Component {
                 <div id="session" style={{ position: 'relative', width: '230px', height: '190px' }}>
                     <video ref={this.videoRef} style={{ width: '100%', height: '100%', position: 'absolute', top: '0', left: '0', zIndex: 1 }} playsInline autoPlay />
                     <canvas ref={this.canvasRef} style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%', opacity: 0.9, zIndex: 2 }} width="640" height="480" />
-                    {/* <br/><br/><br/><br/><br/><br/><br/><br/><br/>
+                    {/* <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
                     <div>현재 자세: {postureStatus}</div>
                     <div>경과 시간: {this.state.timer}초</div>
                     <div>횟수: {hitCount}</div>
@@ -178,114 +174,4 @@ class Drum2 extends Component {
     }
 }
 
-export default Drum2;
-
-// function Guitar() {
-//   const webcamRef = useRef(null); // Creating a reference for the webcam element
-//   const canvasRef = useRef(null); // Creating a reference for the canvas element
-//   const prevRightWristY = useRef(null); // Creating a reference for the previous right wrist position
-//   const [didLoad, setDidLoad] = useState(false); // Creating a state variable 'didLoad' and its setter function 'setDidLoad' with initial value 'false'
-//   const [rightWristStatus, setRightWristStatus] = useState('None'); // Creating a state variable 'rightWristStatus' and its setter function 'setRightWristStatus' with initial value 'None'
-//   const [leftWristStatus, setLeftWristStatus] = useState('None'); // Creating a state variable 'leftWristStatus' and its setter function 'setLeftWristStatus' with initial value 'None'
-//   const mpPoseRef = useRef(null);
-
-//   const notifyArmPosition = useCallback((poseLandmarks) => {
-//     const leftShoulder = poseLandmarks[pose.POSE_LANDMARKS.LEFT_SHOULDER];
-//     const leftWrist = poseLandmarks[pose.POSE_LANDMARKS.LEFT_WRIST];
-//     const leftElbow = poseLandmarks[pose.POSE_LANDMARKS.LEFT_ELBOW];
-//     const rightWrist = poseLandmarks[pose.POSE_LANDMARKS.RIGHT_WRIST];
-
-//     // 오른쪽 손목의 움직임 감지
-//     if (prevRightWristY.current !== null) {
-//       const deltaY = rightWrist.y - prevRightWristY.current;
-//       if (deltaY > 0.01) {
-//         setRightWristStatus('손목이 위로 올라갔습니다.');
-//       } else if (deltaY < -0.01) {
-//         setRightWristStatus('손목이 아래로 내려갔습니다.');
-//       }
-//     }
-//     prevRightWristY.current = rightWrist.y;
-
-//     // 왼쪽 손목의 위치 감지
-//     if (leftWrist.y < leftShoulder.y) {
-//       setLeftWristStatus('왼쪽 팔이 어깨 위로 올라갔습니다.');
-//     } else if(leftWrist.y < leftElbow.y) {
-//       setLeftWristStatus('왼쪽 팔이 팔꿈치 위로 올라갔습니다.');
-//     }else{
-//       setLeftWristStatus('왼쪽 팔이 어깨 아래로 내려갔습니다.');
-//     }
-//   }, []);
-
-//   const onResults = useCallback((results) =>{
-//     const canvasElement = canvasRef.current; // Getting the current value of the canvas reference
-//     const canvasCtx = canvasElement.getContext("2d"); // Getting the 2D rendering context of the canvas
-
-//     canvasCtx.save(); // Saving the current state of the canvas context
-//     canvasCtx.clearRect(0, 0, canvasElement.width, canvasElement.height); // Clearing the canvas
-//     canvasCtx.drawImage(results.image, 0, 0, canvasElement.width, canvasElement.height); // Drawing the image on the canvas
-
-//     if (results.poseLandmarks) {
-//       drawingUtils.drawConnectors(canvasCtx, results.poseLandmarks, pose.POSE_CONNECTIONS, { visibilityMin: 0.65, color: 'white' }); // Drawing the pose connectors on the canvas
-
-//       Object.entries(landmarksToColors).forEach(([landmark, color]) => {
-//         drawingUtils.drawLandmarks(canvasCtx, [results.poseLandmarks[landmark]], { visibilityMin: 0.65, color: 'black', fillColor: color });
-//       });
-
-//       notifyArmPosition(results.poseLandmarks);
-//     }
-//     canvasCtx.restore(); // Restoring the saved state of the canvas context
-//   }, [notifyArmPosition]);
-
-//   useEffect(() => {
-//     if(!didLoad){
-//       mpPoseRef.current = new pose.Pose({
-//         locateFile: (file) => {
-//             return `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}`;
-//         },
-//       });
-//       mpPoseRef.current.setOptions({
-//         selfieMode: true,
-//         modelComplexity: 0,
-//         smoothLandmarks: true,
-//         enableSegmentation: false,
-//         smoothSegmentation: true,
-//         minDetectionConfidence: 0.5,
-//         minTrackingConfidence: 0.5,
-//       });
-
-//       const camera = new cam.Camera(webcamRef.current, {
-//         onFrame:async() => {
-//           const canvasElement = canvasRef.current;
-//           const aspect = window.innerHeight / window.innerWidth;
-//           let width, height;
-//           if (window.innerWidth > window.innerHeight) {
-//               height = window.innerHeight;
-//               width = height / aspect;
-//           }
-//           else {
-//               width = window.innerWidth;
-//               height = width * aspect;
-//           }
-//           canvasElement.width = width;
-//           canvasElement.height = height;
-//           await mpPoseRef.current.send({image: webcamRef.current});
-//         }
-//       });
-//       camera.start();
-
-//       mpPoseRef.current.onResults((results) => smoothLandmarks(results, onResults));
-//       setDidLoad(true);
-//     }
-//   }, [didLoad, onResults]);
-
-//   return (
-//     <div className="App">
-//       <div className="container">
-//         <video className="input_video" ref={webcamRef}/> Rendering the webcam video element <br/>
-//         오른쪽 손목 상태: <p>{rightWristStatus}</p>
-//         왼쪽 손목 상태: <p>{leftWristStatus}</p>
-//         <canvas ref={canvasRef} className='output_canvas' ></canvas>
-//       </div>
-//     </div>
-//   );
-// }
+export default Drum1;

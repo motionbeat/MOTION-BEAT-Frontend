@@ -1,7 +1,7 @@
 import React, { Component } from 'react';
 import * as posedetection from '@mediapipe/pose';
 
-class Drum4 extends Component {
+class Drum1 extends Component {
     constructor(props) {
         super(props);
         this.state = {
@@ -174,4 +174,4 @@ class Drum4 extends Component {
     }
 }
 
-export default Drum4;
+export default Drum1;
