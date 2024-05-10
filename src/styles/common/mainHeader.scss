@@ -1,0 +1,78 @@
+@font-face {
+  font-family: "Pretendard";
+  src: url("../../fonts/pretendard/Pretendard-Black.ttf");
+}
+
+//룸헤더 전체 박스
+.allHeaderWrapper {
+  display: flex;
+  position: relative;
+  width: 90%;
+  max-width: 1504px;
+  margin: 0 auto;
+}
+
+.exitRoomBtn {                       
+  margin: 20px 0;
+  width: 205px;
+  height: 62px;
+  background-color: #47B5B4;
+  color: white;
+  font-size: 32px;
+  font-weight: bold;
+  border-radius: 16px;
+  border: 1px solid #35383F;
+  cursor: pointer;
+
+  &:hover {
+    opacity: 0.8;
+  }
+
+  &:active {
+    box-shadow: inset 0px 3px 5px rgba(0, 0, 0, 0.5);
+    transform: translateY(2px);
+  }
+}
+
+// 버튼 박스
+.btnWrapper {
+  display: flex;
+}
+
+// 친구창
+.friendsBtn {
+  width: 90px;
+  height: 90px;
+  border-radius: 75px;
+  background-image: url("../../img/friendsBtn.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+  margin-right: 20px;
+  cursor: pointer;
+}
+
+// 마이페이지
+.mypageBtn {
+  width: 90px;
+  height: 90px;
+  border-radius: 75px;
+  background-image: url("../../img/mypageBtn.png");
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
+// 타이틀
+.allTitle {
+  text-align: center;
+  margin: 0 auto;
+  width: 618px;
+  height: 100px;
+  background-image: url("../../img/roomTitle.png");
+  background-size: cover;
+  background-position: center;
+  color: white;
+  font-size: 50px;
+  font-weight: bold;
+  text-align: center;
+  line-height: 1.9;
+}
