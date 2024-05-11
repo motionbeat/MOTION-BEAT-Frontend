@@ -148,14 +148,42 @@ const LoadInstrument = async (inst) => {
   try {
     if (audioFiles[inst]) {
       console.log("Matched");
-      return { audioFiles: audioFiles[inst] }; // 여기에서 해당 악기의 오디오 파일 데이터를 반환합니다.
     }
   } catch (err) {
-    console.error("에러 발생 ", err);  // console.err가 아니라 console.error가 올바른 사용법입니다.
+    console.error("에러 발생 ", err);
   }
 
-  console.log("선택한 악기정보가 없음");
-  return null;
+  const preloadKeySound = (audio) => {
+    const keySound0Player = document.getElementById("keySound0Player");
+    const keySound1Player = document.getElementById("keySound1Player");
+
+    if (!keySound0Player || !keySound1Player) {
+      console.error("KeySound players not found");
+      return;
+    }
+
+    if (audio[0] && audio[0].url) {
+      keySound0Player.src = audio[0].url;
+      keySound0Player.load();  // 첫 번째 오디오 파일을 프리로드
+      console.log(keySound0Player.src)
+    } else {
+      console.error("Audio file 0 not found or URL is missing");
+    }
+
+    if (audio[1] && audio[1].url) {
+      keySound1Player.src = audio[1].url;
+      keySound1Player.load();  // 두 번째 오디오 파일을 프리로드
+      console.log(keySound1Player.src)
+    } else {
+      console.error("Audio file 1 not found or URL is missing");
+    }
+
+    // 로그를 출력하여 URL 확인
+    console.log("Audio files loaded:", audio.map(a => a.url));
+  }
+
+  preloadKeySound(audioFiles[inst]);
+  return { audioFiles: audioFiles[inst] }
 };
 
 export default Load

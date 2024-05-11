@@ -1,5 +1,4 @@
 import { Parser } from "../../../utils/parser";
-import { useSelector } from "react-redux";
 
 export const Judge = (key, time, instrument, audio) => {
 
@@ -36,13 +35,7 @@ export const Judge = (key, time, instrument, audio) => {
   // console.log("MININDEX:" + minIndex + "JUDGEDNOTES:")
   const timeDiff = noteTime - time;
 
-  /* timeDiff가 0.5이상 차이나거나, 같은 모션 키를 입력하지 않았을 경우 */
-  if (
-    (timeDiff > 1000) || (closestNote.getAttribute('data-motion') !== Parser(key))
-  ) {
-    console.log("IGNORE")
-    return dispatch(result);
-  }
+
 
   // if (((timeDiff > 500 && timeDiff < 1000) || (timeDiff < -500 && timeDiff > -1000)) && closestNote.getAttribute('data-motion') === Parser(key)) {
   //   console.log("MISS!")
@@ -51,37 +44,37 @@ export const Judge = (key, time, instrument, audio) => {
 
   /* timeDiff가 >=0,<=500 사이에 있고, 같은 모션 키를 입력했을 경우  */
   if (
-    (timeDiff >= 0 && timeDiff <= 1000) && (closestNote.getAttribute('data-motion') === Parser(key))
+    (timeDiff >= 0 && timeDiff <= 500) && (closestNote.getAttribute('data-motion') === Parser(key))
   ) {
     console.log(audio);
-    PlayKeySound(Parser(key), audio);
+    PlayKeySound(Parser(key));
     console.log("HIT from : ", timeDiff, " = ", noteTime, "-", time)
     result = "hit"
     dispatch(result);
     TriggerHitEffect();
-  }
-  // console.log("IGNORED");
-  // dispatch("ignore");
 
-  closestNote.remove();  // 해당 노트를 화면에서 숨김
+    closestNote.remove();  // 해당 노트를 화면에서 숨김
+    return
+  }
+
+  /* timeDiff가 0.5이상 차이나거나, 같은 모션 키를 입력하지 않았을 경우 */
+  if (timeDiff < 0) {
+    console.log("IGNORE");
+    closestNote.setAttribute("data-index", minIndex + 100);
+    return dispatch("ignore");
+  }
 }
 
-const PlayKeySound = (key, audio) => {
-  console.log(audio)
-  console.log(audio[0])
-  console.log(audio[0].url)
-  const audioPlayer = document.getElementById("keySound");
+const PlayKeySound = (key) => {
+  const keySound0Player = document.getElementById("keySound0Player");
+  const keySound1Player = document.getElementById("keySound1Player");
 
   switch (key) {
     case "A":
-      audioPlayer.src = audio[0].url;
-      console.log(audio[0].url)
-      audioPlayer.play();
+      keySound0Player.play(); // 오디오 재생
       break;
     case "B":
-      audioPlayer.src = audio[1].url;
-      console.log(audio[1].url)
-      audioPlayer.play();
+      keySound1Player.play();
       break;
     default:
       break;
