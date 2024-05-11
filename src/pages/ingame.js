@@ -1,5 +1,6 @@
 import React, { useEffect, useRef, useState, useCallback } from "react"
 import { useDispatch, useSelector } from "react-redux";
+import "../styles/hitEffect.css"
 
 import { useLocation, useNavigate } from "react-router-dom"
 import "../styles/ingame.css"
@@ -76,14 +77,43 @@ const Ingame = () => {
     }
   }, [loadedData]);
 
+  /* 네트워크 */
+  useEffect(() => {
+    playerNumber = gameData.players.length
+    myPosition = gameData.players.findIndex(item => item.nickname === myNickname)
+    myColor = staticColorsArray[myPosition]
+    // currentAudio.addEventListener('ended', handleAudioEnd);
+
+    // 방에서 나갈 때 상태 업데이트
+    const updatePlayersAfterLeave = (updatedPlayers) => {
+      setGameData(prevRoom => ({
+        ...prevRoom,
+        players: updatedPlayers
+      }));
+    };
+
+    socket.on(`allPlayersEnded${gameData.code}`, (res) => {
+      console.log("전체 플레이어 게임 끝");
+      setGameEnded(true);
+    })
+
+    return () => {
+      // currentAudio.removeEventListener('ended', handleAudioEnd);
+      socket.off(`leftRoom${gameData.code}`, updatePlayersAfterLeave);
+    };
+  }, []);
+
   useEffect(() => {
     // 게임 리소스 로딩
     const init = async () => {
       try {
-        // console.log("게임데이터:", gameData);
-        const loadedData = await Load(gameData.song, gameData.players, gameData.players.instrument);
-        // console.log("게임 리소스 로드 완료: " + loadedData);
-        console.log(gameData);
+        console.log("게임데이터:", gameData);
+        console.log("myPosition", myPosition);
+        console.log("게임데이터 ", gameData.players);
+        console.log("TEST", gameData.players[myPosition].instrument)
+        const loadedData = await Load(gameData.song, gameData.players, gameData.players[myPosition].instrument);
+
+        console.log("게임 리소스 로드 완료: " + loadedData);
         // console.log(loadedData);
         dispatch(setGameloadData(loadedData));
         // console.log(loadedData)
@@ -102,32 +132,7 @@ const Ingame = () => {
 
   }, []);
 
-  /* 네트워크 */
-  useEffect(() => {
-    playerNumber = gameData.players.length
-    myPosition = gameData.players.findIndex(item => item.nickname === myNickname)
-    myColor = staticColorsArray[myPosition]
-    // currentAudio.addEventListener('ended', handleAudioEnd);
 
-    // 방에서 나갈 때 상태 업데이트
-    const updatePlayersAfterLeave = (updatedPlayers) => {
-      setGameData(prevRoom => ({
-        ...prevRoom,
-        players: updatedPlayers
-      }));
-
-    };
-
-    socket.on(`allPlayersEnded${gameData.code}`, (res) => {
-      console.log("전체 플레이어 게임 끝");
-      setGameEnded(true);
-    })
-
-    return () => {
-      // currentAudio.removeEventListener('ended', handleAudioEnd);
-      socket.off(`leftRoom${gameData.code}`, updatePlayersAfterLeave);
-    };
-  }, []);
 
   const WhenSocketOn = (serverTime) => {
     // const date = new Date(serverTime);
@@ -202,10 +207,11 @@ const Ingame = () => {
     const handleKeyDown = useCallback((key, time) => {
       setIsActive(true);
 
-      console.log(key, "버튼눌림 at : ", time)
-      Judge(key, time, gameData.players[myPosition].instrument, loadedData.audioData);
+      // console.log(key, "버튼눌림 at : ", time)
+      console.log(loadedData.audioData)
+      Judge(key, time, gameData.players[myPosition].instrument, loadedData.audioData.audioFiles);
 
-    }, []);
+    }, [loadedData]);
 
     const handleKeyUp = useCallback(() => {
       setIsActive(false);
@@ -236,10 +242,10 @@ const Ingame = () => {
               key={index}>
               {index === myPosition ? (
                 <>
-                  <Indicator
-
-                  />
-                  <JudgeBox isactive={isActive} key={index} />
+                  <Indicator />
+                  <JudgeBox isactive={isActive} key={index}>
+                    <div id="hitEffect" className="hit-effect" />
+                  </JudgeBox>
                   <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
                   <Output />
                 </>
@@ -319,31 +325,31 @@ const Ingame = () => {
 export default Ingame
 
 const VerticalRail = styled.div`
-  display:block;
-  position: absolute;
-  top: ${({ top }) => top};
-  width: 100%;
-  height: 25%;
-  border: 20px;
-  background: ${({ color }) => color};
-`;
+        display:block;
+        position: absolute;
+        top: ${({ top }) => top};
+        width: 100%;
+        height: 25%;
+        border: 20px;
+        background: ${({ color }) => color};
+        `;
 
 const Indicator = styled.div`
-  position: absolute;
-  top: 0%;
-  height: 100%;
-  width: 5px;
-  margin-left: 150px;
-  background-color: white;
-`
+        position: absolute;
+        top: 0%;
+        height: 100%;
+        width: 5px;
+        margin-left: 10%;
+        background-color: white;
+        `
 
 const JudgeBox = styled.div`
-  position: absolute;
-  top: 0%;
-  height: 100%;
-  width: 20px;
-  background-color: ${({ isactive, color }) => isactive ? 'yellow' : 'rgba(0,0,0,1)'};
-  box-shadow: ${({ isactive }) => isactive ? '0 0 10px 5px yellow' : 'none'};
-  margin-left: 50px;
-  transition: ${({ isactive }) => isactive ? 'none' : 'background-color 0.5s ease-out, box-shadow 0.5s ease-out'};
-`;
+        position: absolute;
+        top: 0%;
+        height: 100%;
+        width: 20px;
+        background-color: ${({ isactive, color }) => isactive ? 'yellow' : 'rgba(0,0,0,1)'};
+        box-shadow: ${({ isactive }) => isactive ? '0 0 10px 5px yellow' : 'none'};
+        margin-left: 5%;
+        transition: ${({ isactive }) => isactive ? 'none' : 'background-color 0.5s ease-out, box-shadow 0.5s ease-out'};
+        `;

@@ -38,7 +38,7 @@ export const Judge = (key, time, instrument, audio) => {
 
   /* timeDiff가 0.5이상 차이나거나, 같은 모션 키를 입력하지 않았을 경우 */
   if (
-    (timeDiff > 500) || (closestNote.getAttribute('data-motion') !== Parser(key))
+    (timeDiff > 300) || (closestNote.getAttribute('data-motion') !== Parser(key))
   ) {
     console.log("IGNORE")
     return dispatch(result);
@@ -51,13 +51,14 @@ export const Judge = (key, time, instrument, audio) => {
 
   /* timeDiff가 >=0,<=500 사이에 있고, 같은 모션 키를 입력했을 경우  */
   if (
-    (timeDiff >= 0 && timeDiff <= 500) && (closestNote.getAttribute('data-motion') === Parser(key))
+    (timeDiff >= 50 && timeDiff <= 300) && (closestNote.getAttribute('data-motion') === Parser(key))
   ) {
     console.log(audio);
-    PlayKeySound();
-    console.log("HIT")
+    PlayKeySound(Parser(key), audio);
+    console.log("HIT from : ", timeDiff, " = ", noteTime, "-", time)
     result = "hit"
     dispatch(result);
+    TriggerHitEffect();
   }
   // console.log("IGNORED");
   // dispatch("ignore");
@@ -65,7 +66,33 @@ export const Judge = (key, time, instrument, audio) => {
   closestNote.remove();  // 해당 노트를 화면에서 숨김
 }
 
-const PlayKeySound = () => {
+const PlayKeySound = (key, audio) => {
+  console.log(audio)
+  console.log(audio[0])
+  console.log(audio[0].url)
   const audioPlayer = document.getElementById("keySound");
-  // audioPlayer.src = audio[0].url;
+
+  switch (key) {
+    case "A":
+      audioPlayer.src = audio[0].url;
+      console.log(audio[0].url)
+      audioPlayer.play();
+      break;
+    case "B":
+      audioPlayer.src = audio[1].url;
+      console.log(audio[1].url)
+      audioPlayer.play();
+      break;
+    default:
+      break;
+  }
+}
+
+const TriggerHitEffect = () => {
+  const hitEffect = document.getElementById('hitEffect');
+  hitEffect.classList.add('active');
+
+  setTimeout(() => {
+    hitEffect.classList.remove('active'); // 애니메이션이 끝나고 클래스를 제거
+  }, 500); // 애니메이션 시간과 동일하게 설정
 }

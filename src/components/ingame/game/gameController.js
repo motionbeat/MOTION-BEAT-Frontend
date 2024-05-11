@@ -44,7 +44,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPositio, roomCo
       audioTime = audioPlayer.currentTime * 1000;
 
       const notes = data.musicData.notes;
-      let count = 0;
+      let count = 1200;
       for (const note of notes) {
         const startTime = note.time - animationDuration;
 
@@ -52,8 +52,8 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPositio, roomCo
         if (startTime <= audioTime && !processedNotes.has(note)) {
           GenerateNote(note, audioTime, count);  // 노트 생성 및 애니메이션 시작
           processedNotes.add(note);  // 노트를 처리된 상태로 표시
+          count++;
         }
-        count++;
       }
       requestAnimationFrame(scheduleNotes);
     };
@@ -67,6 +67,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPositio, roomCo
 
     const noteElement = document.createElement("div");
     noteElement.className = "Note";
+    noteElement.style.zIndex = index;
     noteElement.textContent = `${motion}`;
     noteElement.setAttribute('data-motion', motion);
     /* 주의 : 생성시간과 연관됨 */
