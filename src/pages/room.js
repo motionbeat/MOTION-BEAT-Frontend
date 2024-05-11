@@ -8,6 +8,7 @@ import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/room/room.scss";
 import RoomHeader from "../components/common/atomic/room/roomHeader.js";
+import MainHeader from "../components/common/atomic/main/mainHeader.js";
 
 const Room = () => {
     const location = useLocation();

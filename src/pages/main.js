@@ -12,6 +12,7 @@ import FriendState from "../components/common/friendState.js";
 import "../styles/main/main.scss"
 import SelectMenu from "../components/common/atomic/main/selectMenu.js";
 import Ranking from "../components/main/ranking.js";
+import MoveBg from "../components/common/atomic/movebg.js";
 
 const Main = () => {
   const navigate = useNavigate();
@@ -149,7 +150,7 @@ const Main = () => {
 
   return (
     <>
-
+      <MoveBg />
         {/* <div>
           <button className="revert" onClick={logout}>{"<-"}</button>
         </div>

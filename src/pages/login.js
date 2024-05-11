@@ -10,6 +10,7 @@ import {login} from "../server/socketEvents.js"
 import BackArrow from "../img/backArrow.png"
 import emailIcon from "../img/emailIcon.png"
 import pwIcon from "../img/pwIcon.png"
+import MoveBg from "../components/common/atomic/movebg.js";
 
 const Login = () => {
   const backendUrl = process.env.REACT_APP_BACK_API_URL
@@ -89,30 +90,11 @@ const Login = () => {
     navigate("/signup");
   };
 
-  const [currentIndex, setCurrentIndex] = useState(0);
 
-  const images = [
-    "./loginpage0",
-    "./loginpage1"
-  ];
-
-  const png = ".png";
-
-  useEffect(() => {
-    const intervalId = setInterval(changeBackgroundImage, 3000);
-    return () => clearInterval(intervalId);
-  }, []);
-
-  const changeBackgroundImage = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? 1 : 0));
-  }
-
-
-  const currentImagePath = images[currentIndex] + png;
 
   return (
     <>
-      <div className="bg" style={{ backgroundImage: `url(${currentImagePath})`}}>
+      <MoveBg />
         {/* <h1 className="login-title">MOTION BEAT</h1> */}
         <div className="loginWrapper">
           <div className="loginForm">
@@ -159,7 +141,6 @@ const Login = () => {
             </form>
           </div>
         </div>
-      </div>
     </>
   )
 }
