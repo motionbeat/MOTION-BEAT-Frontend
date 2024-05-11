@@ -60,6 +60,14 @@
   position: absolute;
   left: 6%;
   top: 2%;
+  z-index: 10;
+}
+
+.favSongList {
+  margin-top: 40px;
+  font-size: 2rem;
+  color: white;
+
 }
 
 .mypageRecently {
@@ -74,6 +82,14 @@
   font-size: 16px;
   margin-left: 30px;
   position: absolute;
-  left: 25%;
+  left: 40%;
   top: 2%;
+  z-index: 10;
+}
+
+.recSongList {
+  margin-top: 40px;
+  font-size: 2rem;
+  color: white;
+
 }

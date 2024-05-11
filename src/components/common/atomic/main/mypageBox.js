@@ -199,10 +199,10 @@ const MypageBox = () => {
         </div>
 
         <div className="mypageMainBox">
-          <div className="mypageFavorite" onClick={() => handleClick('favorite')} style={{ zIndex: activeTab === 'favorite' ? 3 : 2 }}>
-            <span className="favoriteTitle">즐겨찾기 한 노래</span>
+            <span className="favoriteTitle" onClick={() => handleClick('favorite')}>즐겨찾기 한 노래</span>
+          <div className="mypageFavorite" style={{ zIndex: activeTab === 'favorite' ? 3 : 2 }}>
             {activeTab === 'favorite' && favoriteSongList && (favoriteSongList.length > 0) &&
-              <ul style={{fontSize: "2rem", color: "white"}}>
+              <ul className="favSongList">
                 {favoriteSongList.map((song, index) => (
                   <li key={index}>
                     <p>{song.title}</p>
@@ -214,10 +214,10 @@ const MypageBox = () => {
             }
           </div>
           
-          <div className="mypageRecently" onClick={() => handleClick('recent')} style={{ zIndex: activeTab === 'recent' ? 3 : 2 }}>
-            <span className="recentlyTitle">최근 플레이 한 노래</span>
+            <span className="recentlyTitle" onClick={() => handleClick('recent')}>최근 플레이 한 노래</span>
+          <div className="mypageRecently" style={{ zIndex: activeTab === 'recent' ? 3 : 2 }}>
             {activeTab === 'recent' && recentSongList && (recentSongList.length > 0) &&
-              <ul style={{fontSize: "2rem", color: "white"}}>
+              <ul className="recSongList">
                 {recentSongList.map((song, index) => (
                   <li key={index}>
                     <p>{song.title}</p>
