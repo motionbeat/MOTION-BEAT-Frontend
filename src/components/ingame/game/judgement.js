@@ -65,6 +65,10 @@ export const Judge = (key, time, instrument, audio) => {
   }
 }
 
+export const PlayKeySoundWithParser = (key) => {
+  PlayKeySound(Parser(key));
+} 
+
 const PlayKeySound = (key) => {
   const keySound0Player = document.getElementById("keySound0Player");
   const keySound1Player = document.getElementById("keySound1Player");

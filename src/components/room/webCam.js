@@ -9,6 +9,7 @@ import { OpenVidu } from "openvidu-browser";
 import Drum2 from "../mediapipe/drum2.js";
 import Drum3 from "../mediapipe/drum3.js";
 import Drum4 from "../mediapipe/drum4.js";
+import { PlayKeySoundWithParser } from "../ingame/game/judgement";
 
 const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
   const [playerStatuses, setPlayerStatuses] = useState({});
@@ -186,7 +187,7 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
         const isSelf = event.stream.connection.connectionId === session.connection.connectionId;
         let videoContainer = document.createElement("div"); // 비디오를 위한 새로운 div 생성
         videoContainer.className = "videoContainer"; // 클래스 이름 설정(스타일링 용)
-
+        
         const subscriber = session.subscribe(event.stream, videoContainer);
 
         if (isSelf) {
@@ -199,9 +200,10 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
           otherVideosRef.current[streamNickname].appendChild(videoContainer);
         }
 
+        // isSelf가 true 때도, 즉 내 영상일 때도 subscribers에 추가해야 할지 논의 필요 - Hyeonwoo, 2024.05.11
         setSubscribers((prevSubscribers) => [
           ...prevSubscribers,
-          subscriber,
+          subscriber, 
         ]);
       });
 
@@ -209,6 +211,12 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
         setSubscribers((subs) =>
           subs.filter((sub) => sub !== event.stream.streamManager)
         );
+      });
+
+      session.on("signal:key-signal", (event) => {
+        // console.log("[KHW] Receive, Key signal received: " + event.data); // Message
+        
+        PlayKeySoundWithParser(event.data);
       });
 
       initSession(roomCode, session);
@@ -240,6 +248,20 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
             });
             session.publish(publisher);
             setPublisher(publisher);
+
+            window.addEventListener("keydown", (event) => {
+              const key = event.key.toUpperCase();
+
+              // 키 입력 시, 해당 키를 다른 사용자에게 전달
+              // 현재 키 입력은 D, F만 전달 (참고: import { Parser } from "../../../utils/parser")
+              if (["D", "F"].includes(key)) {
+                session.signal({
+                  data: key,
+                  to: [],
+                  type: "key-signal",
+                });
+              }
+            });
           })
           .catch((error) => {
             console.error(

@@ -208,7 +208,7 @@ const Ingame = () => {
       setIsActive(true);
 
       // console.log(key, "버튼눌림 at : ", time)
-      console.log(loadedData.audioData)
+      // console.log(loadedData.audioData)
       Judge(key, time, gameData.players[myPosition].instrument, loadedData.audioData.audioFiles);
 
     }, [loadedData]);
