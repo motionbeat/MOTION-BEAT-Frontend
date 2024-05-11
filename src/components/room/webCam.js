@@ -25,6 +25,56 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
   const myVideoRef = useRef(null);
   const otherVideosRef = useRef({});
 
+  useEffect(() => {
+    console.log("playerStatuses has been updated:", playerStatuses);
+  }, [playerStatuses]);
+
+  useEffect(() => {
+    setPlayerStatuses(prevStatuses => {
+      const updatedStatuses = players.reduce((acc, player) => {
+        // const existingPlayer = prevStatuses[player.nickname];
+        acc[player.nickname] = {
+          nickname: player.nickname,
+          instrument: player.instrument,
+          isReady: prevStatuses[player.nickname] ? prevStatuses[player.nickname].isReady : player.isReady,
+        };
+        return acc;
+      }, {});
+
+      // 변경된 상태를 확인
+      console.log("Updated player statuses:", updatedStatuses);
+      return updatedStatuses;
+    });
+  }, [players]);
+
+  useEffect(() => {
+    socket.on("readyStatus", (userReady) => {
+      console.log("준비 상태 변경 전", userReady);
+      setPlayerStatuses((prevStatuses) => ({
+        ...prevStatuses,
+        [userReady.nickname]: {
+          ...prevStatuses[userReady.nickname],
+          isReady: userReady.isReady,
+        },
+      }));
+      console.log("준비 상태 변경 후", userReady);
+    });
+
+    socket.on("instrumentStatus", (res) => {
+      setPlayerStatuses((prevStatuses) => ({
+        ...prevStatuses,
+        [res.nickname]: {
+          ...prevStatuses[res.nickname],
+          instrument: res.instrument,
+        },
+      }));
+    });
+
+    return () => {
+      socket.off("readyStatus");
+    };
+  }, []);
+
   // 방장 시작버튼
   const startGameHandler = async () => {
     if (myNickname === hostName) {
@@ -60,7 +110,6 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
       socket.emit("ready", (res) => {
         console.log("ready res", res);
       })
-
       setPlayerStatuses(prevStatuses => ({
         ...prevStatuses,
         [nickname]: {
@@ -238,45 +287,6 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
       return null;
     }
   };
-
-  useEffect(() => {
-    setPlayerStatuses(
-      players.reduce((acc, player) => {
-        acc[player.nickname] = {
-          nickname: player.nickname,
-          instrument: player.instrument,
-          isReady: false,
-        };
-        return acc;
-      }, {})
-    );
-  }, [players]);
-
-  useEffect(() => {
-    socket.on("readyStatus", (userReady) => {
-      setPlayerStatuses((prevStatuses) => ({
-        ...prevStatuses,
-        [userReady.nickname]: {
-          ...prevStatuses[userReady.nickname],
-          isReady: userReady.isReady,
-        },
-      }));
-    });
-
-    socket.on("instrumentStatus", (res) => {
-      setPlayerStatuses((prevStatuses) => ({
-        ...prevStatuses,
-        [res.nickname]: {
-          ...prevStatuses[res.nickname],
-          instrument: res.instrument,
-        },
-      }));
-    });
-
-    return () => {
-      socket.off("readyStatus");
-    };
-  }, []);
 
   return (
     <>
