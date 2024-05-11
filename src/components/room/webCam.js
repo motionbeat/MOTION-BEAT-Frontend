@@ -252,6 +252,8 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
             window.addEventListener("keydown", (event) => {
               const key = event.key.toUpperCase();
 
+              // console.log("[KHW] Key pressed: " + key); // Message
+
               // 키 입력 시, 해당 키를 다른 사용자에게 전달
               // 현재 키 입력은 D, F만 전달 (참고: import { Parser } from "../../../utils/parser")
               if (["D", "F"].includes(key)) {
