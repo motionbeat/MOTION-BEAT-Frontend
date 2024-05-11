@@ -92,21 +92,21 @@ const Login = () => {
   const [currentIndex, setCurrentIndex] = useState(0);
 
   const images = [
-    "../img/loginpage0",
-    "../img/loginpage1"
+    "./loginpage0",
+    "./loginpage1"
   ];
 
   const png = ".png";
-
-
-  const changeBackgroundImage = () => {
-    setCurrentIndex((prevIndex) => (prevIndex === 0 ? 1 : 0));
-  }
 
   useEffect(() => {
     const intervalId = setInterval(changeBackgroundImage, 3000);
     return () => clearInterval(intervalId);
   }, []);
+
+  const changeBackgroundImage = () => {
+    setCurrentIndex((prevIndex) => (prevIndex === 0 ? 1 : 0));
+  }
+
 
   const currentImagePath = images[currentIndex] + png;
 

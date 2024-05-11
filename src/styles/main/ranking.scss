@@ -56,8 +56,17 @@
   padding: 13px 35px;;
   border: 1px solid #d9d9d9;
   margin-top: 2px;
+  position: absolute;
+  z-index: 5;
+  background-color: #181A20;
+  opacity: 0.9;
 }
 
 .songDropdownItem {
   margin: 10px 0;
+}
+
+// 노래별 랭킹
+.songRankingWrapper {
+  
 }
