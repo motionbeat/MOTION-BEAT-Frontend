@@ -10,8 +10,6 @@ if (!audioPlayer) {
   console.error("Audio player not found");
 }
 
-
-
 const playAudio = (data) => {
   audioPlayer.src = data.musicData.sound;
   console.log(audioPlayer.src)
@@ -26,7 +24,8 @@ const playAudio = (data) => {
 
 
 export const Start = ({ stime, data, eventKey, railRefs, send, myPositio, roomCode }) => {
-
+  const animationDuration = 5000;
+  const processedNotes = new Set(); // 처리된 노트들을 추적하는 집합
   let audioTime;
 
   if (!data?.musicData) {
@@ -38,37 +37,53 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPositio, roomCo
     playAudio(data);
   }, stime)
 
-  const animationDuration = 5000;
+  const WhenPause = () => {
+    console.log("노래 재생이 일시정지 되었습니다.");
+  }
 
-  audioPlayer.addEventListener("play", () => {
-    const processedNotes = new Set(); // 처리된 노트들을 추적하는 집합
+  audioPlayer.addEventListener("pause", WhenPause);
 
-    const scheduleNotes = () => {
+  const WhenEnd = () => {
+    console.log("노래 재생이 끝났습니다. End 함수를 호출하기 전 5초 대기합니다.");
+    setTimeout(() => End(), 5000);
+  }
 
+  audioPlayer.addEventListener("ended", WhenEnd);
+
+  const WhenStart = () => {
+    const ScheduleNotes = () => {
       audioTime = audioPlayer.currentTime * 1000;
 
       const notes = data.musicData.notes;
       let count = 1200;
       for (const note of notes) {
-        count++;
         const startTime = note.time - animationDuration;
 
         /* 주의 : 생성시간과 연관됨 */
         if (startTime <= audioTime && !processedNotes.has(note)) {
-          GenerateNote(note, audioTime, count);  // 노트 생성 및 애니메이션 시작
           processedNotes.add(note);  // 노트를 처리된 상태로 표시
+          GenerateNote(note, audioTime, count);  // 노트 생성 및 애니메이션 시작
+          count++;
         }
       }
-      requestAnimationFrame(scheduleNotes);
+      requestAnimationFrame(ScheduleNotes);
     };
-    requestAnimationFrame(scheduleNotes);
-  });
+
+    requestAnimationFrame(ScheduleNotes);
+  }
+
+  if (!audioPlayer.dataset.listenersAdded) {
+    audioPlayer.dataset.listenersAdded = "true";
+    audioPlayer.addEventListener("play", WhenStart);
+  }
 
   const GenerateNote = (note, start, index) => {
     const { motion, time } = note;
     /* 주의 : 생성시간과 연관됨 */
+    console.log("노트 생성", motion, "eta", time, "ms");
 
     const noteElement = document.createElement("div");
+    noteElement.style.left = `100%`;
     noteElement.className = "Note";
     noteElement.style.zIndex = index;
     noteElement.textContent = `${motion}`;
@@ -79,29 +94,24 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPositio, roomCo
 
     noteElement.setAttribute('data-index', index.toString());
 
-    console.log("생성 : 노트 타입=", motion, "eta=", time, "ms", "index=", index);
-
-    // console.log(railRefs.current[0].current.dataset.instrument)
-
     for (const idx in railRefs.current) {
-      // console.log(railRefs.current[idx].current?.dataset.instrument)
       if (railRefs.current[idx].current?.dataset.instrument === note.instrument)
         railRefs.current[idx].current.appendChild(noteElement);
     }
 
-    const animateNote = () => {
+    const AnimateNote = () => {
       const elapsedTime = audioPlayer.currentTime * 1000 - start;
       const progress = elapsedTime / animationDuration;
 
       if (progress <= 1.2) {
         noteElement.style.left = `${100 - 100 * progress}%`;
-        requestAnimationFrame(animateNote);
+        requestAnimationFrame(AnimateNote);
       } else {
         noteElement.remove(); // 애니메이션 종료 후 노트 제거
       }
     };
 
-    requestAnimationFrame(animateNote);
+    requestAnimationFrame(AnimateNote);
   };
 
   const End = () => {
@@ -120,14 +130,9 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPositio, roomCo
     audioPlayer.dataset.listenersAdded = false;
   };
 
-  audioPlayer.addEventListener("pause", () => {
-    console.log("노래 재생이 일시정지 되었습니다.");
-  });
 
-  audioPlayer.addEventListener("ended", () => {
-    console.log("노래 재생이 끝났습니다. End 함수를 호출하기 전 5초 대기합니다.");
-    setTimeout(() => End(), 5000);  // 5초 후 게임 종료
-  });
+
+
 
   return { End };
 };
