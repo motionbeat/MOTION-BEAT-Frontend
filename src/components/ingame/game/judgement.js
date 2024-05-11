@@ -38,7 +38,7 @@ export const Judge = (key, time, instrument, audio) => {
 
   /* timeDiff가 0.5이상 차이나거나, 같은 모션 키를 입력하지 않았을 경우 */
   if (
-    (timeDiff > 300) || (closestNote.getAttribute('data-motion') !== Parser(key))
+    (timeDiff > 1000) || (closestNote.getAttribute('data-motion') !== Parser(key))
   ) {
     console.log("IGNORE")
     return dispatch(result);
@@ -51,7 +51,7 @@ export const Judge = (key, time, instrument, audio) => {
 
   /* timeDiff가 >=0,<=500 사이에 있고, 같은 모션 키를 입력했을 경우  */
   if (
-    (timeDiff >= 50 && timeDiff <= 300) && (closestNote.getAttribute('data-motion') === Parser(key))
+    (timeDiff >= 0 && timeDiff <= 1000) && (closestNote.getAttribute('data-motion') === Parser(key))
   ) {
     console.log(audio);
     PlayKeySound(Parser(key), audio);
