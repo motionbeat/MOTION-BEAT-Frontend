@@ -10,6 +10,8 @@ if (!audioPlayer) {
   console.error("Audio player not found");
 }
 
+
+
 const playAudio = (data) => {
   audioPlayer.src = data.musicData.sound;
   console.log(audioPlayer.src)
@@ -20,6 +22,8 @@ const playAudio = (data) => {
     })
     .catch((error) => console.error("Error playing audio:", error));
 };
+
+
 
 export const Start = ({ stime, data, eventKey, railRefs, send, myPositio, roomCode }) => {
 
@@ -46,13 +50,13 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPositio, roomCo
       const notes = data.musicData.notes;
       let count = 1200;
       for (const note of notes) {
+        count++;
         const startTime = note.time - animationDuration;
 
         /* 주의 : 생성시간과 연관됨 */
         if (startTime <= audioTime && !processedNotes.has(note)) {
           GenerateNote(note, audioTime, count);  // 노트 생성 및 애니메이션 시작
           processedNotes.add(note);  // 노트를 처리된 상태로 표시
-          count++;
         }
       }
       requestAnimationFrame(scheduleNotes);
@@ -63,7 +67,6 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPositio, roomCo
   const GenerateNote = (note, start, index) => {
     const { motion, time } = note;
     /* 주의 : 생성시간과 연관됨 */
-    console.log("노트 생성", motion, "eta", time, "ms");
 
     const noteElement = document.createElement("div");
     noteElement.className = "Note";
@@ -75,6 +78,8 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPositio, roomCo
     noteElement.setAttribute('data-instrument', note.instrument);
 
     noteElement.setAttribute('data-index', index.toString());
+
+    console.log("생성 : 노트 타입=", motion, "eta=", time, "ms", "index=", index);
 
     // console.log(railRefs.current[0].current.dataset.instrument)
 
