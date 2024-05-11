@@ -32,24 +32,20 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
   useEffect(() => {
     setPlayerStatuses(prevStatuses => {
       const updatedStatuses = players.reduce((acc, player) => {
-        // const existingPlayer = prevStatuses[player.nickname];
         acc[player.nickname] = {
           nickname: player.nickname,
           instrument: player.instrument,
           isReady: prevStatuses[player.nickname] ? prevStatuses[player.nickname].isReady : player.isReady,
         };
         return acc;
-      }, {});
+      }, []);
 
-      // 변경된 상태를 확인
-      console.log("Updated player statuses:", updatedStatuses);
       return updatedStatuses;
     });
   }, [players]);
 
   useEffect(() => {
     socket.on("readyStatus", (userReady) => {
-      console.log("준비 상태 변경 전", userReady);
       setPlayerStatuses((prevStatuses) => ({
         ...prevStatuses,
         [userReady.nickname]: {
@@ -57,7 +53,6 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
           isReady: userReady.isReady,
         },
       }));
-      console.log("준비 상태 변경 후", userReady);
     });
 
     socket.on("instrumentStatus", (res) => {

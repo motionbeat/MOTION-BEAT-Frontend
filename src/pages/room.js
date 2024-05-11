@@ -20,7 +20,7 @@ const Room = () => {
     //joinRoom을 쏴줘야 함
     useEffect (() => {
       const updatePlayers = (updatedPlayers) => {
-        console.log(updatedPlayers);
+        console.log("테스트", updatedPlayers);
         setRoom(prev => ({ 
           ...prev, 
           players: updatedPlayers
