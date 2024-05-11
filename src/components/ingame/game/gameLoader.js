@@ -5,19 +5,45 @@ import axios from "axios";
 const backendUrl = process.env.REACT_APP_BACK_API_URL;
 
 /* 하드코딩된 데이터 */
+// const audioFiles = {
+//   drum1: [
+//     { name: "0", url: '/keySound/drums/drum_1.mp3' },
+//     { name: "1", url: '/keySound/drums/drum_2.mp3' },
+//     { name: "2", url: '/keySound/drums/drum_3.mp3' },
+//     { name: "3", url: '/keySound/drums/drum_4.mp3' },
+//     { name: "4", url: '/keySound/drums/drum_5.mp3' },
+//     { name: "snare", url: '/keySound/drums/snare.mp3' },
+//     { name: "tom", url: '/keySound/drums/tom.mp3' },
+//   ],
+//   drum2: [
+//     { name: "0", url: '/keySound/conga/conga_1.mp3' },
+//     { name: "1", url: '/keySound/conga/conga_2.mp3' },
+//   ],
+//   drum3: [
+//     { name: '0', url: '/keySound/guitar/guitar_1.mp3' },
+//     { name: '1', url: '/keySound/guitar/guitar_2.mp3' },
+//   ],
+//   drum4: [
+//     { name: "0", url: '/keySound/organ/organ_1.mp3' },
+//     { name: "1", url: '/keySound/organ/organ_2.mp3' },
+//   ],
+// };
 const audioFiles = {
   drum1: [
     { name: "0", url: '/keySound/drums/drum_1.mp3' },
     { name: "1", url: '/keySound/drums/drum_2.mp3' },
-    { name: "2", url: '/keySound/drums/drum_3.mp3' },
-    { name: "3", url: '/keySound/drums/drum_4.mp3' },
+  ],
+  drum2: [
+    { name: "0", url: '/keySound/drums/drum_3.mp3' },
+    { name: "1", url: '/keySound/drums/drum_4.mp3' },
+  ],
+  drum3: [
     { name: "4", url: '/keySound/drums/drum_5.mp3' },
     { name: "snare", url: '/keySound/drums/snare.mp3' },
-    { name: "tom", url: '/keySound/drums/tom.mp3' },
   ],
-  guitar: [
+  drum4: [
+    { name: "tom", url: '/keySound/drums/tom.mp3' },
     { name: '0', url: '/keySound/guitar/guitar_1.mp3' },
-    { name: '1', url: '/keySound/guitar/guitar_2.mp3' },
   ]
 };
 
