@@ -168,10 +168,11 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
       });
 
       initSession(roomCode, session);
-    }
-    return () => {
-      if (ingame && session) {
-        session.disconnect();
+
+      return () => {
+        if (ingame && session) {
+          session.disconnect();
+        }
       }
     }
   }, [ingame, roomCode]);
@@ -286,10 +287,10 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
               {myNickname === nickname ? (
                 // <div ref={myVideoRef} className="webCamBoxInner"/>
                 ingame && instrument === 'drum1' ? <Drum1 /> :
-                ingame && instrument === 'drum2' ? <Drum2 /> :
-                ingame && instrument === 'drum3' ? <Drum3 /> :
-                ingame && instrument === 'drum4' ? <Drum4 /> :
-                <div ref={myVideoRef} className="webCamBoxInner" />
+                  ingame && instrument === 'drum2' ? <Drum2 /> :
+                    ingame && instrument === 'drum3' ? <Drum3 /> :
+                      ingame && instrument === 'drum4' ? <Drum4 /> :
+                        <div ref={myVideoRef} className="webCamBoxInner" />
                 // </div>
               ) : (
                 <div

@@ -1,0 +1,63 @@
+@font-face {
+  font-family: "PretendardSemibold";
+  src: url("../../fonts/pretendard/Pretendard-SemiBold.ttf");
+}
+
+.rankingPageWrapper {
+  width: 1079px;
+  height: 486px;
+  border: 20px;
+  background-image: url("../../img/rankingBox.png");
+  margin: 70px auto;
+  position: relative;
+}
+
+// 노래 필터
+.songFilterWrapper {
+  width: 420px;
+  height: 478px;
+  border-radius: 24px 0 0 24px;
+  background-color: #181A20;
+  color: white;
+  font-family: "PretendardSemibold";
+  position: absolute;
+  top: 1%;
+  left: 1%;
+  padding: 30px;
+}
+
+.songDropdown {
+}
+
+.songDropdownHeader {
+  width: 365px;
+  height: 62px;
+  border-radius: 58px;
+  border: 1px solid #d9d9d9;
+  font-size: 24px;
+  padding: 13px 35px;
+}
+
+.downArrow {
+  width: 16px;
+  height: 10px;
+  float: right;
+
+  img {
+    width: inherit;
+    height: inherit;
+  }
+}
+
+.songDropdownList {
+  width: 365px;
+  font-size: 24px;
+  border-radius: 24px;
+  padding: 13px 35px;;
+  border: 1px solid #d9d9d9;
+  margin-top: 2px;
+}
+
+.songDropdownItem {
+  margin: 10px 0;
+}

@@ -81,7 +81,7 @@ const App = () => {
           {/* 404 */}
           <Route path="*" element={<NotFound />} />
 
-          {/* 컴포넌트 테스트 */}
+          {/* 테스트 */}
           <Route path="/atomic" element={<AtomicTest />} />
           
           <Route path="/admin" element={<Admin />} />

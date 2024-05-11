@@ -58,9 +58,10 @@
   font-size: 16px;
   // margin-left: 30px;
   position: absolute;
-  left: 6%;
-  top: 2%;
+  left: 10%;
+  top: 8%;
   z-index: 10;
+  cursor: pointer;
 }
 
 .favSongList {
@@ -68,6 +69,14 @@
   font-size: 2rem;
   color: white;
 
+  li {
+    width: 458px;
+    height: 130px;
+    background-image: url("../../img/mypageLiBox.png");
+    margin: 6%;
+    list-style: none;
+    padding-left: 20px;
+  }
 }
 
 .mypageRecently {
@@ -82,9 +91,10 @@
   font-size: 16px;
   margin-left: 30px;
   position: absolute;
-  left: 40%;
-  top: 2%;
+  left: 43%;
+  top: 8%;
   z-index: 10;
+  cursor: pointer;
 }
 
 .recSongList {
@@ -92,4 +102,12 @@
   font-size: 2rem;
   color: white;
 
+  li {
+    width: 458px;
+    height: 130px;
+    background-image: url("../../img/mypageLiBox.png");
+    margin: 6%;
+    list-style: none;
+    padding-left: 20px;
+  }
 }

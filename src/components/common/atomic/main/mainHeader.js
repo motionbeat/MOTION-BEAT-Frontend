@@ -7,7 +7,7 @@ import { useState } from "react";
 import FriendBox from "./friendBox.js";
 import MypageBox from "./mypageBox.js";
 
-const MainHeader = ({ roomName, backPath }) => {
+const MainHeader = ({ roomName }) => {
   const navigate = useNavigate();
   const [openFriends, setOpenFriends] = useState(false);
   const [openMypage, setOpenMypage] = useState(false);
@@ -22,7 +22,7 @@ const MainHeader = ({ roomName, backPath }) => {
 
 
   const goBack = () => {
-    navigate(`/${backPath}`)
+    navigate("/main");
   }
 
   return (

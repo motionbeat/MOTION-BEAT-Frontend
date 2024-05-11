@@ -4,7 +4,6 @@ import axios from "axios";
 import socket from "../server/server.js";
 import Playtype from "../components/main/playtype";
 import Tutorial from "../components/main/tutorial";
-import Ranking from "../components/main/ranking";
 import Settings from "../components/main/settings";
 
 import Modal from "../components/modal";
@@ -12,6 +11,7 @@ import Mypage from "../components/mypage";
 import FriendState from "../components/common/friendState.js";
 import "../styles/main/main.scss"
 import SelectMenu from "../components/common/atomic/main/selectMenu.js";
+import Ranking from "../components/main/ranking.js";
 
 const Main = () => {
   const navigate = useNavigate();
@@ -113,7 +113,7 @@ const Main = () => {
         setCurrentView(<Tutorial />)
         break;
 
-      case "RANKING":
+      case "RANKINGS":
         console.log("Ranking 컴포넌트를 불러옵니다.");
         setCurrentView(<Ranking />)
         break;
