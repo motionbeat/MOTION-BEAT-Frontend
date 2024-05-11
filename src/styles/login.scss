@@ -8,6 +8,13 @@
   src: url("../fonts/pretendard/Pretendard-SemiBold.ttf");
 }
 
+.bg {
+  width: 100vw;
+  height: 100vh;
+  background-repeat: no-repeat;
+  background-size: cover;
+}
+
 .login-title {
   font-family: "Lato";
   font-size: 4rem;

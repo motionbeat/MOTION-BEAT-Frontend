@@ -4,10 +4,11 @@
   box-sizing: border-box;
 }
 
-body, html {
-  width: 100%;
-  height: 100%;
-  background-image: url("./img/loginpage.png");
-  background-repeat: no-repeat;
-  background-size: cover;
-}
+/* body, html { */
+  /* width: 100%; */
+  /* height: 100%; */
+  /* background-image: url("./img/loginpage.png");
+  background-image: url("./img/loginpage2.png"); */
+  /* background-repeat: no-repeat; */
+  /* background-size: cover; */
+/* } */
