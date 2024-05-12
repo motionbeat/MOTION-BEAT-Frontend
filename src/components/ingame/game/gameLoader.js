@@ -142,8 +142,9 @@ const SyncPeer = async () => {
 
 const LoadInstrument = async (inst) => {
   console.log("Loading audio...");
-  console.log(audioFiles);
-  console.log({ audioFiles });
+  // console.log(audioFiles);
+  // console.log({ audioFiles });
+  sessionStorage.setItem("audioFiles", JSON.stringify(audioFiles));
 
   try {
     if (audioFiles[inst]) {
