@@ -69,7 +69,7 @@ const SecondScore = ({ gameData }) => {
 
           new Audio(audioFiles[instrument][motionIndex].url).play();
 
-          TriggerHitEffect( (sessionStorage.getItem("nickname") === player.nickname) ? "my" : `other${index}` );            
+          TriggerHitEffect(`player${index}`);            
         }
 
         handleScore({ nickname: player.nickname, score: scoreData });
