@@ -238,12 +238,14 @@ const Ingame = () => {
                 <>
                   <Indicator />
                   <JudgeBox isactive={isActive} key={index}>
-                    <div id="hitEffect" className="hit-effect" />
+                    <div id="myHitEffect" className="hit-effect" />
                   </JudgeBox>
                   <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
                   <Output />
                 </>
-              ) : <JudgeBox key={index} />}
+              ) : <JudgeBox key={index}>
+                  <div id={`other${index}HitEffect`} className="hit-effect" />
+                </JudgeBox>}
             </VerticalRail>
           );
         })}

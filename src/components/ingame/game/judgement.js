@@ -49,14 +49,14 @@ export const Judge = (key, time, instrument, audio) => {
     (timeDiff >= 0 && timeDiff <= 500) && (closestNote.getAttribute('data-motion') === currentMotion)
   ) {
     // console.log(audio);
-    PlayKeySound(currentMotion);
+    // PlayKeySound(currentMotion);
     // console.log("HIT from : ", timeDiff, " = ", noteTime, "-", time)
     result = "hit"
     sessionStorage.setItem("instrument", instrument);
     sessionStorage.setItem("motion", currentMotion);
 
     dispatch(result);
-    TriggerHitEffect();
+    // TriggerHitEffect("my");
 
     closestNote.remove();  // 해당 노트를 화면에서 숨김
     return
@@ -90,8 +90,20 @@ const PlayKeySound = (key) => {
   }
 }
 
-const TriggerHitEffect = () => {
-  const hitEffect = document.getElementById('hitEffect');
+export const TriggerHitEffect = (target) => {
+  let targetElement;
+
+  if (target === undefined || target === null) {
+    targetElement = "my";
+    console.error("Target is not defined. Defaulting to 'my'.");
+  }
+  else
+  {
+    targetElement = `other${target}`;
+  }
+
+  const hitEffect = document.getElementById(`${targetElement}HitEffect`);
+
   hitEffect.classList.add('active');
 
   setTimeout(() => {

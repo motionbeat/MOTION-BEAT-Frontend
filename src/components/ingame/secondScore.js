@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import socket from "../../server/server.js";
 import { useSelector } from "react-redux";
-
+import { TriggerHitEffect } from "components/ingame/game/judgement.js";
 
 const SecondScore = ({ gameData }) => {
   const [playerScores, setPlayerScores] = useState({});
@@ -22,10 +22,10 @@ const SecondScore = ({ gameData }) => {
 
   const handleScore = (res) => {
     // console.log("Score received:", res.nickname, res.score);
-    setPlayerScores(prevScores => {
+    setPlayerScores((prevScores) => {
       const updatedScores = {
         ...prevScores,
-        [res.nickname]: res.score
+        [res.nickname]: res.score,
       };
       return updatedScores;
     });
@@ -33,28 +33,44 @@ const SecondScore = ({ gameData }) => {
 
   // hit 출력
   useEffect(() => {
-    const scoreUpdateEvents = gameData.players.map(player => {
+    const scoreUpdateEvents = gameData.players.map((player, index) => {
       const eventName = `liveScore${player.nickname}`;
-      socket.on(eventName, (scoreData, instrument, motion) => {
-        // console.log("[KHW] Score received:", player.nickname, scoreData, instrument, motion);
-        // console.log("[KHW] Audio files:", audioFiles);
-        // console.log("[KHW] Instrument:", audioFiles[instrument])
+      socket.on(eventName, (scoreData, instrument, motionType) => {
+        if (
+          instrument !== undefined &&
+          instrument !== null &&
+          motionType !== null &&
+          motionType !== undefined
+        ) {
+          // console.log(instrument);
+          // console.log(
+          //   "[KHW] Score received:",
+          //   player.nickname,
+          //   scoreData,
+          //   instrument,
+          //   motionType
+          // );
+          // console.log("[KHW] Audio files:", audioFiles);
+          // console.log("[KHW] Instrument:", audioFiles[instrument]);
 
-        let motionType;
+          let motionIndex;
 
-        switch (motion) {
-          case "A":
-            motionType = 0;
-            break;
-          case "B":
-            motionType = 1;
-            break;
-          default:
-            break;
+          switch (motionType) {
+            case "A":
+              motionIndex = 0;
+              break;
+            case "B":
+              motionIndex = 1;
+              break;
+            default:
+              motionIndex = 0;
+              break;
+          }
+
+          new Audio(audioFiles[instrument][motionIndex].url).play();
+
+          TriggerHitEffect( (sessionStorage.getItem("nickname") === player.nickname) ? "my" : `other${index}` );            
         }
-
-        let audio = new Audio(audioFiles[instrument][motionType].url);
-        audio.play();
 
         handleScore({ nickname: player.nickname, score: scoreData });
       });
@@ -62,7 +78,7 @@ const SecondScore = ({ gameData }) => {
     });
 
     return () => {
-      scoreUpdateEvents.forEach(eventName => {
+      scoreUpdateEvents.forEach((eventName) => {
         socket.off(eventName);
       });
     };
@@ -77,8 +93,7 @@ const SecondScore = ({ gameData }) => {
               name={player.nickname}
               style={{ fontSize: "2rem", color: "white" }}
             >
-              {player.nickname}:{" "}
-              {playerScores[player.nickname] || 0}
+              {player.nickname}: {playerScores[player.nickname] || 0}
             </p>
           </div>
         ))}
