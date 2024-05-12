@@ -312,6 +312,17 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
       <div className="webCamBox">
         {Object.entries(playerStatuses).map(([nickname, { instrument, isReady }], index) => (
           <div className="playerContainer" key={index}>
+            <div>
+              {nickname === hostName ? (
+                <ReadyBtn onClick={() => startGameHandler()}>시작</ReadyBtn>
+              ) : (
+                <ReadyBtn
+                  isReady={isReady}
+                  onClick={() => readyBtnClick(nickname)}
+                >
+                  {isReady ? "준비 완료" : "대기 중"}
+                </ReadyBtn>
+              )}
             <div className="webCamBoxDiv">
               {myNickname === nickname ? (
                 // <div ref={myVideoRef} className="webCamBoxInner"/>
@@ -329,16 +340,7 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
               )}
               <p>{nickname}</p>
               <p onClick={() => findingInstrument(nickname)}>{instrument}</p>
-              {nickname === hostName ? (
-                <ReadyBtn onClick={() => startGameHandler()}>시작</ReadyBtn>
-              ) : (
-                <ReadyBtn
-                  isReady={isReady}
-                  onClick={() => readyBtnClick(nickname)}
-                >
-                  {isReady ? "준비 완료" : "대기 중"}
-                </ReadyBtn>
-              )}
+            </div>
               {instruModal && (
                 <InstrumentModal>
                   {instrumentList.map((instrument) => (
@@ -374,14 +376,16 @@ const WebCamTop = styled.div`
 `;
 
 const ReadyBtn = styled.button`
-    background-color: ${(props) => (props.isReady ? "#6EDACD" : "#CB0000")};
-    width: 70px;
+    background-color: #181A20;
+    width: 250px;
     color: white;
-    border: none;
+    border: 3px solid ${(props) => (props.isReady ? "#6EDACD" : "#CA7900")};
     padding: 10px;
     cursor: pointer;
-    border-radius: 5px;
-    margin-top: 20px;
+    border-radius: 100px;
+    padding: 10px 0;
+    font-size: 32px;
+    margin: 20px 0;
 `;
 
 const InstrumentModal = styled.div`
