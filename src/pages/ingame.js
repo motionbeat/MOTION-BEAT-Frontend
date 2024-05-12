@@ -31,8 +31,6 @@ let playerNumber = staticColorsArray.length;
 const backendUrl = process.env.REACT_APP_BACK_API_URL;
 let myColor
 
-
-
 const Ingame = () => {
   /* Router */
   const location = useLocation(); // 이전 페이지에서 데이터 가져오기
@@ -93,7 +91,7 @@ const Ingame = () => {
     };
 
     socket.on(`allPlayersEnded${gameData.code}`, (res) => {
-      console.log("전체 플레이어 게임 끝");
+      // console.log("전체 플레이어 게임 끝");
       setGameEnded(true);
     })
 
@@ -107,13 +105,13 @@ const Ingame = () => {
     // 게임 리소스 로딩
     const init = async () => {
       try {
-        console.log("게임데이터:", gameData);
-        console.log("myPosition", myPosition);
-        console.log("게임데이터 ", gameData.players);
-        console.log("TEST", gameData.players[myPosition].instrument)
+        // console.log("게임데이터:", gameData);
+        // console.log("myPosition", myPosition);
+        // console.log("게임데이터 ", gameData.players);
+        // console.log("TEST", gameData.players[myPosition].instrument)
         const loadedData = await Load(gameData.song, gameData.players, gameData.players[myPosition].instrument);
 
-        console.log("게임 리소스 로드 완료: " + loadedData);
+        // console.log("게임 리소스 로드 완료: " + loadedData);
         // console.log(loadedData);
         dispatch(setGameloadData(loadedData));
         // console.log(loadedData)
@@ -152,7 +150,7 @@ const Ingame = () => {
     // console.log("서버타임", serverTime);
     // console.log("서버타임 변환", formattedTime);
 
-    console.log(timeDiff);
+    // console.log(timeDiff);
     setModalStatus("Hide");
 
     return timeDiff
@@ -160,9 +158,9 @@ const Ingame = () => {
 
   const handleEnterDown = useCallback((event) => {
     if (event.key === "Enter" && loadedData) {
-      console.log("시행됨")
+      // console.log("시행됨")
       socket.emit(`playerLoaded`, sendData);
-      console.log(sendData)
+      // console.log(sendData)
 
       setModalStatus("Ready");
       window.removeEventListener("keydown", handleEnterDown); // 이벤트 리스너 제거
@@ -187,8 +185,6 @@ const Ingame = () => {
   const handleKeyPressed = (msg) => {
     setMessage(msg);
   };
-
-
 
   // 재생 상태 변경
   useEffect(() => {
@@ -216,8 +212,6 @@ const Ingame = () => {
     const handleKeyUp = useCallback(() => {
       setIsActive(false);
     }, []);
-
-
 
     // console.log(gameData);
     // console.log(gameData.players);

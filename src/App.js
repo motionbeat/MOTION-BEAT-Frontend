@@ -36,8 +36,6 @@ import AtomicTest from "./components/common/atomic/atomicTest";
 import Drum2 from "./components/mediapipe/drum2";
 import Admin from "./pages/admin";
 
-
-
 const App = () => {
   return (
     <>
@@ -46,7 +44,8 @@ const App = () => {
         <Routes>
           {/* token사용 시 아래 주석과 "###"아래 주석을 해제하세요 */}
           {/* 웹 접속 */}
-          <Route path="/" element={<Splash />} />
+          {/* <Route path="/" element={<Splash />} /> */}
+          <Route path="/" element={<Login />} />
 
           {/* 로그인 전 */}
           <Route path="/login" element={<Login />} />
@@ -83,7 +82,7 @@ const App = () => {
 
           {/* 테스트 */}
           <Route path="/atomic" element={<AtomicTest />} />
-          
+
           <Route path="/admin" element={<Admin />} />
         </Routes>
       </Router>

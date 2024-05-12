@@ -50,7 +50,7 @@ const Main = () => {
 
   const logout = async () => {
     try {
-      const response = await axios.patch(`${backendUrl}/api/users/logout`,{}, {
+      const response = await axios.patch(`${backendUrl}/api/users/logout`, {}, {
         headers: {
           "Content-Type": "application/json",
           "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
@@ -58,16 +58,16 @@ const Main = () => {
           "Nickname": sessionStorage.getItem("nickname")
         }
       });
-        console.log('로그아웃 성공:', response.data);
-        // sessionStorage.removeItem("userId");
-        // sessionStorage.removeItem("socketId");
-        // sessionStorage.removeItem("nickname");
-        sessionStorage.clear();
-        navigate("/login");
-      } catch (error) {
-        // 에러 처리
-        console.error('로그아웃 에러:', error);
-      };
+      console.log('로그아웃 성공:', response.data);
+      // sessionStorage.removeItem("userId");
+      // sessionStorage.removeItem("socketId");
+      // sessionStorage.removeItem("nickname");
+      sessionStorage.clear();
+      navigate("/login");
+    } catch (error) {
+      // 에러 처리
+      console.error('로그아웃 에러:', error);
+    };
   };
 
   // const handleRevert = () => {
@@ -78,7 +78,7 @@ const Main = () => {
   //     // eslint-disable-next-line no-restricted-globals
   //     if (confirm("로그아웃 하시겠습니까?")) {
   //       setIsMenuButtonSelected(false);
-  
+
   //       sessionStorage.clear();
   //       navigate("/login");
   //     } else {
@@ -122,7 +122,7 @@ const Main = () => {
       case "SETTINGS":
         setCurrentView(<Settings />)
         break;
-        
+
       default:
         console.log("알 수 없는 버튼입니다.");
         setCurrentView(null)
@@ -150,8 +150,8 @@ const Main = () => {
 
   return (
     <>
-      <MoveBg />
-        {/* <div>
+      {/* <MoveBg /> */}
+      {/* <div>
           <button className="revert" onClick={logout}>{"<-"}</button>
         </div>
         <div style={{ display: "inline", float: "right" }}>
