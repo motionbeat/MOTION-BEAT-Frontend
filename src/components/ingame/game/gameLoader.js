@@ -34,8 +34,8 @@ const audioFiles = {
     { name: "1", url: '/keySound/alldrum/crash2.wav' },
   ],
   drum2: [
-    { name: "0", url: '/keySound/alldrum/kick1.mp3' },
-    { name: "1", url: '/keySound/alldrum/kick2.mp3' },
+    { name: "0", url: '/keySound/alldrum/kick1.wav' },
+    { name: "1", url: '/keySound/alldrum/kick2.wav' },
   ],
   drum3: [
     { name: "0", url: '/keySound/guitar/guitar_1.mp3' },
