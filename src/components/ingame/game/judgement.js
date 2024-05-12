@@ -4,8 +4,8 @@ export const Judge = (key, time, instrument, audio) => {
 
   let result = "ignore"; // 기본 결과를 "ignore"로 설정
 
-  console.log("TEST1");
-  console.log(instrument);
+  // console.log("TEST1");
+  // console.log(instrument);
   const dispatch = (result) => {
     const event = new CustomEvent('scoreUpdate', { detail: { result } });
     window.dispatchEvent(event);
@@ -16,7 +16,7 @@ export const Judge = (key, time, instrument, audio) => {
   let closestNote = null;
   let minIndex = Infinity;
 
-  console.log("TEST2");
+  // console.log("TEST2");
   notes.forEach(note => {
     const index = parseInt(note.getAttribute('data-index'), 10); // 요소의 data-index 속성 가져오기
     if (!isNaN(index) && index < minIndex) {  // index가 유효한 숫자인지 확인
@@ -43,13 +43,18 @@ export const Judge = (key, time, instrument, audio) => {
   // } else
 
   /* timeDiff가 >=0,<=500 사이에 있고, 같은 모션 키를 입력했을 경우  */
+  let currentMotion = Parser(key);
+
   if (
-    (timeDiff >= 0 && timeDiff <= 500) && (closestNote.getAttribute('data-motion') === Parser(key))
+    (timeDiff >= 0 && timeDiff <= 500) && (closestNote.getAttribute('data-motion') === currentMotion)
   ) {
-    console.log(audio);
-    PlayKeySound(Parser(key));
-    console.log("HIT from : ", timeDiff, " = ", noteTime, "-", time)
+    // console.log(audio);
+    PlayKeySound(currentMotion);
+    // console.log("HIT from : ", timeDiff, " = ", noteTime, "-", time)
     result = "hit"
+    sessionStorage.setItem("instrument", instrument);
+    sessionStorage.setItem("motion", currentMotion);
+
     dispatch(result);
     TriggerHitEffect();
 
@@ -59,7 +64,7 @@ export const Judge = (key, time, instrument, audio) => {
 
   /* timeDiff가 0.5이상 차이나거나, 같은 모션 키를 입력하지 않았을 경우 */
   if (timeDiff < 0) {
-    console.log("IGNORE");
+    // console.log("IGNORE");
     closestNote.setAttribute("data-index", minIndex + 100);
     return dispatch("ignore");
   }

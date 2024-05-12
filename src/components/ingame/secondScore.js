@@ -3,7 +3,7 @@ import socket from "../../server/server.js";
 import { useSelector } from "react-redux";
 
 
-const SecondScore = ({gameData}) => {
+const SecondScore = ({gameData, audioFiles}) => {
   const [playerScores, setPlayerScores] = useState({});
 
   // // 핸들 스코어
@@ -35,6 +35,21 @@ const SecondScore = ({gameData}) => {
     const scoreUpdateEvents = gameData.players.map(player => {
       const eventName = `liveScore${player.nickname}`;
       socket.on(eventName, (scoreData) => {
+        let motionType;
+
+        switch (scoreData.motion) {
+          case "A":
+            motionType = 0;
+            break;
+          case "B":
+            motionType = 1;
+            break;
+          default:
+            break;
+        }
+
+        new Audio(audioFiles[scoreData.instrument][motionType].url).play();
+
         handleScore({ nickname: player.nickname, score: scoreData });
       });
       return eventName;
