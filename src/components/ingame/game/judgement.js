@@ -91,18 +91,12 @@ const PlayKeySound = (key) => {
 }
 
 export const TriggerHitEffect = (target) => {
-  let targetElement;
-
   if (target === undefined || target === null) {
-    targetElement = "my";
+    target = "my";
     console.error("Target is not defined. Defaulting to 'my'.");
   }
-  else
-  {
-    targetElement = `other${target}`;
-  }
 
-  const hitEffect = document.getElementById(`${targetElement}HitEffect`);
+  const hitEffect = document.getElementById(`${target}HitEffect`);
 
   hitEffect.classList.add('active');
 
