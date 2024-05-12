@@ -12,7 +12,7 @@ if (!audioPlayer) {
 
 const playAudio = (data) => {
   audioPlayer.src = data.musicData.sound;
-  console.log(audioPlayer.src)
+  // console.log(audioPlayer.src)
   audioPlayer.currentTime = 0;
   audioPlayer.play()
     .then(() => {
@@ -20,7 +20,6 @@ const playAudio = (data) => {
     })
     .catch((error) => console.error("Error playing audio:", error));
 };
-
 
 
 export const Start = ({ stime, data, eventKey, railRefs, send, myPositio, roomCode }) => {
@@ -80,7 +79,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPositio, roomCo
   const GenerateNote = (note, start, index) => {
     const { motion, time } = note;
     /* 주의 : 생성시간과 연관됨 */
-    console.log("노트 생성", motion, "eta", time, "ms");
+    // console.log("노트 생성", motion, "eta", time, "ms");
 
     const noteElement = document.createElement("div");
     noteElement.style.left = `100%`;

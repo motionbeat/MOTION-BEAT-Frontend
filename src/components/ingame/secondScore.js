@@ -3,7 +3,7 @@ import socket from "../../server/server.js";
 import { useSelector } from "react-redux";
 
 
-const SecondScore = ({gameData}) => {
+const SecondScore = ({ gameData }) => {
   const [playerScores, setPlayerScores] = useState({});
   let audioFiles = JSON.parse(sessionStorage.getItem("audioFiles"));
 
@@ -21,7 +21,7 @@ const SecondScore = ({gameData}) => {
   // };
 
   const handleScore = (res) => {
-    console.log("Score received:", res.nickname, res.score);
+    // console.log("Score received:", res.nickname, res.score);
     setPlayerScores(prevScores => {
       const updatedScores = {
         ...prevScores,
@@ -36,9 +36,9 @@ const SecondScore = ({gameData}) => {
     const scoreUpdateEvents = gameData.players.map(player => {
       const eventName = `liveScore${player.nickname}`;
       socket.on(eventName, (scoreData, instrument, motion) => {
-        console.log("[KHW] Score received:", player.nickname, scoreData, instrument, motion);
-        console.log("[KHW] Audio files:", audioFiles);
-        console.log("[KHW] Instrument:", audioFiles[instrument])
+        // console.log("[KHW] Score received:", player.nickname, scoreData, instrument, motion);
+        // console.log("[KHW] Audio files:", audioFiles);
+        // console.log("[KHW] Instrument:", audioFiles[instrument])
 
         let motionType;
 
@@ -52,7 +52,7 @@ const SecondScore = ({gameData}) => {
           default:
             break;
         }
-        
+
         let audio = new Audio(audioFiles[instrument][motionType].url);
         audio.play();
 
@@ -66,24 +66,24 @@ const SecondScore = ({gameData}) => {
         socket.off(eventName);
       });
     };
-  }, [gameData.players, audioFiles]); 
-  
-    return (
-        <>
-            <div style={{ display: "flex" }}>
-                {gameData.players.map((player, index) => (
-                    <div key={index} style={{ marginRight: "16%" }}>
-                        <p
-                            name={player.nickname}
-                            style={{ fontSize: "2rem", color: "white" }}
-                        >
-                            {player.nickname}:{" "}
-                            {playerScores[player.nickname] || 0}
-                        </p>
-                    </div>
-                ))}
-            </div>
-        </>
-    );
+  }, [gameData.players, audioFiles]);
+
+  return (
+    <>
+      <div style={{ display: "flex" }}>
+        {gameData.players.map((player, index) => (
+          <div key={index} style={{ marginRight: "16%" }}>
+            <p
+              name={player.nickname}
+              style={{ fontSize: "2rem", color: "white" }}
+            >
+              {player.nickname}:{" "}
+              {playerScores[player.nickname] || 0}
+            </p>
+          </div>
+        ))}
+      </div>
+    </>
+  );
 };
 export default SecondScore;
