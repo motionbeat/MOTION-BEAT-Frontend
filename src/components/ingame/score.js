@@ -43,10 +43,12 @@ const Score = ({roomCode}) => {
     const sendData = { 
       code: roomCode, 
       nickname: myNickname, 
-      currentScore: hittedNotes 
+      currentScore: hittedNotes,
+      instrument: sessionStorage.getItem("instrument"),
+      motion: sessionStorage.getItem("motion")
     }
     socket.emit("hit", sendData, (res) => {
-      console.log("Hit update response:", res);
+      // console.log("Hit update response:", res);
     });
 
     sessionStorage.setItem("hitNote", hittedNotes);

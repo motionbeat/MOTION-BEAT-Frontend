@@ -31,15 +31,15 @@ const RoomChatting = (roomCode) => {
       if (!message.trim()) return;
 
       socket.emit("sendMessage", message, (res) => {
-          console.log("sendMessage res", res);
+          // console.log("sendMessage res", res);
           setMessage('');
       });
   };
 
   useEffect(() => {
-    console.log(roomCode);
+    // console.log(roomCode);
     socket.on(`message`, (res) => {
-      console.log("bringMessage res", res);
+      // console.log("bringMessage res", res);
       setMessageList((prevState) => [...prevState, { userNickname: res.user.nickname, message: res.chat }]);
     });
 

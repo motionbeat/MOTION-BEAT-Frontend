@@ -45,6 +45,7 @@ const Ingame = () => {
   const [gameEnded, setGameEnded] = useState(false); // 게임 종료 상태
   const [showEnter, setShowEnter] = useState(true);
   const [gameData, setGameData] = useState(gameState.game);
+  // const [audioData, setAudioData] = useState({});
   const [scores, setScores] = useState({});
 
   const handleScoresUpdate = (newScores) => {
@@ -306,7 +307,7 @@ const Ingame = () => {
             <div style={{ display: "inline", position: "relative" }}>
               <WebCamFrame myColor={myColor} roomCode={gameData.code} />
               <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} ingame={true} />
-              <SecondScore gameData={gameData} />
+              <SecondScore gameData={gameData}/>
             </div>
           </>
         )}
