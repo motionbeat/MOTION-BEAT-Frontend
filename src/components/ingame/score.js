@@ -1,9 +1,9 @@
 import React, { useState, useEffect } from 'react';
 import socket from '../../server/server';
-import { ingameSendData} from '../../redux/actions/sendDataAction';
+import { ingameSendData } from '../../redux/actions/sendDataAction';
 import { useDispatch, useSelector } from 'react-redux';
 
-const Score = ({roomCode}) => {
+const Score = ({ roomCode }) => {
   const [hittedNotes, setHittedNotes] = useState(0);
   const [missedNotes, setMissedNotes] = useState(0);
   const dispatch = useDispatch();
@@ -40,12 +40,12 @@ const Score = ({roomCode}) => {
 
   useEffect(() => {
     // console.log("노트 받는지 response:", hittedNotes);
-    const sendData = { 
-      code: roomCode, 
-      nickname: myNickname, 
+    const sendData = {
+      code: roomCode,
+      nickname: myNickname,
       currentScore: hittedNotes,
       instrument: sessionStorage.getItem("instrument"),
-      motion: sessionStorage.getItem("motion")
+      motionType: sessionStorage.getItem("motion")
     }
     socket.emit("hit", sendData, (res) => {
       // console.log("Hit update response:", res);

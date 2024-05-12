@@ -25,7 +25,7 @@ import { JudgeEffect, JudgeEffectV2 } from "../components/ingame/judgeEffect.js"
 import SecondScore from "../components/ingame/secondScore.js";
 
 const staticColorsArray
-  = ["255,0,0", "255, 255, 0", "0, 255, 0", "14, 128, 255"];
+  = ["255,0,0", "0, 0, 255", "0, 255, 0", "128, 0, 128"];
 let myPosition;
 let playerNumber = staticColorsArray.length;
 const backendUrl = process.env.REACT_APP_BACK_API_URL;
@@ -218,7 +218,6 @@ const Ingame = () => {
     // console.log(gameData.players);
     // console.log(gameData.players[0]);
     // console.log(gameData.players[0].instrument);
-
     // console.log(gameData.players.length);
 
     return (
@@ -231,7 +230,7 @@ const Ingame = () => {
           return (
             <VerticalRail
               ref={railRefs.current[index]}
-              color={`rgba(${staticColorsArray[myPosition]}, ${index === myPosition ? 1 : 0.1})`}
+              color={`rgba(${staticColorsArray[myPosition]}, ${index === myPosition ? 1 : 0.4})`}
               top={`${(100 / gameData.players.length) * index}%`}
               data-instrument={gameData.players[index].instrument}
               key={index}>
@@ -307,7 +306,7 @@ const Ingame = () => {
             <div style={{ display: "inline", position: "relative" }}>
               <WebCamFrame myColor={myColor} roomCode={gameData.code} />
               <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} ingame={true} />
-              <SecondScore gameData={gameData}/>
+              <SecondScore gameData={gameData} />
             </div>
           </>
         )}
