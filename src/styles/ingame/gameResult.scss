@@ -16,13 +16,13 @@
 
 // 결과 등급 창
 .scoreGradeWrapper {
-  width: 1000px;
+  width: 1500px;
   height: 385px;
   background-color: white;
   transform: rotate(-45deg) translate(-3%, -12%);
   position: fixed;
-  top: 1%;
-  left: -15%;
+  top: 5%;
+  left: -25%;
   box-shadow: inset 129px 28px 200px 0px rgba(#FF18E8, 0.25);
   z-index: 3;
 }
