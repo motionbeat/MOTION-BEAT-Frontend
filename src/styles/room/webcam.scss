@@ -14,7 +14,7 @@
   display: flex;
   // flex-direction: column;
   // align-items: center;
-  margin-top: 20px;
+  margin-top: 30px;
   margin-right: 100px;
 }
 
@@ -26,6 +26,7 @@
   background-repeat: no-repeat;
   display: flex;
   flex-direction: column;
+  padding: 0 0 20px 0;
 
   video {
     width: inherit;
@@ -48,4 +49,29 @@
   border: 1px solid white;
   margin: 20px auto 10px auto;
   position: relative;
+}
+
+// 방장
+.masterSymbol {
+  background-color: #181A20;
+  width: 250px;
+  color: white;
+  cursor: pointer;
+  padding: 13px 0;
+  font-size: 32px;
+  margin: 20px 0;
+  background-image: url("../../img/masterSymbol.png");
+  text-align: center;
+}
+
+//악기 모달
+.instrumentModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
 }

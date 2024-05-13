@@ -316,13 +316,12 @@ const Ingame = () => {
         ) : (
           <>
             {/* <div ref={divBGRef} className="background-albumCover" /> */}
-            <p>인게임 페이지</p>
             <SongSheet railRefs={railRefs} myPosition={myPosition} Colors={gameData.players.length} >
             </SongSheet>
             <div style={{ display: "inline", position: "relative" }}>
               <WebCamFrame myColor={myColor} roomCode={gameData.code} />
-              <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} ingame={true} />
               <SecondScore gameData={gameData} />
+              <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} ingame={true} />
             </div>
           </>
         )}
