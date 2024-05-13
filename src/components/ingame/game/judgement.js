@@ -1,6 +1,7 @@
 import { Parser } from "../../../utils/parser";
+import { TriggerHitEffect } from "../secondScore";
 
-export const Judge = (key, time, instrument, audio) => {
+export const Judge = (key, time, instrument, audio, myPosition, myRailRef) => {
 
   let result = "ignore"; // 기본 결과를 "ignore"로 설정
 
@@ -35,8 +36,6 @@ export const Judge = (key, time, instrument, audio) => {
   // console.log("MININDEX:" + minIndex + "JUDGEDNOTES:")
   const timeDiff = noteTime - time;
 
-
-
   // if (((timeDiff > 500 && timeDiff < 1000) || (timeDiff < -500 && timeDiff > -1000)) && closestNote.getAttribute('data-motion') === Parser(key)) {
   //   console.log("MISS!")
   //   dispatch("miss");
@@ -56,7 +55,7 @@ export const Judge = (key, time, instrument, audio) => {
     sessionStorage.setItem("motion", currentMotion);
 
     dispatch(result);
-    // TriggerHitEffect("my");
+    TriggerHitEffect(`player${myPosition}`, myRailRef);
 
     closestNote.remove();  // 해당 노트를 화면에서 숨김
     return
@@ -72,7 +71,7 @@ export const Judge = (key, time, instrument, audio) => {
 
 export const PlayKeySoundWithParser = (key) => {
   PlayKeySound(Parser(key));
-} 
+}
 
 const PlayKeySound = (key) => {
   const keySound0Player = document.getElementById("keySound0Player");
@@ -90,12 +89,3 @@ const PlayKeySound = (key) => {
   }
 }
 
-export const TriggerHitEffect = (target) => {
-  const hitEffect = document.getElementById(`${target}HitEffect`);
-
-  hitEffect.classList.add('active');
-
-  setTimeout(() => {
-    hitEffect.classList.remove('active'); // 애니메이션이 끝나고 클래스를 제거
-  }, 500); // 애니메이션 시간과 동일하게 설정
-}

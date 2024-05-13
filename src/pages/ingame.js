@@ -206,7 +206,7 @@ const Ingame = () => {
 
       // console.log(key, "버튼눌림 at : ", time)
       // console.log(loadedData.audioData)
-      Judge(key, time, gameData.players[myPosition].instrument, loadedData.audioData.audioFiles);
+      Judge(key, time, gameData.players[myPosition].instrument, loadedData.audioData.audioFiles, myPosition, railRefs.current[myPosition]);
 
     }, [loadedData]);
 
@@ -230,22 +230,22 @@ const Ingame = () => {
           return (
             <VerticalRail
               ref={railRefs.current[index]}
-              color={`rgba(${staticColorsArray[myPosition]}, ${index === myPosition ? 1 : 0.4})`}
+              color={`rgba(${staticColorsArray[index]}, ${index === myPosition ? 1 : 0.4})`}
               top={`${(100 / gameData.players.length) * index}%`}
               data-instrument={gameData.players[index].instrument}
               key={index}>
               {index === myPosition ? (
                 <>
                   <Indicator />
-                  <JudgeBox isactive={isActive} key={myPosition}>
+                  <JudgeBox isactive={isActive} key={index}>
                     <div id={`player${myPosition}HitEffect`} className="hit-effect" />
                   </JudgeBox>
                   <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
                   <Output />
                 </>
               ) : <JudgeBox key={index}>
-                  <div id={`player${index}HitEffect`} className="hit-effect" />
-                </JudgeBox>}
+                <div id={`player${index}HitEffect`} className="hit-effect" />
+              </JudgeBox>}
             </VerticalRail>
           );
         })}
@@ -308,7 +308,7 @@ const Ingame = () => {
             <div style={{ display: "inline", position: "relative" }}>
               <WebCamFrame myColor={myColor} roomCode={gameData.code} />
               <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} ingame={true} />
-              <SecondScore gameData={gameData} />
+              <SecondScore gameData={gameData} railRefs={railRefs} myPosition={myPosition} />
             </div>
           </>
         )}
