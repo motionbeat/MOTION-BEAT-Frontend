@@ -12,7 +12,7 @@ const Score = ({ roomCode }) => {
 
   useEffect(() => {
     dispatch(ingameSendData({ code: roomCode, nickname: myNickname, score: hittedNotes }));
-    console.log("데이터 보내기", sendData);
+    // console.log("데이터 보내기", sendData);
   }, [hittedNotes, dispatch, roomCode, myNickname]);
 
   // 점수를 업데이트하는 함수
