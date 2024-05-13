@@ -1,6 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import "./App.css"
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
+import SoundManager from "utils/soundManager";
+import "./App.css";
 
 /* 웹 접속 */
 import Title from "./components/title";
@@ -39,56 +45,58 @@ import Admin from "./pages/admin";
 const App = () => {
   return (
     <>
-      <Router>
-        {/* <ShowTitle /> */}
-        <Routes>
-          {/* token사용 시 아래 주석과 "###"아래 주석을 해제하세요 */}
-          {/* 웹 접속 */}
-          {/* <Route path="/" element={<Splash />} /> */}
-          <Route path="/" element={<Login />} />
+      <SoundManager>
+        <Router>
+          {/* <ShowTitle /> */}
+          <Routes>
+            {/* token사용 시 아래 주석과 "###"아래 주석을 해제하세요 */}
+            {/* 웹 접속 */}
+            {/* <Route path="/" element={<Splash />} /> */}
+            <Route path="/" element={<Login />} />
 
-          {/* 로그인 전 */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/forgotPw" element={<ForgotPw />} />
-          <Route path="/signup" element={<Signup />} />
+            {/* 로그인 전 */}
+            <Route path="/login" element={<Login />} />
+            <Route path="/forgotPw" element={<ForgotPw />} />
+            <Route path="/signup" element={<Signup />} />
 
-          {/* 메인 */}
-          {/* token사용 시 아래 주석과 "###"아래 주석을 해제하세요 */}
-          {/* <Route element={<PrivateRoute />}> */}
-          <Route path="/main" element={<Main />} />
-          <Route path="/playtype" element={<Playtype />} />
-          <Route path="/tutorial" element={<Tutorial />} />
-          <Route path="/ranking" element={<Ranking />} />
+            {/* 메인 */}
+            {/* token사용 시 아래 주석과 "###"아래 주석을 해제하세요 */}
+            {/* <Route element={<PrivateRoute />}> */}
+            <Route path="/main" element={<Main />} />
+            <Route path="/playtype" element={<Playtype />} />
+            <Route path="/tutorial" element={<Tutorial />} />
+            <Route path="/ranking" element={<Ranking />} />
 
-          {/* 룸(=대기방) */}
-          <Route path="/room" element={<Room />} />
+            {/* 룸(=대기방) */}
+            <Route path="/room" element={<Room />} />
 
-          {/* 인게임 */}
-          <Route path="/ingame" element={<Ingame />} />
+            {/* 인게임 */}
+            <Route path="/ingame" element={<Ingame />} />
 
-          {/* 인게임 */}
-          <Route path="/cam/drum" element={<Drum1 />} />
-          <Route path="/cam/guitar" element={<Drum2 />} />
+            {/* 인게임 */}
+            <Route path="/cam/drum" element={<Drum1 />} />
+            <Route path="/cam/guitar" element={<Drum2 />} />
 
-          {/* ### */}
-          {/* </Route> */}
+            {/* ### */}
+            {/* </Route> */}
 
-          {/* Redirect */}
-          <Route path="/callback/google-login" element={<GoogleCallback />} />
-          <Route path="/callback/kakao-login" element={<KakaoCallback />} />
+            {/* Redirect */}
+            <Route path="/callback/google-login" element={<GoogleCallback />} />
+            <Route path="/callback/kakao-login" element={<KakaoCallback />} />
 
-          {/* 404 */}
-          <Route path="*" element={<NotFound />} />
+            {/* 404 */}
+            <Route path="*" element={<NotFound />} />
 
-          {/* 테스트 */}
-          <Route path="/atomic" element={<AtomicTest />} />
+            {/* 테스트 */}
+            <Route path="/atomic" element={<AtomicTest />} />
 
-          <Route path="/admin" element={<Admin />} />
-        </Routes>
-      </Router>
+            <Route path="/admin" element={<Admin />} />
+          </Routes>
+        </Router>
+      </SoundManager>
     </>
   );
-}
+};
 
 // const ShowTitle = () => {
 //   const location = useLocation();

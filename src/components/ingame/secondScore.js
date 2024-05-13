@@ -1,27 +1,12 @@
 import { useEffect, useState } from "react";
 import socket from "../../server/server.js";
-import { useSelector } from "react-redux";
-import "../../"
+import { useAudio } from "../../utils/soundManager.js";
 
 export const SecondScore = ({ gameData, railRefs, myPosition }) => {
-  const [playerScores, setPlayerScores] = useState({});
-  let audioFiles = JSON.parse(sessionStorage.getItem("audioFiles"));
-
-  // // 핸들 스코어
-  // const handleScore = (res) => {
-  //   console.log("Score received:", res.nickname, res.score);
-  //   // Assume data comes in as { nickname: "player1", score: 100 }
-  //   setPlayerScores(prevScores => {
-  //     ...prevScores,
-  //     [res.nickname]: res.score
-  //   };
-  //   onScoresUpdate(updatedScores);
-  //   return updatedScores;
-  //   });
-  // };
+  const [ playerScores, setPlayerScores ] = useState({});
+  const { playMotionSFX } = useAudio();
 
   const handleScore = (res) => {
-    // console.log("Score received:", res.nickname, res.score);
     setPlayerScores((prevScores) => {
       const updatedScores = {
         ...prevScores,
@@ -30,6 +15,11 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
       return updatedScores;
     });
   };
+
+  const playHitSound = (instrument, motionType) => {
+    // 게임 이벤트 발생 시 효과음 재생
+    playMotionSFX(instrument, motionType, { volume: 0.5 }); // 예시로 볼륨을 0.5로 설정
+  }
 
   // hit 출력
   useEffect(() => {
@@ -42,32 +32,9 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
           motionType !== null &&
           motionType !== undefined
         ) {
-          // console.log(instrument);
-          // console.log(
-          //   "[KHW] Score received:",
-          //   player.nickname,
-          //   scoreData,
-          //   instrument,
-          //   motionType
-          // );
-          // console.log("[KHW] Audio files:", audioFiles);
-          // console.log("[KHW] Instrument:", audioFiles[instrument]);
+          playHitSound(instrument, motionType);
 
-          let motionIndex;
-
-          switch (motionType) {
-            case "A":
-              motionIndex = 0;
-              break;
-            case "B":
-              motionIndex = 1;
-              break;
-            default:
-              motionIndex = 0;
-              break;
-          }
-
-          new Audio(audioFiles[instrument][motionIndex].url).play();
+          // TODO: <이상림> 아래 주석이 더 이상 필요 없다면 삭제 부탁드리겠습니다! - Hyeonwoo, 2024.05.13
           // eventName 이걸 parse해서 nickname 추출해서, railRefs에 일치하는 nickname찾아서 거기에 제일 가까운 히트판정 난 note를 지워야 하네.
 
           if (index !== myPosition) {
@@ -85,7 +52,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
         socket.off(eventName);
       });
     };
-  }, [gameData.players, audioFiles]);
+  }, [gameData.players, myPosition, playHitSound, railRefs]);
 
   return (
     <>

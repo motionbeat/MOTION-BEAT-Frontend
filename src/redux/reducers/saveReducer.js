@@ -6,8 +6,7 @@ const InitialState = {
   songData: {},
   serverConnection: {},
   peerConnection: {},
-  syncData: {},
-  audioData: {}
+  syncData: {}
 };
 
 const GameloadReducer = (state = InitialState, action) => {

@@ -12,23 +12,10 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
   const [modalOn, setModalOn] = useState(false);
   const [selectedSong, setSelectedSong] = useState();
   const [selectFavorite, setSelectFavorite] = useState(false);
-  const audioRef = useRef(null); // 노래 가져오기
   
   const songNum = songNumber;
   const myNickname = sessionStorage.getItem("nickname");
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
-
-    // 노래 재생
-    const handlePlay = () => {
-      audioRef.current.play();
-    };
-  
-    // 노래 중지
-    const handleStop = () => {
-      audioRef.current.pause(); // 일시정지
-      audioRef.current.currentTime = 0; // 재생 위치를 처음으로 설정
-    };
-
 
   // 노래 이미지 클릭 시 선택 모달
   const selectMusic = () => {
@@ -97,7 +84,6 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
   
   return (
     <>
-      <audio ref={audioRef} src="/song/0.mp3" />
       <div className="showSongWrapper">
         <div className="songImg" onClick={selectMusic}><img src={LemonImg} alt="lemon" /></div>
         {selectedSong && (
@@ -105,11 +91,6 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
             <button className="selectSongBtn" onClick={selectMusic}>노래 변경</button>
             <h2>{selectedSong.title}</h2>
             <p>{selectedSong.artist}</p>
-            {/* <Runtime>{selectedSong[0]?.runtime}</Runtime> */}
-            {/* <SongBtn>
-              <img src={PlayBtn} alt="play" onClick={handlePlay} />
-              <img src={StopBtn} alt="stop" onClick={handleStop} />
-            </SongBtn> */}
             <p>{selectedSong.difficulty}</p>
           </div>
         )}

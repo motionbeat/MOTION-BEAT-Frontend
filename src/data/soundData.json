@@ -1,0 +1,31 @@
+{
+  "bgm": [
+    { "name": "1", "url": "/song/1.mp3" },
+    { "name": "2", "url": "/song/2.mp3" },
+    { "name": "3", "url": "/song/3.mp3" },
+    { "name": "4", "url": "/song/4.mp3" },
+    { "name": "5", "url": "/song/5.mp3" },
+    { "name": "6", "url": "/song/6.mp3" },
+    { "name": "본능적으로", "url": "/song/본능적으로.mp4" },
+    { "name": "test", "url": "/song/test.mp3" }
+  ],
+  "normalSfx": [{ "name": "click", "url": "/keySound/organ_1.mp3" }],
+  "motionSfx": {
+    "drum1": [
+      { "name": "A", "url": "/keySound/alldrum/kick1.wav" },
+      { "name": "B", "url": "/keySound/alldrum/tom1.mp3" }
+    ],
+    "drum2": [
+      { "name": "A", "url": "/keySound/alldrum/kick1.wav" },
+      { "name": "B", "url": "/keySound/alldrum/crash1.wav" }
+    ],
+    "drum3": [
+      { "name": "A", "url": "/keySound/alldrum/snare.mp3" },
+      { "name": "B", "url": "/keySound/alldrum/hat.wav" }
+    ],
+    "drum4": [
+      { "name": "A", "url": "/keySound/alldrum/tom2.mp3" },
+      { "name": "B", "url": "/keySound/alldrum/crash1.wav" }
+    ]
+  }
+}
