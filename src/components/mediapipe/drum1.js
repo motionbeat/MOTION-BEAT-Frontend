@@ -68,20 +68,22 @@ class Drum1 extends Component {
 
           this.drawDetectionAreas(canvasContext, canvas.width, canvas.height);
 
-          const widthSegment = canvas.width / 4;
-          const heightSegment = canvas.height / 3;
+          const widthSegment = canvas.width / 2;
+          const heightSegment = canvas.height / 4;
           const leftWrist = results.poseLandmarks?.[posedetection.POSE_LANDMARKS.LEFT_WRIST];
           const rightWrist = results.poseLandmarks?.[posedetection.POSE_LANDMARKS.RIGHT_WRIST];
 
           if (leftWrist && leftWrist.visibility > 0.5) {
-            if (leftWrist.x * canvas.width > 3 * widthSegment && leftWrist.y * canvas.height > 2 * heightSegment) {
-              this.updatePostureStatus('A');
+            // 카메라 이미지가 좌우 반전되어 있으므로, 오른쪽 아래에 위치한 것으로 판단
+            if (leftWrist.x * canvas.width > widthSegment && leftWrist.y * canvas.height > 2 * heightSegment) {
+              this.updatePostureStatus('A'); // 오른쪽 아래에 있는 경우 A 상태로 업데이트
             }
           }
-
+          
           if (rightWrist && rightWrist.visibility > 0.5) {
+            // 카메라 이미지가 좌우 반전되어 있으므로, 왼쪽 아래에 위치한 것으로 판단
             if (rightWrist.x * canvas.width < widthSegment && rightWrist.y * canvas.height > 2 * heightSegment) {
-              this.updatePostureStatus('B');
+              this.updatePostureStatus('B'); // 왼쪽 아래에 있는 경우 B 상태로 업데이트
             }
           }
         });
@@ -96,16 +98,27 @@ class Drum1 extends Component {
   }
 
   drawDetectionAreas(ctx, width, height) {
-    const widthSegment = width / 4;
-    const heightSegment = height / 3;
+    const widthSegment = width / 2;
+    const heightSegment = height / 4;
 
-    // Draw area for A
+    const centerX_A = widthSegment / 2;
+    const centerY_A = 3 * heightSegment + heightSegment / 2;
+    const radiusX_A = widthSegment / 2;
+    const radiusY_A = heightSegment / 2;
     ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
-    ctx.fillRect(0, 2 * heightSegment, widthSegment, heightSegment);
+    ctx.beginPath();
+    ctx.ellipse(centerX_A, centerY_A, radiusX_A, radiusY_A, 0, 0, Math.PI * 2);
+    ctx.fill();
 
     // Draw area for B
+    const centerX_B = widthSegment + widthSegment / 2;
+    const centerY_B = 3 * heightSegment + heightSegment / 2;
+    const radiusX_B = widthSegment / 2;
+    const radiusY_B = heightSegment / 2;
     ctx.fillStyle = 'rgba(0, 0, 255, 0.5)';
-    ctx.fillRect(3 * widthSegment, 2 * heightSegment, widthSegment, heightSegment);
+    ctx.beginPath();
+    ctx.ellipse(centerX_B, centerY_B, radiusX_B, radiusY_B, 0, 0, Math.PI * 2);
+    ctx.fill();
   }
 
   updatePostureStatus(newStatus) {
