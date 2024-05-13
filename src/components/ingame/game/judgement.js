@@ -1,7 +1,7 @@
 import { Parser } from "../../../utils/parser";
-import { TriggerHitEffect } from "../secondScore";
+import { TriggerHitEffect } from "../secondScore.js";
 
-export const Judge = (key, time, instrument, audio, myPosition, myRailRef) => {
+export const Judge = (key, time, instrument, myAudio, myPosition, myRailRef) => {
 
   let result = "ignore"; // 기본 결과를 "ignore"로 설정
 
@@ -47,8 +47,8 @@ export const Judge = (key, time, instrument, audio, myPosition, myRailRef) => {
   if (
     (timeDiff >= 0 && timeDiff <= 500) && (closestNote.getAttribute('data-motion') === currentMotion)
   ) {
-    // console.log(audio);
-    PlayKeySound(currentMotion);
+    console.log(currentMotion, myAudio);
+    PlayKeySound(currentMotion, myAudio);
     // console.log("HIT from : ", timeDiff, " = ", noteTime, "-", time)
     result = "hit"
     sessionStorage.setItem("instrument", instrument);
@@ -73,16 +73,15 @@ export const PlayKeySoundWithParser = (key) => {
   PlayKeySound(Parser(key));
 }
 
-const PlayKeySound = (key) => {
-  const keySound0Player = document.getElementById("keySound0Player");
-  const keySound1Player = document.getElementById("keySound1Player");
+const PlayKeySound = (key, audio) => {
+  console.log(audio)
 
   switch (key) {
     case "A":
-      keySound0Player.play(); // 오디오 재생
+      audio.audio1.play(); // 오디오 재생
       break;
     case "B":
-      keySound1Player.play();
+      audio.audio2.play();
       break;
     default:
       break;

@@ -3,9 +3,9 @@ import socket from "../../server/server.js";
 import { useSelector } from "react-redux";
 import "../../"
 
-export const SecondScore = ({ gameData, railRefs, myPosition }) => {
+export const SecondScore = ({ gameData, railRefs, myPosition, audio }) => {
   const [playerScores, setPlayerScores] = useState({});
-  let audioFiles = JSON.parse(sessionStorage.getItem("audioFiles"));
+  let myNickname = sessionStorage.getItem("nickname")
 
   // // 핸들 스코어
   // const handleScore = (res) => {
@@ -36,44 +36,40 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
     const scoreUpdateEvents = gameData.players.map((player, index) => {
       const eventName = `liveScore${player.nickname}`;
       socket.on(eventName, (scoreData, instrument, motionType) => {
-        if (
-          instrument !== undefined &&
-          instrument !== null &&
-          motionType !== null &&
-          motionType !== undefined
-        ) {
-          // console.log(instrument);
-          // console.log(
-          //   "[KHW] Score received:",
-          //   player.nickname,
-          //   scoreData,
-          //   instrument,
-          //   motionType
-          // );
-          // console.log("[KHW] Audio files:", audioFiles);
-          // console.log("[KHW] Instrument:", audioFiles[instrument]);
+        console.log("TEST1")
+        if (eventName !== `liveScore${myNickname}`) {
+          console.log("TEST2")
+          if (
+            instrument !== undefined &&
+            instrument !== null &&
+            motionType !== null &&
+            motionType !== undefined
+          ) {
+            // console.log(instrument);
+            // console.log(
+            //   "[KHW] Score received:",
+            //   player.nickname,
+            //   scoreData,
+            //   instrument,
+            //   motionType
+            // );
+            // console.log("[KHW] Audio files:", audioFiles);
+            // console.log("[KHW] Instrument:", audioFiles[instrument]);
 
-          let motionIndex;
-
-          switch (motionType) {
-            case "A":
-              motionIndex = 0;
-              break;
-            case "B":
-              motionIndex = 1;
-              break;
-            default:
-              motionIndex = 0;
-              break;
+            switch (motionType) {
+              case "A":
+                audio[`player${index}`].audio1.play();
+                break;
+              case "B":
+                audio[`player${index}`].audio2.play();
+                break;
+              default:
+                break;
+            }
           }
-          // eventName 이걸 parse해서 nickname 추출해서, railRefs에 일치하는 nickname찾아서 거기에 제일 가까운 히트판정 난 note를 지워야 하네.
 
-          if (index !== myPosition) {
-            new Audio(audioFiles[instrument]?.[motionIndex]?.url).play();
-            TriggerHitEffect(`player${index}`, railRefs.current[index]);
-          }
+          TriggerHitEffect(`player${index}`, railRefs.current[index]);
         }
-
         handleScore({ nickname: player.nickname, score: scoreData });
       });
       return eventName;
@@ -84,8 +80,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
         socket.off(eventName);
       });
     };
-  }, [gameData.players, audioFiles, socket, handleScore, myPosition, railRefs]);
-
+  }, [gameData.players, socket, handleScore, myPosition, railRefs]);
 
   return (
     <>

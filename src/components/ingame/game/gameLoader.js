@@ -5,30 +5,7 @@ import axios from "axios";
 const backendUrl = process.env.REACT_APP_BACK_API_URL;
 
 /* 하드코딩된 데이터 */
-// const audioFiles = {
-//   drum1: [
-//     { name: "0", url: '/keySound/drums/drum_1.mp3' },
-//     { name: "1", url: '/keySound/drums/drum_2.mp3' },
-//     { name: "2", url: '/keySound/drums/drum_3.mp3' },
-//     { name: "3", url: '/keySound/drums/drum_4.mp3' },
-//     { name: "4", url: '/keySound/drums/drum_5.mp3' },
-//     { name: "snare", url: '/keySound/drums/snare.mp3' },
-//     { name: "tom", url: '/keySound/drums/tom.mp3' },
-//   ],
-//   drum2: [
-//     { name: "0", url: '/keySound/conga/conga_1.mp3' },
-//     { name: "1", url: '/keySound/conga/conga_2.mp3' },
-//   ],
-//   drum3: [
-//     { name: '0', url: '/keySound/guitar/guitar_1.mp3' },
-//     { name: '1', url: '/keySound/guitar/guitar_2.mp3' },
-//   ],
-//   drum4: [
-//     { name: "0", url: '/keySound/organ/organ_1.mp3' },
-//     { name: "1", url: '/keySound/organ/organ_2.mp3' },
-//   ],
-// };
-const audioFiles = {
+const staticAudioData = {
   drum1: [
     { name: "0", url: '/keySound/alldrum/kick1.wav' },
     { name: "1", url: '/keySound/alldrum/tom1.mp3' },
@@ -48,7 +25,7 @@ const audioFiles = {
 };
 
 /* 기본적인 것들 로드하기 */
-export const Load = async (song, players, myInst) => {
+export const Load = async (song, players) => {
 
   try {
     const results = await Promise.all([
@@ -57,12 +34,12 @@ export const Load = async (song, players, myInst) => {
       ConnectServer(),
       ConnectPeer(players),
       SyncPeer(),
-      LoadInstrument(myInst)
+      LoadInstrument(players)
     ]);
 
-    const [userDataFromServer, musicData, serverData, peerData, syncData, audioData] = results;
+    const [userDataFromServer, musicData, serverData, peerData, syncData, audioElem] = results;
     console.log("시스템 준비");
-    return { userDataFromServer, musicData, serverData, peerData, syncData, audioData };
+    return { userDataFromServer, musicData, serverData, peerData, syncData, audioElem };
 
   } catch (error) {
     console.error("로드 실패");
@@ -140,51 +117,45 @@ const SyncPeer = async () => {
   }, 300));
 };
 
-const LoadInstrument = async (inst) => {
+const LoadInstrument = async (players) => {
   console.log("Loading audio...");
-  // console.log(audioFiles);
-  // console.log({ audioFiles });
-  sessionStorage.setItem("audioFiles", JSON.stringify(audioFiles));
+  console.log(players);
 
-  try {
-    if (audioFiles[inst]) {
-      console.log("Matched");
+  const loaded = {};
+  for (let i = 0; i < players.length; i++) {
+    try {
+      console.log(players[i])
+      console.log(players[i].instrument)
+      const audioElem1 = document.getElementById(`keySound0Player${i}`);
+      const audioElem2 = document.getElementById(`keySound1Player${i}`);
+
+      /* staticAudioData는 이 파일 맨 위에 더미로 존재합니다. */
+      audioElem1.src = staticAudioData[players[i].instrument][0].url;
+      audioElem2.src = staticAudioData[players[i].instrument][1].url;
+
+      audioElem1.load();
+      audioElem2.load();
+
+      audioElem1.volume = 0;
+      audioElem2.volume = 0;
+
+      audioElem1.play();
+      audioElem2.play();
+
+      audioElem1.currentTime = 0;
+      audioElem2.currentTime = 0;
+
+      loaded[`player${i}`] = { audio1: audioElem1, audio2: audioElem2 };
+
+      console.log(`player${i} instrument loaded`);
+    } catch (err) {
+      console.log(`loading for player${i} instrument failed`);
     }
-  } catch (err) {
-    console.error("에러 발생 ", err);
+
+    console.log("All Player's Instrument Loaded");
   }
 
-  const preloadKeySound = (audio) => {
-    const keySound0Player = document.getElementById("keySound0Player");
-    const keySound1Player = document.getElementById("keySound1Player");
-
-    if (!keySound0Player || !keySound1Player) {
-      console.error("KeySound players not found");
-      return;
-    }
-
-    if (audio[0] && audio[0].url) {
-      keySound0Player.src = audio[0].url;
-      keySound0Player.load();  // 첫 번째 오디오 파일을 프리로드
-      console.log(keySound0Player.src)
-    } else {
-      console.error("Audio file 0 not found or URL is missing");
-    }
-
-    if (audio[1] && audio[1].url) {
-      keySound1Player.src = audio[1].url;
-      keySound1Player.load();  // 두 번째 오디오 파일을 프리로드
-      console.log(keySound1Player.src)
-    } else {
-      console.error("Audio file 1 not found or URL is missing");
-    }
-
-    // 로그를 출력하여 URL 확인
-    console.log("Audio files loaded:", audio.map(a => a.url));
-  }
-
-  preloadKeySound(audioFiles[inst]);
-  return { audioFiles: audioFiles[inst] }
+  return loaded
 };
 
 export default Load

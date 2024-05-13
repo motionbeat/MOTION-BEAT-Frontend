@@ -114,7 +114,7 @@ const Ingame = () => {
         // console.log("myPosition", myPosition);
         // console.log("게임데이터 ", gameData.players);
         // console.log("TEST", gameData.players[myPosition].instrument)
-        const loadedData = await Load(gameData.song, gameData.players, gameData.players[myPosition].instrument);
+        const loadedData = await Load(gameData.song, gameData.players);
 
         // console.log("게임 리소스 로드 완료: " + loadedData);
         // console.log(loadedData);
@@ -134,8 +134,6 @@ const Ingame = () => {
     init();
 
   }, []);
-
-
 
   const WhenSocketOn = (serverTime) => {
     // const date = new Date(serverTime);
@@ -210,7 +208,7 @@ const Ingame = () => {
 
       // console.log(key, "버튼눌림 at : ", time)
       // console.log(loadedData.audioData)
-      Judge(key, time, gameData.players[myPosition].instrument, loadedData.audioData.audioFiles, myPosition, railRefs.current[myPosition]);
+      Judge(key, time, gameData.players[myPosition].instrument, loadedData.audioElem[`player${myPosition}`], myPosition, railRefs.current[myPosition]);
       /* 반응성 향상 */
       handleKeyUp();
     }, [loadedData]);
@@ -324,7 +322,7 @@ const Ingame = () => {
             </SongSheet>
             <div style={{ display: "inline", position: "relative" }}>
               {/* <WebCamFrame myColor={myColor} roomCode={gameData.code} /> */}
-              <SecondScore gameData={gameData} railRefs={railRefs} myPosition={myPosition} />
+              <SecondScore gameData={gameData} railRefs={railRefs} myPosition={myPosition} audio={loadedData.audioElem} />
               <WebCam players={gameData.players} roomCode={gameData.code} ingame={true} gameData={gameData} railRefs={railRefs} myPosition={myPosition} />
             </div>
           </>
