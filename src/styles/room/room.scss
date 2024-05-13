@@ -177,3 +177,85 @@
   font-weight: 600;
   margin-top: 20px;
 }
+
+
+// 방장
+.masterSymbol {
+  background-color: #181A20;
+  width: 250px;
+  color: white;
+  cursor: pointer;
+  padding: 13px 0;
+  font-size: 32px;
+  margin: 20px 0;
+  background-image: url("../../img/masterSymbol.png");
+  text-align: center;
+  border-radius: 26px;
+}
+
+//악기 모달
+.instrumentModal {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: white;
+  padding: 20px;
+  border-radius: 5px;
+  box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+}
+
+// 웹 캠 전체 박스
+.playersBox {
+  width: 100%;
+  display: flex;
+  justify-content: space-around;
+
+  h2 {
+    margin: 0;
+    text-align: center;
+    }
+}
+
+// 유저 각각의 박스
+.playersContainer {
+  width: 250px;
+  display: flex;
+  // flex-direction: column;
+  // align-items: center;
+  margin: 30px auto 0 auto;
+}
+
+.playersBoxDiv {
+  width: 250px;
+  // height: 266px;
+  border-radius: 24px;
+  background-image: url("../../img/showWebCam.png");
+  background-repeat: no-repeat;
+  display: flex;
+  flex-direction: column;
+  padding: 0 0 20px 0;
+  margin: 0 auto;
+
+  video {
+    width: inherit;
+    height: inherit;
+    border-radius: 24px;
+  }
+
+  p {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+    text-align: center;
+  }
+}
+
+.playersBoxInner {
+  width: 220px;
+  height: 160px;
+  border-radius: 16px;
+  border: 1px solid white;
+  margin: 20px auto 10px auto;
+  position: relative;
+}

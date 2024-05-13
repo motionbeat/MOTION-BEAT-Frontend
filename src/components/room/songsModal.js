@@ -1,12 +1,19 @@
 import React, { useEffect, useState } from "react"
 import styled from "styled-components"
 import axios from 'axios';
+import "../../styles/room/musicModal.scss"
+import emptyStar from "../../img/emptyStar.png"
+import fullStar from "../../img/fullStar.png"
 
 const SongsModal = ({ modalOn, handleSongSelect }) => {
   const [songs, setSongs] = useState([]);
   const [difficulty, setDifficulty] = useState("all");
-  const [favorite, setFavorite] = useState();
+  const [favorite, setFavorite] = useState(false);
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
+
+  const addFavorite = () => {
+    setFavorite(!favorite);
+  }
 
   useEffect(() => {
     const fetchSongs = async () => {
@@ -34,7 +41,7 @@ const SongsModal = ({ modalOn, handleSongSelect }) => {
     };
 
     fetchSongs();
-  }, [backendUrl, difficulty, Favorite]);
+  }, [backendUrl, difficulty]);
 
   if (!modalOn) {
     return null;
@@ -42,56 +49,42 @@ const SongsModal = ({ modalOn, handleSongSelect }) => {
 
   return (
     <>
-      <Modal>
-        <ModalWrapper>
-            <div style={{marginRight: "40px"}}>
-                <h1 onClick={() => setDifficulty('all')}>ALL</h1>
-                <h1 onClick={() => setDifficulty('favorite')}>FAVORITE</h1>
-                <h1 onClick={() => setDifficulty('easy')}>EASY</h1>
-                <h1 onClick={() => setDifficulty('normal')}>NORMAL</h1>
-                <h1 onClick={() => setDifficulty('hard')}>HARD</h1>
+      <div className={`modal-backdrop ${modalOn ? 'active' : ''}`}></div>
+      <div className="musicModalBox">
+        {/* 노래선택 카테고리 */}
+        <div className="musicModalLeft">
+          <div className="backArrow"></div>
+          <div className="songSelectBox">
+            <div onClick={() => setDifficulty('all')}>ALL</div>
+            <div onClick={() => setDifficulty('favorite')}>FAVORITE</div>
+            <div onClick={() => setDifficulty('easy')}>EASY</div>
+            <div onClick={() => setDifficulty('normal')}>NORMAL</div>
+            <div onClick={() => setDifficulty('hard')}>HARD</div>
+          </div>
+        </div>
+        {/* 노래 목록 */}
+        <div className="musicModalRight">
+          {songs.map((song) => (
+            <div className="songInfoWrapper" key={song.id}>
+              <div className="songAlbumImg">
+                <img src={song.imgPath} alt = "songAlbum" />
+              </div>
+              <div className="songInfo" onClick={() => handleSongSelect(song)}>
+                <h2>{song.title}</h2>
+                <p>{song.artist}</p>
+                <p>{song.difficulty}</p>
+              </div>
+              <div className="favorite" onClick={addFavorite} >
+                {favorite ?
+                <img src={emptyStar} alt="favorite" /> :
+                <img src={fullStar} alt="favorite" />
+                }
+              </div>    
             </div>
-            <div>
-                {songs.map((song) => (
-                    <SongInfoWrapper key={song.id}>
-                        <Favorite>★☆</Favorite>    
-                        <img src={song.imgPath} alt = "" />
-                        <div>
-                            <h2 onClick={() => handleSongSelect(song)}>{song.title}</h2>
-                            <p>{song.artist}</p>
-                            <p>{song.runtime}</p>
-                            <p>{song.difficulty}</p>
-                        </div>
-                    </SongInfoWrapper>
-                ))}
-            </div>
-        </ModalWrapper>
-      </Modal>
+          ))}
+        </div>
+      </div>
     </>
   )
 }
 export default SongsModal
-
-const Modal = styled.div`
-    width: 80%;
-    height: 100vh;
-    background-color: #d9d9d9;
-    opacity: 0.7;
-    position: absolute;
-    top: 0;
-    left: 10%;
-`
-
-const ModalWrapper = styled.div`
-  display: flex;
-`
-
-const SongInfoWrapper = styled.div`
-  position: relative;
-  border: 2px solid black;
-`
-
-// 즐겨찾기
-const Favorite = styled.div`
-  position: absolute;
-`

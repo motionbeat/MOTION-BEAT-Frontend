@@ -2,7 +2,7 @@ import styled from "styled-components";
 import socket from "../../server/server.js";
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import "../../styles/room/webcam.scss";
+import "../../styles/room/room.scss";
 
 const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
   const [playerStatuses, setPlayerStatuses] = useState({});
@@ -131,9 +131,9 @@ const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
 
   return (
     <>
-      <div className="webCamBox">
+      <div className="playersBox">
         {Object.entries(playerStatuses).map(([nickname, { instrument, isReady }], index) => (
-          <div className="playerContainer" key={index}>
+          <div className="playersContainer" key={index}>
             <div>
               {nickname === hostName ? (
                 <div className="masterSymbol">방장</div>
@@ -145,8 +145,8 @@ const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
                   {isReady ? "준비 완료" : "대기 중"}
                 </ReadyBtn>
               )}
-            <div className="webCamBoxDiv">
-              <div className="webCamBoxInner" />
+            <div className="playersBoxDiv">
+              <div className="playersBoxInner" />
               <p>{nickname}</p>
               <p onClick={() => findingInstrument(nickname)}>{instrument}</p>
             </div>
