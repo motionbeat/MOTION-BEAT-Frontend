@@ -210,7 +210,7 @@ const Ingame = () => {
 
       // console.log(key, "버튼눌림 at : ", time)
       // console.log(loadedData.audioData)
-      Judge(key, time, gameData.players[myPosition].instrument, loadedData.audioData.audioFiles);
+      Judge(key, time, gameData.players[myPosition].instrument, loadedData.audioData.audioFiles, myPosition, railRefs.current[myPosition]);
 
     }, [loadedData]);
 
@@ -234,22 +234,22 @@ const Ingame = () => {
           return (
             <VerticalRail
               ref={railRefs.current[index]}
-              color={`rgba(${staticColorsArray[myPosition]}, ${index === myPosition ? 1 : 0.4})`}
+              color={`rgba(${staticColorsArray[index]}, ${index === myPosition ? 1 : 0.4})`}
               top={`${(100 / gameData.players.length) * index}%`}
               data-instrument={gameData.players[index].instrument}
               key={index}>
               {index === myPosition ? (
                 <>
                   <Indicator />
-                  <JudgeBox isactive={isActive} key={myPosition}>
+                  <JudgeBox isactive={isActive} key={index}>
                     <div id={`player${myPosition}HitEffect`} className="hit-effect" />
                   </JudgeBox>
                   <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
                   <Output />
                 </>
               ) : <JudgeBox key={index}>
-                  <div id={`player${index}HitEffect`} className="hit-effect" />
-                </JudgeBox>}
+                <div id={`player${index}HitEffect`} className="hit-effect" />
+              </JudgeBox>}
             </VerticalRail>
           );
         })}
@@ -267,7 +267,7 @@ const Ingame = () => {
           //   position: "fixed", top: "0", right: "0", height: "100vh", width: "100vw", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)", zIndex: "5000"
           // }}>
           <div style={{
-            position: "fixed", top: "0", right: "0", height: "100vh", width: "100vw", display: "flex", alignItems: "center", justifyContent: "center", zIndex: "5000", backgroundImage: `url(${IngameBg})`, backgroundRepeat:"no-repeat", backgroundSize:"cover"
+            position: "fixed", top: "0", right: "0", height: "100vh", width: "100vw", display: "flex", alignItems: "center", justifyContent: "center", zIndex: "5000", backgroundImage: `url(${IngameBg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover"
           }}>
             <p style={{ color: "white", fontSize: "100px" }}>Enter "Enter"</p>
           </div >
@@ -278,11 +278,11 @@ const Ingame = () => {
           //   position: "fixed", top: "0", right: "0", height: "100vh", width: "100vw", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)", zIndex: "5000"
           // }}>
           <div style={{
-            position: "fixed", top: "0", right: "0", height: "100vh", width: "100vw", display: "flex", alignItems: "center", justifyContent: "center", zIndex: "5000", backgroundImage: `url(${IngameBg})`, backgroundRepeat:"no-repeat", backgroundSize:"cover"
+            position: "fixed", top: "0", right: "0", height: "100vh", width: "100vw", display: "flex", alignItems: "center", justifyContent: "center", zIndex: "5000", backgroundImage: `url(${IngameBg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover"
           }}>
-            <div style={{position:"relative"}}>
-              <img style={{position:"absolute", top:"-300%", left:"-70%"}} src={beatFlow0} alt="loadingImg0"></img>
-              <img style={{position:"absolute", top:"-280%", left:"-68%"}} src={beatFlow1} alt="loadingImg1"></img>
+            <div style={{ position: "relative" }}>
+              <img style={{ position: "absolute", top: "-300%", left: "-70%" }} src={beatFlow0} alt="loadingImg0"></img>
+              <img style={{ position: "absolute", top: "-280%", left: "-68%" }} src={beatFlow1} alt="loadingImg1"></img>
               <p style={{ color: "white", fontSize: "100px" }}>Loading...</p>
             </div>
           </div >
@@ -308,7 +308,7 @@ const Ingame = () => {
 
   return (
     <>
-      <div style={{ position: "relative", backgroundImage: `url(${IngameBg})`, backgroundRepeat:"no-repeat", backgroundSize:"cover" }}>
+      <div style={{ position: "relative", backgroundImage: `url(${IngameBg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover" }}>
         {gameEnded ? (
           <>
             <GameResult roomCode={gameData.code} />
@@ -320,8 +320,8 @@ const Ingame = () => {
             </SongSheet>
             <div style={{ display: "inline", position: "relative" }}>
               <WebCamFrame myColor={myColor} roomCode={gameData.code} />
-              <SecondScore gameData={gameData} />
               <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} ingame={true} />
+              <SecondScore gameData={gameData} railRefs={railRefs} myPosition={myPosition} />
             </div>
           </>
         )}

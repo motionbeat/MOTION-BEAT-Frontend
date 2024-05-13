@@ -50,11 +50,12 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPositio, roomCo
   audioPlayer.addEventListener("ended", WhenEnd);
 
   const WhenStart = () => {
+    let count = 1200;
+
     const ScheduleNotes = () => {
       audioTime = audioPlayer.currentTime * 1000;
 
       const notes = data.musicData.notes;
-      let count = 1200;
       for (const note of notes) {
         const startTime = note.time - animationDuration;
 
@@ -92,6 +93,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPositio, roomCo
     noteElement.setAttribute('data-instrument', note.instrument);
 
     noteElement.setAttribute('data-index', index.toString());
+    console.log("노트 생성", noteElement);
 
     for (const idx in railRefs.current) {
       if (railRefs.current[idx].current?.dataset.instrument === note.instrument)

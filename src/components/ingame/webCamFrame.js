@@ -5,10 +5,10 @@ const WebCamFrame = ({ children, roomCode, myColor }) => {
 
   return (
     <div style={{ display: "inline-block" }}>
-      <div style={{ border: "10px solid black", position: "relative", display: "block" }}>
-        <Score roomCode={roomCode} />
+      <div style={{ border: `10px solid ${myColor}`, position: "relative", display: "block" }}>
         <JudgeEffect />
         <JudgeEffectV2 />
+        <Score roomCode={roomCode} />
         {children}
       </div>
     </div>
