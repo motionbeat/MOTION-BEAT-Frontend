@@ -11,7 +11,7 @@ import Drum3 from "../mediapipe/drum3.js";
 import Drum4 from "../mediapipe/drum4.js";
 import { PlayKeySoundWithParser } from "../ingame/game/judgement";
 
-const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
+const WebCam = ({ players = [], roomCode, ingame }) => {
   const [playerStatuses, setPlayerStatuses] = useState({});
   const myNickname = sessionStorage.getItem("nickname");
   const other_players = players.filter((player) => player.nickname !== myNickname);
