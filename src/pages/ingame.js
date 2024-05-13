@@ -211,11 +211,15 @@ const Ingame = () => {
       // console.log(key, "버튼눌림 at : ", time)
       // console.log(loadedData.audioData)
       Judge(key, time, gameData.players[myPosition].instrument, loadedData.audioData.audioFiles, myPosition, railRefs.current[myPosition]);
-
+      /* 반응성 향상 */
+      handleKeyUp();
     }, [loadedData]);
 
     const handleKeyUp = useCallback(() => {
-      setIsActive(false);
+      /* 반응성 향상 */
+      setTimeout(() => {
+        setIsActive(false);
+      }, 400);
     }, []);
 
     // console.log(gameData);
