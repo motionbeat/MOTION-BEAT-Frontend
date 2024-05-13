@@ -159,7 +159,7 @@ class Drum3 extends Component {
         return (
             <div>
                 <div id="session" style={{ position: 'relative', width: '230px', height: '190px' }}>
-                    <video ref={this.videoRef} style={{ width: '100%', height: '100%', position: 'absolute', top: '0', left: '0', zIndex: 1 }} playsInline autoPlay />
+                    <video ref={this.videoRef} style={{ width: '100%', height: '100%', position: 'absolute', top: '0', left: '0', zIndex: 1, transform: "scaleX(-1)" }} playsInline autoPlay />
                     <canvas ref={this.canvasRef} style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%', opacity: 0.9, zIndex: 2 }} width="640" height="480" />
                     {/* <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
                     <div>현재 자세: {postureStatus}</div>
