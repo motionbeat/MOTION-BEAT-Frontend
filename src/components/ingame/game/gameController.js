@@ -1,5 +1,5 @@
 import socket from "../../../server/server.js";
-import { useAudio } from "../../utils/soundManager";
+import { useAudio } from "../../../utils/soundManager.js";
 
 export const Start = ({ stime, data, railRefs, roomCode }) => {
   const { playBGM, playNormalSFX, playMotionSFX, getElapsedTime } = useAudio();
