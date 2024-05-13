@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import socket from "../../server/server.js";
 import { useSelector } from "react-redux";
+import "../../"
 
 export const SecondScore = ({ gameData, railRefs, myPosition }) => {
   const [playerScores, setPlayerScores] = useState({});
@@ -88,9 +89,9 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
 
   return (
     <>
-      <div style={{ display: "flex" }}>
+      <div className="scoreWrapper">
         {gameData.players.map((player, index) => (
-          <div key={index} style={{ marginRight: "16%" }}>
+          <div className="score" key={index}>
             <p
               name={player.nickname}
               style={{ fontSize: "2rem", color: "white" }}

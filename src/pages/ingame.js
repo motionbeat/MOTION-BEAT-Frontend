@@ -312,7 +312,7 @@ const Ingame = () => {
 
   return (
     <>
-      <div style={{ position: "relative", backgroundImage: `url(${IngameBg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover" }}>
+      <div style={{ position: "relative", backgroundImage: `url(${IngameBg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover", width:"100vw", height:"100vh" }}>
         {gameEnded ? (
           <>
             <GameResult roomCode={gameData.code} />
@@ -323,9 +323,9 @@ const Ingame = () => {
             <SongSheet railRefs={railRefs} myPosition={myPosition} Colors={gameData.players.length} >
             </SongSheet>
             <div style={{ display: "inline", position: "relative" }}>
-              <WebCamFrame myColor={myColor} roomCode={gameData.code} />
-              <WebCam players={gameData.players} hostName={gameData.hostName} roomCode={gameData.code} ingame={true} />
+              {/* <WebCamFrame myColor={myColor} roomCode={gameData.code} /> */}
               <SecondScore gameData={gameData} railRefs={railRefs} myPosition={myPosition} />
+              <WebCam players={gameData.players} roomCode={gameData.code} ingame={true} gameData={gameData} railRefs={railRefs} myPosition={myPosition} />
             </div>
           </>
         )}

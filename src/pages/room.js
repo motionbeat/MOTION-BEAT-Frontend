@@ -106,7 +106,6 @@ const Room = () => {
                         <button className="chattingBtn">채팅하기</button>
                       </div>
                     </div>
-                    {/* <WebCam players={room.players} hostName={room.hostName} roomCode={room.code} ingame={false} /> */}
                     <RoomPlayers players={room.players} hostName={room.hostName} roomCode={room.code} ingame={false} />
                   </div>
                 </div>

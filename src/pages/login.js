@@ -94,7 +94,7 @@ const Login = () => {
 
   return (
     <>
-      <MoveBg />
+      {/* <MoveBg /> */}
         {/* <h1 className="login-title">MOTION BEAT</h1> */}
         <div className="loginWrapper">
           <div className="loginForm">

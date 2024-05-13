@@ -66,6 +66,7 @@ class Drum1 extends Component {
       modelComplexity: 0,
       smoothLandmarks: false,
       enableSegmentation: false,
+      selfieMode : true
     });
     this.setState({ isModelLoaded: true });
   }
@@ -183,6 +184,7 @@ class Drum1 extends Component {
               top: "0",
               left: "0",
               zIndex: 1,
+              transform: "scaleX(-1)"
             }}
             playsInline
             autoPlay
