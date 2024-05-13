@@ -9,6 +9,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/room/room.scss";
 import RoomHeader from "../components/common/atomic/room/roomHeader.js";
 import MainHeader from "../components/common/atomic/main/mainHeader.js";
+import RoomPlayers from "components/room/roomPlayer.js";
 
 const Room = () => {
     const location = useLocation();
@@ -105,7 +106,8 @@ const Room = () => {
                         <button className="chattingBtn">채팅하기</button>
                       </div>
                     </div>
-                    <WebCam players={room.players} hostName={room.hostName} roomCode={room.code} ingame={false} />
+                    {/* <WebCam players={room.players} hostName={room.hostName} roomCode={room.code} ingame={false} /> */}
+                    <RoomPlayers players={room.players} hostName={room.hostName} roomCode={room.code} ingame={false} />
                   </div>
                 </div>
                 <RoomChatting roomCode = {room.code} />
@@ -115,4 +117,3 @@ const Room = () => {
 }
 
 export default Room;
-

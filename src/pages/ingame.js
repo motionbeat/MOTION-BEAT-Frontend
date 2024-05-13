@@ -24,6 +24,10 @@ import GameResult from "../components/ingame/gameResult";
 import { JudgeEffect, JudgeEffectV2 } from "../components/ingame/judgeEffect.js";
 import SecondScore from "../components/ingame/secondScore.js";
 
+import IngameBg from "../img/ingameBg.png"
+import beatFlow0 from "../img/beatflow0.png"
+import beatFlow1 from "../img/beatflow1.png"
+
 const staticColorsArray
   = ["255,0,0", "0, 0, 255", "0, 255, 0", "128, 0, 128"];
 let myPosition;
@@ -259,18 +263,28 @@ const Ingame = () => {
         return null;
       case "NotReady":
         return (
+          // <div style={{
+          //   position: "fixed", top: "0", right: "0", height: "100vh", width: "100vw", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)", zIndex: "5000"
+          // }}>
           <div style={{
-            position: "fixed", top: "0", right: "0", height: "100vh", width: "100vw", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)", zIndex: "5000"
+            position: "fixed", top: "0", right: "0", height: "100vh", width: "100vw", display: "flex", alignItems: "center", justifyContent: "center", zIndex: "5000", backgroundImage: `url(${IngameBg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover"
           }}>
             <p style={{ color: "white", fontSize: "100px" }}>Enter "Enter"</p>
           </div >
         );
       case "Ready":
         return (
+          // <div style={{
+          //   position: "fixed", top: "0", right: "0", height: "100vh", width: "100vw", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)", zIndex: "5000"
+          // }}>
           <div style={{
-            position: "fixed", top: "0", right: "0", height: "100vh", width: "100vw", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)", zIndex: "5000"
+            position: "fixed", top: "0", right: "0", height: "100vh", width: "100vw", display: "flex", alignItems: "center", justifyContent: "center", zIndex: "5000", backgroundImage: `url(${IngameBg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover"
           }}>
-            <p style={{ color: "white", fontSize: "100px" }}>Waiting...</p>
+            <div style={{ position: "relative" }}>
+              <img style={{ position: "absolute", top: "-300%", left: "-70%" }} src={beatFlow0} alt="loadingImg0"></img>
+              <img style={{ position: "absolute", top: "-280%", left: "-68%" }} src={beatFlow1} alt="loadingImg1"></img>
+              <p style={{ color: "white", fontSize: "100px" }}>Loading...</p>
+            </div>
           </div >
         );
       default:
@@ -294,7 +308,7 @@ const Ingame = () => {
 
   return (
     <>
-      <div style={{ position: "relative" }}>
+      <div style={{ position: "relative", backgroundImage: `url(${IngameBg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover" }}>
         {gameEnded ? (
           <>
             <GameResult roomCode={gameData.code} />
@@ -302,7 +316,6 @@ const Ingame = () => {
         ) : (
           <>
             {/* <div ref={divBGRef} className="background-albumCover" /> */}
-            <p>인게임 페이지</p>
             <SongSheet railRefs={railRefs} myPosition={myPosition} Colors={gameData.players.length} >
             </SongSheet>
             <div style={{ display: "inline", position: "relative" }}>
