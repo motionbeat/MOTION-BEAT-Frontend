@@ -7,6 +7,12 @@
   <script src="//cdnjs.cloudflare.com/ajax/libs/validate.js/0.12.0/validate.min.js"></script>
   <title>Motion Beat</title>
 </head>
+<script>
+  window.onload = function() {
+    var player = document.getElementById('audioPlayer');
+    player.volume = 0.5;
+  };
+</script>
 
 <body>
   <!-- 컨트롤러를 안 보이게 하고 싶을 땐 controls를 지우세요. 노래가 짜증나면 muted를 넣으세요 -->
