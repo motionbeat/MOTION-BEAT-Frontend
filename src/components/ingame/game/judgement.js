@@ -47,6 +47,8 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
   if (
     (timeDiff >= 0 && timeDiff <= 500) && (closestNote.getAttribute('data-motion') === currentMotion)
   ) {
+    // TODO: <이상림> 아래 코드를 SoundManager를 사용한 코드로 수정 필요 - Hyeonwoo, 2024.05.14
+    PlayKeySound(currentMotion);
     result = "hit"
     sessionStorage.setItem("instrument", instrument);
     sessionStorage.setItem("motion", currentMotion);

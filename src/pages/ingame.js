@@ -195,7 +195,7 @@ const Ingame = () => {
       /* 반응성 향상 */
       setTimeout(() => {
         setIsActive(false);
-      }, 400);
+      }, 200);
     }, []);
 
     return (

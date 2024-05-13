@@ -38,6 +38,8 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
           // eventName 이걸 parse해서 nickname 추출해서, railRefs에 일치하는 nickname찾아서 거기에 제일 가까운 히트판정 난 note를 지워야 하네.
 
           if (index !== myPosition) {
+            // TODO: <이상림> 아래 코드를 새로운 SoundManager를 사용한 코드로 수정 필요합니다! - Hyeonwoo, 2024.05.14
+            // new Audio(audioFiles[instrument]?.[motionIndex]?.url).play();
             TriggerHitEffect(`player${index}`, railRefs.current[index]);
           }
         }
