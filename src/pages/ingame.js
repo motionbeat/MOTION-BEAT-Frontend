@@ -219,7 +219,7 @@ const Ingame = () => {
       /* 반응성 향상 */
       setTimeout(() => {
         setIsActive(false);
-      }, 400);
+      }, 200);
     }, []);
 
     // console.log(gameData);
@@ -312,7 +312,7 @@ const Ingame = () => {
 
   return (
     <>
-      <div style={{ position: "relative", backgroundImage: `url(${IngameBg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover", width:"100vw", height:"100vh" }}>
+      <div style={{ position: "relative", backgroundImage: `url(${IngameBg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover", width: "100vw", height: "100vh" }}>
         {gameEnded ? (
           <>
             <GameResult roomCode={gameData.code} />

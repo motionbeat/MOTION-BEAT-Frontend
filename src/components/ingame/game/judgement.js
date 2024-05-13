@@ -48,7 +48,7 @@ export const Judge = (key, time, instrument, audio, myPosition, myRailRef) => {
     (timeDiff >= 0 && timeDiff <= 500) && (closestNote.getAttribute('data-motion') === currentMotion)
   ) {
     // console.log(audio);
-    // PlayKeySound(currentMotion);
+    PlayKeySound(currentMotion);
     // console.log("HIT from : ", timeDiff, " = ", noteTime, "-", time)
     result = "hit"
     sessionStorage.setItem("instrument", instrument);

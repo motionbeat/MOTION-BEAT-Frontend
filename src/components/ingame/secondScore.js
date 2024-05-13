@@ -66,11 +66,10 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
               motionIndex = 0;
               break;
           }
-
-          new Audio(audioFiles[instrument][motionIndex].url).play();
           // eventName 이걸 parse해서 nickname 추출해서, railRefs에 일치하는 nickname찾아서 거기에 제일 가까운 히트판정 난 note를 지워야 하네.
 
           if (index !== myPosition) {
+            new Audio(audioFiles[instrument]?.[motionIndex]?.url).play();
             TriggerHitEffect(`player${index}`, railRefs.current[index]);
           }
         }
@@ -85,7 +84,8 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
         socket.off(eventName);
       });
     };
-  }, [gameData.players, audioFiles]);
+  }, [gameData.players, audioFiles, socket, handleScore, myPosition, railRefs]);
+
 
   return (
     <>
