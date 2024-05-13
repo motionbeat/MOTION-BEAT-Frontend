@@ -157,24 +157,24 @@ const WebCam = ({ players = [], hostName, roomCode, ingame }) => {
         {Object.entries(playerStatuses).map(([nickname, { instrument }], index) => (
           <div className="playerContainer" key={index}>
             <div>
-            <div className="webCamBoxDiv">
-              {myNickname === nickname ? (
-                // <div ref={myVideoRef} className="webCamBoxInner"/>
-                ingame && instrument === 'drum1' ? <Drum1 /> :
-                  ingame && instrument === 'drum2' ? <Drum2 /> :
-                    ingame && instrument === 'drum3' ? <Drum3 /> :
-                      ingame && instrument === 'drum4' ? <Drum4 /> :
-                        <div ref={myVideoRef} className="webCamBoxInner" />
-                // </div>
-              ) : (
-                <div
-                  ref={(el) => (otherVideosRef.current[nickname] = el)}
-                  className="webCamBoxInner"
-                />
-              )}
-              <p>{nickname}</p>
-              <p>{instrument}</p>
-            </div>
+              <div className="webCamBoxDiv">
+                {myNickname === nickname ? (
+                  // <div ref={myVideoRef} className="webCamBoxInner"/>
+                  ingame && instrument === 'drum1' ? <Drum1 /> :
+                    ingame && instrument === 'drum2' ? <Drum2 /> :
+                      ingame && instrument === 'drum3' ? <Drum3 /> :
+                        ingame && instrument === 'drum4' ? <Drum4 /> :
+                          <div ref={myVideoRef} className="webCamBoxInner" />
+                  // </div>
+                ) : (
+                  <div
+                    ref={(el) => (otherVideosRef.current[nickname] = el)}
+                    className="webCamBoxInner"
+                  />
+                )}
+                <p>{nickname}</p>
+                <p>{instrument}</p>
+              </div>
             </div>
           </div>
         ))}
