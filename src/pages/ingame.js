@@ -239,25 +239,25 @@ const Ingame = () => {
           }
 
           return (
-              <VerticalRail
-                ref={railRefs.current[index]}
-                color={`rgba(${staticColorsArray[index]}, ${index === myPosition ? 1 : 0.4})`}
-                top={`${(100 / gameData.players.length) * index}%`}
-                data-instrument={gameData.players[index].instrument}
-                key={index}>
-                {index === myPosition ? (
-                  <>
-                    <Indicator />
-                    <JudgeBox isactive={isActive} key={index}>
-                      <div id={`player${myPosition}HitEffect`} className="hit-effect" />
-                    </JudgeBox>
-                    <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
-                    <Output />
-                  </>
-                ) : <JudgeBox key={index}>
-                  <div id={`player${index}HitEffect`} className="hit-effect" />
-                </JudgeBox>}
-              </VerticalRail>
+            <VerticalRail
+              ref={railRefs.current[index]}
+              color={`rgba(${staticColorsArray[index]}, ${index === myPosition ? 1 : 0.4})`}
+              top={`${(100 / gameData.players.length) * index}%`}
+              data-instrument={gameData.players[index].instrument}
+              key={index}>
+              {index === myPosition ? (
+                <>
+                  <Indicator />
+                  <JudgeBox $isactive={isActive} key={index}>
+                    <div id={`player${myPosition}HitEffect`} className="hit-effect" />
+                  </JudgeBox>
+                  <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
+                  <Output />
+                </>
+              ) : <JudgeBox key={index}>
+                <div id={`player${index}HitEffect`} className="hit-effect" />
+              </JudgeBox>}
+            </VerticalRail>
           );
         })}
       </div >
@@ -315,7 +315,7 @@ const Ingame = () => {
 
   return (
     <>
-      <div style={{ position: "relative", backgroundImage: `url(${IngameBg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover", width: "100vw", height: "100vh", backgroundClip: "padding-box", paddingTop:"5%" }}>
+      <div style={{ position: "relative", backgroundImage: `url(${IngameBg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover", width: "100vw", height: "100vh", backgroundClip: "padding-box", paddingTop: "5%" }}>
         {gameEnded ? (
           <>
             <GameResult roomCode={gameData.code} />
