@@ -346,6 +346,7 @@ const VerticalRail = styled.div`
   height: 3%;
   border: 20px;
   background: ${({ color }) => color};
+  box-shadow: 3px 3px 3px rgba(255, 255, 255, 0.3);
 `;
 
 const Indicator = styled.div`

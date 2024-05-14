@@ -4,8 +4,7 @@ import "../../../../styles/common/mainHeader.scss"
 import socket from "../../../../server/server.js";
 import { useLocation, useNavigate } from "react-router-dom";
 import { useState } from "react";
-import FriendBox from "./friendBox.js";
-import MypageBox from "./mypageBox.js";
+import HeaderBtn from "components/common/headerBtn";
 
 const MainHeader = ({ roomName }) => {
   const navigate = useNavigate();
@@ -28,18 +27,9 @@ const MainHeader = ({ roomName }) => {
   return (
     <>
       <div className="allHeaderWrapper">
-        <button className="exitRoomBtn" onClick={goBack}>나가기</button>
-        <h1 className="allTitle">{roomName}</h1>
-        <div className="btnWrapper">
-          <div style={{position: "relative"}}>
-            <div className="friendsBtn" onClick={friendToggle}></div>
-            {openFriends && <FriendBox />}
-          </div>
-          <div style={{position: "relative"}}>
-            <div className="mypageBtn" onClick={myPageToggle}></div>
-            {openMypage && <MypageBox />}
-          </div>
-        </div>
+        <button style={{visibility: roomName ? 'visible' : 'hidden'}} className="exitRoomBtn" onClick={goBack}>나가기</button>
+        <h1 style={{ visibility: roomName ? 'visible' : 'hidden' }} className="allTitle">{roomName}</h1>
+        <HeaderBtn />
       </div>
     </>
   )

@@ -13,14 +13,17 @@ import "../styles/main/main.scss"
 import SelectMenu from "../components/common/atomic/main/selectMenu.js";
 import Ranking from "../components/main/ranking.js";
 import MoveBg from "../components/common/atomic/movebg.js";
+import HeaderBtn from "components/common/headerBtn.js";
+import MainHeader from "components/common/atomic/main/mainHeader.js";
 
 const Main = () => {
   const navigate = useNavigate();
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
-  const [code, setCode] = useState(''); // 방 코드 받아올 때 사용
-
   const [isModalOpen, setModalOpen] = useState(false);
   const [currentElement, setCurrentElement] = useState(null);
+  const [roomName, setRoomName] = useState('');
+  const [isMenuButtonSelected, setIsMenuButtonSelected] = useState(false);
+  const [currentView, setCurrentView] = useState(null);
 
   const openModal = (element) => {
     setCurrentElement(element);
@@ -31,9 +34,6 @@ const Main = () => {
     setModalOpen(false);
     setCurrentElement(null);
   }
-
-  const [isMenuButtonSelected, setIsMenuButtonSelected] = useState(false);
-  const [currentView, setCurrentView] = useState(null);
 
   const ButtonList = () => {
     return (
@@ -106,20 +106,24 @@ const Main = () => {
 
       case "PLAY":
         console.log("Playtype 컴포넌트를 불러옵니다.");
+        setRoomName("PLAY");
         setCurrentView(<Playtype />)
         break;
 
       case "TUTORIAL":
         console.log("Tutorial 컴포넌트를 불러옵니다.");
+        setRoomName("Tutorial");
         setCurrentView(<Tutorial />)
         break;
 
       case "RANKINGS":
         console.log("Ranking 컴포넌트를 불러옵니다.");
+        setRoomName("Rankings");
         setCurrentView(<Ranking />)
         break;
 
       case "SETTINGS":
+        setRoomName("Setting");
         setCurrentView(<Settings />)
         break;
 
@@ -151,13 +155,7 @@ const Main = () => {
   return (
     <>
       {/* <MoveBg /> */}
-      {/* <div>
-          <button className="revert" onClick={logout}>{"<-"}</button>
-        </div>
-        <div style={{ display: "inline", float: "right" }}>
-          <button id="FRIENDS" onClick={handleStickyClick}>Friends</button>
-          <button id="MYPAGE" onClick={handleStickyClick}>Mypage</button>
-        </div> */}
+      <MainHeader roomName={roomName} />
       <div>
         <Modal isOpen={isModalOpen} onClose={closeModal} children={currentElement} />
       </div>

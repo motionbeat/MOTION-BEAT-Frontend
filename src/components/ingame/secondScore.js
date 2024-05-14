@@ -1,24 +1,16 @@
 import { useEffect, useState } from "react";
 import socket from "../../server/server.js";
-import { useSelector } from "react-redux";
-import "../../"
+import { ingameSendData } from '../../redux/actions/sendDataAction';
+import { useDispatch, useSelector } from "react-redux";
 
 export const SecondScore = ({ gameData, railRefs, myPosition }) => {
   const [playerScores, setPlayerScores] = useState({});
+  // const [hittedNotes, setHittedNotes] = useState(0);
+  // const [missedNotes, setMissedNotes] = useState(0);
+  // const dispatch = useDispatch();
+  // const sendData = useSelector(state => state.sendData);
+  // const myNickname = sessionStorage.getItem("nickname");
   let audioFiles = JSON.parse(sessionStorage.getItem("audioFiles"));
-
-  // // 핸들 스코어
-  // const handleScore = (res) => {
-  //   console.log("Score received:", res.nickname, res.score);
-  //   // Assume data comes in as { nickname: "player1", score: 100 }
-  //   setPlayerScores(prevScores => {
-  //     ...prevScores,
-  //     [res.nickname]: res.score
-  //   };
-  //   onScoresUpdate(updatedScores);
-  //   return updatedScores;
-  //   });
-  // };
 
   const handleScore = (res) => {
     // console.log("Score received:", res.nickname, res.score);
@@ -42,17 +34,6 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
           motionType !== null &&
           motionType !== undefined
         ) {
-          // console.log(instrument);
-          // console.log(
-          //   "[KHW] Score received:",
-          //   player.nickname,
-          //   scoreData,
-          //   instrument,
-          //   motionType
-          // );
-          // console.log("[KHW] Audio files:", audioFiles);
-          // console.log("[KHW] Instrument:", audioFiles[instrument]);
-
           let motionIndex;
 
           switch (motionType) {
@@ -92,12 +73,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
       <div className="scoreWrapper">
         {gameData.players.map((player, index) => (
           <div className="score" key={index}>
-            <p
-              name={player.nickname}
-              style={{ fontSize: "2rem", color: "white" }}
-            >
-              {player.nickname}: {playerScores[player.nickname] || 0}
-            </p>
+            <p name={player.nickname} style={{ fontSize: "2rem", color: "white" }}>SCORE : {playerScores[player.nickname] || 0}</p>
           </div>
         ))}
       </div>
@@ -106,16 +82,10 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
 };
 
 export const TriggerHitEffect = (target, elem) => {
-  // console.log("트리거 힛이펙트 테스트 : ", target, elem)
   const hitEffect = document.getElementById(`${target}HitEffect`);
-  // console.log(hitEffect)
   if (!hitEffect) return;  // hitEffect가 없으면 함수 실행 중지
 
   const notes = Array.from(elem?.current.children ?? []).filter(child => child.hasAttribute('data-index'));
-  // console.log(elem.current);
-  // console.log(elem.current.children);
-
-  // console.log(notes)
 
   let closestNote = null;
   let minIndex = Infinity;
@@ -126,7 +96,6 @@ export const TriggerHitEffect = (target, elem) => {
       closestNote = note;
     }
   }
-  // console.log("트리거 힛이펙트 테스트2 : ", closestNote)
 
   // 가장 작은 'data-index'를 가진 자식 요소가 있으면 제거
   if (closestNote) {

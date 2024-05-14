@@ -5,6 +5,7 @@
   height: 40vh;
   background: rgba(5, 5, 5, 0.4);
   backdrop-filter: blur(20px);
+  box-shadow: 3px 3px 3px rgba(255, 255, 255, 0.3);
 }
 
 .Note {
@@ -19,6 +20,7 @@
   left: 50%;
   transform: translate(-50%, -50%);
   background-color: inherit;
+  box-shadow: 3px 3px 3px rgba(255, 255, 255, 0.3);
 }
 
 .hitLine {
