@@ -2,11 +2,13 @@ import { useCallback, useEffect, useState } from "react";
 import socket from "../../server/server.js";
 import { ingameSendData } from '../../redux/actions/sendDataAction';
 import { useDispatch, useSelector } from "react-redux";
+import "../../styles/room/webcam.scss"
 
 export const SecondScore = ({ gameData, railRefs, myPosition }) => {
   const [playerScores, setPlayerScores] = useState({});
   const [hittedNotes, setHittedNotes] = useState(0);
   const [missedNotes, setMissedNotes] = useState(0);
+  const [combo, setCombo] = useState(0);
   const dispatch = useDispatch();
   const sendData = useSelector(state => state.sendData);
   const myNickname = sessionStorage.getItem("nickname");
@@ -28,6 +30,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
     if (result === "hit") {
       // setHittedNotes(hittedNotes + 1);
       setHittedNotes((prev) => prev + 1);
+      setCombo()
     } else if (result === "miss") {
       // setMissedNotes(missedNotes + 1);
       setMissedNotes((prev) => prev + 1);
