@@ -4,7 +4,7 @@ import { useAudio } from "../../../utils/soundManager.js";
 import "../../../styles/songSheet.css"
 
 export const Start = ({ stime, data, railRefs, roomCode, song }) => {
-  const { playBGM, playNormalSFX, playMotionSFX, getElapsedTime } = useAudio();
+  const { playBGM, playNormalSFX, playMotionSFX,  } = useAudio();
 
   const animationDuration = 5000;
   // const processedNotes = new Set(); // 처리된 노트들을 추적하는 집합
@@ -53,11 +53,11 @@ export const Start = ({ stime, data, railRefs, roomCode, song }) => {
         const startTime = note.time - animationDuration;
 
         /* 주의 : 생성시간과 연관됨 */
-        // if (startTime <= audioTime && !processedNotes.has(note)) {
-        //   processedNotes.add(note); // 노트를 처리된 상태로 표시
-        //   GenerateNote(note, audioTime, count); // 노트 생성 및 애니메이션 시작
-        //   count++;
-        // }
+        if (startTime <= audioTime && !processedNotes.has(note)) {
+          processedNotes.add(note);  // 노트를 처리된 상태로 표시
+          GenerateNote(note, count);  // 노트 생성 및 애니메이션 시작
+          count++;
+        }
       }
       requestAnimationFrame(ScheduleNotes);
     };
@@ -65,7 +65,7 @@ export const Start = ({ stime, data, railRefs, roomCode, song }) => {
     requestAnimationFrame(ScheduleNotes);
   };
 
-  const GenerateNote = (note, start, index) => {
+  const GenerateNote = (note, index) => {
     const { motion, time } = note;
     /* 주의 : 생성시간과 연관됨 */
     // console.log("노트 생성", motion, "eta", time, "ms");
@@ -77,28 +77,30 @@ export const Start = ({ stime, data, railRefs, roomCode, song }) => {
     noteElement.textContent = `${motion}`;
     noteElement.setAttribute("data-motion", motion);
     /* 주의 : 생성시간과 연관됨 */
-    noteElement.setAttribute('data-time', (time).toString());
+    noteElement.setAttribute('data-time', time);
     noteElement.setAttribute('data-instrument', note.instrument);
-    noteElement.setAttribute('data-index', index.toString());
-    console.log("노트 생성", noteElement);
+    noteElement.setAttribute('data-index', index);
+    // console.log("노트 생성", noteElement);
 
     for (const idx in railRefs.current) {
       if (railRefs.current[idx].current?.dataset.instrument === note.instrument)
         railRefs.current[idx].current.appendChild(noteElement);
     }
 
-    const AnimateNote = () => {
-      const progress = getElapsedTime() / animationDuration;
+    const AnimateNote = (noteTime) => {
+      const currTime = getElapsedTime() * 1000;
+      const positionPercent = ((noteTime - currTime) / animationDuration) * 100;
 
-      if (progress <= 1.2) {
-        noteElement.style.left = `${100 - 100 * progress}%`;
-        requestAnimationFrame(AnimateNote);
+
+      if (positionPercent <= -3) {
+        noteElement.remove();
       } else {
-        noteElement.remove(); // 애니메이션 종료 후 노트 제거
+        noteElement.style.left = `${positionPercent}%`;
+        requestAnimationFrame(() => AnimateNote(noteTime));
       }
     };
 
-    requestAnimationFrame(AnimateNote);
+    requestAnimationFrame(() => AnimateNote(time));
   };
 
   const End = () => {

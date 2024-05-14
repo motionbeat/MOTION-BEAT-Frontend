@@ -45,9 +45,9 @@ const GameResult = ( {roomCode} ) => {
         <div className="exitBtnWrapper">
           <GameExitBtn roomCode={roomCode} />
         </div>
-        <div className="scoreGradeWrapper">
+        {/* <div className="scoreGradeWrapper">
           <div className="scoreGrade">SSS</div>
-        </div>
+        </div> */}
         <div className="gameResultMainWrapper">
           <div>
             <div className="songWrapper">

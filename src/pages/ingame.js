@@ -305,16 +305,7 @@ const Ingame = () => {
 
   return (
     <>
-      <div
-        style={{
-          position: "relative",
-          backgroundImage: `url(${IngameBg})`,
-          backgroundRepeat: "no-repeat",
-          backgroundSize: "cover",
-          width: "100vw",
-          height: "100vh",
-        }}
-      >
+      <div style={{ position: "relative", backgroundImage: `url(${IngameBg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover", width: "100vw", height: "100vh", backgroundClip: "padding-box", paddingTop:"5%" }}>
         {gameEnded ? (
           <>
             <GameResult roomCode={gameData.code} />
@@ -327,23 +318,9 @@ const Ingame = () => {
               Colors={gameData.players.length}
             ></SongSheet>
             <div style={{ display: "inline", position: "relative" }}>
-              <WebCamFrame
-                roomCode={gameData.code}
-                style={{ visibility: "hidden" }}
-              />
-              <SecondScore
-                gameData={gameData}
-                railRefs={railRefs}
-                myPosition={myPosition}
-              />
-              <WebCam
-                players={gameData.players}
-                roomCode={gameData.code}
-                ingame={true}
-                gameData={gameData}
-                railRefs={railRefs}
-                myPosition={myPosition}
-              />
+              {/* <WebCamFrame myColor={myColor} roomCode={gameData.code} style={{visibility:"hidden"}} /> */}
+              <SecondScore gameData={gameData} railRefs={railRefs} myPosition={myPosition} />
+              <WebCam players={gameData.players} roomCode={gameData.code} ingame={true} gameData={gameData} railRefs={railRefs} myPosition={myPosition} />
             </div>
           </>
         )}
@@ -363,6 +340,7 @@ const VerticalRail = styled.div`
   height: 3%;
   border: 20px;
   background: ${({ color }) => color};
+  box-shadow: 3px 3px 3px rgba(255, 255, 255, 0.3);
 `;
 
 const Indicator = styled.div`
