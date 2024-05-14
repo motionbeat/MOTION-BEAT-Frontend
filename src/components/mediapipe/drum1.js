@@ -75,16 +75,30 @@ class Drum1 extends Component {
 
           if (leftWrist && leftWrist.visibility > 0.5) {
             // 카메라 이미지가 좌우 반전되어 있으므로, 오른쪽 아래에 위치한 것으로 판단
-            if (leftWrist.x * canvas.width > widthSegment && leftWrist.y * canvas.height > 6*heightSegment) {
-              this.updatePostureStatus('A'); // 오른쪽 아래에 있는 경우 A 상태로 업데이트
+            if (leftWrist.x * canvas.width > widthSegment && leftWrist.y * canvas.height > 6 * heightSegment) {
+              if (!this.leftWristInArea) {
+                this.updatePostureStatus('A'); // 오른쪽 아래에 있는 경우 A 상태로 업데이트
+                this.leftWristInArea = true;
+              }
+            } else {
+              this.leftWristInArea = false;
             }
+          } else {
+            this.leftWristInArea = false;
           }
-          
+
           if (rightWrist && rightWrist.visibility > 0.5) {
             // 카메라 이미지가 좌우 반전되어 있으므로, 왼쪽 아래에 위치한 것으로 판단
             if (rightWrist.x * canvas.width < widthSegment && rightWrist.y * canvas.height > 6 * heightSegment) {
-              this.updatePostureStatus('B'); // 왼쪽 아래에 있는 경우 B 상태로 업데이트
+              if (!this.rightWristInArea) {
+                this.updatePostureStatus('B'); // 왼쪽 아래에 있는 경우 B 상태로 업데이트
+                this.rightWristInArea = true;
+              }
+            } else {
+              this.rightWristInArea = false;
             }
+          } else {
+            this.rightWristInArea = false;
           }
         });
 
@@ -129,12 +143,10 @@ class Drum1 extends Component {
       });
       if (newStatus === 'A') {
         this.dispatchKey('d');
-        console.log('A')
       } else if (newStatus === 'B') {
         this.dispatchKey('f');
-        console.log('B')
       }
-      setTimeout(() => this.setState({ postureStatus: "X" }), 1);
+      setTimeout(() => this.setState({ postureStatus: "X" }), 0.01);
     }
   }
 
