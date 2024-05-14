@@ -167,7 +167,7 @@ const WebCam = ({ players = [], roomCode, ingame }) => {
             <div>
               <div className="webCamBoxDiv" style={{
                 backgroundImage: `linear-gradient(to bottom, rgba(${color}, 1), black)`,
-                boxShadow: flash ? "0 0 15px 10px rgba(255, 255, 255, 0.8)" : "none"
+                boxShadow: myNickname === nickname && flash ? "0 0 15px 10px rgba(255, 255, 255, 0.8)" : "none"
               }}>
                 {myNickname === nickname ? (
                   // <div ref={myVideoRef} className="webCamBoxInner"/>
