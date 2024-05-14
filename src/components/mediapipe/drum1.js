@@ -68,20 +68,20 @@ class Drum1 extends Component {
           this.drawDetectionAreas(canvasContext, canvas.width, canvas.height);
 
           const widthSegment = canvas.width / 2;
-          const heightSegment = canvas.height / 4;
+          const heightSegment = canvas.height / 8;
           const leftWrist = results.poseLandmarks?.[posedetection.POSE_LANDMARKS.LEFT_WRIST];
           const rightWrist = results.poseLandmarks?.[posedetection.POSE_LANDMARKS.RIGHT_WRIST];
 
           if (leftWrist && leftWrist.visibility > 0.5) {
             // 카메라 이미지가 좌우 반전되어 있으므로, 오른쪽 아래에 위치한 것으로 판단
-            if (leftWrist.x * canvas.width > widthSegment && leftWrist.y * canvas.height > 2 * heightSegment) {
+            if (leftWrist.x * canvas.width > widthSegment && leftWrist.y * canvas.height > 6*heightSegment) {
               this.updatePostureStatus('A'); // 오른쪽 아래에 있는 경우 A 상태로 업데이트
             }
           }
           
           if (rightWrist && rightWrist.visibility > 0.5) {
             // 카메라 이미지가 좌우 반전되어 있으므로, 왼쪽 아래에 위치한 것으로 판단
-            if (rightWrist.x * canvas.width < widthSegment && rightWrist.y * canvas.height > 2 * heightSegment) {
+            if (rightWrist.x * canvas.width < widthSegment && rightWrist.y * canvas.height > 6 * heightSegment) {
               this.updatePostureStatus('B'); // 왼쪽 아래에 있는 경우 B 상태로 업데이트
             }
           }
@@ -128,8 +128,10 @@ class Drum1 extends Component {
       });
       if (newStatus === 'A') {
         this.dispatchKey('d');
+        console.log('A')
       } else if (newStatus === 'B') {
         this.dispatchKey('f');
+        console.log('B')
       }
       setTimeout(() => this.setState({ postureStatus: "X" }), 1);
     }
