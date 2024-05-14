@@ -3,6 +3,7 @@ import { now } from "../../../utils/time.js";
 import styled, { keyframes } from "styled-components"
 import socket from "../../../server/server.js";
 import { useState } from "react";
+import "../../../styles/songSheet.css"
 
 const audioPlayer = document.getElementById("audioPlayer");
 
@@ -91,7 +92,6 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPositio, roomCo
     /* 주의 : 생성시간과 연관됨 */
     noteElement.setAttribute('data-time', (time).toString());
     noteElement.setAttribute('data-instrument', note.instrument);
-
     noteElement.setAttribute('data-index', index.toString());
     console.log("노트 생성", noteElement);
 
