@@ -1,120 +1,128 @@
-import { useEffect, useState } from "react";
+import { useEffect } from "react";
 import socket from "../../../server/server.js";
-import { useAudio } from "../../../utils/soundManager.js";
-import "../../../styles/songSheet.css"
+import SoundManager from "../../../components/common/soundManager.js";
+import "../../../styles/songSheet.css";
 
-export const Start = ({ stime, data, railRefs, roomCode, song }) => {
-  const { playBGM, playNormalSFX, playMotionSFX,  } = useAudio();
+const StartGame = ({ stime, data, railRefs, roomCode, song }) => {
+  const soundManager = SoundManager();
 
   const animationDuration = 5000;
-  // const processedNotes = new Set(); // 처리된 노트들을 추적하는 집합
+  const processedNotes = new Set(); // 처리된 노트들을 추적하는 집합
 
-  // 게임 배경 음악 재생
-  const handlePlayBGM = () => {
-    playBGM(song, { loop: false, volume: 1 });
-  };
+  useEffect(() => {
+    const handlePlayBGM = () => {
+      soundManager.playBGM(song, { loop: false, volume: 1 });
+    };
 
-  // 경과 시간 확인
-  const checkElapsedTime = () => {
-    console.log(`Elapsed Time: ${getElapsedTime()} seconds`);
-  };
+    const checkElapsedTime = () => {
+      console.log(`Elapsed Time: ${soundManager.getElapsedTime()} seconds`);
+    };
 
-  // 일반 효과음 재생
-  const handlePlayNormalSFX = () => {
-    playNormalSFX("click", { volume: 1 });
-  };
+    const handlePlayNormalSFX = () => {
+      soundManager.playNormalSFX("click", { volume: 1 });
+    };
 
-  // 모션 인식 SFX 재생, 예를 들어 'drum1' 세트의 'A' 사운드
-  const handlePlayMotionSFX = () => {
-    playMotionSFX("drum1", "A", { volume: 1 });
-  };
+    const handlePlayMotionSFX = () => {
+      soundManager.playMotionSFX("drum1", "A", { volume: 1 });
+    };
 
-  setTimeout(() => {
-    handlePlayBGM();
-  }, stime);
+    setTimeout(() => {
+      handlePlayBGM();
+    }, stime);
 
-  // const WhenPause = () => {
-  //   console.log("노래 재생이 일시정지 되었습니다.");
-  // };
+    const WhenEnd = () => {
+      console.log(
+        "노래 재생이 끝났습니다. End 함수를 호출하기 전 5초 대기합니다."
+      );
+      setTimeout(() => End(), 5000);
+    };
 
-  const WhenEnd = () => {
-    console.log(
-      "노래 재생이 끝났습니다. End 함수를 호출하기 전 5초 대기합니다."
-    );
-    setTimeout(() => End(), 5000);
-  };
+    const WhenStart = () => {
+      let count = 1200;
 
-  const WhenStart = () => {
-    let count = 1200;
+      const ScheduleNotes = () => {
+        const notes = data.musicData.notes;
+        for (const note of notes) {
+          const startTime = note.time - animationDuration;
 
-    const ScheduleNotes = () => {
-      const notes = data.musicData.notes;
-      for (const note of notes) {
-        const startTime = note.time - animationDuration;
-
-        /* 주의 : 생성시간과 연관됨 */
-        if (startTime <= audioTime && !processedNotes.has(note)) {
-          processedNotes.add(note);  // 노트를 처리된 상태로 표시
-          GenerateNote(note, count);  // 노트 생성 및 애니메이션 시작
-          count++;
+          /* 주의 : 생성시간과 연관됨 */
+          if (startTime <= soundManager.getElapsedTime() && !processedNotes.has(note)) {
+            processedNotes.add(note); // 노트를 처리된 상태로 표시
+            GenerateNote(note, count); // 노트 생성 및 애니메이션 시작
+            count++;
+          }
         }
-      }
+        requestAnimationFrame(ScheduleNotes);
+      };
+
       requestAnimationFrame(ScheduleNotes);
     };
 
-    requestAnimationFrame(ScheduleNotes);
-  };
+    const GenerateNote = (note, index) => {
+      const { motion, time } = note;
+      /* 주의 : 생성시간과 연관됨 */
+      // console.log("노트 생성", motion, "eta", time, "ms");
 
-  const GenerateNote = (note, index) => {
-    const { motion, time } = note;
-    /* 주의 : 생성시간과 연관됨 */
-    // console.log("노트 생성", motion, "eta", time, "ms");
+      const noteElement = document.createElement("div");
+      noteElement.style.left = `100%`;
+      noteElement.className = "Note";
+      noteElement.style.zIndex = index;
+      noteElement.textContent = `${motion}`;
+      noteElement.setAttribute("data-motion", motion);
+      /* 주의 : 생성시간과 연관됨 */
+      noteElement.setAttribute("data-time", time);
+      noteElement.setAttribute("data-instrument", note.instrument);
+      noteElement.setAttribute("data-index", index);
 
-    const noteElement = document.createElement("div");
-    noteElement.style.left = `100%`;
-    noteElement.className = "Note";
-    noteElement.style.zIndex = index;
-    noteElement.textContent = `${motion}`;
-    noteElement.setAttribute("data-motion", motion);
-    /* 주의 : 생성시간과 연관됨 */
-    noteElement.setAttribute('data-time', time);
-    noteElement.setAttribute('data-instrument', note.instrument);
-    noteElement.setAttribute('data-index', index);
-    // console.log("노트 생성", noteElement);
+      for (const idx in railRefs.current) {
+        if (
+          railRefs.current[idx].current?.dataset.instrument === note.instrument
+        ) {
+          railRefs.current[idx].current.appendChild(noteElement);
+        }
+      }
 
-    for (const idx in railRefs.current) {
-      if (railRefs.current[idx].current?.dataset.instrument === note.instrument)
-        railRefs.current[idx].current.appendChild(noteElement);
-    }
+      const AnimateNote = (noteTime) => {
+        const currTime = soundManager.getElapsedTime();
+        const positionPercent =
+          ((noteTime - currTime) / animationDuration) * 100;
 
-    const AnimateNote = (noteTime) => {
-      const currTime = getElapsedTime() * 1000;
-      const positionPercent = ((noteTime - currTime) / animationDuration) * 100;
+        if (positionPercent <= -3) {
+          noteElement.remove();
+        } else {
+          noteElement.style.left = `${positionPercent}%`;
+          requestAnimationFrame(() => AnimateNote(noteTime));
+        }
+      };
 
+      requestAnimationFrame(AnimateNote);
+    };
 
-      if (positionPercent <= -3) {
-        noteElement.remove();
-      } else {
-        noteElement.style.left = `${positionPercent}%`;
-        requestAnimationFrame(() => AnimateNote(noteTime));
+    const End = () => {
+      console.log("게임 종료");
+
+      const sendData = {
+        score: sessionStorage.getItem("hitNote"),
+        nickname: sessionStorage.getItem("nickname"),
+        code: roomCode,
+      };
+
+      socket.emit("gameEnded", sendData);
+      sessionStorage.removeItem("hitNote");
+    };
+
+    // 게임 시작 시 필요한 초기화 작업을 여기에 추가
+    WhenStart();
+
+    return () => {
+      // 정리 작업을 여기에 추가
+      if (soundManager.currentBGM?.source) {
+        soundManager.currentBGM.source.stop();
       }
     };
+  }, []);
 
-    requestAnimationFrame(() => AnimateNote(time));
-  };
-
-  const End = () => {
-    console.log("게임 종료");
-
-    const sendData = {
-      score: sessionStorage.getItem("hitNote"),
-      nickname: sessionStorage.getItem("nickname"),
-      code: roomCode,
-    };
-
-    socket.emit("gameEnded", sendData);
-    sessionStorage.removeItem("hitNote");
-  };
-
-  return { End };
+  return null;
 };
+
+export default StartGame;

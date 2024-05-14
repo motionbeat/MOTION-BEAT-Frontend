@@ -1,25 +1,13 @@
-import React, {
-  useContext,
-  useEffect,
-  useRef,
-  useState,
-  useCallback,
-} from "react";
-import soundData from "../data/soundData.json";
+import { useEffect, useRef, useState, useCallback } from "react";
+import soundData from "../../data/soundData.json";
 
-const AudioContext = React.createContext();
-
-export function useAudio() {
-  return useContext(AudioContext);
-}
-
-const SoundManager = ({ children }) => {
+const SoundManager = () => {
   const audioContext = useRef(
     new (window.AudioContext || window.webkitAudioContext)()
   );
   const audioBuffers = useRef({ bgm: {}, normalSfx: {}, motionSfx: {} });
-  const currentSources = useRef({}); // 현재 재생 중인 사운드 소스들을 저장
-  const pausedSources = useRef({}); // 일시 정지된 사운드 소스들을 저장
+  const currentSources = useRef({});
+  const pausedSources = useRef({});
   const [currentBGM, setCurrentBGM] = useState({
     source: null,
     startTime: null,
@@ -53,6 +41,28 @@ const SoundManager = ({ children }) => {
     }
   }, []);
 
+  const loadAllSounds = useCallback(async () => {
+    const loadPromises = [];
+    for (const category of Object.keys(soundData)) {
+      if (category === "motionSfx") {
+        for (const setName of Object.keys(soundData[category])) {
+          for (const sound of soundData[category][setName]) {
+            loadPromises.push(loadSound(category, setName, sound));
+          }
+        }
+      } else {
+        for (const sound of soundData[category]) {
+          loadPromises.push(loadSound(category, "", sound));
+        }
+      }
+    }
+    await Promise.all(loadPromises);
+  }, [loadSound]);
+
+  useEffect(() => {
+    loadAllSounds();
+  }, [loadAllSounds]);
+
   const playSound = useCallback(
     (category, setName, soundName, options = {}) => {
       const buffer =
@@ -76,7 +86,6 @@ const SoundManager = ({ children }) => {
       source.loop = !!options.loop;
       source.start(0, options.offset || 0);
 
-      // 현재 재생 중인 사운드 소스를 저장
       if (!currentSources.current[category]) {
         currentSources.current[category] = {};
       }
@@ -112,7 +121,6 @@ const SoundManager = ({ children }) => {
           : audioBuffers.current[category]?.[soundName];
 
       if (!buffer) {
-        // Load the sound if it is not already loaded
         const sound =
           category === "motionSfx"
             ? soundData[category][setName].find((s) => s.name === soundName)
@@ -222,7 +230,6 @@ const SoundManager = ({ children }) => {
 
     if (soundSource) {
       soundSource.source.stop();
-      // 소스 삭제
       if (category === "motionSfx") {
         delete currentSources.current[category][setName][soundName];
       } else {
@@ -237,11 +244,11 @@ const SoundManager = ({ children }) => {
 
   const getElapsedTime = useCallback(() => {
     if (!currentBGM.startTime) return 0;
-    return audioContext.current.currentTime - currentBGM.startTime;
+    return (audioContext.current.currentTime - currentBGM.startTime) * 1000;
   }, [currentBGM.startTime]);
 
-  const value = {
-    playBGM: (name, options) => {
+  const playBGM = useCallback(
+    (name, options) => {
       if (currentBGM.source) {
         currentBGM.source.stop();
       }
@@ -249,6 +256,11 @@ const SoundManager = ({ children }) => {
         setCurrentBGM({ source, startTime: audioContext.current.currentTime })
       );
     },
+    [loadAndPlaySound, currentBGM]
+  );
+
+  return {
+    playBGM,
     playNormalSFX: (name, options) =>
       loadAndPlaySound("normalSfx", "", name, options),
     playMotionSFX: (setName, name, options) =>
@@ -258,46 +270,6 @@ const SoundManager = ({ children }) => {
     stopSound,
     getElapsedTime,
   };
-
-  return (
-    <AudioContext.Provider value={value}>{children}</AudioContext.Provider>
-  );
 };
 
 export default SoundManager;
-
-// ----------------
-// 사용 예시
-// ----------------
-// import SoundManager, { useAudio } from '/src/utils/SoundManager';
-
-// const { playBGM, playNormalSFX, playMotionSFX } = useAudio();
-
-// 배경 음악 재생
-// const handlePlayBGM = () => {
-//   playBGM("1", { loop: true, volume: 0.8 });
-// };
-
-// 현재 재생 중인 BGM의 경과 시간 확인
-// const checkElapsedTime = () => {
-//   console.log(`Elapsed Time: ${getElapsedTime()} seconds`);
-// };
-
-// 일반 효과음 재생
-// const handlePlayNormalSFX = () => {
-//   playNormalSFX("click", { volume: 1 });
-// };
-
-// 모션 인식 SFX 재생, 예를 들어 'drum1' 세트의 'A' 사운드
-// const handlePlayMotionSFX = () => {
-//   playMotionSFX("drum1", "A", { volume: 1 });
-// };
-
-{
-  /* <div>
-  <button onClick={handlePlayBGM}>Play Background Music</button>
-  <button onClick={checkElapsedTime}>Check Elapsed Time</button>
-  <button onClick={handlePlayNormalSFX}>Play Click Sound Effect</button>
-  <button onClick={handlePlayMotionSFX}>Play Drum Kick Sound Effect</button>
-</div> */
-}

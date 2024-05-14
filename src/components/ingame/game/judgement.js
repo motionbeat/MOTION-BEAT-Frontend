@@ -1,16 +1,36 @@
-import { Parser } from "../../../utils/parser";
-import { TriggerHitEffect } from "../secondScore";
-import { useAudio } from "../../../utils/soundManager.js";
+import { useEffect, useState, useRef } from "react";
+import { Parser } from "utils/parser";
+import SoundManager from "components/common/soundManager.js";
 
-const dispatchJudgeEvent = (result) => {
-  const event = new CustomEvent("scoreUpdate", { detail: { result } });
-  window.dispatchEvent(event);
+const useJudgeEvent = () => {
+  return (result) => {
+    const event = new CustomEvent("scoreUpdate", { detail: { result } });
+    window.dispatchEvent(event);
+  };
 };
 
-export const Judge = (key, time, instrument, myPosition, myRailRef) => {
-  const { playMotionSFX } = useAudio();
-  let result = "ignore";
+const TriggerMyHitEffect = ({ target, elem, closestNote }) => {
+  useEffect(() => {
+    const hitEffect = document.getElementById(`${target}HitEffect`);
+    if (!hitEffect) return;
 
+    if (closestNote) {
+      elem.current.removeChild(closestNote);
+    }
+
+    hitEffect.classList.add("active");
+
+    const timer = setTimeout(() => {
+      hitEffect.classList.remove("active");
+    }, 350);
+
+    return () => clearTimeout(timer);
+  }, [target, elem, closestNote]);
+
+  return null;
+};
+
+const findClosestNote = (instrument) => {
   const notes = document.querySelectorAll(
     `.Note[data-instrument="${instrument}"]`
   );
@@ -25,67 +45,75 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
     }
   });
 
-  if (!closestNote) {
-    console.log("No valid note elements found.");
-    return result;
-  }
-
-  const noteTime = parseInt(closestNote.getAttribute("data-time"), 10);
-  const timeDiff = noteTime - time;
-
-  // if (((timeDiff > 500 && timeDiff < 1000) || (timeDiff < -500 && timeDiff > -1000)) && closestNote.getAttribute('data-motion') === Parser(key)) {
-  //   console.log("MISS!")
-  //   dispatch("miss");
-  // } else
-
-  /* timeDiff가 >=0,<=500 사이에 있고, 같은 모션 키를 입력했을 경우  */
-  let currentMotion = Parser(key);
-  console.log(
-    `가장 가까운 노트: ${closestNote}, 인덱스: ${closestNote.getAttribute(
-      "data-index"
-    )} `
-  );
-  console.log(
-    `Test Time... 노트의 시간:${noteTime}, 현재 시간: ${time}, 시간차: ${timeDiff}, 노트의 시간: ${currentMotion} `
-  );
-  // console.log("TEST1: ", timeDiff, closestNote.getAttribute('data-motion'), currentMotion);
-
-  if (timeDiff < -50) {
-    console.log("IGNORE");
-    closestNote.setAttribute("data-index", minIndex + 100);
-    return dispatchJudgeEvent("ignore");
-  } else if (
-    /* timeDiff가 0.5이하, -0.1이상 && 같은 모션 키를 입력했을 경우 */
-    timeDiff >= -50 &&
-    timeDiff <= 500 &&
-    closestNote.getAttribute("data-motion") === currentMotion
-  ) {
-    playMotionSFX(instrument, currentMotion);
-
-    result = "hit";
-    sessionStorage.setItem("instrument", instrument);
-    sessionStorage.setItem("motion", currentMotion);
-
-    dispatchJudgeEvent(result);
-    TriggerMyHitEffect(`player${myPosition}`, myRailRef, closestNote);
-
-    closestNote.remove(); // 해당 노트를 화면에서 숨김
-    return;
-  }
+  return { closestNote, minIndex };
 };
 
-const TriggerMyHitEffect = (target, elem, closestNote) => {
-  const hitEffect = document.getElementById(`${target}HitEffect`);
-  // console.log(hitEffect)
-  if (!hitEffect) return; // hitEffect가 없으면 함수 실행 중지
+const JudgeComponent = ({ key, time, instrument, myPosition, myRailRef }) => {
+  const soundManager = SoundManager();
+  const dispatchJudgeEvent = useJudgeEvent();
+  const [result, setResult] = useState("ignore");
+  const closestNoteRef = useRef(null);
+  const minIndexRef = useRef(Infinity);
 
-  if (closestNote) {
-    elem.current.removeChild(closestNote);
-  }
+  useEffect(() => {
+    const { closestNote, minIndex } = findClosestNote(instrument);
+    closestNoteRef.current = closestNote;
+    minIndexRef.current = minIndex;
 
-  hitEffect.classList.add("active");
+    if (!closestNoteRef.current) {
+      console.log("No valid note elements found.");
+      setResult("ignore");
+      return;
+    }
 
-  setTimeout(() => {
-    hitEffect.classList.remove("active"); // 애니메이션이 끝나고 클래스를 제거
-  }, 350); // 애니메이션 시간과 동일하게 설정
+    const noteTime = parseInt(
+      closestNoteRef.current.getAttribute("data-time"),
+      10
+    );
+    const timeDiff = noteTime - time;
+    const currentMotion = Parser(key);
+
+    console.log(
+      `가장 가까운 노트: ${
+        closestNoteRef.current
+      }, 인덱스: ${closestNoteRef.current.getAttribute("data-index")} `
+    );
+    console.log(
+      `Test Time... 노트의 시간:${noteTime}, 현재 시간: ${time}, 시간차: ${timeDiff}, 노트의 시간: ${currentMotion} `
+    );
+
+    if (timeDiff < -50) {
+      console.log("IGNORE");
+      closestNoteRef.current.setAttribute(
+        "data-index",
+        minIndexRef.current + 100
+      );
+      dispatchJudgeEvent("ignore");
+    } else if (
+      timeDiff >= -50 &&
+      timeDiff <= 500 &&
+      closestNoteRef.current.getAttribute("data-motion") === currentMotion
+    ) {
+      soundManager.playMotionSFX(instrument, currentMotion);
+
+      setResult("hit");
+      sessionStorage.setItem("instrument", instrument);
+      sessionStorage.setItem("motion", currentMotion);
+
+      dispatchJudgeEvent("hit");
+      TriggerMyHitEffect({
+        target: `player${myPosition}`,
+        elem: myRailRef,
+        closestNote: closestNoteRef.current,
+      });
+
+      closestNoteRef.current.remove();
+    } else {
+      setResult("ignore");
+    }
+  }, [key, time, instrument, myPosition, myRailRef, dispatchJudgeEvent, soundManager]);
+
+  return null;
 };
+
+export default JudgeComponent;

@@ -7,9 +7,9 @@ import WebCam from "../components/room/webCam";
 import "../styles/songSheet.css";
 import styled from "styled-components";
 import Load from "../components/ingame/game/gameLoader.js";
-import { Start } from "../components/ingame/game/gameController.js";
+import StartGame from "../components/ingame/game/gameController";
 import { setGameloadData } from "../redux/actions/saveActions.js";
-import { Judge } from "../components/ingame/game/judgement.js";
+import JudgeComponet from "../components/ingame/game/judgement.js";
 import Input from "../utils/input";
 import Output from "../utils/output";
 import socket from "../server/server";
@@ -19,13 +19,12 @@ import SecondScore from "../components/ingame/secondScore.js";
 import IngameBg from "../img/ingameBg.png";
 import beatFlow0 from "../img/beatflow0.png";
 import beatFlow1 from "../img/beatflow1.png";
-import WebCamFrame from "components/ingame/webCamFrame";
 
 const staticColorsArray = ["250,0,255", "1,248,10", "0,248,203", "249,41,42"];
 let myPosition;
 let playerNumber = staticColorsArray.length;
 
-const Ingame = () => {
+const Ingame = (props) => {
   /* Router */
   const location = useLocation(); // 이전 페이지에서 데이터 가져오기
   const gameState = location.state || {}; // 가져온 데이터 넣기
@@ -37,7 +36,6 @@ const Ingame = () => {
   /* State */
   const [message, setMessage] = useState("");
   const [gameEnded, setGameEnded] = useState(false); // 게임 종료 상태
-  // const [showEnter, setShowEnter] = useState(true);
   const [gameData, setGameData] = useState(gameState.game);
   const [scores, setScores] = useState({});
 
@@ -60,6 +58,42 @@ const Ingame = () => {
   const railRefs = useRef([]);
 
   /* I/O 처리 */
+  const handleEnterDown = useCallback(
+    (event) => {
+      if (event.key === "Enter" && loadedData) {
+        socket.emit(`playerLoaded`, sendData);
+
+        setModalStatus("Ready");
+        window.removeEventListener("keydown", handleEnterDown); // 이벤트 리스너 제거
+
+        const waitForAllPlayers = new Promise((resolve) => {
+          socket.on(`allPlayersLoaded${sendData.code}`, (data) => {
+            resolve(data);
+          });
+        });
+
+        waitForAllPlayers
+          .then((data) => {
+            const synchedStartTime = WhenSocketOn(data);
+
+            // StartGame 컴포넌트를 렌더링합니다.
+            setStartGameProps({
+              stime: synchedStartTime,
+              data: loadedData,
+              railRefs: railRefs,
+              roomCode: gameData.code,
+              song: gameData.song,
+            });
+          })
+          .catch((err) => {
+            console.error("Error", err);
+          });
+      }
+    },
+    [loadedData, sendData, gameData.code, gameData.song]
+  );
+
+  const [startGameProps, setStartGameProps] = useState(null);
 
   /* useEffect 순서를 변경하지 마세요*/
   useEffect(() => {
@@ -119,40 +153,6 @@ const Ingame = () => {
     return timeDiff;
   };
 
-  const handleEnterDown = useCallback(
-    (event) => {
-      if (event.key === "Enter" && loadedData) {
-        socket.emit(`playerLoaded`, sendData);
-
-        setModalStatus("Ready");
-        window.removeEventListener("keydown", handleEnterDown); // 이벤트 리스너 제거
-
-        const waitForAllPlayers = new Promise((resolve) => {
-          socket.on(`allPlayersLoaded${sendData.code}`, (data) => {
-            resolve(data);
-          });
-        });
-
-        waitForAllPlayers
-          .then((data) => {
-            const synchedStartTime = WhenSocketOn(data);
-
-            Start({
-              stime: synchedStartTime,
-              data: loadedData,
-              railRefs: railRefs,
-              roomCode: gameData.code,
-              song: gameData.song,
-            });
-          })
-          .catch((err) => {
-            console.error("Error", err);
-          });
-      }
-    },
-    [loadedData, sendData, gameData.code, gameData.song]
-  );
-
   // 아마 입력 감지
   // const handleKeyPressed = (msg) => {
   //   setMessage(msg);
@@ -174,11 +174,18 @@ const Ingame = () => {
   const SongSheet = ({ railRefs, myPosition, Colors }) => {
     const [isActive, setIsActive] = useState(false);
 
+    const handleKeyUp = useCallback(() => {
+      /* 반응성 향상 */
+      setTimeout(() => {
+        setIsActive(false);
+      }, 200);
+    }, []);
+
     const handleKeyDown = useCallback(
       (key, time) => {
         setIsActive(true);
 
-        Judge(
+        JudgeComponet(
           key,
           time,
           gameData.players[myPosition].instrument,
@@ -190,13 +197,6 @@ const Ingame = () => {
       },
       [handleKeyUp, myPosition, railRefs]
     );
-
-    const handleKeyUp = useCallback(() => {
-      /* 반응성 향상 */
-      setTimeout(() => {
-        setIsActive(false);
-      }, 200);
-    }, []);
 
     return (
       <div className="background-songSheet">
@@ -305,7 +305,18 @@ const Ingame = () => {
 
   return (
     <>
-      <div style={{ position: "relative", backgroundImage: `url(${IngameBg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover", width: "100vw", height: "100vh", backgroundClip: "padding-box", paddingTop:"5%" }}>
+      <div
+        style={{
+          position: "relative",
+          backgroundImage: `url(${IngameBg})`,
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+          width: "100vw",
+          height: "100vh",
+          backgroundClip: "padding-box",
+          paddingTop: "5%",
+        }}
+      >
         {gameEnded ? (
           <>
             <GameResult roomCode={gameData.code} />
@@ -319,13 +330,25 @@ const Ingame = () => {
             ></SongSheet>
             <div style={{ display: "inline", position: "relative" }}>
               {/* <WebCamFrame myColor={myColor} roomCode={gameData.code} style={{visibility:"hidden"}} /> */}
-              <SecondScore gameData={gameData} railRefs={railRefs} myPosition={myPosition} />
-              <WebCam players={gameData.players} roomCode={gameData.code} ingame={true} gameData={gameData} railRefs={railRefs} myPosition={myPosition} />
+              <SecondScore
+                gameData={gameData}
+                railRefs={railRefs}
+                myPosition={myPosition}
+              />
+              <WebCam
+                players={gameData.players}
+                roomCode={gameData.code}
+                ingame={true}
+                gameData={gameData}
+                railRefs={railRefs}
+                myPosition={myPosition}
+              />
             </div>
           </>
         )}
       </div>
       {ShowModal(modalStatus)}
+      {startGameProps && <StartGame {...startGameProps} />}
     </>
   );
 };

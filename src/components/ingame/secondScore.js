@@ -3,18 +3,17 @@ import socket from "../../server/server.js";
 import { ingameSendData } from "../../redux/actions/sendDataAction";
 import { useDispatch, useSelector } from "react-redux";
 import "../../styles/room/webcam.scss";
-import SoundManager, { useAudio } from "../../utils/soundManager";
+import SoundManager from "../common/soundManager.js";
 
 export const SecondScore = ({ gameData, railRefs, myPosition }) => {
   const [playerScores, setPlayerScores] = useState({});
-  const { playMotionSFX } = useAudio();
+  const soundManager = SoundManager();
   const [hittedNotes, setHittedNotes] = useState(0);
   const [missedNotes, setMissedNotes] = useState(0);
   const [combo, setCombo] = useState(0);
   const dispatch = useDispatch();
   const sendData = useSelector((state) => state.sendData);
   const myNickname = sessionStorage.getItem("nickname");
-  let audioFiles = JSON.parse(sessionStorage.getItem("audioFiles"));
 
   const handleScore = (res) => {
     setPlayerScores((prevScores) => {
@@ -28,7 +27,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
 
   const playHitSound = (instrument, motionType) => {
     // 게임 이벤트 발생 시 효과음 재생
-    playMotionSFX(instrument, motionType, { volume: 1 }); // 예시로 볼륨을 1로 설정
+    soundManager.playMotionSFX(instrument, motionType, { volume: 1 }); // 예시로 볼륨을 1로 설정
   };
 
   // 점수를 업데이트하는 함수
