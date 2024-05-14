@@ -324,7 +324,7 @@ const Ingame = () => {
             <SongSheet railRefs={railRefs} myPosition={myPosition} Colors={gameData.players.length} >
             </SongSheet>
             <div style={{ display: "inline", position: "relative" }}>
-              <WebCamFrame myColor={myColor} roomCode={gameData.code} style={{visibility:"hidden"}} />
+              {/* <WebCamFrame myColor={myColor} roomCode={gameData.code} style={{visibility:"hidden"}} /> */}
               <SecondScore gameData={gameData} railRefs={railRefs} myPosition={myPosition} />
               <WebCam players={gameData.players} roomCode={gameData.code} ingame={true} gameData={gameData} railRefs={railRefs} myPosition={myPosition} />
             </div>
