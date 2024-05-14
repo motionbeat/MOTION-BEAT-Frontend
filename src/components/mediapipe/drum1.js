@@ -13,7 +13,8 @@ class Drum1 extends Component {
     this.videoRef = React.createRef();
     this.canvasRef = React.createRef();
     this.pose = undefined;
-
+    this.leftWristInArea = false;
+    this.rightWristInArea = false;
   }
 
   componentDidMount() {
@@ -151,11 +152,10 @@ class Drum1 extends Component {
   }
 
   render() {
-    const { postureStatus, backgroundMusicVolume, hitCount } = this.state;
     return (
       <div>
-        <div id="session" style={{ position: 'relative', width: '540px', height: '380px' }}>
-          <video ref={this.videoRef} style={{ width: '100%', height: '100%', position: 'absolute', top: '0', left: '0', zIndex: 1, transform: "scaleX(-1)" }} playsInline autoPlay />
+        <div id="session" style={{ position: 'relative', width: '380px', height: '300px' }}>
+          <video ref={this.videoRef} style={{ width: '100%', height: '100%', position: 'absolute', top: '0', left: '10px', zIndex: 1, transform: "scaleX(-1)" }} playsInline autoPlay />
           <canvas ref={this.canvasRef} style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%', opacity: 0.9, zIndex: 2 }} width="540" height="380" />
         </div>
       </div>
