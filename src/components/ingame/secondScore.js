@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import socket from "../../server/server.js";
-import { useAudio } from "../../utils/soundManager.js";
+import SoundManager, { useAudio } from "../../utils/soundManager";
 
 export const SecondScore = ({ gameData, railRefs, myPosition }) => {
   const [ playerScores, setPlayerScores ] = useState({});
@@ -18,7 +18,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
 
   const playHitSound = (instrument, motionType) => {
     // 게임 이벤트 발생 시 효과음 재생
-    playMotionSFX(instrument, motionType, { volume: 0.5 }); // 예시로 볼륨을 0.5로 설정
+    playMotionSFX(instrument, motionType, { volume: 1 }); // 예시로 볼륨을 1로 설정
   }
 
   // hit 출력

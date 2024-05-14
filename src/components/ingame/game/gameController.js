@@ -1,15 +1,16 @@
+import { useEffect } from "react";
 import socket from "../../../server/server.js";
 import { useAudio } from "../../../utils/soundManager.js";
 
-export const Start = ({ stime, data, railRefs, roomCode }) => {
+export const Start = ({ stime, data, railRefs, roomCode, song }) => {
   const { playBGM, playNormalSFX, playMotionSFX, getElapsedTime } = useAudio();
 
   const animationDuration = 5000;
   // const processedNotes = new Set(); // 처리된 노트들을 추적하는 집합
 
-  // 배경 음악 재생
+  // 게임 배경 음악 재생
   const handlePlayBGM = () => {
-    playBGM("1", { loop: true, volume: 0.8 });
+    playBGM(song, { loop: false, volume: 1 });
   };
 
   // 경과 시간 확인
@@ -28,12 +29,12 @@ export const Start = ({ stime, data, railRefs, roomCode }) => {
   };
 
   setTimeout(() => {
-    // playAudio(data);
+    handlePlayBGM();
   }, stime);
 
-  const WhenPause = () => {
-    console.log("노래 재생이 일시정지 되었습니다.");
-  };
+  // const WhenPause = () => {
+  //   console.log("노래 재생이 일시정지 되었습니다.");
+  // };
 
   const WhenEnd = () => {
     console.log(

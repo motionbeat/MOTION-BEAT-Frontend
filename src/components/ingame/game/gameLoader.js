@@ -13,8 +13,8 @@ export const Load = async (song, players) => {
       SyncPeer()
     ]);
 
-    const [userDataFromServer, musicData, serverData, peerData, syncData] = results;
-    return { userDataFromServer, musicData, serverData, peerData, syncData };
+    const [userDataFromServer, musicData, serverData, peerData, syncData, audioData] = results;
+    return { userDataFromServer, musicData, serverData, peerData, syncData, audioData };
   } catch (error) {
     console.error("로드 실패");
     throw error
@@ -34,8 +34,12 @@ const LoadMyData = async () => {
   return { userData };
 };
 
-const LoadNotes = async (song) => {
+const LoadNotes = async (song, players) => {
+  const myNickname = sessionStorage.getItem("nickname");
+
   /* 플레이어들 정보: [{nickname, inst, score} ...] */
+  const playerObject = players.find(item => item.nickname === myNickname)
+
   let notes = [];
 
   try {

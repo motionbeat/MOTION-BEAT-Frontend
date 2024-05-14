@@ -71,6 +71,8 @@ const Ingame = () => {
 
   /* 네트워크 */
   useEffect(() => {
+    console.log(gameData);
+    
     playerNumber = gameData.players.length;
     myPosition = gameData.players.findIndex(
       (item) => item.nickname === myNickname
@@ -101,8 +103,7 @@ const Ingame = () => {
       try {
         const loadedData = await Load(
           gameData.song,
-          gameData.players,
-          gameData.players[myPosition].instrument
+          gameData.players
         );
         dispatch(setGameloadData(loadedData));
       } catch (error) {
@@ -144,6 +145,7 @@ const Ingame = () => {
               data: loadedData,
               railRefs: railRefs,
               roomCode: gameData.code,
+              song: gameData.song
             });
           })
           .catch((err) => {
@@ -155,9 +157,9 @@ const Ingame = () => {
   );
 
   // 아마 입력 감지
-  const handleKeyPressed = (msg) => {
-    setMessage(msg);
-  };
+  // const handleKeyPressed = (msg) => {
+  //   setMessage(msg);
+  // };
 
   // 재생 상태 변경
   useEffect(() => {

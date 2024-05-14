@@ -9,7 +9,7 @@
     { "name": "본능적으로", "url": "/song/본능적으로.mp4" },
     { "name": "test", "url": "/song/test.mp3" }
   ],
-  "normalSfx": [{ "name": "click", "url": "/keySound/organ_1.mp3" }],
+  "normalSfx": [{ "name": "click", "url": "/keySound/organ/organ_1.mp3" }],
   "motionSfx": {
     "drum1": [
       { "name": "A", "url": "/keySound/alldrum/kick1.wav" },
