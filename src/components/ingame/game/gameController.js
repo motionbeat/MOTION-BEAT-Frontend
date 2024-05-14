@@ -1,6 +1,7 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import socket from "../../../server/server.js";
 import { useAudio } from "../../../utils/soundManager.js";
+import "../../../styles/songSheet.css"
 
 export const Start = ({ stime, data, railRefs, roomCode, song }) => {
   const { playBGM, playNormalSFX, playMotionSFX, getElapsedTime } = useAudio();
@@ -76,10 +77,9 @@ export const Start = ({ stime, data, railRefs, roomCode, song }) => {
     noteElement.textContent = `${motion}`;
     noteElement.setAttribute("data-motion", motion);
     /* 주의 : 생성시간과 연관됨 */
-    noteElement.setAttribute("data-time", time.toString());
-    noteElement.setAttribute("data-instrument", note.instrument);
-
-    noteElement.setAttribute("data-index", index.toString());
+    noteElement.setAttribute('data-time', (time).toString());
+    noteElement.setAttribute('data-instrument', note.instrument);
+    noteElement.setAttribute('data-index', index.toString());
     console.log("노트 생성", noteElement);
 
     for (const idx in railRefs.current) {

@@ -21,7 +21,7 @@ import beatFlow0 from "../img/beatflow0.png";
 import beatFlow1 from "../img/beatflow1.png";
 import WebCamFrame from "components/ingame/webCamFrame";
 
-const staticColorsArray = ["255,0,0", "0, 0, 255", "0, 255, 0", "128, 0, 128"];
+const staticColorsArray = ["250,0,255", "1,248,10", "0,248,203", "249,41,42"];
 let myPosition;
 let playerNumber = staticColorsArray.length;
 
@@ -67,12 +67,12 @@ const Ingame = () => {
       window.addEventListener("keydown", handleEnterDown);
       ShowModal("NotReady");
     }
-  }, [loadedData]);
+  }, [handleEnterDown, loadedData]);
 
   /* 네트워크 */
   useEffect(() => {
     console.log(gameData);
-    
+
     playerNumber = gameData.players.length;
     myPosition = gameData.players.findIndex(
       (item) => item.nickname === myNickname
@@ -95,23 +95,20 @@ const Ingame = () => {
       // currentAudio.removeEventListener("ended", handleAudioEnd);
       socket.off(`leftRoom${gameData.code}`, updatePlayersAfterLeave);
     };
-  }, []);
+  }, [gameData, myNickname]);
 
   useEffect(() => {
     // 게임 리소스 로딩
     const init = async () => {
       try {
-        const loadedData = await Load(
-          gameData.song,
-          gameData.players
-        );
+        const loadedData = await Load(gameData.song, gameData.players);
         dispatch(setGameloadData(loadedData));
       } catch (error) {
         console.error("Loading failed:", error);
       }
     };
     init();
-  }, []);
+  }, [dispatch, gameData.players, gameData.song]);
 
   const WhenSocketOn = (serverTime) => {
     // 여기에는 시작시간 딜레이가 포함됨
@@ -145,7 +142,7 @@ const Ingame = () => {
               data: loadedData,
               railRefs: railRefs,
               roomCode: gameData.code,
-              song: gameData.song
+              song: gameData.song,
             });
           })
           .catch((err) => {
@@ -153,7 +150,7 @@ const Ingame = () => {
           });
       }
     },
-    [loadedData, sendData.code, sendData]
+    [loadedData, sendData, gameData.code, gameData.song]
   );
 
   // 아마 입력 감지
@@ -191,7 +188,7 @@ const Ingame = () => {
         /* 반응성 향상 */
         handleKeyUp();
       },
-      [loadedData]
+      [handleKeyUp, myPosition, railRefs]
     );
 
     const handleKeyUp = useCallback(() => {
@@ -203,6 +200,7 @@ const Ingame = () => {
 
     return (
       <div className="background-songSheet">
+        <div className="hitLine"></div>
         {gameData.players.map((player, index) => {
           if (!railRefs?.current[index]) {
             return null;
@@ -329,9 +327,23 @@ const Ingame = () => {
               Colors={gameData.players.length}
             ></SongSheet>
             <div style={{ display: "inline", position: "relative" }}>
-              <WebCamFrame roomCode={gameData.code} style={{visibility:"hidden"}} />
-              <SecondScore gameData={gameData} railRefs={railRefs} myPosition={myPosition} />
-              <WebCam players={gameData.players} roomCode={gameData.code} ingame={true} gameData={gameData} railRefs={railRefs} myPosition={myPosition} />
+              <WebCamFrame
+                roomCode={gameData.code}
+                style={{ visibility: "hidden" }}
+              />
+              <SecondScore
+                gameData={gameData}
+                railRefs={railRefs}
+                myPosition={myPosition}
+              />
+              <WebCam
+                players={gameData.players}
+                roomCode={gameData.code}
+                ingame={true}
+                gameData={gameData}
+                railRefs={railRefs}
+                myPosition={myPosition}
+              />
             </div>
           </>
         )}
@@ -345,10 +357,10 @@ export default Ingame;
 
 const VerticalRail = styled.div`
   display: block;
-  position: absolute;
-  top: ${({ top }) => top};
+  position: relative;
+  top: ${({ top }) => `calc(${top} + 11%)`};
   width: 100%;
-  height: 25%;
+  height: 3%;
   border: 20px;
   background: ${({ color }) => color};
 `;
