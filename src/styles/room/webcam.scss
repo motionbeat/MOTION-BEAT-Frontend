@@ -86,4 +86,24 @@
   font-size: 3rem;
   color: white;
   font-family: "Giant";
+  animation: fadeOut 0.25s forwards;
+  -webkit-text-stroke: 2px rgb(255, 44, 227);
+  text-shadow: 7.5px 1px 5px rgb(216, 16, 216);
+  visibility: hidden;
+}            
+
+.hitCombo.show {
+  visibility: visible;
+  animation: fadeOutMoveUp 0.25s forwards; 
+}
+
+@keyframes fadeOutMoveUp {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(-20px);
+  }
 }

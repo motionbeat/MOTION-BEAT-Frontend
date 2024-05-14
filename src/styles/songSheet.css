@@ -2,9 +2,10 @@
   display: block;
   position: relative;
   width: 100vw;
-  height: 40vh;
+  height: 37vh;
   background: rgba(5, 5, 5, 0.4);
   backdrop-filter: blur(20px);
+  margin-bottom: 30px;
 }
 
 .Note {

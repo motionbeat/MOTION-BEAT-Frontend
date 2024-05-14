@@ -123,8 +123,8 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
       <div className="scoreWrapper">
         {gameData.players.map((player, index) => (
           <div className="score" key={index}>
-            <p name={player.nickname} className="hitCombo">{combo}COMBO</p>
-            <p name={player.nickname} className="hitScore">SCORE : {playerScores[player.nickname] || 0}</p>
+            <p name={player.nickname} className={`hitCombo ${combo > 0 ? 'show' : ''}`} key={`${player.nickname}-${combo}`}>{combo}COMBO</p>
+            <p name={player.nickname} className="hitScore">SCORE : {playerScores[player.nickname]* 100 || 0}</p>
           </div>
         ))}
       </div>
