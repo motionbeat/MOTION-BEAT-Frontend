@@ -313,7 +313,7 @@ const Ingame = () => {
 
   return (
     <>
-      <div style={{ position: "relative", backgroundImage: `url(${IngameBg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover", width: "100vw", height: "100vh" }}>
+      <div style={{ position: "relative", backgroundImage: `url(${IngameBg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover", width: "100vw", height: "100vh", backgroundClip: "padding-box", padding:"5% 0" }}>
         {gameEnded ? (
           <>
             <GameResult roomCode={gameData.code} />
