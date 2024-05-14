@@ -29,22 +29,26 @@ const SoundManager = ({ children }) => {
 
   useEffect(() => {
     const loadSounds = async () => {
-      const response = await fetch("/data/soundData.json");
-      const data = await response.json();
-      // 각 범주별 사운드 로드
-      Object.keys(data).forEach((category) => {
-        if (category === "motionSfx") {
-          Object.keys(data[category]).forEach((setName) => {
-            data[category][setName].forEach((sound) => {
-              loadSound(category, setName, sound);
+      try {
+        const response = await fetch("/data/soundData.json"); 
+        const data = await response.json();
+        // 각 범주별 사운드 로드
+        Object.keys(data).forEach((category) => {
+          if (category === "motionSfx") {
+            Object.keys(data[category]).forEach((setName) => {
+              data[category][setName].forEach((sound) => {
+                loadSound(category, setName, sound);
+              });
             });
-          });
-        } else {
-          data[category].forEach((sound) => {
-            loadSound(category, "", sound);
-          });
-        }
-      });
+          } else {
+            data[category].forEach((sound) => {
+              loadSound(category, "", sound);
+            });
+          }
+        });
+      } catch (e) {
+        console.error("Failed to load sound data:", e);
+      }
     };
 
     loadSounds();

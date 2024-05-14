@@ -75,16 +75,16 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
 };
 
 export const TriggerHitEffect = (target, elem) => {
-  console.log("트리거 힛이펙트 테스트 : ", target, elem)
+  // console.log("트리거 힛이펙트 테스트 : ", target, elem)
   const hitEffect = document.getElementById(`${target}HitEffect`);
-  console.log(hitEffect)
+  // console.log(hitEffect)
   if (!hitEffect) return;  // hitEffect가 없으면 함수 실행 중지
 
   const notes = Array.from(elem?.current.children ?? []).filter(child => child.hasAttribute('data-index'));
-  console.log(elem.current);
-  console.log(elem.current.children);
+  // console.log(elem.current);
+  // console.log(elem.current.children);
 
-  console.log(notes)
+  // console.log(notes)
 
   let closestNote = null;
   let minIndex = Infinity;
@@ -95,7 +95,7 @@ export const TriggerHitEffect = (target, elem) => {
       closestNote = note;
     }
   }
-  console.log("트리거 힛이펙트 테스트2 : ", closestNote)
+  // console.log("트리거 힛이펙트 테스트2 : ", closestNote)
 
   // 가장 작은 'data-index'를 가진 자식 요소가 있으면 제거
   if (closestNote) {

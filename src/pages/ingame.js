@@ -19,6 +19,7 @@ import SecondScore from "../components/ingame/secondScore.js";
 import IngameBg from "../img/ingameBg.png";
 import beatFlow0 from "../img/beatflow0.png";
 import beatFlow1 from "../img/beatflow1.png";
+import WebCamFrame from "components/ingame/webCamFrame";
 
 const staticColorsArray = ["255,0,0", "0, 0, 255", "0, 255, 0", "128, 0, 128"];
 let myPosition;
@@ -326,19 +327,9 @@ const Ingame = () => {
               Colors={gameData.players.length}
             ></SongSheet>
             <div style={{ display: "inline", position: "relative" }}>
-              <SecondScore
-                gameData={gameData}
-                railRefs={railRefs}
-                myPosition={myPosition}
-              />
-              <WebCam
-                players={gameData.players}
-                roomCode={gameData.code}
-                ingame={true}
-                gameData={gameData}
-                railRefs={railRefs}
-                myPosition={myPosition}
-              />
+              <WebCamFrame roomCode={gameData.code} style={{visibility:"hidden"}} />
+              <SecondScore gameData={gameData} railRefs={railRefs} myPosition={myPosition} />
+              <WebCam players={gameData.players} roomCode={gameData.code} ingame={true} gameData={gameData} railRefs={railRefs} myPosition={myPosition} />
             </div>
           </>
         )}
