@@ -85,19 +85,5 @@
 .hitCombo {
   font-size: 3rem;
   color: white;
-  visibility: hidden;
   font-family: "Giant";
-  animation: floatUpFadeIn 0.7s ease-in-out;
-}
-
-@keyframes floatUpFadeIn {
-  0% {
-    opacity: 0;
-    transform: translateY(20px);
-  }
-  100% {
-    opacity: 1;
-    transform: translateY(0);
-    visibility: visible;
-  }
 }
