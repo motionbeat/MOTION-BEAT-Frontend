@@ -1,23 +1,15 @@
-import styled from "styled-components";
-import socket from "../../server/server.js";
-import React, { useState, useEffect, useRef } from "react";
-import { useNavigate } from "react-router-dom";
+import React, { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
 import Drum1 from "../mediapipe/drum1.js";
 import "../../styles/room/webcam.scss";
 import { OpenVidu } from "openvidu-browser";
-import Drum2 from "../mediapipe/drum2.js";
-import Drum3 from "../mediapipe/drum3.js";
-import Drum4 from "../mediapipe/drum4.js";
-import { PlayKeySoundWithParser } from "../ingame/game/judgement";
+// import { PlayKeySoundWithParser } from "../ingame/game/judgement";
+
+const staticColorsArray = ["250,0,255", "1,248,10", "0,248,203", "249,41,42"];
 
 const WebCam = ({ players = [], roomCode, ingame }) => {
   const [playerStatuses, setPlayerStatuses] = useState({});
   const myNickname = sessionStorage.getItem("nickname");
-  const other_players = players.filter((player) => player.nickname !== myNickname);
-  const navigate = useNavigate();
-  const backendUrl = process.env.REACT_APP_BACK_API_URL;
-  const [instruModal, setInstruModal] = useState(false);
   const [session, setSession] = useState(null);
   const [publisher, setPublisher] = useState(null);
   const [subscribers, setSubscribers] = useState([]);
@@ -27,10 +19,11 @@ const WebCam = ({ players = [], roomCode, ingame }) => {
 
   useEffect(() => {
     setPlayerStatuses(prevStatuses => {
-      const updatedStatuses = players.reduce((acc, player) => {
+      const updatedStatuses = players.reduce((acc, player, index) => {
         acc[player.nickname] = {
           nickname: player.nickname,
           instrument: player.instrument,
+          color : staticColorsArray[index % staticColorsArray.length]
         };
         return acc;
       }, []);
@@ -39,6 +32,69 @@ const WebCam = ({ players = [], roomCode, ingame }) => {
     });
   }, [players]);
 
+  
+  const createSession = useCallback( async (sessionId) => {
+    try {
+      const response = await axios.post(
+        `https://motionbe.at:3001/api/openvidu/`,
+        { customSessionId: sessionId },
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      return response.data; // The sessionId
+    } catch (error) {
+      console.error("Error creating session:", error);
+      return null;
+    }
+  }, []);
+
+  const createToken = useCallback(async (sessionId) => {
+    try {
+      const response = await axios.post(
+        `https://motionbe.at:3001/api/openvidu/${sessionId}/connections`,
+        {},
+        {
+          headers: { "Content-Type": "application/json" },
+        }
+      );
+      return response.data; // The token
+    } catch (error) {
+      console.error("Error fetching token:", error);
+      return null;
+    }
+  }, []);
+
+  const initSession = useCallback(async (roomCode, session) => {
+    const sessionId = await createSession(roomCode);
+    if (sessionId) {
+      const token = await createToken(sessionId);
+      if (token) {
+        session
+          .connect(token, myNickname)
+          .then(() => {
+            const publisher = OV.current.initPublisher(undefined, {
+              audioSource: undefined,
+              videoSource: undefined,
+              publishAudio: false,
+              publishVideo: true,
+              resolution: "390x300",
+              frameRate: 15,
+              mirror: true,
+            });
+            session.publish(publisher);
+            setPublisher(publisher);
+          })
+          .catch((error) => {
+            console.error(
+              "Error connecting to the session:",
+              error
+            );
+          });
+      }
+    }
+  }, [createSession, createToken, myNickname]);
+
   // OpenVidu
   useEffect(() => {
     if (ingame) {
@@ -46,9 +102,6 @@ const WebCam = ({ players = [], roomCode, ingame }) => {
       setSession(session);
 
       session.on("streamCreated", (event) => {
-        // const videoElement = document.createElement("div"); // 새로운 div를 생성
-        // videoElement.autoplay = true;
-        // videoElement.srcObject = event.stream.mediaStream;
 
         const isSelf = event.stream.connection.connectionId === session.connection.connectionId;
         let videoContainer = document.createElement("div"); // 비디오를 위한 새로운 div 생성
@@ -87,77 +140,15 @@ const WebCam = ({ players = [], roomCode, ingame }) => {
         }
       }
     }
-  }, [ingame, roomCode]);
-
-  const initSession = async (roomCode, session) => {
-    const sessionId = await createSession(roomCode);
-    if (sessionId) {
-      const token = await createToken(sessionId);
-      if (token) {
-        session
-          .connect(token, myNickname)
-          .then(() => {
-            const publisher = OV.current.initPublisher(undefined, {
-              audioSource: undefined,
-              videoSource: undefined,
-              publishAudio: false,
-              publishVideo: true,
-              resolution: "214x184",
-              frameRate: 30,
-              mirror: true,
-            });
-            session.publish(publisher);
-            setPublisher(publisher);
-          })
-          .catch((error) => {
-            console.error(
-              "Error connecting to the session:",
-              error
-            );
-          });
-      }
-    }
-  };
-
-  const createSession = async (sessionId) => {
-    try {
-      const response = await axios.post(
-        `https://motionbe.at:3001/api/openvidu/`,
-        { customSessionId: sessionId },
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      return response.data; // The sessionId
-    } catch (error) {
-      console.error("Error creating session:", error);
-      return null;
-    }
-  };
-
-  const createToken = async (sessionId) => {
-    try {
-      const response = await axios.post(
-        `https://motionbe.at:3001/api/openvidu/${sessionId}/connections`,
-        {},
-        {
-          headers: { "Content-Type": "application/json" },
-        }
-      );
-      return response.data; // The token
-    } catch (error) {
-      console.error("Error fetching token:", error);
-      return null;
-    }
-  };
+  }, [ingame, roomCode, initSession]);
 
   return (
     <>
       <div className="webCamBox">
-        {Object.entries(playerStatuses).map(([nickname, { instrument }], index) => (
+        {Object.entries(playerStatuses).map(([nickname, { instrument, color }], index) => (
           <div className="playerContainer" key={index}>
             <div>
-              <div className="webCamBoxDiv">
+              <div className="webCamBoxDiv" style={{backgroundImage: `linear-gradient(to bottom, rgba(${color}, 1), black)`}}>
                 {myNickname === nickname ? (
                   // <div ref={myVideoRef} className="webCamBoxInner"/>
                   <Drum1 />
@@ -168,8 +159,8 @@ const WebCam = ({ players = [], roomCode, ingame }) => {
                     className="webCamBoxInner"
                   />
                 )}
-                <p>{nickname}</p>
-                <p>{instrument}</p>
+                <p>{nickname} &nbsp; {instrument}</p>
+
               </div>
             </div>
           </div>
