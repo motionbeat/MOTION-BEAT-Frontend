@@ -11,12 +11,14 @@ const Input = ({ onKeyDown, onKeyUp }) => {
 
   const handleKeyDown = (event) => {
     const key = event.key.toUpperCase();
+    const audioPlayer = document.getElementById("audioPlayer");
+
     if (inputKeyList.includes(key)) {
-      const audioPlayer = document.getElementById("audioPlayer");
-      console.log(audioPlayer.currentTime * 1000);
+      const keyExactTime = parseInt(audioPlayer.currentTime * 1000, 10);
+      console.log("키 눌린 시간: ", keyExactTime);
       dispatch(setInput(key));
       if (onKeyDown) {
-        onKeyDown(key, audioPlayer.currentTime * 1000); // 외부로 키를 전달할 콜백 함수 호출
+        onKeyDown(key, keyExactTime); // 외부로 키를 전달할 콜백 함수 호출
       }
     }
   };
@@ -24,7 +26,7 @@ const Input = ({ onKeyDown, onKeyUp }) => {
   const handleKeyUp = (event) => {
     const key = event.key.toUpperCase();
     if (inputKeyList.includes(key)) {
-      console.log(`Released key: ${key}`);
+      // console.log(`Released key: ${key}`);
       if (onKeyUp) {
         onKeyUp();
       }

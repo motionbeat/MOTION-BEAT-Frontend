@@ -14,7 +14,7 @@
 
 .hit-effect.active {
   display: block;
-  animation: hitAnimation 0.7s ease-in forwards;
+  animation: hitAnimation 0.35s ease-in forwards;
 }
 
 @keyframes hitAnimation {
