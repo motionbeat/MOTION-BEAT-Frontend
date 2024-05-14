@@ -30,10 +30,11 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
     if (result === "hit") {
       // setHittedNotes(hittedNotes + 1);
       setHittedNotes((prev) => prev + 1);
-      setCombo()
+      setCombo((prevCombo) => prevCombo + 1);
     } else if (result === "miss") {
       // setMissedNotes(missedNotes + 1);
       setMissedNotes((prev) => prev + 1);
+      setCombo(0);
     }
   }, []);
 
@@ -68,8 +69,9 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
     });
 
     sessionStorage.setItem("hitNote", hittedNotes);
+    sessionStorage.setItem("combo", combo);
 
-  }, [hittedNotes, missedNotes])
+  }, [hittedNotes, missedNotes, combo])
 
   // hit 출력
   useEffect(() => {
@@ -121,7 +123,8 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
       <div className="scoreWrapper">
         {gameData.players.map((player, index) => (
           <div className="score" key={index}>
-            <p name={player.nickname} style={{ fontSize: "2rem", color: "white" }}>SCORE : {playerScores[player.nickname] || 0}</p>
+            <p name={player.nickname} className="hitCombo">{combo}COMBO</p>
+            <p name={player.nickname} className="hitScore">SCORE : {playerScores[player.nickname] || 0}</p>
           </div>
         ))}
       </div>

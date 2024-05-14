@@ -3,6 +3,11 @@
   src: url("../../fonts/pretendard/Pretendard-Black.ttf");
 }
 
+@font-face {
+  font-family: "Giant";
+  src: url("../../fonts/giant/Giants-Inline.ttf");
+}
+
 // 웹 캠 전체 박스
 .webCamBox {
   width: 100%;
@@ -70,4 +75,29 @@
   margin: 0 8%;
   text-align: center;
   font-family: "Pretendard";
+}
+
+.hitScore {
+  font-size: 2rem;
+  color: white;
+}
+
+.hitCombo {
+  font-size: 3rem;
+  color: white;
+  visibility: hidden;
+  font-family: "Giant";
+  animation: floatUpFadeIn 0.7s ease-in-out;
+}
+
+@keyframes floatUpFadeIn {
+  0% {
+    opacity: 0;
+    transform: translateY(20px);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(0);
+    visibility: visible;
+  }
 }
