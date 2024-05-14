@@ -16,6 +16,23 @@ const WebCam = ({ players = [], roomCode, ingame }) => {
   const OV = useRef(new OpenVidu());
   const myVideoRef = useRef(null);
   const otherVideosRef = useRef({});
+  // const [combo, setCombo] = useState(parseInt(sessionStorage.getItem("combo"), 10) || 0);
+  const [hitNote, setHitNote] = useState(0);
+  const [flash, setFlash] = useState(false);
+
+  useEffect(() => {
+    const interval = setInterval(() => {
+      const newHitNote = parseInt(sessionStorage.getItem("hitNote"), 10) || 0;
+      if (newHitNote > hitNote) {
+        setHitNote(newHitNote);
+        setFlash(true);
+        setTimeout(() => setFlash(false), 300); // 0.3초 후에 flash를 false로 설정
+      } else {
+        setHitNote(newHitNote);
+      }
+    }, 100); // 짧은 주기로 hitNote 값을 갱신하여 실시간 반응
+    return () => clearInterval(interval); // 컴포넌트 언마운트 시 인터벌 클리어
+  }, [hitNote]);
 
   useEffect(() => {
     setPlayerStatuses(prevStatuses => {
@@ -23,7 +40,7 @@ const WebCam = ({ players = [], roomCode, ingame }) => {
         acc[player.nickname] = {
           nickname: player.nickname,
           instrument: player.instrument,
-          color : staticColorsArray[index % staticColorsArray.length]
+          color: staticColorsArray[index % staticColorsArray.length]
         };
         return acc;
       }, []);
@@ -32,8 +49,8 @@ const WebCam = ({ players = [], roomCode, ingame }) => {
     });
   }, [players]);
 
-  
-  const createSession = useCallback( async (sessionId) => {
+
+  const createSession = useCallback(async (sessionId) => {
     try {
       const response = await axios.post(
         `https://motionbe.at:3001/api/openvidu/`,
@@ -79,7 +96,7 @@ const WebCam = ({ players = [], roomCode, ingame }) => {
               publishAudio: false,
               publishVideo: true,
               resolution: "390x300",
-              frameRate: 15,
+              frameRate: 30,
               mirror: true,
             });
             session.publish(publisher);
@@ -106,7 +123,7 @@ const WebCam = ({ players = [], roomCode, ingame }) => {
         const isSelf = event.stream.connection.connectionId === session.connection.connectionId;
         let videoContainer = document.createElement("div"); // 비디오를 위한 새로운 div 생성
         videoContainer.className = "videoContainer"; // 클래스 이름 설정(스타일링 용)
-        
+
         const subscriber = session.subscribe(event.stream, videoContainer);
 
         if (isSelf) {
@@ -122,7 +139,7 @@ const WebCam = ({ players = [], roomCode, ingame }) => {
         // isSelf가 true 때도, 즉 내 영상일 때도 subscribers에 추가해야 할지 논의 필요 - Hyeonwoo, 2024.05.11
         setSubscribers((prevSubscribers) => [
           ...prevSubscribers,
-          subscriber, 
+          subscriber,
         ]);
       });
 
@@ -148,7 +165,10 @@ const WebCam = ({ players = [], roomCode, ingame }) => {
         {Object.entries(playerStatuses).map(([nickname, { instrument, color }], index) => (
           <div className="playerContainer" key={index}>
             <div>
-              <div className="webCamBoxDiv" style={{backgroundImage: `linear-gradient(to bottom, rgba(${color}, 1), black)`}}>
+              <div className="webCamBoxDiv" style={{
+                backgroundImage: `linear-gradient(to bottom, rgba(${color}, 1), black)`,
+                boxShadow: flash ? "0 0 15px 10px rgba(255, 255, 255, 0.8)" : "none"
+              }}>
                 {myNickname === nickname ? (
                   // <div ref={myVideoRef} className="webCamBoxInner"/>
                   <Drum1 />
