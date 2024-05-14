@@ -19,7 +19,10 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
     setPlayerScores((prevScores) => {
       const updatedScores = {
         ...prevScores,
-        [res.nickname]: res.score,
+        [res.nickname]: {
+          score: res.score,
+          combo: prevScores[res.nickname]?.combo || 0,
+        }
       };
       return updatedScores;
     });
@@ -27,16 +30,24 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
 
   // 점수를 업데이트하는 함수
   const updateScore = useCallback((result) => {
+    setPlayerScores((prevScores) => {
+      const newScore = {
+        ...prevScores,
+        [myNickname]: {
+          score: prevScores[myNickname]?.score || 0,
+          combo: prevScores[myNickname]?.combo || 0,
+        },
+      };
+
     if (result === "hit") {
-      // setHittedNotes(hittedNotes + 1);
-      setHittedNotes((prev) => prev + 1);
-      setCombo((prevCombo) => prevCombo + 1);
+      newScore[myNickname].score += 1;
+      newScore[myNickname].combo += 1;
     } else if (result === "miss") {
-      // setMissedNotes(missedNotes + 1);
-      setMissedNotes((prev) => prev + 1);
-      setCombo(0);
+      newScore[myNickname].combo = 0;
     }
-  }, []);
+    return newScore;
+  });
+}, [myNickname]);
 
   // 외부에서 이벤트를 받아서 점수 업데이트가 필요할 경우를 위한 이벤트 리스너 설정
   useEffect(() => {
@@ -52,15 +63,18 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
   }, [updateScore]);
 
   useEffect(() => {
-    dispatch(ingameSendData({ code: gameData.code, nickname: myNickname, score: hittedNotes }));
-  }, [hittedNotes, dispatch, gameData.code, myNickname]);
+    const score = playerScores[myNickname]?.score || 0;
+    dispatch(ingameSendData({ code: gameData.code, nickname: myNickname, score }));
+  }, [playerScores, dispatch, gameData.code, myNickname]);
 
   useEffect(() => {
-    // console.log("노트 받는지 response:", hittedNotes);
+    const score = playerScores[myNickname]?.score || 0;
+    const combo = playerScores[myNickname]?.combo || 0;
     const sendData = {
       code: gameData.code,
       nickname: myNickname,
       currentScore: hittedNotes,
+      combo: combo,
       instrument: sessionStorage.getItem("instrument"),
       motionType: sessionStorage.getItem("motion")
     }
@@ -68,16 +82,16 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
       // console.log("Hit update response:", res);
     });
 
-    sessionStorage.setItem("hitNote", hittedNotes);
+    sessionStorage.setItem("hitNote", score);
     sessionStorage.setItem("combo", combo);
 
-  }, [hittedNotes, missedNotes, combo])
+  }, [playerScores, gameData.code, myNickname])
 
   // hit 출력
   useEffect(() => {
     const scoreUpdateEvents = gameData.players.map((player, index) => {
       const eventName = `liveScore${player.nickname}`;
-      socket.on(eventName, (scoreData, instrument, motionType) => {
+      socket.on(eventName, (scoreData, combo, instrument, motionType) => {
         if (
           instrument !== undefined &&
           instrument !== null &&
@@ -106,7 +120,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
           }
         }
 
-        handleScore({ nickname: player.nickname, score: scoreData });
+        handleScore({ nickname: player.nickname, score: scoreData, combo: combo });
       });
       return eventName;
     });
@@ -123,7 +137,10 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
       <div className="scoreWrapper">
         {gameData.players.map((player, index) => (
           <div className="score" key={index}>
-            <p name={player.nickname} className={`hitCombo ${combo > 0 ? 'show' : ''}`} key={`${player.nickname}-${combo}`}>{combo}COMBO</p>
+            <p name={player.nickname} className={`hitCombo ${playerScores[player.nickname]?.combo > 0 ? 'show' : ''}`}
+              key={`${player.nickname}-${playerScores[player.nickname]?.combo}`}>
+                {playerScores[player.nickname]?.combo || 0} COMBO
+            </p>
             <p name={player.nickname} className="hitScore">score : {playerScores[player.nickname]* 100 || 0}</p>
           </div>
         ))}

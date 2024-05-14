@@ -10,6 +10,7 @@ const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
   const [instruModal, setInstruModal] = useState(false);
   const [instrumentList, setInstrumentList] = useState([]);
+  const [playerImages, setPlayerImages] = useState({});
 
   useEffect(() => {
     console.log("playerStatuses has been updated:", playerStatuses);

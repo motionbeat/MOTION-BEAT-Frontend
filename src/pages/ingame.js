@@ -230,7 +230,9 @@ const Ingame = () => {
 
     return (
       <div className="background-songSheet">
-        <div className="hitLine"></div>
+        <div className="hitLine">
+          {/* <div className="test"></div> */}
+        </div>
         {gameData.players.map((player, index) => {
           if (!railRefs?.current[index]) {
             return null;

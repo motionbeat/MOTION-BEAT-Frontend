@@ -1,5 +1,14 @@
+@keyframes fadeRight {
+  0% {
+    width: 100px;
+  }
+  100% {
+    width: 300px;
+  }
+}
+
 /* .hit-effect {
-  position: absolute;
+  /*position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -9,15 +18,51 @@
   border-radius: 50%;
   display: none;
   opacity: 1;
+  z-index: 10; 
+  position: absolute;
+  top: 50%;
+  left: 0;
+  width: 300px;
+  height: 100px;
+  background-image: url("../img/hit_effect.png");
+  background-size: cover;
+  background-repeat: no-repeat;
+  transform: translateY(-50%);
   z-index: 10;
+} */
+
+@keyframes fadeIn {
+  0% {
+    opacity: 0;
+  }
+  100% {
+    opacity: 1;
+  }
+  0% {
+    opacity: 0;
+  }
+}
+
+.hit-effect {
+  position: absolute;
+  top: 50%;
+  left: 250%;
+  transform: translate(-50%, -50%);
+  width: 160px;
+  height: 160px;
+  background-image: url("../img/neweffect.png");
+  background-size: 100% 100%;
+  background-repeat: no-repeat;
+  z-index: 10;
+  opacity: 0;
+  /* animation: fadeInWidth 0.5s forwards; Apply the animation */
 }
 
 .hit-effect.active {
-  display: block;
-  animation: hitAnimation 0.35s ease-in forwards;
+  animation: fadeIn 0.3s;
 }
 
-@keyframes hitAnimation {
+/* @keyframes hitAnimation {
   0% {
     width: 0;
     height: 0;
