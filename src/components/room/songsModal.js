@@ -33,6 +33,8 @@ const SongsModal = ({ modalOn, handleCloseModal ,handleSongSelect }) => {
       }));
       setSongs(updatedSongs);
       console.log(updatedSongs);
+      console.log(updatedSongs[4].path);
+      console.log(updatedSongs[4].imagePath);
     } catch (error) {
       console.error("Error fetching songs:", error);
     }
@@ -78,7 +80,7 @@ const SongsModal = ({ modalOn, handleCloseModal ,handleSongSelect }) => {
   if (!modalOn) {
     return null;
   }
-  
+
   return (
     <>
       <div className={`modal-backdrop ${modalOn ? 'active' : ''}`}></div>
@@ -99,7 +101,7 @@ const SongsModal = ({ modalOn, handleCloseModal ,handleSongSelect }) => {
           {songs.map((song) => (
             <div className="songInfoWrapper" key={song.id}>
               <div className="songAlbumImg">
-                <img src={song.imgPath} alt = "songAlbum" />
+                <img src={`/thumbnail/${song.imagePath}`} alt = "songAlbum" />
               </div>
               <div className="songInfo" onClick={() => handleSongSelect(song)}>
                 <h2>{song.title}</h2>

@@ -1,24 +1,12 @@
 import axios from "axios";
 import "../../../../styles/room/room.scss";
 import socket from "../../../../server/server.js";
-import { useLocation, useNavigate } from "react-router-dom";
-import FriendBox from "../main/friendBox.js";
-import MypageBox from "../main/mypageBox.js";
-import { useState } from "react";
+import { useNavigate } from "react-router-dom";
+import HeaderBtn from "components/common/headerBtn";
 
 const RoomHeader = ({room}) => {
   const navigate = useNavigate();
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
-  const [openFriends, setOpenFriends] = useState(false);
-  const [openMypage, setOpenMypage] = useState(false);
-
-  const friendToggle = () => {
-    setOpenFriends(!openFriends);
-  }
-
-  const myPageToggle = () => {
-    setOpenMypage(!openMypage);
-  }
 
   // 방을 떠날 때
   const leaveRoom = async () => {
@@ -49,16 +37,7 @@ const RoomHeader = ({room}) => {
       <div className="allHeaderWrapper">
         <button className="exitRoomBtn" onClick={leaveRoom}>나가기</button>
         <h1 className="allTitle">{room.hostName}님의 게임</h1>
-        <div className="btnWrapper">
-          <div style={{position: "relative"}}>
-            <div className="friendsBtn" onClick={friendToggle}></div>
-            {openFriends && <FriendBox />}
-          </div>
-          <div style={{position: "relative"}}>
-            <div className="mypageBtn" onClick={myPageToggle}></div>
-            {openMypage && <MypageBox />}
-          </div>
-        </div>
+        <HeaderBtn />
       </div>
     </>
   )

@@ -107,24 +107,28 @@ const Main = () => {
       case "PLAY":
         console.log("Playtype 컴포넌트를 불러옵니다.");
         setRoomName("PLAY");
-        setCurrentView(<Playtype />)
+        // setCurrentView(<Playtype />)
+        navigate("/main/playtype");
         break;
 
       case "TUTORIAL":
         console.log("Tutorial 컴포넌트를 불러옵니다.");
         setRoomName("Tutorial");
-        setCurrentView(<Tutorial />)
+        // setCurrentView(<Tutorial />)
+        navigate("/main/tutorial");
         break;
 
       case "RANKINGS":
         console.log("Ranking 컴포넌트를 불러옵니다.");
         setRoomName("Rankings");
-        setCurrentView(<Ranking />)
+        // setCurrentView(<Ranking />)
+        navigate("/main/ranking");
         break;
 
       case "SETTINGS":
         setRoomName("Setting");
-        setCurrentView(<Settings />)
+        // setCurrentView(<Settings />)
+        navigate("/main/settings");
         break;
 
       default:
@@ -134,23 +138,23 @@ const Main = () => {
     }
   }
 
-  const handleStickyClick = (e) => {
-    const btnName = e.target.id;
+  // const handleStickyClick = (e) => {
+  //   const btnName = e.target.id;
 
-    switch (btnName) {
-      case "FRIENDS":
-        console.log("Friends 컴포넌트를 불러옵니다.");
-        openModal(<FriendState />);
-        break;
-      case "MYPAGE":
-        console.log("Mypage 컴포넌트를 불러옵니다.");
-        openModal(<Mypage />);
-        break;
-      default:
-        console.log("알 수 없는 버튼입니다.");
-        break;
-    }
-  }
+  //   switch (btnName) {
+  //     case "FRIENDS":
+  //       console.log("Friends 컴포넌트를 불러옵니다.");
+  //       openModal(<FriendState />);
+  //       break;
+  //     case "MYPAGE":
+  //       console.log("Mypage 컴포넌트를 불러옵니다.");
+  //       openModal(<Mypage />);
+  //       break;
+  //     default:
+  //       console.log("알 수 없는 버튼입니다.");
+  //       break;
+  //   }
+  // }
 
   return (
     <>

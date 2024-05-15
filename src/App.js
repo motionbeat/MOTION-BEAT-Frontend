@@ -16,6 +16,7 @@ import Main from "./pages/main";
 import Playtype from "./components/main/playtype";
 import Tutorial from "./components/main/tutorial";
 import Ranking from "./components/main/ranking";
+import Settings from "components/main/settings";
 
 /* 룸(=대기방) */
 import Room from "./pages/room";
@@ -56,9 +57,10 @@ const App = () => {
           {/* token사용 시 아래 주석과 "###"아래 주석을 해제하세요 */}
           {/* <Route element={<PrivateRoute />}> */}
           <Route path="/main" element={<Main />} />
-          <Route path="/playtype" element={<Playtype />} />
-          <Route path="/tutorial" element={<Tutorial />} />
-          <Route path="/ranking" element={<Ranking />} />
+          <Route path="/main/playtype" element={<Playtype />} />
+          <Route path="/main/tutorial" element={<Tutorial />} />
+          <Route path="/main/ranking" element={<Ranking />} />
+          <Route path="/main/setting" element={<Settings/>} />
 
           {/* 룸(=대기방) */}
           <Route path="/room" element={<Room />} />

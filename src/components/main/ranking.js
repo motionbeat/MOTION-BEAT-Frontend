@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react"
 import "../../styles/main/ranking.scss"
 import DownArrow from "../../img/dropdownArrow.png"
 import axios from "axios"
+import MainHeader from "components/common/atomic/main/mainHeader"
 
 const Ranking = () => {
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
@@ -68,6 +69,7 @@ const Ranking = () => {
 
     return (
         <>
+          <MainHeader roomName="Ranking" />
           <div className="rankingPageWrapper">
             <div className="songFilterWrapper">
               {/* 필터 드롭다운 */}
@@ -89,8 +91,8 @@ const Ranking = () => {
               {isSelect &&
                 <div className="albumSongWrapper">
                   {/* 노래 이미지 */}
-                  <div>
-                    <img src="#" alt="album" />
+                  <div className="albumSongImg">
+                    <img src={`/thumbnail/${selectedSong?.imagePath}`} alt="album" />
                   </div>
                   {/* 노래 목록 */}
                   <div className="albumSongList">
@@ -103,17 +105,17 @@ const Ranking = () => {
             </div>
             {/* 노래 별 랭킹 */}
             <div className="songRankingWrapper">
-              <ul>
+              <ul className="songRankingUl">
                 {showRanking.map((rank, index) => (
                   <li className="songRankingLi" key={index}>
-                    {rank.players.map((player, idx) => (
-                      <div className="eachOtherScore" key={idx}>
-                        <p>
-                          {idx+1}. {player.nickname}: {player.score}
-                        </p>
-                      </div>
-                    ))}
-                    <div className="totalScore">TEAM SCORE: {rank.totalScore}</div>
+                    <div className="eachOtherScore">
+                      {rank.players.map((player, idx) => (
+                          <p key={idx}>
+                            {idx+1}. {player.nickname}: {player.score * 100}
+                          </p>
+                      ))}
+                    </div>
+                    <div className="totalScore">TEAM SCORE: {rank.totalScore * 100}</div>
                   </li>
                 ))}
               </ul>

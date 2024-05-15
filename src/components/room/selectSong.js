@@ -1,8 +1,6 @@
 import React, { useState, useEffect, useRef } from "react";
-import LemonImg from "../../img/lemon.png"
 import PlayBtn from "../../img/play.svg"
 import StopBtn from "../../img/stop.svg"
-import styled from "styled-components"
 import SongsModal from "./songsModal";
 import axios from "axios";
 import socket from "../../server/server.js"
@@ -99,7 +97,9 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
     <>
       <audio ref={audioRef} src="/song/0.mp3" />
       <div className="showSongWrapper">
-        <div className="songImg" onClick={selectMusic}><img src={LemonImg} alt="lemon" /></div>
+        <div className="songImg" onClick={selectMusic}>
+          <img src={`thumbnail/${selectedSong?.imagePath}`} alt="lemon" />
+        </div>
         {selectedSong && (
           <div className="roomSelectSongBox">
             <button className="selectSongBtn" onClick={selectMusic}>노래 변경</button>

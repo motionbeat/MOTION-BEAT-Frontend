@@ -114,11 +114,6 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
         }
 
         handleScore({ nickname: player.nickname, score: scoreData, combo: combo });
-
-        console.log("1", scoreData);
-        console.log("2", combo);
-        console.log("3", instrument);
-        console.log("콤4", motionType);
       });
       return eventName;
     });
