@@ -1,13 +1,13 @@
 import axios from "axios";
-import SoundManager from "../components/common/soundManager";
+import { useAudio } from "../components/common/useSoundManager.js";
 
 const Admin = () => {
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
-  const soundManager = SoundManager();
+  const { playNormalSFX } = useAudio();
 
   const roomBoomBtn = async () => {
     try {
-      soundManager.playNormalSFX("click1", { volume: 1 });
+      playNormalSFX("click1", { volume: 1 });
 
       await axios.delete(`${backendUrl}/api/rooms/admin/delete`, {
           headers: {
@@ -25,7 +25,7 @@ const Admin = () => {
 
   const gameBoomBtn = async () => {
     try {
-      soundManager.playNormalSFX("click2", { volume: 1 });
+      playNormalSFX("click2", { volume: 1 });
 
       await axios.delete(`${backendUrl}/api/games/admin/delete`, {
           headers: {

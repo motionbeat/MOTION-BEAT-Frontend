@@ -1,25 +1,26 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import LemonImg from "../../img/lemon.png";
 import SongsModal from "./songsModal";
 import axios from "axios";
 import socket from "../../server/server.js";
 import "../../styles/room/room.scss";
-import SoundManager, { useAudio } from "components/common/soundManager";
+import { useAudio } from "components/common/useSoundManager";
 
 const SelectSong = ({ songNumber, hostName, roomCode }) => {
   const [modalOn, setModalOn] = useState(false);
   const [selectedSong, setSelectedSong] = useState();
-  const [selectFavorite, setSelectFavorite] = useState(false);
+  // const [selectFavorite, setSelectFavorite] = useState(false);
 
   const songNum = songNumber;
   const myNickname = sessionStorage.getItem("nickname");
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
 
-  const soundManager = SoundManager();
+  const { playNormalSFX } = useAudio();
 
   // 노래 이미지 클릭 시 선택 모달
   const selectMusic = () => {
-    soundManager.playNormalSFX("click", { volume: 1 });
+    // 아래 코드는 더미 데이터이므로 최종 발표 전에는 삭제해야 함! - Hyeonwoo, 2024.05.15
+    playNormalSFX("click1", { volume: 1 });
 
     if (myNickname === hostName) {
       setModalOn(!modalOn);

@@ -1,12 +1,10 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import * as posedetection from "@mediapipe/pose";
-import SoundManager from "components/common/soundManager.js";
 
 const Drum1 = () => {
-  const soundManager = SoundManager();
-  const [isModelLoaded, setIsModelLoaded] = useState(false);
+  // const [isModelLoaded, setIsModelLoaded] = useState(false);
   const [postureStatus, setPostureStatus] = useState("X");
-  const [lastPlayedSound, setLastPlayedSound] = useState(null);
+  // const [lastPlayedSound, setLastPlayedSound] = useState(null);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const poseRef = useRef(null);
@@ -35,9 +33,9 @@ const Drum1 = () => {
       upperBodyOnly: true,
       modelComplexity: 0,
       smoothLandmarks: false,
-      enableSegmentation: false
+      enableSegmentation: false,
     });
-    setIsModelLoaded(true);
+    // setIsModelLoaded(true);
   }, []);
 
   const initializeMediaStream = useCallback(async () => {
@@ -139,19 +137,18 @@ const Drum1 = () => {
     (newStatus) => {
       if (postureStatus !== newStatus) {
         setPostureStatus(newStatus);
-        setLastPlayedSound(newStatus);
+        // setLastPlayedSound(newStatus);
 
         if (newStatus === "A") {
-          soundManager.playMotionSFX("drum", "A");
           dispatchKey("d");
         } else if (newStatus === "B") {
-          soundManager.playMotionSFX("drum", "B");
           dispatchKey("f");
         }
 
         setTimeout(() => setPostureStatus("X"), 0.01);
       }
-    }, [postureStatus]
+    },
+    [postureStatus]
   );
 
   useEffect(() => {

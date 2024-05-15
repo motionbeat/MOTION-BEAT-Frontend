@@ -1,34 +1,28 @@
 import { useCallback, useEffect, useState } from "react";
 import socket from "../../server/server.js";
 import { ingameSendData } from "../../redux/actions/sendDataAction";
-import { useDispatch, useSelector } from "react-redux";
+import { useDispatch } from "react-redux";
 import "../../styles/room/webcam.scss";
-import SoundManager from "../common/soundManager.js";
+import { useAudio } from "../common/useSoundManager.js";
 
 export const SecondScore = ({ gameData, railRefs, myPosition }) => {
   const [playerScores, setPlayerScores] = useState({});
-  const soundManager = SoundManager();
+  const { playMotionSFX } = useAudio();
   const [hittedNotes, setHittedNotes] = useState(0);
   const [missedNotes, setMissedNotes] = useState(0);
   const [combo, setCombo] = useState(0);
   const dispatch = useDispatch();
-  const sendData = useSelector((state) => state.sendData);
   const myNickname = sessionStorage.getItem("nickname");
 
-  const handleScore = (res) => {
-    setPlayerScores((prevScores) => {
-      const updatedScores = {
-        ...prevScores,
-        [res.nickname]: res.score,
-      };
-      return updatedScores;
-    });
-  };
-
-  const playHitSound = (instrument, motionType) => {
-    // 게임 이벤트 발생 시 효과음 재생
-    soundManager.playMotionSFX(instrument, motionType, { volume: 1 }); // 예시로 볼륨을 1로 설정
-  };
+  // const handleScore = (res) => {
+  //   setPlayerScores((prevScores) => {
+  //     const updatedScores = {
+  //       ...prevScores,
+  //       [res.nickname]: res.score,
+  //     };
+  //     return updatedScores;
+  //   });
+  // };
 
   // 점수를 업데이트하는 함수
   const updateScore = useCallback((result) => {
@@ -75,13 +69,12 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
       instrument: sessionStorage.getItem("instrument"),
       motionType: sessionStorage.getItem("motion"),
     };
-    socket.emit("hit", sendData, (res) => {
-      // console.log("Hit update response:", res);
-    });
+
+    socket.emit("hit", sendData);
 
     sessionStorage.setItem("hitNote", hittedNotes);
     sessionStorage.setItem("combo", combo);
-  }, [hittedNotes, missedNotes, combo]);
+  }, [hittedNotes, missedNotes, combo, gameData.code, myNickname]);
 
   // hit 출력
   useEffect(() => {
@@ -94,14 +87,21 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
           motionType !== null &&
           motionType !== undefined
         ) {
-          playHitSound(instrument, motionType);
+          // 게임 이벤트 발생 시 효과음 재생
+          playMotionSFX(instrument, motionType, { volume: 1 }); // 예시로 볼륨을 1로 설정
 
           if (index !== myPosition) {
             TriggerHitEffect(`player${index}`, railRefs.current[index]);
           }
         }
 
-        handleScore({ nickname: player.nickname, score: scoreData });
+        setPlayerScores((prevScores) => {
+          const updatedScores = {
+            ...prevScores,
+            [player.nickname]: scoreData,
+          };
+          return updatedScores;
+        });
       });
       return eventName;
     });
@@ -111,7 +111,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
         socket.off(eventName);
       });
     };
-  }, [gameData.players, myPosition, playHitSound, railRefs]);
+  }, [gameData.players, myPosition, playMotionSFX, railRefs]);
 
   return (
     <>

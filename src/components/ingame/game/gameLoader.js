@@ -10,26 +10,42 @@ export const Load = async (song, players) => {
       LoadNotes(song, players),
       ConnectServer(),
       ConnectPeer(players),
-      SyncPeer()
+      SyncPeer(),
     ]);
 
-    const [userDataFromServer, musicData, serverData, peerData, syncData, audioData] = results;
-    return { userDataFromServer, musicData, serverData, peerData, syncData, audioData };
+    const [
+      userDataFromServer,
+      musicData,
+      serverData,
+      peerData,
+      syncData,
+      audioData,
+    ] = results;
+    return {
+      userDataFromServer,
+      musicData,
+      serverData,
+      peerData,
+      syncData,
+      audioData,
+    };
   } catch (error) {
     console.error("로드 실패");
-    throw error
+    throw error;
   }
-}
+};
 
 const LoadMyData = async () => {
   console.log("인게임 스킨");
 
-  let userData = sessionStorage.getItem("nickname")
+  let userData = sessionStorage.getItem("nickname");
 
-  await new Promise(resolve => setTimeout(() => {
-    console.log("인게임 스킨 로딩 완료");
-    resolve();
-  }, 1000))
+  await new Promise((resolve) =>
+    setTimeout(() => {
+      console.log("인게임 스킨 로딩 완료");
+      resolve();
+    }, 1000)
+  );
 
   return { userData };
 };
@@ -38,7 +54,7 @@ const LoadNotes = async (song, players) => {
   const myNickname = sessionStorage.getItem("nickname");
 
   /* 플레이어들 정보: [{nickname, inst, score} ...] */
-  const playerObject = players.find(item => item.nickname === myNickname)
+  const playerObject = players.find((item) => item.nickname === myNickname);
 
   let notes = [];
 
@@ -46,13 +62,13 @@ const LoadNotes = async (song, players) => {
     const response = await axios.get(`${backendUrl}/api/songs/${song}`, {
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
-        "UserId": sessionStorage.getItem("userId"),
-        "Nickname": sessionStorage.getItem("nickname")
-      }
+        Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
+        UserId: sessionStorage.getItem("userId"),
+        Nickname: sessionStorage.getItem("nickname"),
+      },
     });
     /* 내 악기 */
-    notes = await response.data.notes
+    notes = await response.data.notes;
 
     console.log("노트 정보", response.data.notes);
   } catch (error) {
@@ -60,12 +76,14 @@ const LoadNotes = async (song, players) => {
   }
 
   /* 이 노래데이터, 유저데이터는 Webcam의 임시데이터 입니다. */
-  let sound = `/song/${song}.mp3`
+  let sound = `/song/${song}.mp3`;
 
-  await new Promise(resolve => setTimeout(() => {
-    console.log("Song data loaded.");
-    resolve();
-  }, 800));
+  await new Promise((resolve) =>
+    setTimeout(() => {
+      console.log("Song data loaded.");
+      resolve();
+    }, 800)
+  );
 
   return { notes, sound };
 };
@@ -75,25 +93,29 @@ const ConnectServer = async () => {
 
   /* 노래 시작시간 데이터 받기, api같은거 */
   let startAfterTime = 3000;
-  return { startAfterTime }
+  return { startAfterTime };
 };
 
 const ConnectPeer = async () => {
   console.log("Connecting to peer...");
 
-  return new Promise(resolve => setTimeout(() => {
-    console.log("Connected to peer.");
-    resolve();
-  }, 500));
+  return new Promise((resolve) =>
+    setTimeout(() => {
+      console.log("Connected to peer.");
+      resolve();
+    }, 500)
+  );
 };
 
 const SyncPeer = async () => {
   console.log("Synchronizing with peer...");
 
-  return new Promise(resolve => setTimeout(() => {
-    console.log("Synchronization complete.");
-    resolve();
-  }, 300));
+  return new Promise((resolve) =>
+    setTimeout(() => {
+      console.log("Synchronization complete.");
+      resolve();
+    }, 300)
+  );
 };
 
-export default Load
+export default Load;

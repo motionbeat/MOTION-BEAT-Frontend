@@ -7,9 +7,9 @@ import WebCam from "../components/room/webCam";
 import "../styles/songSheet.css";
 import styled from "styled-components";
 import Load from "../components/ingame/game/gameLoader.js";
-import StartGame from "../components/ingame/game/gameController";
+import GameController from "../components/ingame/game/gameController";
 import { setGameloadData } from "../redux/actions/saveActions.js";
-import JudgeComponet from "../components/ingame/game/judgement.js";
+import { Judge } from "../components/ingame/game/judgement";
 import Input from "../utils/input";
 import Output from "../utils/output";
 import socket from "../server/server";
@@ -24,7 +24,7 @@ const staticColorsArray = ["250,0,255", "1,248,10", "0,248,203", "249,41,42"];
 let myPosition;
 let playerNumber = staticColorsArray.length;
 
-const Ingame = (props) => {
+const Ingame = () => {
   /* Router */
   const location = useLocation(); // 이전 페이지에서 데이터 가져오기
   const gameState = location.state || {}; // 가져온 데이터 넣기
@@ -34,25 +34,19 @@ const Ingame = (props) => {
   const loadedData = useSelector((state) => state.gameloadData);
 
   /* State */
-  const [message, setMessage] = useState("");
+  // const [message, setMessage] = useState("");
   const [gameEnded, setGameEnded] = useState(false); // 게임 종료 상태
   const [gameData, setGameData] = useState(gameState.game);
-  const [scores, setScores] = useState({});
+  // const [scores, setScores] = useState({});
+  const [startGameProps, setStartGameProps] = useState(null);
 
-  const handleScoresUpdate = (newScores) => {
-    setScores(newScores);
-  };
+  // const handleScoresUpdate = (newScores) => {
+  //   setScores(newScores);
+  // };
   const [modalStatus, setModalStatus] = useState("NotReady");
 
   /* Storage */
   const myNickname = sessionStorage.getItem("nickname");
-
-  // 서버에 보낼 데이터(시작시 기본값)
-  const sendData = {
-    nickname: myNickname,
-    code: gameData.code,
-    score: 0,
-  };
 
   /* Ref */
   const railRefs = useRef([]);
@@ -60,6 +54,13 @@ const Ingame = (props) => {
   /* I/O 처리 */
   const handleEnterDown = useCallback(
     (event) => {
+      // 서버에 보낼 데이터(시작시 기본값)
+      const sendData = {
+        nickname: myNickname,
+        code: gameData.code,
+        score: 0,
+      };
+
       if (event.key === "Enter" && loadedData) {
         socket.emit(`playerLoaded`, sendData);
 
@@ -90,10 +91,8 @@ const Ingame = (props) => {
           });
       }
     },
-    [loadedData, sendData, gameData.code, gameData.song]
+    [myNickname, railRefs, gameData.code, gameData.song, loadedData]
   );
-
-  const [startGameProps, setStartGameProps] = useState(null);
 
   /* useEffect 순서를 변경하지 마세요*/
   useEffect(() => {
@@ -120,7 +119,7 @@ const Ingame = (props) => {
       }));
     };
 
-    socket.on(`allPlayersEnded${gameData.code}`, (res) => {
+    socket.on(`allPlayersEnded${gameData.code}`, () => {
       // console.log("전체 플레이어 게임 끝");
       setGameEnded(true);
     });
@@ -153,11 +152,6 @@ const Ingame = (props) => {
     return timeDiff;
   };
 
-  // 아마 입력 감지
-  // const handleKeyPressed = (msg) => {
-  //   setMessage(msg);
-  // };
-
   // 재생 상태 변경
   useEffect(() => {
     if (playerNumber !== railRefs.current.length) {
@@ -171,7 +165,7 @@ const Ingame = (props) => {
     return <p>Loading...</p>;
   }
 
-  const SongSheet = ({ railRefs, myPosition, Colors }) => {
+  const SongSheet = ({ railRefs, myPosition }) => {
     const [isActive, setIsActive] = useState(false);
 
     const handleKeyUp = useCallback(() => {
@@ -185,7 +179,7 @@ const Ingame = (props) => {
       (key, time) => {
         setIsActive(true);
 
-        JudgeComponet(
+        Judge(
           key,
           time,
           gameData.players[myPosition].instrument,
@@ -326,7 +320,6 @@ const Ingame = (props) => {
             <SongSheet
               railRefs={railRefs}
               myPosition={myPosition}
-              Colors={gameData.players.length}
             ></SongSheet>
             <div style={{ display: "inline", position: "relative" }}>
               {/* <WebCamFrame myColor={myColor} roomCode={gameData.code} style={{visibility:"hidden"}} /> */}
@@ -348,7 +341,7 @@ const Ingame = (props) => {
         )}
       </div>
       {ShowModal(modalStatus)}
-      {startGameProps && <StartGame {...startGameProps} />}
+      {startGameProps && <GameController {...startGameProps} />}
     </>
   );
 };
