@@ -20,7 +20,7 @@ const MoveBg = () => {
 
   useEffect(() => {
     const updateStyles = (setStyles) => {
-      setStyles({ opacity: Math.random(), brightness: Math.random() * 2 });
+      setStyles({ opacity: Math.random(), brightness: Math.random() * 5 });
     };
 
     const intervalId1 = setInterval(() => updateStyles(setStyles1), 1000);
@@ -65,7 +65,7 @@ const BackgroundAnimate = styled.div`
   background-size: cover;
   transition: opacity 1s ease-in-out;
   background-position: center;
-  position: relative;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
