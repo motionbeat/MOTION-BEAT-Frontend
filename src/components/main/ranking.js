@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react"
-import MainHeader from "../common/atomic/main/mainHeader"
 import "../../styles/main/ranking.scss"
 import DownArrow from "../../img/dropdownArrow.png"
 import axios from "axios"
@@ -104,12 +103,15 @@ const Ranking = () => {
             <div className="songRankingWrapper">
               <ul>
                 {showRanking.map((rank, index) => (
-                  <li key={index}>
+                  <li className="songRankingLi" key={index}>
                     {rank.players.map((player, idx) => (
-                      <p key={idx}>
-                        {player.nickname} - {player.nickname[0].score}
-                      </p>
+                      <div key={idx}>
+                        <p>
+                          {idx+1}. {player.nickname}: {player.score}
+                        </p>
+                      </div>
                     ))}
+                    <div>TEAM SCORE: {rank.totalScore}</div>
                   </li>
                 ))}
               </ul>
