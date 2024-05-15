@@ -87,14 +87,16 @@ const Ranking = () => {
               </div>
               {/* 노래 목록 */}
               {isSelect &&
-                <div>
+                <div className="albumSongWrapper">
                   {/* 노래 이미지 */}
-                  <div></div>
-                  {/* 노래 목록 */}
                   <div>
-                    <p>{selectedSong.title}</p>
-                    <p>{selectedSong.artist}</p>
-                    <p>{selectedSong.difficulty}</p>
+                    <img src="#" alt="album" />
+                  </div>
+                  {/* 노래 목록 */}
+                  <div className="albumSongList">
+                    <p className="albumSongTitle">{selectedSong.title}</p>
+                    <p className="albumSongArtist">{selectedSong.artist}</p>
+                    <p className="albumSongDifficulty">{selectedSong.difficulty}</p>
                   </div>
                 </div>
               }
@@ -105,13 +107,13 @@ const Ranking = () => {
                 {showRanking.map((rank, index) => (
                   <li className="songRankingLi" key={index}>
                     {rank.players.map((player, idx) => (
-                      <div key={idx}>
+                      <div className="eachOtherScore" key={idx}>
                         <p>
                           {idx+1}. {player.nickname}: {player.score}
                         </p>
                       </div>
                     ))}
-                    <div>TEAM SCORE: {rank.totalScore}</div>
+                    <div className="totalScore">TEAM SCORE: {rank.totalScore}</div>
                   </li>
                 ))}
               </ul>
