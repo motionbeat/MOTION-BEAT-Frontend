@@ -11,7 +11,6 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
   const [missedNotes, setMissedNotes] = useState(0);
   const [combo, setCombo] = useState(0);
   const dispatch = useDispatch();
-  const sendData = useSelector(state => state.sendData);
   const myNickname = sessionStorage.getItem("nickname");
   let audioFiles = JSON.parse(sessionStorage.getItem("audioFiles"));
 

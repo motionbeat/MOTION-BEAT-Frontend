@@ -1,6 +1,7 @@
 import { useState } from "react";
 import FriendBox from "./atomic/main/friendBox";
 import MypageBox from "./atomic/main/mypageBox";
+import "../../styles/common/mainHeader.scss"
 
 const HeaderBtn = () => {
   const [openFriends, setOpenFriends] = useState(false);
@@ -19,11 +20,11 @@ const HeaderBtn = () => {
     <>
       <div className="btnWrapper">
           <div style={{position: "relative"}}>
-            <div className="friendsBtn" onClick={friendToggle}></div>
+            <div className={`friendsBtn ${openFriends ? 'open' : ''}`} onClick={friendToggle}></div>
             {openFriends && <FriendBox />}
           </div>
           <div style={{position: "relative"}}>
-            <div className="mypageBtn" onClick={myPageToggle}></div>
+            <div className={`mypageBtn ${openMypage ? 'open' : ''}`} onClick={myPageToggle}></div>
             {openMypage && <MypageBox />}
           </div>
         </div>
