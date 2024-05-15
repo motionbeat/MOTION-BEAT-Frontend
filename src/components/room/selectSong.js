@@ -1,19 +1,31 @@
 import React, { useState, useEffect, useRef } from "react";
-import PlayBtn from "../../img/play.svg"
-import StopBtn from "../../img/stop.svg"
+import PlayBtn from "../../img/play.svg";
+import StopBtn from "../../img/stop.svg";
 import SongsModal from "./songsModal";
 import axios from "axios";
 import socket from "../../server/server.js";
-import "../../styles/room/room.scss";;
+import "../../styles/room/room.scss";
 
 const SelectSong = ({ songNumber, hostName, roomCode }) => {
   const [modalOn, setModalOn] = useState(false);
   const [selectedSong, setSelectedSong] = useState();
-  // const [selectFavorite, setSelectFavorite] = useState(false);
+  const [selectFavorite, setSelectFavorite] = useState(false);
+  const audioRef = useRef(null); // 노래 가져오기
 
   const songNum = songNumber;
   const myNickname = sessionStorage.getItem("nickname");
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
+
+  // 노래 재생
+  const handlePlay = () => {
+    audioRef.current.play();
+  };
+
+  // 노래 중지
+  const handleStop = () => {
+    audioRef.current.pause(); // 일시정지
+    audioRef.current.currentTime = 0; // 재생 위치를 처음으로 설정
+  };
 
   // 노래 이미지 클릭 시 선택 모달
   const selectMusic = () => {
@@ -76,11 +88,12 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
   const handleCloseModal = () => {
     setModalOn(false);
   };
-  
+
   return (
     <>
+      {/* <audio ref={audioRef} src="/song/0.mp3" /> */}
       <div className="showSongWrapper">
-        <div className="songImg" onClick={selectMusic}>
+        <div className="songImg">
           <img src={`thumbnail/${selectedSong?.imagePath}`} alt="lemon" />
         </div>
         {selectedSong && (
@@ -93,8 +106,12 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
             <p>{selectedSong.difficulty}</p>
           </div>
         )}
-    </div>
-        <SongsModal modalOn={modalOn} handleCloseModal={handleCloseModal} handleSongSelect={handleSongSelect}  />
+      </div>
+      <SongsModal
+        modalOn={modalOn}
+        handleCloseModal={handleCloseModal}
+        handleSongSelect={handleSongSelect}
+      />
     </>
   );
 };

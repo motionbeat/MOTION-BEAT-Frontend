@@ -32,9 +32,6 @@ const SongsModal = ({ modalOn, handleCloseModal ,handleSongSelect }) => {
         favorite: song.favorite || false // favorite 속성이 없으면 기본값 false
       }));
       setSongs(updatedSongs);
-      console.log(updatedSongs);
-      console.log(updatedSongs[4].path);
-      console.log(updatedSongs[4].imagePath);
     } catch (error) {
       console.error("Error fetching songs:", error);
     }
@@ -89,18 +86,23 @@ const SongsModal = ({ modalOn, handleCloseModal ,handleSongSelect }) => {
         <div className="musicModalLeft">
           <div className="backArrow" onClick={handleCloseModal}></div>
           <div className="songSelectBox">
-            <div onClick={() => setDifficulty('all')}>ALL</div>
-            <div onClick={() => setDifficulty('favorite')}>FAVORITE</div>
-            <div onClick={() => setDifficulty('easy')}>EASY</div>
-            <div onClick={() => setDifficulty('normal')}>NORMAL</div>
-            <div onClick={() => setDifficulty('hard')}>HARD</div>
+            <div className={`songSelect ${difficulty === 'all' ? 'selected' : ''}`}
+              onClick={() => setDifficulty('all')}>ALL</div>
+            <div className={`songSelect ${difficulty === 'favorite' ? 'selected' : ''}`}  
+              onClick={() => setDifficulty('favorite')}>FAVORITE</div>
+            <div className={`songSelect ${difficulty === 'easy' ? 'selected' : ''}`} 
+              onClick={() => setDifficulty('easy')}>EASY</div>
+            <div className={`songSelect ${difficulty === 'normal' ? 'selected' : ''}`} 
+              onClick={() => setDifficulty('normal')}>NORMAL</div>
+            <div className={`songSelect ${difficulty === 'hard' ? 'selected' : ''}`} 
+              onClick={() => setDifficulty('hard')}>HARD</div>
           </div>
         </div>
         {/* 노래 목록 */}
         <div className="musicModalRight">
           {songs.map((song) => (
-            <div className="songInfoWrapper" key={song.id}>
-              <div className="songAlbumImg">
+            <div className="songInfoWrapper" key={song.id} >
+              <div className="songAlbumImg" onClick={() => handleSongSelect(song)}>
                 <img src={`/thumbnail/${song.imagePath}`} alt = "songAlbum" />
               </div>
               <div className="songInfo" onClick={() => handleSongSelect(song)}>

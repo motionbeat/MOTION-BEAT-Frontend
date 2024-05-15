@@ -52,6 +52,7 @@
 }
 
 .songSelectBox {
+  width: 100%;
   font-family: "PretendardSemiBold";
   font-size: 32px;
   color: white;
@@ -59,8 +60,19 @@
   height: inherit;
 
   div {
+    width: 100%;
     margin-bottom: 60px;
+    cursor: pointer;
+    transition: color 0.3s, color 0.3s;
+
+    &:hover {
+      font-size: 35px;
+    }
   }
+}
+
+.songSelect.selected {
+  color: #47B5B4;
 }
 
 // 모달 우측 div
@@ -73,6 +85,7 @@
   overflow:auto
 }
 
+// 노래 정보
 .songInfoWrapper {
   width: 458px;
   height: 130px;
@@ -82,7 +95,32 @@
   margin: 15px auto;
   display: flex;
   border-radius: 16px;
-  
+  cursor: pointer;
+  transition: background-color 0.5s ease-in-out;
+  position: relative;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+.songInfoWrapper::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 200%;
+  height: 100%;
+  background: linear-gradient(to right, #007bff, #00cfff);
+  transition: left 0.5s ease-in-out;
+  z-index: 0;
+}
+
+.songInfoWrapper:hover::before {
+  left: 100%;
+}
+
+.songInfoWrapper > * {
+  position: relative;
+  z-index: 1;
 }
 
 .songAlbumImg {
@@ -118,4 +156,5 @@
 
 .favorite {
   padding: 33px 0;
+  cursor: pointer;
 }
