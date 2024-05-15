@@ -114,12 +114,29 @@
   font-size: 2rem;
   border-radius: 0 24px 24px 0;
   font-family: "Lato";
-  overflow-y: auto;
-  padding: 20px 0;
+  padding: 20px 5px 20px 0;
 }
 
-.songRankingUl {
+.scrollDiv {
+  height: 100%;
+  overflow-y: scroll;
+}
 
+.scrollDiv::-webkit-scrollbar {
+  width: 4px;
+}
+.scrollDiv::-webkit-scrollbar-thumb {
+  /* 스크롤바의 길이 */
+  height: 1%; 
+  /* 스크롤바의 색상 */
+  background: linear-gradient(108.62deg, #FF00C5 2.2%, #00FFF0 115.74%);
+  border-radius: 5px;
+}
+
+.scrollDiv::-webkit-scrollbar-track {
+  /*스크롤바 뒷 배경 색상*/
+  background: #444444;
+  border-radius: 5px;
 }
 
 @keyframes fadeOutMoveUp {

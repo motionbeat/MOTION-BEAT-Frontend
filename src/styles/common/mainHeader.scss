@@ -6,10 +6,13 @@
 //룸헤더 전체 박스
 .allHeaderWrapper {
   display: flex;
-  position: relative;
+  position: absolute;
   width: 90%;
   max-width: 1504px;
   margin: 5% auto 0 auto;
+  top: 0;
+  left: 50%;
+  transform: translateX(-50%);
 }
 
 .exitRoomBtn {                       
@@ -49,12 +52,6 @@
   background-size: cover;
   margin-right: 20px;
   cursor: pointer;
-  transition: 0.3s;
-
-  &.open {
-    background-image: url("../../img/friendsBtnClick.png");
-    transition: 0.3s;
-  }
 }
 
 // 마이페이지
@@ -65,13 +62,6 @@
   background-image: url("../../img/mypageBtn.png");
   background-repeat: no-repeat;
   background-size: cover;
-  cursor: pointer;
-  transition: 0.3s;
-
-  &.open {
-    background-image: url("../../img/mypageBtnClick.png");
-    transition: 0.3s;
-  }
 }
 
 // 타이틀
@@ -81,8 +71,7 @@
   width: 618px;
   height: 100px;
   background-image: url("../../img/roomTitle.png");
-  background-size: contain;
-  background-repeat: no-repeat;
+  background-size: cover;
   background-position: center;
   color: white;
   font-size: 50px;
