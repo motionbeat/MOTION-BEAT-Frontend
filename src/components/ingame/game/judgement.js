@@ -1,47 +1,52 @@
 import { Parser } from "../../../utils/parser";
 import { TriggerHitEffect } from "../secondScore";
+import { useAudio } from "../../common/useSoundManager.js";
 
 export const Judge = (key, time, instrument, myPosition, myRailRef) => {
-
   let result = "ignore"; // 기본 결과를 "ignore"로 설정
 
   // console.log("TEST1");
   // console.log(instrument);
   const dispatch = (result) => {
-    const event = new CustomEvent('scoreUpdate', { detail: { result } });
+    const event = new CustomEvent("scoreUpdate", { detail: { result } });
     window.dispatchEvent(event);
   };
+
+  const { playMotionSFX } = useAudio();
 
   // const TriggerMyHitEffect = ({ target, elem, closestNote }) => {
   //   useEffect(() => {
   //     const hitEffect = document.getElementById(`${target}HitEffect`);
   //     if (!hitEffect) return;
-  
+
   //     if (closestNote) {
   //       elem.current.removeChild(closestNote);
   //     }
-  
+
   //     hitEffect.classList.add("active");
-  
+
   //     const timer = setTimeout(() => {
   //       hitEffect.classList.remove("active");
   //     }, 350);
-  
+
   //     return () => clearTimeout(timer);
   //   }, [target, elem, closestNote]);
-  
+
   //   return null;
   // };
 
-  const notes = document.querySelectorAll(`.Note[data-instrument="${instrument}"]`);
+  const notes = document.querySelectorAll(
+    `.Note[data-instrument="${instrument}"]`
+  );
   // console.log(notes)
   let closestNote = null;
   let minIndex = Infinity;
 
   // console.log("TEST2");
-  notes.forEach(note => {
-    const index = parseInt(note.getAttribute('data-index'), 10); // 요소의 data-index 속성 가져오기
-    if (!isNaN(index) && index < minIndex) {  // index가 유효한 숫자인지 확인
+  notes.forEach((note) => {
+    const index = parseInt(note.getAttribute("data-index"), 10); // 요소의 data-index 속성 가져오기
+    if (!isNaN(index) && index < minIndex) {
+      // index가 유효한 숫자인지 확인
       minIndex = index;
       closestNote = note;
     }
@@ -52,7 +57,7 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
     return result;
   }
 
-  const noteTime = parseInt(closestNote.getAttribute('data-time'), 10);
+  const noteTime = parseInt(closestNote.getAttribute("data-time"), 10);
 
   // console.log("MININDEX:" + minIndex + "JUDGEDNOTES:")
   const timeDiff = noteTime - time;
@@ -66,20 +71,22 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
   let currentMotion = Parser(key);
 
   if (
-    (timeDiff >= 0 && timeDiff <= 500) && (closestNote.getAttribute('data-motion') === currentMotion)
+    timeDiff >= 0 &&
+    timeDiff <= 500 &&
+    closestNote.getAttribute("data-motion") === currentMotion
   ) {
-    // console.log(audio);
-    PlayKeySound(currentMotion);
     // console.log("HIT from : ", timeDiff, " = ", noteTime, "-", time)
-    result = "hit"
+    playMotionSFX(instrument, currentMotion, { volume: 1 });
+
+    result = "hit";
     sessionStorage.setItem("instrument", instrument);
     sessionStorage.setItem("motion", currentMotion);
 
     dispatch(result);
     TriggerHitEffect(`player${myPosition}`, myRailRef);
 
-    closestNote.remove();  // 해당 노트를 화면에서 숨김
-    return
+    closestNote.remove(); // 해당 노트를 화면에서 숨김
+    return;
   }
 
   /* timeDiff가 0.5이상 차이나거나, 같은 모션 키를 입력하지 않았을 경우 */
@@ -88,12 +95,12 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
     closestNote.setAttribute("data-index", minIndex + 100);
     return dispatch("ignore");
   }
-}
+};
 
 // 아래 코드들을 안 써도 지우면 난리 오류 나니 꼭 확인 필요~!!! - Hyeonwoo, 2024.05.15
 export const PlayKeySoundWithParser = (key) => {
   PlayKeySound(Parser(key));
-}
+};
 
 const PlayKeySound = (key) => {
   const keySound0Player = document.getElementById("keySound0Player");
@@ -109,4 +116,4 @@ const PlayKeySound = (key) => {
     default:
       break;
   }
-}
+};

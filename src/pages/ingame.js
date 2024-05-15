@@ -194,7 +194,7 @@ const Ingame = () => {
 
     return (
       <div className="background-songSheet">
-        <div className="hitLine"></div>
+        <div className="hitLine">{/* <div className="test"></div> */}</div>
         {gameData.players.map((player, index) => {
           if (!railRefs?.current[index]) {
             return null;
@@ -213,7 +213,7 @@ const Ingame = () => {
               {index === myPosition ? (
                 <>
                   <Indicator />
-                  <JudgeBox isactive={isActive} key={index}>
+                  <JudgeBox $isactive={isActive} key={index}>
                     <div
                       id={`player${myPosition}HitEffect`}
                       className="hit-effect"
@@ -317,10 +317,7 @@ const Ingame = () => {
           </>
         ) : (
           <>
-            <SongSheet
-              railRefs={railRefs}
-              myPosition={myPosition}
-            ></SongSheet>
+            <SongSheet railRefs={railRefs} myPosition={myPosition}></SongSheet>
             <div style={{ display: "inline", position: "relative" }}>
               {/* <WebCamFrame myColor={myColor} roomCode={gameData.code} style={{visibility:"hidden"}} /> */}
               <SecondScore

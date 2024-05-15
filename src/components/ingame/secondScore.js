@@ -8,21 +8,30 @@ import { useAudio } from "../common/useSoundManager.js";
 export const SecondScore = ({ gameData, railRefs, myPosition }) => {
   const [playerScores, setPlayerScores] = useState({});
   const { playMotionSFX } = useAudio();
+  const [playerCombos, setPlayerCombos] = useState({});
   const [hittedNotes, setHittedNotes] = useState(0);
   const [missedNotes, setMissedNotes] = useState(0);
   const [combo, setCombo] = useState(0);
   const dispatch = useDispatch();
   const myNickname = sessionStorage.getItem("nickname");
 
-  // const handleScore = (res) => {
-  //   setPlayerScores((prevScores) => {
-  //     const updatedScores = {
-  //       ...prevScores,
-  //       [res.nickname]: res.score,
-  //     };
-  //     return updatedScores;
-  //   });
-  // };
+  const handleScore = (res) => {
+    // console.log("Score received:", res.nickname, res.score);
+    setPlayerScores((prevScores) => {
+      const updatedScores = {
+        ...prevScores,
+        [res.nickname]: res.score,
+      };
+      return updatedScores;
+    });
+    setPlayerCombos((prevCombos) => {
+      const updatedCombos = {
+        ...prevCombos,
+        [res.nickname]: res.combo,
+      };
+      return updatedCombos;
+    });
+  };
 
   // 점수를 업데이트하는 함수
   const updateScore = useCallback((result) => {
@@ -56,9 +65,10 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
         code: gameData.code,
         nickname: myNickname,
         score: hittedNotes,
+        combo: combo
       })
     );
-  }, [hittedNotes, dispatch, gameData.code, myNickname]);
+  }, [hittedNotes, dispatch, gameData.code, myNickname, combo]);
 
   useEffect(() => {
     // console.log("노트 받는지 response:", hittedNotes);
@@ -66,11 +76,14 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
       code: gameData.code,
       nickname: myNickname,
       currentScore: hittedNotes,
+      combo: combo,
       instrument: sessionStorage.getItem("instrument"),
-      motionType: sessionStorage.getItem("motion"),
-    };
-
-    socket.emit("hit", sendData);
+      motionType: sessionStorage.getItem("motion")
+    }
+    console.log("보낼 데이터", sendData);
+    socket.emit("hit", sendData, (res) => {
+      // console.log("Hit update response:", res);
+    });
 
     sessionStorage.setItem("hitNote", hittedNotes);
     sessionStorage.setItem("combo", combo);
@@ -80,7 +93,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
   useEffect(() => {
     const scoreUpdateEvents = gameData.players.map((player, index) => {
       const eventName = `liveScore${player.nickname}`;
-      socket.on(eventName, (scoreData, instrument, motionType) => {
+      socket.on(eventName, (scoreData, combo, instrument, motionType) => {
         if (
           instrument !== undefined &&
           instrument !== null &&
@@ -102,6 +115,8 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
           };
           return updatedScores;
         });
+
+        handleScore({ nickname: player.nickname, score: scoreData, combo: combo });
       });
       return eventName;
     });
@@ -118,12 +133,9 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
       <div className="scoreWrapper">
         {gameData.players.map((player, index) => (
           <div className="score" key={index}>
-            <p name={player.nickname} className="hitCombo">
-              {combo}COMBO
-            </p>
-            <p name={player.nickname} className="hitScore">
-              SCORE : {playerScores[player.nickname] || 0}
-            </p>
+            {/* <p name={player.nickname} className={`hitCombo ${combo > 0 ? 'show' : ''}`} key={`${player.nickname}-${combo}`}>{combo}COMBO</p> */}
+            <p name={player.nickname} className={`hitCombo ${playerCombos[player.nickname] > 0 ? 'show' : ''}`} key={`${player.nickname}-${playerCombos[player.nickname]}`}>{playerCombos[player.nickname]} COMBO</p>
+            <p name={player.nickname} className="hitScore">score : {playerScores[player.nickname]* 100 || 0}</p>
           </div>
         ))}
       </div>
