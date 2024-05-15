@@ -56,7 +56,12 @@ const WebCam = ({ players = [], roomCode, ingame }) => {
         `https://motionbe.at:3001/api/openvidu/`,
         { customSessionId: sessionId },
         {
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
+            "UserId": sessionStorage.getItem("userId"),
+            "Nickname": sessionStorage.getItem("nickname")
+          },
         }
       );
       return response.data; // The sessionId
@@ -72,7 +77,12 @@ const WebCam = ({ players = [], roomCode, ingame }) => {
         `https://motionbe.at:3001/api/openvidu/${sessionId}/connections`,
         {},
         {
-          headers: { "Content-Type": "application/json" },
+          headers: {
+            "Content-Type": "application/json",
+            "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
+            "UserId": sessionStorage.getItem("userId"),
+            "Nickname": sessionStorage.getItem("nickname")
+          },
         }
       );
       return response.data; // The token
