@@ -4,7 +4,7 @@ import "../../styles/room/musicModal.scss"
 import emptyStar from "../../img/emptyStar.png"
 import fullStar from "../../img/fullStar.png"
 
-const SongsModal = ({ modalOn, handleSongSelect }) => {
+const SongsModal = ({ modalOn, handleCloseModal ,handleSongSelect }) => {
   const [songs, setSongs] = useState([]);
   const [difficulty, setDifficulty] = useState("all");
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
@@ -78,14 +78,14 @@ const SongsModal = ({ modalOn, handleSongSelect }) => {
   if (!modalOn) {
     return null;
   }
-
+  
   return (
     <>
       <div className={`modal-backdrop ${modalOn ? 'active' : ''}`}></div>
       <div className="musicModalBox">
         {/* 노래선택 카테고리 */}
         <div className="musicModalLeft">
-          <div className="backArrow"></div>
+          <div className="backArrow" onClick={handleCloseModal}></div>
           <div className="songSelectBox">
             <div onClick={() => setDifficulty('all')}>ALL</div>
             <div onClick={() => setDifficulty('favorite')}>FAVORITE</div>

@@ -90,10 +90,10 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
     setModalOn(false);
   }
 
-  // 즐겨찾기
-  // const selectFavorite = () => {
-
-  // }
+  // 모달 닫기
+  const handleCloseModal = () => {
+    setModalOn(false);
+  };
   
   return (
     <>
@@ -114,7 +114,7 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
           </div>
         )}
     </div>
-        <SongsModal modalOn={modalOn} handleSongSelect={handleSongSelect}  />
+        <SongsModal modalOn={modalOn} handleCloseModal={handleCloseModal} handleSongSelect={handleSongSelect}  />
     </>
   )
 }
