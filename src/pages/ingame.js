@@ -39,6 +39,7 @@ const Ingame = () => {
   const [gameData, setGameData] = useState(gameState.game);
   // const [scores, setScores] = useState({});
   const [startGameProps, setStartGameProps] = useState(null);
+  const [isGameReady, setGameReady] = useState(false);
 
   // const handleScoresUpdate = (newScores) => {
   //   setScores(newScores);
@@ -85,6 +86,7 @@ const Ingame = () => {
               roomCode: gameData.code,
               song: gameData.song,
             });
+            setGameReady(true);
           })
           .catch((err) => {
             console.error("Error", err);
@@ -335,7 +337,7 @@ const Ingame = () => {
         )}
       </div>
       {ShowModal(modalStatus)}
-      {startGameProps && <GameController {...startGameProps} />}
+      {isGameReady && <GameController {...startGameProps} />}
     </>
   );
 };

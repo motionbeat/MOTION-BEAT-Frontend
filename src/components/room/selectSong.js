@@ -4,8 +4,7 @@ import StopBtn from "../../img/stop.svg"
 import SongsModal from "./songsModal";
 import axios from "axios";
 import socket from "../../server/server.js";
-import "../../styles/room/room.scss";
-import { useAudio } from "components/common/useSoundManager";
+import "../../styles/room/room.scss";;
 
 const SelectSong = ({ songNumber, hostName, roomCode }) => {
   const [modalOn, setModalOn] = useState(false);
@@ -16,13 +15,8 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
   const myNickname = sessionStorage.getItem("nickname");
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
 
-  const { playNormalSFX } = useAudio();
-
   // 노래 이미지 클릭 시 선택 모달
   const selectMusic = () => {
-    // 아래 코드는 더미 데이터이므로 최종 발표 전에는 삭제해야 함! - Hyeonwoo, 2024.05.15
-    playNormalSFX("click1", { volume: 1 });
-
     if (myNickname === hostName) {
       setModalOn(!modalOn);
     }

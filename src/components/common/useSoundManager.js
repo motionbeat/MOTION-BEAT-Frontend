@@ -23,6 +23,7 @@ const SoundManagerProvider = ({ children }) => {
   const [currentBGM, setCurrentBGM] = useState({
     source: null,
     startTime: null,
+    buffer: null,
   });
 
   const loadSound = useCallback(async (category, setName, sound) => {
@@ -121,7 +122,7 @@ const SoundManagerProvider = ({ children }) => {
         };
       }
 
-      return source;
+      return { source, buffer };
     },
     []
   );
@@ -261,14 +262,38 @@ const SoundManagerProvider = ({ children }) => {
     return audioContext.current.currentTime * 1000;
   }, []);
 
+  const getBGMPlayTime = useCallback(() => {
+    if (!currentBGM.startTime) {
+      return 0;
+    }
+
+    return (audioContext.current.currentTime - currentBGM.startTime) * 1000;
+  }, [currentBGM.startTime]);
+
+  const getBGMLength = useCallback(() => {
+    return currentBGM?.buffer?.duration * 1000 || 0;
+  }, [currentBGM.buffer]);
+
+  const dispatchSoundEvent = useCallback((eventName) => {
+    window.dispatchEvent(new CustomEvent(eventName));
+  }, []);
+
   const value = {
     playBGM: (name, options) => {
       if (currentBGM.source) {
         currentBGM.source.stop();
       }
-      loadAndPlaySound("bgm", "", name, options).then((source) =>
-        setCurrentBGM({ source, startTime: audioContext.current.currentTime })
-      );
+      loadAndPlaySound("bgm", "", name, options).then((source, buffer) => {
+        dispatchSoundEvent("BGMPlayedSuccessfully");
+        source.onended = () => {
+          dispatchSoundEvent("BGMEndedSuccessfully");
+        };
+        setCurrentBGM({
+          source,
+          startTime: audioContext.current.currentTime,
+          buffer,
+        });
+      });
     },
     playNormalSFX: (name, options) =>
       loadAndPlaySound("normalSfx", "", name, options),
@@ -278,6 +303,8 @@ const SoundManagerProvider = ({ children }) => {
     resumeSound,
     stopSound,
     getElapsedTime,
+    getBGMPlayTime,
+    getBGMLength
   };
 
   return (
