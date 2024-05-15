@@ -2,18 +2,10 @@ import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import socket from "../server/server.js";
-import Playtype from "../components/main/playtype";
-import Tutorial from "../components/main/tutorial";
-import Settings from "../components/main/settings";
-
 import Modal from "../components/modal";
-import Mypage from "../components/mypage";
-import FriendState from "../components/common/friendState.js";
 import "../styles/main/main.scss";
 import SelectMenu from "../components/common/atomic/main/selectMenu.js";
-import Ranking from "../components/main/ranking.js";
 import MoveBg from "../components/common/atomic/movebg.js";
-import HeaderBtn from "components/common/headerBtn.js";
 import MainHeader from "components/common/atomic/main/mainHeader.js";
 
 const Main = () => {
@@ -133,6 +125,7 @@ const Main = () => {
     <>
       {/* <MoveBg /> */}
       <MainHeader roomName={roomName} />
+      {/* <HeaderBtn /> */}
       <div>
         <Modal
           isOpen={isModalOpen}

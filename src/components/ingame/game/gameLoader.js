@@ -31,15 +31,15 @@ const backendUrl = process.env.REACT_APP_BACK_API_URL;
 const audioFiles = {
   drum1: [
     { name: "0", url: '/keySound/alldrum/kick1.wav' },
-    { name: "1", url: '/keySound/alldrum/tom1.mp3' },
+    { name: "1", url: '/keySound/sounds/AcousticOpenHat10.wav' },
   ],
   drum2: [
-    { name: "0", url: '/keySound/alldrum/kick1.wav' },
-    { name: "1", url: '/keySound/alldrum/crash1.wav' },
+    { name: "0", url: '/keySound/sounds/AcousticOpenHat10.wav' },
+    { name: "1", url: '/keySound/sounds/AcousticSnare09.wav' },
   ],
   drum3: [
-    { name: "0", url: '/keySound/alldrum/snare.mp3' },
-    { name: "1", url: '/keySound/alldrum/hat.wav' },
+    { name: "0", url: '/keySound/sounds/AcousticKick24.wav' },
+    { name: "1", url: '/keySound/sounds/AcousticCrashDamped14.wav' },
   ],
   drum4: [
     { name: "0", url: '/keySound/alldrum/tom2.mp3' },
