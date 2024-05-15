@@ -136,14 +136,24 @@ const Ingame = () => {
     // 게임 리소스 로딩
     const init = async () => {
       try {
-        const loadedData = await Load(gameData.song, gameData.players);
+        // console.log("게임데이터:", gameData);
+        // console.log("myPosition", myPosition);
+        // console.log("게임데이터 ", gameData.players);
+        // console.log("TEST", gameData.players[myPosition].instrument)
+        const loadedData = await Load(gameData.song, gameData.players, gameData.players[myPosition].instrument);
+
+        // console.log("게임 리소스 로드 완료: " + loadedData);
+        // console.log(loadedData);
         dispatch(setGameloadData(loadedData));
       } catch (error) {
         console.error("Loading failed:", error);
       }
     };
     init();
-  }, [dispatch, gameData.players, gameData.song]);
+
+  }, []);
+
+
 
   const WhenSocketOn = (serverTime) => {
     // 여기에는 시작시간 딜레이가 포함됨
@@ -319,19 +329,8 @@ const Ingame = () => {
             <SongSheet railRefs={railRefs} myPosition={myPosition}></SongSheet>
             <div style={{ display: "inline", position: "relative" }}>
               {/* <WebCamFrame myColor={myColor} roomCode={gameData.code} style={{visibility:"hidden"}} /> */}
-              <SecondScore
-                gameData={gameData}
-                railRefs={railRefs}
-                myPosition={myPosition}
-              />
-              <WebCam
-                players={gameData.players}
-                roomCode={gameData.code}
-                ingame={true}
-                gameData={gameData}
-                railRefs={railRefs}
-                myPosition={myPosition}
-              />
+              <SecondScore gameData={gameData} railRefs={railRefs} myPosition={myPosition} />
+              <WebCam players={gameData.players} roomCode={gameData.code} ingame={true} gameData={gameData} railRefs={railRefs} myPosition={myPosition} />
             </div>
           </>
         )}

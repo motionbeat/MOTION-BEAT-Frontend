@@ -11,9 +11,10 @@ const Input = ({ onKeyDown, onKeyUp }) => {
     const inputKeyList = ["D", "F", "J", "K"];
     const handleKeyDown = (event) => {
       const key = event.key.toUpperCase();
+      const audioPlayer = document.getElementById("audioPlayer");
 
       if (inputKeyList.includes(key)) {
-        const keyExactTime = getElapsedTime();
+        const keyExactTime = parseInt(audioPlayer.currentTime * 1000, 10);
         console.log("키 눌린 시간: ", keyExactTime);
         dispatch(setInput(key));
 
@@ -22,7 +23,7 @@ const Input = ({ onKeyDown, onKeyUp }) => {
         }
       }
     };
-    
+
     const handleKeyUp = (event) => {
       const key = event.key.toUpperCase();
 
@@ -32,7 +33,7 @@ const Input = ({ onKeyDown, onKeyUp }) => {
         }
       }
     };
-    
+
     window.addEventListener("keydown", handleKeyDown);
     window.addEventListener("keyup", handleKeyUp);
     return () => {

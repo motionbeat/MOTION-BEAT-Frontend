@@ -4,31 +4,21 @@ const backendUrl = process.env.REACT_APP_BACK_API_URL;
 
 /* 기본적인 것들 로드하기 */
 export const Load = async (song, players) => {
+
   try {
     const results = await Promise.all([
       LoadMyData(),
       LoadNotes(song, players),
       ConnectServer(),
       ConnectPeer(players),
-      SyncPeer()
+      SyncPeer(),
     ]);
 
-    const [
-      userDataFromServer,
-      musicData,
-      serverData,
-      peerData,
-      syncData,
-      audioData,
-    ] = results;
-    return {
-      userDataFromServer,
-      musicData,
-      serverData,
-      peerData,
-      syncData,
-      audioData,
-    };
+    /* audioElem으로 추가됨 */
+    const [userDataFromServer, musicData, serverData, peerData, syncData] = results;
+    console.log("시스템 준비");
+    return { userDataFromServer, musicData, serverData, peerData, syncData };
+
   } catch (error) {
     console.error("로드 실패");
     throw error;

@@ -1,13 +1,13 @@
 {
   "bgm": [
-    { "name": "1", "url": "/song/1.mp3" },
-    { "name": "2", "url": "/song/2.mp3" },
-    { "name": "3", "url": "/song/3.mp3" },
-    { "name": "4", "url": "/song/4.mp3" },
-    { "name": "5", "url": "/song/5.mp3" },
-    { "name": "6", "url": "/song/6.mp3" },
-    { "name": "본능적으로", "url": "/song/본능적으로.mp4" },
-    { "name": "test", "url": "/song/test.mp3" }
+    { "name": "1.mp3", "url": "/song/1.mp3" },
+    { "name": "2.mp3", "url": "/song/2.mp3" },
+    { "name": "3.mp3", "url": "/song/3.mp3" },
+    { "name": "4.mp3", "url": "/song/4.mp3" },
+    { "name": "5.mp3", "url": "/song/5.mp3" },
+    { "name": "6.mp3", "url": "/song/6.mp3" },
+    { "name": "본능적으로.mp4", "url": "/song/본능적으로.mp4" },
+    { "name": "test.mp3", "url": "/song/test.mp3" }
   ],
   "normalSfx": [
     { "name": "click1", "url": "/keySound/system/clickback_02_01.wav" },

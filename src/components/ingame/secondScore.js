@@ -81,7 +81,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
       motionType: sessionStorage.getItem("motion")
     }
 
-    console.log("보낼 데이터",sendData);
+    console.log("보낼 데이터", sendData);
     socket.emit("hit", sendData);
 
     sessionStorage.setItem("hitNote", hittedNotes);
@@ -101,6 +101,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
         ) {
           // 게임 이벤트 발생 시 효과음 재생
           playMotionSFX(instrument, motionType, { volume: 1 }); // 예시로 볼륨을 1로 설정
+          console.log("악기랑 모션: ", instrument, motionType);
 
           if (index !== myPosition) {
             TriggerHitEffect(`player${index}`, railRefs.current[index]);
@@ -134,7 +135,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
           <div className="score" key={index}>
             {/* <p name={player.nickname} className={`hitCombo ${combo > 0 ? 'show' : ''}`} key={`${player.nickname}-${combo}`}>{combo}COMBO</p> */}
             <p name={player.nickname} className={`hitCombo ${playerCombos[player.nickname] > 0 ? 'show' : ''}`} key={`${player.nickname}-${playerCombos[player.nickname]}`}>{playerCombos[player.nickname]} COMBO</p>
-            <p name={player.nickname} className="hitScore">score : {playerScores[player.nickname]* 100 || 0}</p>
+            <p name={player.nickname} className="hitScore">score : {playerScores[player.nickname] * 100 || 0}</p>
           </div>
         ))}
       </div>
@@ -169,7 +170,7 @@ export const TriggerHitEffect = (target, elem) => {
 
   setTimeout(() => {
     hitEffect.classList.remove("active"); // 애니메이션이 끝나고 클래스를 제거
-  }, 700); // 애니메이션 시간과 동일하게 설정
+  }, 200); // 애니메이션 시간과 동일하게 설정
 };
 
 export default SecondScore;

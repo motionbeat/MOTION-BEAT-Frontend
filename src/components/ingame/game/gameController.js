@@ -1,40 +1,61 @@
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useAudio } from "../../../components/common/useSoundManager.js";
 import socket from "../../../server/server.js";
-import "../../../styles/songSheet.css";
+import "../../../styles/songSheet.css"
 
-const GameController = ({ stime, data, railRefs, roomCode, song }) => {
+const audioPlayer = document.getElementById("audioPlayer");
+
+if (!audioPlayer) {
+  console.error("Audio player not found");
+}
+
+const playAudio = (sound) => {
+  audioPlayer.src = sound;
+  // console.log(audioPlayer.src)
+  audioPlayer.currentTime = 0;
+  audioPlayer.volume = 0
+  audioPlayer.play()
+    .then(() => {
+      console.log("Audio started successfully");
+    })
+    .catch((error) => console.error("Error playing audio:", error));
+};
+
+export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomCode }) => {
+  const animationDuration = 6000;
   const { playBGM, currentBGM } = useAudio();
-
-  const animationDuration = 5000;
   const processedNotes = new Set(); // 처리된 노트들을 추적하는 집합
-
   const notes = data?.musicData?.notes;
-  
+
   useEffect(() => {
+    let audioTime;
     let bgmTimeout;
-
+    const lastPart = data?.musicData?.sound?.split('/').pop();
+    console.log(lastPart);
     // BGM 재생 타이머 설정
-    if (notes?.length > 0 ) {
+    if (notes?.length > 0) {
       bgmTimeout = setTimeout(() => {
-      // console.log("stime:", stime);
+        // console.log("stime:", stime);
+        playAudio(data.musicData.sound);
+        playBGM(lastPart, { loop: false, volume: 1 });
 
-      playBGM(song, { loop: false, volume: 1 });
-      
-      WhenStart();
-     }, stime);
+        console.log(data.musicData.sound);
+
+        WhenStart();
+      }, stime);
     }
 
     const WhenStart = () => {
       let count = 1200;
 
       const ScheduleNotes = () => {
-        
+        audioTime = parseInt(audioPlayer.currentTime * 1000, 10);
+
         for (const note of notes) {
           const startTime = note.time - animationDuration;
 
           // TODO: <이상림> getElapsedTime() 함수를 사용하여 현재 시간을 가져와야 함
-          if (startTime <= getElapsedTime() && !processedNotes.has(note)) {
+          if (startTime <= audioTime && !processedNotes.has(note)) {
             processedNotes.add(note);
             GenerateNote(note, startTime, count);
             count++;
@@ -68,8 +89,8 @@ const GameController = ({ stime, data, railRefs, roomCode, song }) => {
       }
 
       const AnimateNote = () => {
-        const noteTimeElapse =  time - getElapsedTime();
-        const positionPercent = noteTimeElapse * 100 / animationDuration;
+        const currTime = parseInt(audioPlayer.currentTime * 1000, 10);
+        const positionPercent = ((time - currTime) / animationDuration) * 100;
 
         if (positionPercent <= -3) {
           noteElement.remove();
@@ -104,9 +125,9 @@ const GameController = ({ stime, data, railRefs, roomCode, song }) => {
         currentBGM.source.stop();
       }
     };
-  }, [data.musicData, railRefs, roomCode, song, notes]);
+  }, [data.musicData, railRefs, roomCode, notes]);
 
   return null;
 };
 
-export default GameController;
+export default Start;

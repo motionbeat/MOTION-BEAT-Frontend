@@ -1,8 +1,10 @@
 import { Parser } from "../../../utils/parser";
-import { TriggerHitEffect } from "../secondScore";
+import { TriggerHitEffect } from "../secondScore.js";
+
+let audioElements;
 
 export const Judge = (key, time, instrument, myPosition, myRailRef) => {
-  let result = "ignore"; // 기본 결과를 "ignore"로 설정
+  let result = "ignore";
 
   // console.log("TEST1");
   // console.log(instrument);
@@ -10,27 +12,6 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
     const event = new CustomEvent("scoreUpdate", { detail: { result } });
     window.dispatchEvent(event);
   };
-
-  // const TriggerMyHitEffect = ({ target, elem, closestNote }) => {
-  //   useEffect(() => {
-  //     const hitEffect = document.getElementById(`${target}HitEffect`);
-  //     if (!hitEffect) return;
-
-  //     if (closestNote) {
-  //       elem.current.removeChild(closestNote);
-  //     }
-
-  //     hitEffect.classList.add("active");
-
-  //     const timer = setTimeout(() => {
-  //       hitEffect.classList.remove("active");
-  //     }, 350);
-
-  //     return () => clearTimeout(timer);
-  //   }, [target, elem, closestNote]);
-
-  //   return null;
-  // };
 
   const notes = document.querySelectorAll(
     `.Note[data-instrument="${instrument}"]`
@@ -68,8 +49,8 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
   let currentMotion = Parser(key);
 
   if (
-    timeDiff >= 0 &&
-    timeDiff <= 500 &&
+    timeDiff >= 300 &&
+    timeDiff <= 750 &&
     closestNote.getAttribute("data-motion") === currentMotion
   ) {
     // console.log("HIT from : ", timeDiff, " = ", noteTime, "-", time);
@@ -79,37 +60,63 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
     sessionStorage.setItem("motion", currentMotion);
 
     dispatch(result);
-    TriggerHitEffect(`player${myPosition}`, myRailRef);
+    TriggerMyHitEffect(`player${myPosition}`, myRailRef);
 
     closestNote.remove(); // 해당 노트를 화면에서 숨김
     return;
   }
 
   /* timeDiff가 0.5이상 차이나거나, 같은 모션 키를 입력하지 않았을 경우 */
-  if (timeDiff < 0) {
+  if (timeDiff < 300) {
     // console.log("IGNORE");
     closestNote.setAttribute("data-index", minIndex + 100);
     return dispatch("ignore");
   }
 };
 
-// 아래 코드들을 안 써도 지우면 난리 오류 나니 꼭 확인 필요~!!! - Hyeonwoo, 2024.05.15
-export const PlayKeySoundWithParser = (key) => {
-  PlayKeySound(Parser(key));
-};
+const TriggerMyHitEffect = (target, elem, closestNote) => {
+  const hitEffect = document.getElementById(`${target}HitEffect`);
+  // console.log(hitEffect)
+  if (!hitEffect) return;  // hitEffect가 없으면 함수 실행 중지
 
-const PlayKeySound = (key) => {
-  const keySound0Player = document.getElementById("keySound0Player");
-  const keySound1Player = document.getElementById("keySound1Player");
-
-  switch (key) {
-    case "A":
-      keySound0Player.play(); // 오디오 재생
-      break;
-    case "B":
-      keySound1Player.play();
-      break;
-    default:
-      break;
+  if (closestNote) {
+    elem.current.removeChild(closestNote);
   }
-};
+
+  hitEffect.classList.add('active');
+
+  setTimeout(() => {
+    hitEffect.classList.remove('active'); // 애니메이션이 끝나고 클래스를 제거
+  }, 350); // 애니메이션 시간과 동일하게 설정
+}
+
+// const PlayMyKeySound = (parsedkey, idx) => {
+//   const audio1 = document.getElementById(`keySound0player${idx}`);
+//   const audio2 = docsument.getElementById(`keySound1player${idx}`);
+
+//   console.log(audio1)
+//   console.log(audio2)
+
+//   switch (parsedkey) {
+//     case "A":
+//       audioElements.audio1.play();
+//       break;
+//     case "B":
+//       audioElements.audio2.play();
+//       break;
+//     default:
+//       break;
+//   }
+// };
+
+// // 아래 코드들을 안 써도 지우면 난리 오류 나니 꼭 확인 필요~!!! - Hyeonwoo, 2024.05.15
+// export const PlayKeySoundWithParser = (key) => {
+//   PlayKeySound(Parser(key));
+// };
+
+// const PlayKeySound = (key) => {
+//   const keySound0Player = document.getElementById("keySound0Player");
+//   const keySound1Player = document.getElementById("keySound1Player");
+//   closestNote.remove();  // 해당 노트를 화면에서 숨김
+//   return
+// }
