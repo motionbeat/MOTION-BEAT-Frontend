@@ -230,9 +230,7 @@ const Ingame = () => {
 
     return (
       <div className="background-songSheet">
-        <div className="hitLine">
-          {/* <div className="test"></div> */}
-        </div>
+        <div className="hitLine"></div>
         {gameData.players.map((player, index) => {
           if (!railRefs?.current[index]) {
             return null;
@@ -248,7 +246,7 @@ const Ingame = () => {
               {index === myPosition ? (
                 <>
                   <Indicator />
-                  <JudgeBox $isactive={isActive} key={index}>
+                  <JudgeBox isactive={isActive} key={index}>
                     <div id={`player${myPosition}HitEffect`} className="hit-effect" />
                   </JudgeBox>
                   <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
@@ -365,7 +363,7 @@ const JudgeBox = styled.div`
   top: 0%;
   height: 100%;
   width: 20px;
-  background-color: ${({ isactive, color }) => isactive ? 'yellow' : 'rgba(0,0,0,1)'};
+  background-color: ${({ isactive }) => isactive ? 'yellow' : 'rgba(0,0,0,1)'};
   box-shadow: ${({ isactive }) => isactive ? '0 0 10px 5px yellow' : 'none'};
   margin-left: 5%;
   transition: ${({ isactive }) => isactive ? 'none' : 'background-color 0.5s ease-out, box-shadow 0.5s ease-out'};

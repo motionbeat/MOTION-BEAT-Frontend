@@ -73,9 +73,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
       motionType: sessionStorage.getItem("motion")
     }
     console.log("보낼 데이터",sendData);
-    socket.emit("hit", sendData, (res) => {
-      // console.log("Hit update response:", res);
-    });
+    socket.emit("hit", sendData);
 
     sessionStorage.setItem("hitNote", hittedNotes);
     sessionStorage.setItem("combo", combo);
