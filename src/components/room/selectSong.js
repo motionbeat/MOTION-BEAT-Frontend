@@ -97,7 +97,7 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
     <>
       <audio ref={audioRef} src="/song/0.mp3" />
       <div className="showSongWrapper">
-        <div className="songImg" onClick={selectMusic}>
+        <div className="songImg">
           <img src={`thumbnail/${selectedSong?.imagePath}`} alt="lemon" />
         </div>
         {selectedSong && (

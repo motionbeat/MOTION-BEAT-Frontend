@@ -138,24 +138,6 @@ const Main = () => {
     }
   }
 
-  // const handleStickyClick = (e) => {
-  //   const btnName = e.target.id;
-
-  //   switch (btnName) {
-  //     case "FRIENDS":
-  //       console.log("Friends 컴포넌트를 불러옵니다.");
-  //       openModal(<FriendState />);
-  //       break;
-  //     case "MYPAGE":
-  //       console.log("Mypage 컴포넌트를 불러옵니다.");
-  //       openModal(<Mypage />);
-  //       break;
-  //     default:
-  //       console.log("알 수 없는 버튼입니다.");
-  //       break;
-  //   }
-  // }
-
   return (
     <>
       {/* <MoveBg /> */}

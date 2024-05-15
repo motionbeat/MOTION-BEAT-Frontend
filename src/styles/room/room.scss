@@ -94,6 +94,10 @@
   font-weight: bold;
   margin-bottom: 20px;
   cursor: pointer;
+
+  &:hover {
+    background-color: #d9d9d9;
+  }
 }
 
 .roomMiddleRight {
@@ -197,14 +201,38 @@
 
 //악기 모달
 .instrumentModal {
-  position: fixed;
+  position: absolute;
   top: 50%;
   left: 50%;
   transform: translate(-50%, -50%);
-  background-color: white;
+  width: 300px;
+  height: 400px;
+  background-color: #181A20;
+  // opacity: 0.8;
+  color: white;
+  background-image: url("../../img/instrumentBox.png");
   padding: 20px;
-  border-radius: 5px;
+  border-radius: 25px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.3);
+
+  ul {
+    list-style: none;
+    font-size: 2rem;
+    font-family: "Pretendard";
+
+    li {
+      width: inherit;
+      margin: 30px 0;
+      text-align: center;
+      text-transform:uppercase;
+
+      &:hover {
+        color: #47B5B4;
+        font-size: 2.2rem;
+        cursor: pointer;
+      }
+    }
+  }
 }
 
 // 웹 캠 전체 박스
@@ -261,4 +289,14 @@
   position: relative;
   background-repeat: no-repeat;
   background-size: cover;
+}
+
+// 내 악기
+.myInstrument {
+  text-transform:uppercase;
+  
+  &:hover {
+    color: #47B5B4;
+    cursor: pointer;
+  }
 }

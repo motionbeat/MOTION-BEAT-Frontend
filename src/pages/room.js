@@ -14,7 +14,8 @@ const Room = () => {
     const { roomData } = location.state || {};
     const [room, setRoom] = useState(roomData);
     const backendUrl = process.env.REACT_APP_BACK_API_URL;
-    const myNickname = sessionStorage.getItem("nickname")
+    const myNickname = sessionStorage.getItem("nickname");
+    const [allReady, setAllReady] = useState(false);
 
     //joinRoom을 쏴줘야 함
     useEffect (() => {
@@ -42,6 +43,12 @@ const Room = () => {
           hostName: res
         }));
       });
+
+      // 모두 준비 시 시작할 수 있게 체크
+      socket.on("allReady", (res) => {
+        console.log("전부 준비", res);
+        setAllReady(res);
+      })
 
       // 게임을 시작할 때 다같이 게임시작하기 위한 소켓
       socket.on(`gameStarted${room.code}`, async (game) => {
@@ -93,7 +100,9 @@ const Room = () => {
                     <div className="roomMiddleWrapper">
                       <SelectSong songNumber={room.song} hostName={room.hostName} roomCode={room.code} />
                       <div className="roomMiddleRight">
-                        <button className="gameStartBtn" onClick={() => startGameHandler()}>게임 시작</button>
+                        <button className="gameStartBtn" onClick={() => startGameHandler()} disabled={!allReady} >
+                          게임 시작
+                        </button>
                         {room.type !== 'match' &&
                           <div className="secretCodeWrapper">
                             <div className="secretCode">입장코드 : {room.code}</div>
