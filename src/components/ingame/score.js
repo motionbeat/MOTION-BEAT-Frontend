@@ -12,7 +12,6 @@ const Score = ({ roomCode }) => {
 
   useEffect(() => {
     dispatch(ingameSendData({ code: roomCode, nickname: myNickname, score: hittedNotes }));
-    // console.log("데이터 보내기", sendData);
   }, [hittedNotes, dispatch, roomCode, myNickname]);
 
   // 점수를 업데이트하는 함수
@@ -22,7 +21,6 @@ const Score = ({ roomCode }) => {
     } else if (result === "miss") {
       setMissedNotes(missedNotes + 1);
     }
-
   };
 
   // 외부에서 이벤트를 받아서 점수 업데이트가 필요할 경우를 위한 이벤트 리스너 설정

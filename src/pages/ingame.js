@@ -29,7 +29,7 @@ import beatFlow0 from "../img/beatflow0.png"
 import beatFlow1 from "../img/beatflow1.png"
 
 const staticColorsArray
-  = ["255,0,0", "0, 0, 255", "0, 255, 0", "128, 0, 128"];
+  = ["250,0,255", "1,248,10", "0,248,203", "249,41,42"];
 let myPosition;
 let playerNumber = staticColorsArray.length;
 const backendUrl = process.env.REACT_APP_BACK_API_URL;
@@ -228,31 +228,32 @@ const Ingame = () => {
 
     return (
       <div className="background-songSheet">
+        <div className="hitLine"></div>
         {gameData.players.map((player, index) => {
           if (!railRefs?.current[index]) {
             return null;
           }
 
           return (
-            <VerticalRail
-              ref={railRefs.current[index]}
-              color={`rgba(${staticColorsArray[index]}, ${index === myPosition ? 1 : 0.4})`}
-              top={`${(100 / gameData.players.length) * index}%`}
-              data-instrument={gameData.players[index].instrument}
-              key={index}>
-              {index === myPosition ? (
-                <>
-                  <Indicator />
-                  <JudgeBox isactive={isActive} key={index}>
-                    <div id={`player${myPosition}HitEffect`} className="hit-effect" />
-                  </JudgeBox>
-                  <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
-                  <Output />
-                </>
-              ) : <JudgeBox key={index}>
-                <div id={`player${index}HitEffect`} className="hit-effect" />
-              </JudgeBox>}
-            </VerticalRail>
+              <VerticalRail
+                ref={railRefs.current[index]}
+                color={`rgba(${staticColorsArray[index]}, ${index === myPosition ? 1 : 0.4})`}
+                top={`${(100 / gameData.players.length) * index}%`}
+                data-instrument={gameData.players[index].instrument}
+                key={index}>
+                {index === myPosition ? (
+                  <>
+                    <Indicator />
+                    <JudgeBox isactive={isActive} key={index}>
+                      <div id={`player${myPosition}HitEffect`} className="hit-effect" />
+                    </JudgeBox>
+                    <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
+                    <Output />
+                  </>
+                ) : <JudgeBox key={index}>
+                  <div id={`player${index}HitEffect`} className="hit-effect" />
+                </JudgeBox>}
+              </VerticalRail>
           );
         })}
       </div >
@@ -310,7 +311,7 @@ const Ingame = () => {
 
   return (
     <>
-      <div style={{ position: "relative", backgroundImage: `url(${IngameBg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover", width: "100vw", height: "100vh" }}>
+      <div style={{ position: "relative", backgroundImage: `url(${IngameBg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover", width: "100vw", height: "100vh", backgroundClip: "padding-box", paddingTop:"5%" }}>
         {gameEnded ? (
           <>
             <GameResult roomCode={gameData.code} />
@@ -336,31 +337,32 @@ const Ingame = () => {
 export default Ingame
 
 const VerticalRail = styled.div`
-        display:block;
-        position: absolute;
-        top: ${({ top }) => top};
-        width: 100%;
-        height: 25%;
-        border: 20px;
-        background: ${({ color }) => color};
-        `;
+  display:block;
+  position: relative;
+  top: ${({ top }) => `calc(${top} + 11%)`};
+  width: 100%;
+  height: 3%;
+  border: 20px;
+  background: ${({ color }) => color};
+  box-shadow: 3px 3px 3px rgba(255, 255, 255, 0.3);
+`;
 
 const Indicator = styled.div`
-        position: absolute;
-        top: 0%;
-        height: 100%;
-        width: 5px;
-        margin-left: 10%;
-        background-color: white;
-        `
+  position: absolute;
+  top: 0%;
+  height: 100%;
+  width: 5px;
+  margin-left: 10%;
+  background-color: white;
+`
 
 const JudgeBox = styled.div`
-        position: absolute;
-        top: 0%;
-        height: 100%;
-        width: 20px;
-        background-color: ${({ isactive, color }) => isactive ? 'yellow' : 'rgba(0,0,0,1)'};
-        box-shadow: ${({ isactive }) => isactive ? '0 0 10px 5px yellow' : 'none'};
-        margin-left: 5%;
-        transition: ${({ isactive }) => isactive ? 'none' : 'background-color 0.5s ease-out, box-shadow 0.5s ease-out'};
-        `;
+  position: absolute;
+  top: 0%;
+  height: 100%;
+  width: 20px;
+  background-color: ${({ isactive, color }) => isactive ? 'yellow' : 'rgba(0,0,0,1)'};
+  box-shadow: ${({ isactive }) => isactive ? '0 0 10px 5px yellow' : 'none'};
+  margin-left: 5%;
+  transition: ${({ isactive }) => isactive ? 'none' : 'background-color 0.5s ease-out, box-shadow 0.5s ease-out'};
+`;

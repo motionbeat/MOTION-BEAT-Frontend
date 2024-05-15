@@ -1,12 +1,33 @@
 .background-songSheet {
   display: block;
-
   position: relative;
-
   width: 100vw;
-  height: 30vh;
-
-  margin-bottom: 10vh;
-
+  height: 37vh;
   background: rgba(5, 5, 5, 0.4);
+  backdrop-filter: blur(20px);
+  margin-bottom: 30px;
+}
+
+.Note {
+  width: 70px;
+  height: 70px;
+  position: absolute;
+  border-radius: 50%;
+  font-size: 35px;
+  line-height: 1.9;
+  font-weight: bold;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: inherit;
+  box-shadow: 0 0 7px 7px white;
+}
+
+.hitLine {
+  position: absolute;
+  left: 6%;
+  width: 70px;
+  height: inherit;
+  background: linear-gradient(to right, rgba(255, 0, 197, 1), rgba(255, 192, 203, 0));
+  z-index: 5;
 }

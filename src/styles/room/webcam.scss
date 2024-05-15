@@ -1,3 +1,23 @@
+@font-face {
+  font-family: "Pretendard";
+  src: url("../../fonts/pretendard/Pretendard-Black.ttf");
+}
+
+@font-face {
+  font-family: "Giant";
+  src: url("../../fonts/giant/Giants-Inline.ttf");
+}
+
+@font-face {
+  font-family: "OverThere";
+  src: url("../../fonts/overThere/OverThere.ttf");
+}
+
+@font-face {
+  font-family: "AmericamK";
+  src: url("../../fonts/americanKestrel/americankestral.ttf");
+}
+
 // 웹 캠 전체 박스
 .webCamBox {
   width: 100%;
@@ -25,16 +45,15 @@
   border-radius: 24px;
   // background-image: url("../../img/showWebCam.png");
   background-color: black;
-  border: 5px solid yellow;
+  // border: 5px solid yellow;
   background-repeat: no-repeat;
   display: flex;
   flex-direction: column;
   padding: 0 0 20px 0;
-  margin: 0 auto;
 
   video {
     width: inherit;
-    height: inherit;
+    height: 300px;
     border-radius: 24px;
   }
 
@@ -47,11 +66,10 @@
 }
 
 .webCamBoxInner {
-  width: 360px;
-  height: 240px;
+  width: 390px;
+  height: inherit;
   border-radius: 16px;
   border: 1px solid white;
-  margin: 20px auto 10px auto;
   position: relative;
 }
 
@@ -66,4 +84,40 @@
   width: 100%;
   margin: 0 8%;
   text-align: center;
+  font-family: "Pretendard";
+}
+
+.hitScore {
+  font-size: 3.5rem;
+  color: white;
+  font-family: "AmericamK";
+  text-shadow: 7.5px 1px 9px rgb(0, 217, 255);
+  margin-bottom: -25px;
+  margin-top: -20px;
+}
+
+.hitCombo {
+  font-size: 3rem;
+  color: white;
+  font-family: "Giant";
+  animation: fadeOut 0.25s forwards;
+  -webkit-text-stroke: 2px rgb(255, 44, 227);
+  text-shadow: 7.5px 1px 5px rgb(216, 16, 216);
+  visibility: hidden;
+}            
+
+.hitCombo.show {
+  visibility: visible;
+  animation: fadeOutMoveUp 0.25s forwards; 
+}
+
+@keyframes fadeOutMoveUp {
+  0% {
+    opacity: 0;
+    transform: translateY(0);
+  }
+  100% {
+    opacity: 1;
+    transform: translateY(-20px);
+  }
 }

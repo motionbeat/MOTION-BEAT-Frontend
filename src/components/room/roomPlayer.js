@@ -39,6 +39,7 @@ const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
           isReady: userReady.isReady,
         },
       }));
+      console.log("ready", userReady)
     });
 
     socket.on("instrumentStatus", (res) => {

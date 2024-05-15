@@ -136,15 +136,6 @@ const LoadInstrument = async (players) => {
       audioElem1.load();
       audioElem2.load();
 
-      audioElem1.volume = 0;
-      audioElem2.volume = 0;
-
-      audioElem1.play();
-      audioElem2.play();
-
-      audioElem1.currentTime = 0;
-      audioElem2.currentTime = 0;
-
       loaded[`player${i}`] = { audio1: audioElem1, audio2: audioElem2 };
 
       console.log(`player${i} instrument loaded`);

@@ -1,72 +1,49 @@
-import React, { Component } from "react";
-import * as posedetection from "@mediapipe/pose";
+import React, { Component } from 'react';
+import * as posedetection from '@mediapipe/pose';
 
 class Drum1 extends Component {
   constructor(props) {
     super(props);
     this.state = {
       isModelLoaded: false,
-      leftWristY: null,
-      rightWristY: null,
       postureStatus: "X",
-      // backgroundMusicVolume: 0.2,
-      // timer: 0,
-      // bgmPlaying: false,
-      // soundTimes: [],
-      // hitCount: 0,
-      lastPlayedSound: null,
+      lastPlayedSound: null
     };
 
     this.videoRef = React.createRef();
     this.canvasRef = React.createRef();
     this.pose = undefined;
-    // this.soundA = new Audio('/effect/tom.mp3');
-    // this.soundB = new Audio('/effect/snare.mp3');
-    // this.backgroundMusic = new Audio('/song/본능적으로.mp4');
+    this.leftWristInArea = false;
+    this.rightWristInArea = false;
   }
 
   componentDidMount() {
     this.initializePose();
-    // this.startTimer();
     this.initializeMediaStream(); // 비디오 스트림을 즉시 초기화합니다.
   }
 
   dispatchKey(key) {
-    const event = new KeyboardEvent("keydown", {
+    const event = new KeyboardEvent('keydown', {
       key: key,
       code: key.toUpperCase(),
       which: key.charCodeAt(0),
       keyCode: key.charCodeAt(0),
       shiftKey: false,
       ctrlKey: false,
-      metaKey: false,
+      metaKey: false
     });
     window.dispatchEvent(event);
   }
 
-  // startTimer = () => {
-  //     setInterval(() => {
-  //         if (this.state.bgmPlaying) {
-  //             this.setState(prevState => ({ timer: prevState.timer + 1 }));
-  //         }
-  //     }, 1000);
-  // }
-
-  // toggleBgmPlaying = () => {
-  //     this.setState(prevState => ({ bgmPlaying: !prevState.bgmPlaying }));
-  // }
-
   initializePose() {
     this.pose = new posedetection.Pose({
-      locateFile: (file) =>
-        `https://fastly.jsdelivr.net/npm/@mediapipe/pose/${file}`,
+      locateFile: (file) => `https://fastly.jsdelivr.net/npm/@mediapipe/pose/${file}`
     });
     this.pose.setOptions({
       upperBodyOnly: true,
       modelComplexity: 0,
       smoothLandmarks: false,
-      enableSegmentation: false,
-      selfieMode : true
+      enableSegmentation: false
     });
     this.setState({ isModelLoaded: true });
   }
@@ -77,9 +54,7 @@ class Drum1 extends Component {
 
     if (navigator.mediaDevices.getUserMedia) {
       try {
-        const stream = await navigator.mediaDevices.getUserMedia({
-          video: true,
-        });
+        const stream = await navigator.mediaDevices.getUserMedia({ video: { frameRate: { ideal: 60 } } });
         video.srcObject = stream;
         video.play();
 
@@ -89,127 +64,99 @@ class Drum1 extends Component {
         };
 
         this.pose.onResults((results) => {
-          const canvasContext = canvas.getContext("2d");
+          const canvasContext = canvas.getContext('2d');
           canvasContext.clearRect(0, 0, canvas.width, canvas.height);
 
-          const leftWristY =
-            results.poseLandmarks?.[posedetection.POSE_LANDMARKS.LEFT_WRIST]?.y;
-          const rightWristY =
-            results.poseLandmarks?.[posedetection.POSE_LANDMARKS.RIGHT_WRIST]
-              ?.y;
+          this.drawDetectionAreas(canvasContext, canvas.width, canvas.height);
 
-          if (
-            typeof leftWristY === "number" &&
-            typeof rightWristY === "number"
-          ) {
-            this.detectWristMovement("left", leftWristY);
-            this.detectWristMovement("right", rightWristY);
+          const widthSegment = canvas.width / 2;
+          const heightSegment = canvas.height / 8;
+          const leftWrist = results.poseLandmarks?.[posedetection.POSE_LANDMARKS.LEFT_WRIST];
+          const rightWrist = results.poseLandmarks?.[posedetection.POSE_LANDMARKS.RIGHT_WRIST];
+
+          if (leftWrist && leftWrist.visibility > 0.5) {
+            // 카메라 이미지가 좌우 반전되어 있으므로, 오른쪽 아래에 위치한 것으로 판단
+            if (leftWrist.x * canvas.width > widthSegment && leftWrist.y * canvas.height > 6 * heightSegment) {
+              if (!this.leftWristInArea) {
+                this.updatePostureStatus('A'); // 오른쪽 아래에 있는 경우 A 상태로 업데이트
+                this.leftWristInArea = true;
+              }
+            } else {
+              this.leftWristInArea = false;
+            }
+          } else {
+            this.leftWristInArea = false;
+          }
+
+          if (rightWrist && rightWrist.visibility > 0.5) {
+            // 카메라 이미지가 좌우 반전되어 있으므로, 왼쪽 아래에 위치한 것으로 판단
+            if (rightWrist.x * canvas.width < widthSegment && rightWrist.y * canvas.height > 6 * heightSegment) {
+              if (!this.rightWristInArea) {
+                this.updatePostureStatus('B'); // 왼쪽 아래에 있는 경우 B 상태로 업데이트
+                this.rightWristInArea = true;
+              }
+            } else {
+              this.rightWristInArea = false;
+            }
+          } else {
+            this.rightWristInArea = false;
           }
         });
 
         onFrame();
       } catch (error) {
-        console.error("Failed to get camera feed:", error);
+        console.error('Failed to get camera feed:', error);
       }
     } else {
-      console.error("getUserMedia is not supported.");
+      console.error('getUserMedia is not supported.');
     }
   }
 
-  detectWristMovement(wrist, currentY) {
-    if (currentY === null) return;
-    const stateKey = wrist + "WristY";
-    const previousY = this.state[stateKey];
-    const threshold = 0.045; // 감도 조정
+  drawDetectionAreas(ctx, width, height) {
+    const widthSegment = width / 2;
+    const heightSegment = height / 4;
 
-    if (previousY !== null) {
-      const movement = currentY < previousY ? "up" : "down";
-      if (movement === "down" && currentY > previousY + threshold) {
-        const newStatus = wrist === "left" ? "A" : "B";
+    const centerX_A = widthSegment / 2;
+    const centerY_A = 3 * heightSegment + heightSegment / 2;
+    const radiusX_A = widthSegment / 2;
+    const radiusY_A = heightSegment / 2;
+    ctx.fillStyle = 'rgba(255, 0, 0, 0.5)';
+    ctx.beginPath();
+    ctx.ellipse(centerX_A, centerY_A, radiusX_A, radiusY_A, 0, 0, Math.PI * 2);
+    ctx.fill();
 
-        if (this.state.postureStatus !== newStatus) {
-          if (newStatus === "A") {
-            // this.soundA.play();
-            this.dispatchKey("d");
-          } else if (newStatus === "B") {
-            // this.soundB.play();
-            this.dispatchKey("f");
-          }
-          this.setState(
-            (prevState) => ({
-              // hitCount: prevState.hitCount + 1,
-              lastPlayedSound: newStatus,
-              postureStatus: newStatus,
-            }),
-            () => {
-              setTimeout(() => this.setState({ postureStatus: "X" }), 1000); // 자세 초기화 지연 시간 조정
-            }
-          );
-        }
+    // Draw area for B
+    const centerX_B = widthSegment + widthSegment / 2;
+    const centerY_B = 3 * heightSegment + heightSegment / 2;
+    const radiusX_B = widthSegment / 2;
+    const radiusY_B = heightSegment / 2;
+    ctx.fillStyle = 'rgba(0, 0, 255, 0.5)';
+    ctx.beginPath();
+    ctx.ellipse(centerX_B, centerY_B, radiusX_B, radiusY_B, 0, 0, Math.PI * 2);
+    ctx.fill();
+  }
+
+  updatePostureStatus(newStatus) {
+    if (this.state.postureStatus !== newStatus) {
+      this.setState({
+        postureStatus: newStatus,
+        lastPlayedSound: newStatus
+      });
+      if (newStatus === 'A') {
+        this.dispatchKey('d');
+      } else if (newStatus === 'B') {
+        this.dispatchKey('f');
       }
+      setTimeout(() => this.setState({ postureStatus: "X" }), 0.01);
     }
-    this.setState({ [stateKey]: currentY });
   }
-
-  // playBackgroundMusic = () => {
-  //     this.backgroundMusic.play();
-  //     this.setState({ bgmPlaying: true });
-  // }
-
-  // pauseBackgroundMusic = () => {
-  //     this.backgroundMusic.pause();
-  //     this.setState({ bgmPlaying: false });
-  // }
-
-  // handleVolumeChange = (event) => {
-  //     const volume = event.target.value;
-  //     this.setState({ backgroundMusicVolume: volume });
-  //     this.backgroundMusic.volume = volume;
-  // }
 
   render() {
-    const { postureStatus, backgroundMusicVolume, hitCount } = this.state;
     return (
       <div>
-        <div
-          id="session"
-          style={{ position: "relative", width: "230px", height: "190px" }}
-        >
-          <video
-            ref={this.videoRef}
-            style={{
-              width: "100%",
-              height: "100%",
-              position: "absolute",
-              top: "0",
-              left: "0",
-              zIndex: 1,
-              transform: "scaleX(-1)"
-            }}
-            playsInline
-            autoPlay
-          />
-          <canvas
-            ref={this.canvasRef}
-            style={{
-              position: "absolute",
-              top: "0",
-              left: "0",
-              width: "100%",
-              height: "100%",
-              opacity: 0.9,
-              zIndex: 2,
-            }}
-            width="640"
-            height="480"
-          />
-          {/* <br/><br/><br/><br/><br/><br/><br/><br/><br/><br/>
-                    <div>현재 자세: {postureStatus}</div>
-                    <div>경과 시간: {this.state.timer}초</div>
-                    <div>횟수: {hitCount}</div>
-                    <button onClick={this.playBackgroundMusic}>BGM 재생</button>
-                    <button onClick={this.pauseBackgroundMusic}>BGM 일시정지</button>
-                    <input type="range" min="0" max="1" step="0.01" value={backgroundMusicVolume} onChange={this.handleVolumeChange} /> */}
+        <div id="session" style={{ position: 'relative', width: '380px', height: '300px' }}>
+          <video ref={this.videoRef} style={{ width: '100%', height: '100%', position: 'absolute', top: '0', left: '10px', zIndex: 1, transform: "scaleX(-1)" }} playsInline autoPlay />
+          <canvas ref={this.canvasRef} style={{ position: 'absolute', top: '0', left: '0', width: '100%', height: '100%', opacity: 0.9, zIndex: 2 }} width="540" height="380" />
         </div>
       </div>
     );

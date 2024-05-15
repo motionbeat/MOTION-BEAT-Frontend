@@ -71,7 +71,6 @@ const Ranking = () => {
 
     return (
         <>
-          <MainHeader roomName="Rankings" />
           <div className="rankingPageWrapper">
             <div className="songFilterWrapper">
               {/* 필터 드롭다운 */}
