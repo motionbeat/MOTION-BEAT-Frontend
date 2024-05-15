@@ -1,4 +1,5 @@
 import axios from "axios";
+import MainHeader from "components/common/atomic/main/mainHeader";
 import React, { useEffect, useState } from "react"
 
 const Settings = () => {
@@ -52,6 +53,7 @@ const Settings = () => {
 
   return (
     <>
+      <MainHeader roomName="Settings" />
       <div>세팅</div>
       <button onClick={handleDisconnectClick}>연결 끊기</button>
       {apiResponse && <div>{apiResponse}</div>}

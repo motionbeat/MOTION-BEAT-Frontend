@@ -4,7 +4,7 @@ import "../../styles/room/musicModal.scss"
 import emptyStar from "../../img/emptyStar.png"
 import fullStar from "../../img/fullStar.png"
 
-const SongsModal = ({ modalOn, handleSongSelect }) => {
+const SongsModal = ({ modalOn, handleCloseModal ,handleSongSelect }) => {
   const [songs, setSongs] = useState([]);
   const [difficulty, setDifficulty] = useState("all");
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
@@ -33,6 +33,8 @@ const SongsModal = ({ modalOn, handleSongSelect }) => {
       }));
       setSongs(updatedSongs);
       console.log(updatedSongs);
+      console.log(updatedSongs[4].path);
+      console.log(updatedSongs[4].imagePath);
     } catch (error) {
       console.error("Error fetching songs:", error);
     }
@@ -85,7 +87,7 @@ const SongsModal = ({ modalOn, handleSongSelect }) => {
       <div className="musicModalBox">
         {/* 노래선택 카테고리 */}
         <div className="musicModalLeft">
-          <div className="backArrow"></div>
+          <div className="backArrow" onClick={handleCloseModal}></div>
           <div className="songSelectBox">
             <div onClick={() => setDifficulty('all')}>ALL</div>
             <div onClick={() => setDifficulty('favorite')}>FAVORITE</div>
@@ -99,7 +101,7 @@ const SongsModal = ({ modalOn, handleSongSelect }) => {
           {songs.map((song) => (
             <div className="songInfoWrapper" key={song.id}>
               <div className="songAlbumImg">
-                <img src={song.imgPath} alt = "songAlbum" />
+                <img src={`/thumbnail/${song.imagePath}`} alt = "songAlbum" />
               </div>
               <div className="songInfo" onClick={() => handleSongSelect(song)}>
                 <h2>{song.title}</h2>

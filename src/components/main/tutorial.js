@@ -1,3 +1,4 @@
+import MainHeader from "components/common/atomic/main/mainHeader"
 import React from "react"
 import { useNavigate } from "react-router-dom"
 
@@ -14,6 +15,7 @@ const Tutorial = () => {
 
   return (
     <>
+      <MainHeader roomName="Tutorial" />
       <div>튜토리얼</div>
       <div>
         <button onClick={handleClick}>기타</button>

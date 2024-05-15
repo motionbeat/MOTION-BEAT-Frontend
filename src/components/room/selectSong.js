@@ -1,5 +1,6 @@
-import React, { useState, useEffect } from "react";
-import LemonImg from "../../img/lemon.png";
+import React, { useState, useEffect, useRef } from "react";
+import PlayBtn from "../../img/play.svg"
+import StopBtn from "../../img/stop.svg"
 import SongsModal from "./songsModal";
 import axios from "axios";
 import socket from "../../server/server.js";
@@ -77,16 +78,16 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
     setModalOn(false);
   };
 
-  // 즐겨찾기
-  // const selectFavorite = () => {
-
-  // }
-
+  // 모달 닫기
+  const handleCloseModal = () => {
+    setModalOn(false);
+  };
+  
   return (
     <>
       <div className="showSongWrapper">
         <div className="songImg" onClick={selectMusic}>
-          <img src={LemonImg} alt="lemon" />
+          <img src={`thumbnail/${selectedSong?.imagePath}`} alt="lemon" />
         </div>
         {selectedSong && (
           <div className="roomSelectSongBox">
@@ -98,8 +99,8 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
             <p>{selectedSong.difficulty}</p>
           </div>
         )}
-      </div>
-      <SongsModal modalOn={modalOn} handleSongSelect={handleSongSelect} />
+    </div>
+        <SongsModal modalOn={modalOn} handleCloseModal={handleCloseModal} handleSongSelect={handleSongSelect}  />
     </>
   );
 };

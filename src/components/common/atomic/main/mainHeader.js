@@ -8,17 +8,6 @@ import HeaderBtn from "components/common/headerBtn";
 
 const MainHeader = ({ roomName }) => {
   const navigate = useNavigate();
-  const [openFriends, setOpenFriends] = useState(false);
-  const [openMypage, setOpenMypage] = useState(false);
-
-  const friendToggle = () => {
-    setOpenFriends(!openFriends);
-  }
-
-  const myPageToggle = () => {
-    setOpenMypage(!openMypage);
-  }
-
 
   const goBack = () => {
     navigate("/main");

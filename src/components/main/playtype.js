@@ -106,6 +106,7 @@ const Playtype = () => {
 
   return (
     <>
+      <MainHeader roomName="PLAY" />
       {playFriends ? (
         <div className="gameTypeBox">
           <div className="gameType" onClick={handleMatchingClick}>

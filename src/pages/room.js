@@ -1,14 +1,11 @@
-import styled from "styled-components"
 import React, { useEffect, useState } from 'react';
 import socket from "../server/server.js"
 import SelectSong from "../components/room/selectSong";
-import WebCam from "../components/room/webCam";
 import RoomChatting from "../components/room/roomChatting";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/room/room.scss";
 import RoomHeader from "../components/common/atomic/room/roomHeader.js";
-import MainHeader from "../components/common/atomic/main/mainHeader.js";
 import RoomPlayers from "components/room/roomPlayer.js";
 
 const Room = () => {
