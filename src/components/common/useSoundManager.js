@@ -258,22 +258,6 @@ const SoundManagerProvider = ({ children }) => {
     }
   }, []);
 
-  const getElapsedTime = useCallback(() => {
-    return audioContext.current.currentTime * 1000;
-  }, []);
-
-  const getBGMPlayTime = useCallback(() => {
-    if (!currentBGM.startTime) {
-      return 0;
-    }
-
-    return (audioContext.current.currentTime - currentBGM.startTime) * 1000;
-  }, [currentBGM.startTime]);
-
-  const getBGMLength = useCallback(() => {
-    return currentBGM?.buffer?.duration * 1000 || 0;
-  }, [currentBGM.buffer]);
-
   const dispatchSoundEvent = useCallback((eventName) => {
     window.dispatchEvent(new CustomEvent(eventName));
   }, []);
@@ -281,9 +265,11 @@ const SoundManagerProvider = ({ children }) => {
   const value = {
     playBGM: (name, options) => {
       if (currentBGM.source) {
-        currentBGM.source.stop();
+        if (typeof currentBGM.source.stop === "function") {
+          currentBGM.source.stop();
+        }
       }
-      loadAndPlaySound("bgm", "", name, options).then((source, buffer) => {
+      loadAndPlaySound("bgm", "", name, options).then(({ source, buffer }) => {
         dispatchSoundEvent("BGMPlayedSuccessfully");
         source.onended = () => {
           dispatchSoundEvent("BGMEndedSuccessfully");
@@ -301,10 +287,7 @@ const SoundManagerProvider = ({ children }) => {
       loadAndPlaySound("motionSfx", setName, name, options),
     pauseSound,
     resumeSound,
-    stopSound,
-    getElapsedTime,
-    getBGMPlayTime,
-    getBGMLength
+    stopSound
   };
 
   return (
