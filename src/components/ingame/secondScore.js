@@ -81,7 +81,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
       motionType: sessionStorage.getItem("motion")
     }
 
-    console.log("보낼 데이터", sendData);
+    // console.log("보낼 데이터", sendData);
     socket.emit("hit", sendData);
 
     sessionStorage.setItem("hitNote", hittedNotes);
@@ -101,7 +101,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
         ) {
           // 게임 이벤트 발생 시 효과음 재생
           playMotionSFX(instrument, motionType, { volume: 1 }); // 예시로 볼륨을 1로 설정
-          console.log("악기랑 모션: ", instrument, motionType);
+          // console.log("악기랑 모션: ", instrument, motionType);
 
           if (index !== myPosition) {
             TriggerHitEffect(`player${index}`, railRefs.current[index]);

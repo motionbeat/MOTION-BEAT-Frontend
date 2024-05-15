@@ -15,7 +15,7 @@ const Input = ({ onKeyDown, onKeyUp }) => {
 
       if (inputKeyList.includes(key)) {
         const keyExactTime = parseInt(audioPlayer.currentTime * 1000, 10);
-        console.log("키 눌린 시간: ", keyExactTime);
+        // console.log("키 눌린 시간: ", keyExactTime);
         dispatch(setInput(key));
 
         if (onKeyDown) {

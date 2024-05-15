@@ -31,7 +31,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
     let audioTime;
     let bgmTimeout;
     const lastPart = data?.musicData?.sound?.split('/').pop();
-    console.log(lastPart);
+    // console.log(lastPart);
     // BGM 재생 타이머 설정
     if (notes?.length > 0) {
       bgmTimeout = setTimeout(() => {
@@ -39,7 +39,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
         playAudio(data.musicData.sound);
         playBGM(lastPart, { loop: false, volume: 1 });
 
-        console.log(data.musicData.sound);
+        // console.log(data.musicData.sound);
 
         WhenStart();
       }, stime);

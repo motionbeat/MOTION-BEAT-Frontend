@@ -31,7 +31,7 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
   });
 
   if (!closestNote) {
-    console.log("No valid note elements found.");
+    // console.log("No valid note elements found.");
     return result;
   }
 
