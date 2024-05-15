@@ -213,11 +213,8 @@ const Ingame = () => {
               {index === myPosition ? (
                 <>
                   <Indicator />
-                  <JudgeBox $isactive={isActive} key={index}>
-                    <div
-                      id={`player${myPosition}HitEffect`}
-                      className="hit-effect"
-                    />
+                  <JudgeBox isactive={isActive} key={index}>
+                    <div id={`player${myPosition}HitEffect`} className="hit-effect" />
                   </JudgeBox>
                   <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
                   <Output />
@@ -370,9 +367,8 @@ const JudgeBox = styled.div`
   top: 0%;
   height: 100%;
   width: 20px;
-  background-color: ${({ isactive, color }) =>
-    isactive ? "yellow" : "rgba(0,0,0,1)"};
-  box-shadow: ${({ isactive }) => (isactive ? "0 0 10px 5px yellow" : "none")};
+  background-color: ${({ isactive }) => isactive ? 'yellow' : 'rgba(0,0,0,1)'};
+  box-shadow: ${({ isactive }) => isactive ? '0 0 10px 5px yellow' : 'none'};
   margin-left: 5%;
   transition: ${({ isactive }) =>
     isactive

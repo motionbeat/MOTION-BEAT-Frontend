@@ -72,6 +72,27 @@
   margin: 10px 0;
 }
 
+.albumSongWrapper {
+  margin: 60px;
+  display: flex;
+}
+
+.albumSongList {
+
+}
+
+.albumSongTitle {
+  font-size: 36px;
+}
+
+.albumSongArtist {
+  font-size: 20px;
+}
+
+.albumSongDifficulty {
+  font-size: 20px;
+}
+
 // 노래별 랭킹
 .songRankingWrapper {
   width: 60%;
@@ -91,5 +112,14 @@
 }
 
 .eachOtherScore {
-  font-size: 8px;
+  margin: 10px 30px;
+
+  p {
+    font-size: 20px;
+  }
+}
+
+.totalScore {
+  font-size: 32px;
+  margin: 38px;
 }

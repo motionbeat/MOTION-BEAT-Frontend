@@ -69,37 +69,53 @@
   border-radius: 0 20px 20px 0;
   // background-color: white;
   padding: 30px;
+  overflow:auto
 }
 
 .songInfoWrapper {
   width: 458px;
+  height: 130px;
   background-image: url("../../img/mypageLiBox.png");
+  background-repeat: no-repeat;
+  background-size: contain;
   margin: 15px auto;
   display: flex;
+  border-radius: 16px;
+  
 }
 
 .songAlbumImg {
   padding: 15px;
-  width: 25%;
+  margin: 12px;
+  width: 23%;
   height: 106px;
   background-color: #D9D9D9;
+  border-radius: inherit;
 
   img {
-    width: 106px;
-    height: 106px;
+    width: inherit;
+    // height: 106px;
     border-radius: 16px;
     background-color: #D9D9D9;
+    border-radius: inherit;
   }
 }
 
 .songInfo {
-  width: 30%;
+  width: 52%;
+  line-height: 1.5;
+  padding: 12px 0;
 
   h2 {
     font-size: 24px;
+    margin-bottom: 10px;
   }
 
   p {
-    font-size: 16px;
+    font-size: 16px !important;
   }
+}
+
+.favorite {
+  padding: 33px 0;
 }
