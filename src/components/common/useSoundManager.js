@@ -1,4 +1,10 @@
-import React, { useContext, useEffect, useRef, useState, useCallback } from "react";
+import React, {
+  useContext,
+  useEffect,
+  useRef,
+  useState,
+  useCallback,
+} from "react";
 import soundData from "../../data/soundData.json";
 
 const AudioContext = React.createContext();
@@ -8,20 +14,29 @@ export function useAudio() {
 }
 
 const SoundManagerProvider = ({ children }) => {
-  const audioContext = useRef(new (window.AudioContext || window.webkitAudioContext)());
+  const audioContext = useRef(
+    new (window.AudioContext || window.webkitAudioContext)()
+  );
   const audioBuffers = useRef({ bgm: {}, normalSfx: {}, motionSfx: {} });
   const currentSources = useRef({}); // 현재 재생 중인 사운드 소스들을 저장
   const pausedSources = useRef({}); // 일시 정지된 사운드 소스들을 저장
-  const [currentBGM, setCurrentBGM] = useState({ source: null, startTime: null });
+  const [currentBGM, setCurrentBGM] = useState({
+    source: null,
+    startTime: null,
+  });
 
   const loadSound = useCallback(async (category, setName, sound) => {
     try {
       const response = await fetch(sound.url);
       if (!response.ok) {
-        throw new Error(`Failed to fetch sound at ${sound.url}: ${response.statusText}`);
+        throw new Error(
+          `Failed to fetch sound at ${sound.url}: ${response.statusText}`
+        );
       }
       const arrayBuffer = await response.arrayBuffer();
-      const audioBuffer = await audioContext.current.decodeAudioData(arrayBuffer);
+      const audioBuffer = await audioContext.current.decodeAudioData(
+        arrayBuffer
+      );
       if (category === "motionSfx") {
         if (!audioBuffers.current[category][setName]) {
           audioBuffers.current[category][setName] = {};
@@ -31,7 +46,10 @@ const SoundManagerProvider = ({ children }) => {
         audioBuffers.current[category][sound.name] = audioBuffer;
       }
     } catch (error) {
-      console.error(`Error loading sound ${sound.name} in category ${category}:`, error);
+      console.error(
+        `Error loading sound ${sound.name} in category ${category}:`,
+        error
+      );
     }
   }, []);
 
@@ -57,78 +75,90 @@ const SoundManagerProvider = ({ children }) => {
     loadAllSounds();
   }, [loadAllSounds]);
 
-  const playSound = useCallback((category, setName, soundName, options = {}) => {
-    const buffer = category === "motionSfx"
-      ? audioBuffers.current[category][setName]?.[soundName]
-      : audioBuffers.current[category]?.[soundName];
+  const playSound = useCallback(
+    (category, setName, soundName, options = {}) => {
+      const buffer =
+        category === "motionSfx"
+          ? audioBuffers.current[category][setName]?.[soundName]
+          : audioBuffers.current[category]?.[soundName];
 
-    if (!buffer) {
-      console.warn(`Sound ${soundName} in category ${category} and set ${setName} not loaded`);
-      return;
-    }
-
-    const source = audioContext.current.createBufferSource();
-    source.buffer = buffer;
-    const gainNode = audioContext.current.createGain();
-
-    gainNode.gain.value = options.volume !== undefined ? options.volume : 1;
-    source.connect(gainNode).connect(audioContext.current.destination);
-    source.loop = !!options.loop;
-    source.start(0, options.offset || 0);
-
-    // 현재 재생 중인 사운드 소스를 저장
-    if (!currentSources.current[category]) {
-      currentSources.current[category] = {};
-    }
-    if (category === "motionSfx") {
-      if (!currentSources.current[category][setName]) {
-        currentSources.current[category][setName] = {};
-      }
-      currentSources.current[category][setName][soundName] = {
-        source,
-        gainNode,
-        startTime: audioContext.current.currentTime,
-        offset: options.offset || 0,
-      };
-    } else {
-      currentSources.current[category][soundName] = {
-        source,
-        gainNode,
-        startTime: audioContext.current.currentTime,
-        offset: options.offset || 0,
-      };
-    }
-
-    return source;
-  }, []);
-
-  const loadAndPlaySound = useCallback(async (category, setName, soundName, options = {}) => {
-    const buffer = category === "motionSfx"
-      ? audioBuffers.current[category][setName]?.[soundName]
-      : audioBuffers.current[category]?.[soundName];
-
-    if (!buffer) {
-      // Load the sound if it is not already loaded
-      const sound = category === "motionSfx"
-        ? soundData[category][setName].find((s) => s.name === soundName)
-        : soundData[category].find((s) => s.name === soundName);
-
-      if (sound) {
-        await loadSound(category, setName, sound);
-        return playSound(category, setName, soundName, options);
-      } else {
-        console.warn(`Sound ${soundName} not found in ${category}`);
+      if (!buffer) {
+        console.warn(
+          `Sound ${soundName} in category ${category} and set ${setName} not loaded`
+        );
         return;
       }
-    }
 
-    return playSound(category, setName, soundName, options);
-  }, [loadSound, playSound]);
+      const source = audioContext.current.createBufferSource();
+      source.buffer = buffer;
+      const gainNode = audioContext.current.createGain();
+
+      gainNode.gain.value = options.volume !== undefined ? options.volume : 1;
+      source.connect(gainNode).connect(audioContext.current.destination);
+      source.loop = !!options.loop;
+      source.start(0, options.offset || 0);
+
+      // 현재 재생 중인 사운드 소스를 저장
+      if (!currentSources.current[category]) {
+        currentSources.current[category] = {};
+      }
+      if (category === "motionSfx") {
+        if (!currentSources.current[category][setName]) {
+          currentSources.current[category][setName] = {};
+        }
+        currentSources.current[category][setName][soundName] = {
+          source,
+          gainNode,
+          startTime: audioContext.current.currentTime,
+          offset: options.offset || 0,
+        };
+      } else {
+        currentSources.current[category][soundName] = {
+          source,
+          gainNode,
+          startTime: audioContext.current.currentTime,
+          offset: options.offset || 0,
+        };
+      }
+
+      return source;
+    },
+    []
+  );
+
+  const loadAndPlaySound = useCallback(
+    async (category, setName, soundName, options = {}) => {
+      const buffer =
+        category === "motionSfx"
+          ? audioBuffers.current[category][setName]?.[soundName]
+          : audioBuffers.current[category]?.[soundName];
+
+      if (!buffer) {
+        // Load the sound if it is not already loaded
+        const sound =
+          category === "motionSfx"
+            ? soundData[category][setName].find((s) => s.name === soundName)
+            : soundData[category].find((s) => s.name === soundName);
+
+        if (sound) {
+          await loadSound(category, setName, sound);
+          return playSound(category, setName, soundName, options);
+        } else {
+          console.warn(`Sound ${soundName} not found in ${category}`);
+          return;
+        }
+      }
+
+      return playSound(category, setName, soundName, options);
+    },
+    [loadSound, playSound]
+  );
 
   const pauseSound = useCallback((category, setName, soundName) => {
-    const soundSource = category === "motionSfx"
-      ? currentSources.current[category]?.[setName]?.[soundName]
-      : currentSources.current[category]?.[soundName];
+    const soundSource =
+      category === "motionSfx"
+        ? currentSources.current[category]?.[setName]?.[soundName]
+        : currentSources.current[category]?.[soundName];
 
     if (soundSource) {
       const { source, startTime, offset } = soundSource;
@@ -157,14 +187,17 @@ const SoundManagerProvider = ({ children }) => {
 
       delete currentSources.current[category]?.[setName]?.[soundName];
     } else {
-      console.warn(`Sound ${soundName} in category ${category} and set ${setName} not found`);
+      console.warn(
+        `Sound ${soundName} in category ${category} and set ${setName} not found`
+      );
     }
   }, []);
 
   const resumeSound = useCallback((category, setName, soundName) => {
-    const pausedSource = category === "motionSfx"
-      ? pausedSources.current[category]?.[setName]?.[soundName]
-      : pausedSources.current[category]?.[soundName];
+    const pausedSource =
+      category === "motionSfx"
+        ? pausedSources.current[category]?.[setName]?.[soundName]
+        : pausedSources.current[category]?.[soundName];
 
     if (pausedSource) {
       const { buffer, gainNode, offset } = pausedSource;
@@ -197,14 +230,17 @@ const SoundManagerProvider = ({ children }) => {
 
       delete pausedSources.current[category]?.[setName]?.[soundName];
     } else {
-      console.warn(`Paused sound ${soundName} in category ${category} and set ${setName} not found`);
+      console.warn(
+        `Paused sound ${soundName} in category ${category} and set ${setName} not found`
+      );
     }
   }, []);
 
   const stopSound = useCallback((category, setName, soundName) => {
-    const soundSource = category === "motionSfx"
-      ? currentSources.current[category]?.[setName]?.[soundName]
-      : currentSources.current[category]?.[soundName];
+    const soundSource =
+      category === "motionSfx"
+        ? currentSources.current[category]?.[setName]?.[soundName]
+        : currentSources.current[category]?.[soundName];
 
     if (soundSource) {
       soundSource.source.stop();
@@ -215,14 +251,15 @@ const SoundManagerProvider = ({ children }) => {
         delete currentSources.current[category][soundName];
       }
     } else {
-      console.warn(`Sound ${soundName} in category ${category} and set ${setName} not found`);
+      console.warn(
+        `Sound ${soundName} in category ${category} and set ${setName} not found`
+      );
     }
   }, []);
 
   const getElapsedTime = useCallback(() => {
-    if (!currentBGM.startTime) return 0;
-    return (audioContext.current.currentTime - currentBGM.startTime) * 1000;
-  }, [currentBGM.startTime]);
+    return audioContext.current.currentTime * 1000;
+  }, []);
 
   const value = {
     playBGM: (name, options) => {
@@ -233,8 +270,10 @@ const SoundManagerProvider = ({ children }) => {
         setCurrentBGM({ source, startTime: audioContext.current.currentTime })
       );
     },
-    playNormalSFX: (name, options) => loadAndPlaySound("normalSfx", "", name, options),
-    playMotionSFX: (setName, name, options) => loadAndPlaySound("motionSfx", setName, name, options),
+    playNormalSFX: (name, options) =>
+      loadAndPlaySound("normalSfx", "", name, options),
+    playMotionSFX: (setName, name, options) =>
+      loadAndPlaySound("motionSfx", setName, name, options),
     pauseSound,
     resumeSound,
     stopSound,
@@ -242,9 +281,7 @@ const SoundManagerProvider = ({ children }) => {
   };
 
   return (
-    <AudioContext.Provider value={value}>
-      {children}
-    </AudioContext.Provider>
+    <AudioContext.Provider value={value}>{children}</AudioContext.Provider>
   );
 };
 

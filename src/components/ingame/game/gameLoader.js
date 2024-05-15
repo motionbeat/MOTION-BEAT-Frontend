@@ -10,7 +10,7 @@ export const Load = async (song, players) => {
       LoadNotes(song, players),
       ConnectServer(),
       ConnectPeer(players),
-      SyncPeer(),
+      SyncPeer()
     ]);
 
     const [
@@ -67,10 +67,11 @@ const LoadNotes = async (song, players) => {
         Nickname: sessionStorage.getItem("nickname"),
       },
     });
+
     /* 내 악기 */
     notes = await response.data.notes;
 
-    console.log("노트 정보", response.data.notes);
+    console.log("노트 정보", notes);
   } catch (error) {
     console.error("Error start res:", error);
   }

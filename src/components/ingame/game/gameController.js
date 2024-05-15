@@ -9,6 +9,8 @@ const GameController = ({ stime, data, railRefs, roomCode, song }) => {
   const animationDuration = 5000;
   const processedNotes = new Set(); // 처리된 노트들을 추적하는 집합
 
+  const notes = data?.musicData?.notes;
+
   useEffect(() => {
     let bgmTimeout;
 
@@ -19,6 +21,8 @@ const GameController = ({ stime, data, railRefs, roomCode, song }) => {
     // BGM 재생 타이머 설정
     bgmTimeout = setTimeout(() => {
       handlePlayBGM();
+      console.log("TESTEST");
+      WhenStart();
     }, stime);
 
     // const checkElapsedTime = () => {
@@ -34,20 +38,25 @@ const GameController = ({ stime, data, railRefs, roomCode, song }) => {
     // };
 
     const WhenStart = () => {
-      if (!data.musicData || data.musicData.notes.length === 0) {
-        return;
-      }
+      // if (!data.musicData || data.musicData.notes.length === 0) {
+      //   console.log("[KHW] data.musicData is empty");
+      //   return;
+      // }
+
+      // console.log("[KHW] data.musicData: " + data.musicData);
 
       let count = 1200;
 
       const ScheduleNotes = () => {
-        const notes = data.musicData.notes;
+        // const notes = data.musicData.notes;
+        // console.log("[KHW] notes: " + notes);
+
         for (const note of notes) {
           const startTime = note.time - animationDuration;
 
           if (startTime <= getElapsedTime() && !processedNotes.has(note)) {
             processedNotes.add(note);
-            GenerateNote(note, count);
+            GenerateNote(note, startTime, count);
             count++;
           }
         }
@@ -57,9 +66,8 @@ const GameController = ({ stime, data, railRefs, roomCode, song }) => {
       requestAnimationFrame(ScheduleNotes);
     };
 
-    const GenerateNote = (note, index) => {
+    const GenerateNote = (note, noteStart, index) => {
       const { motion, time } = note;
-      // console.log("노트 생성 222", motion, "eta", time, "ms");
 
       const noteElement = document.createElement("div");
       noteElement.style.left = `100%`;
@@ -79,19 +87,19 @@ const GameController = ({ stime, data, railRefs, roomCode, song }) => {
         }
       }
 
-      const AnimateNote = (noteTime) => {
-        const currTime = getElapsedTime();
-        const positionPercent =
-          ((noteTime - currTime) / animationDuration) * 100;
+      const AnimateNote = () => {
+        const noteTimeElapse =  time - getElapsedTime();
+        // console.log("[KHW] noteTimeElapse" + noteTimeElapse);
+
+        const positionPercent = noteTimeElapse * 100 / animationDuration;
 
         if (positionPercent <= -3) {
           noteElement.remove();
         } else {
           noteElement.style.left = `${positionPercent}%`;
-          requestAnimationFrame(() => AnimateNote(noteTime));
+          requestAnimationFrame(AnimateNote);
         }
       };
-
       requestAnimationFrame(AnimateNote);
     };
 
