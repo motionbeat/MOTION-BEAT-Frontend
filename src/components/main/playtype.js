@@ -13,6 +13,7 @@ const Playtype = () => {
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
   const [code, setCode] = useState(''); // 방 코드 받아올 때 사용
   // const [showModal, setShowModal] = useState(false); // 친구와 함께하기 클릭 시 모달창
+  const myNickname = sessionStorage.getItem("nickname");
   const [playFriends, setPlayFriends] = useState(true);
 
   /* for TEST */
@@ -31,8 +32,15 @@ const Playtype = () => {
           "Nickname": sessionStorage.getItem("nickname")
         },
       });
+      console.log("닉네임",myNickname);
+      console.log("보낼 코드", response.data.code);
 
-      socket.emit(`joinRoom`, response.data.code, (res) => {
+      const joinRoomData = {
+        nickname: myNickname,
+        code: response.data.code
+      }
+
+      socket.emit(`joinRoom`, joinRoomData, (res) => {
         console.log("joinRoom res", res);
       });
 
@@ -64,8 +72,13 @@ const Playtype = () => {
             "Nickname": sessionStorage.getItem("nickname")
           },
         });
+
+        const joinRoomData = {
+          nickname: myNickname,
+          code: response.data.code
+        }
   
-        socket.emit("joinRoom", response.data.code, (res) => {
+        socket.emit("joinRoom", joinRoomData, (res) => {
           console.log("joinRoom res", res);
         });
   
@@ -88,8 +101,13 @@ const Playtype = () => {
             "Nickname": sessionStorage.getItem("nickname")
           },
         });
+
+        const joinRoomData = {
+          nickname: myNickname,
+          code: response.data.code
+        }
   
-        socket.emit("joinRoom", code , (res) => {
+        socket.emit("joinRoom", joinRoomData, (res) => {
           console.log("joinRoom res", res);
         });
   

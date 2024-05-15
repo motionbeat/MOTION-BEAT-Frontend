@@ -226,20 +226,25 @@ const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
 
   useEffect(() => {
     // 서버에서 플레이어 정보를 받아와서 상태를 업데이트
-    setPlayerStatuses(players.reduce((acc, player) => {
-      acc[player.nickname] = {
-        nickname: player.nickname,
-        instrument: player.instrument,
-        isReady: player.isReady, // 서버에서 받은 isReady 값을 사용
-      };
-      return acc;
-    }, {}));
+    setPlayerStatuses(
+      players.reduce((acc, player) => {
+        acc[player.nickname] = {
+          nickname: player.nickname,
+          instrument: player.instrument,
+          isReady: player.isReady, // 서버에서 받은 isReady 값을 사용
+        };
+        return acc;
+      }, {})
+    );
 
     // 플레이어들에게 무작위 이미지 할당
-    setPlayerImages(players.reduce((acc, player) => {
-      acc[player.nickname] = sonaImages[Math.floor(Math.random() * sonaImages.length)];
-      return acc;
-    }, {}));
+    setPlayerImages(
+      players.reduce((acc, player) => {
+        acc[player.nickname] =
+          sonaImages[Math.floor(Math.random() * sonaImages.length)];
+        return acc;
+      }, {})
+    );
   }, [players]);
 
   useEffect(() => {
@@ -276,7 +281,7 @@ const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
       socket.emit("ready", (res) => {
         console.log("ready res", res);
       });
-      setPlayerStatuses(prevStatuses => ({
+      setPlayerStatuses((prevStatuses) => ({
         ...prevStatuses,
         [nickname]: {
           ...prevStatuses[nickname],
@@ -294,9 +299,9 @@ const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
           const response = await axios.get(`${backendUrl}/api/instruments`, {
             headers: {
               "Content-Type": "application/json",
-              "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
-              "UserId": sessionStorage.getItem("userId"),
-              "Nickname": sessionStorage.getItem("nickname"),
+              Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
+              UserId: sessionStorage.getItem("userId"),
+              Nickname: sessionStorage.getItem("nickname"),
             },
           });
           setInstrumentList(response.data);
@@ -322,16 +327,20 @@ const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
     // 악기 선택 상태 서버로 전송
     const sendInstrument = async () => {
       try {
-        await axios.patch(`${backendUrl}/api/instruments/select`, {
-          instrumentName,
-        }, {
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
-            "UserId": sessionStorage.getItem("userId"),
-            "Nickname": sessionStorage.getItem("nickname"),
+        await axios.patch(
+          `${backendUrl}/api/instruments/select`,
+          {
+            instrumentName,
           },
-        });
+          {
+            headers: {
+              "Content-Type": "application/json",
+              Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
+              UserId: sessionStorage.getItem("userId"),
+              Nickname: sessionStorage.getItem("nickname"),
+            },
+          }
+        );
       } catch (error) {
         console.error("Error start res:", error);
       }
@@ -344,41 +353,54 @@ const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
   return (
     <>
       <div className="playersBox">
-        {Object.entries(playerStatuses).map(([nickname, { instrument, isReady }], index) => (
-          <div className="playersContainer" key={index}>
-            <div>
-              {nickname === hostName ? (
-                <div className="masterSymbol">방장</div>
-              ) : (
-                <ReadyBtn
-                  isReady={isReady}
-                  onClick={() => readyBtnClick(nickname)}
-                >
-                  {isReady ? "준비 완료" : "대기 중"}
-                </ReadyBtn>
-              )}
-              <div className="playersBoxDiv">
-                <div
-                  className="playersBoxInner"
-                  style={{ backgroundImage: `url(${playerImages[nickname]})` }}
-                />
-                <p>{nickname}</p>
-                <p className="myInstrument" onClick={() => findingInstrument(nickname)}>{instrument}</p>
-              </div>
-              {instruModal && (
-                <div className="instrumentModal">
-                  {instrumentList.map((instrument) => (
-                    <ul key={instrument.id}>
-                      <li onClick={() => selectedInstrument(instrument.instrumentName)}>
-                        {instrument.instrumentName}
-                      </li>
-                    </ul>
-                  ))}
+        {Object.entries(playerStatuses).map(
+          ([nickname, { instrument, isReady }], index) => (
+            <div className="playersContainer" key={index}>
+              <div>
+                {nickname === hostName ? (
+                  <div className="masterSymbol">방장</div>
+                ) : (
+                  <ReadyBtn
+                    isReady={isReady}
+                    onClick={() => readyBtnClick(nickname)}
+                  >
+                    {isReady ? "준비 완료" : "대기 중"}
+                  </ReadyBtn>
+                )}
+                <div className="playersBoxDiv">
+                  <div
+                    className="playersBoxInner"
+                    style={{
+                      backgroundImage: `url(${playerImages[nickname]})`,
+                    }}
+                  />
+                  <p>{nickname}</p>
+                  <p
+                    className="myInstrument"
+                    onClick={() => findingInstrument(nickname)}
+                  >
+                    {instrument}
+                  </p>
                 </div>
-              )}
+                {instruModal && (
+                  <div className="instrumentModal">
+                    {instrumentList.map((instrument) => (
+                      <ul key={instrument.id}>
+                        <li
+                          onClick={() =>
+                            selectedInstrument(instrument.instrumentName)
+                          }
+                        >
+                          {instrument.instrumentName}
+                        </li>
+                      </ul>
+                    ))}
+                  </div>
+                )}
+              </div>
             </div>
-          </div>
-        ))}
+          )
+        )}
       </div>
     </>
   );
@@ -387,7 +409,7 @@ const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
 export default RoomPlayers;
 
 const ReadyBtn = styled.button`
-  background-color: #181A20;
+  background-color: #181a20;
   width: 250px;
   color: white;
   border: 3px solid ${(props) => (props.isReady ? "#6EDACD" : "#CA7900")};
