@@ -34,7 +34,7 @@ const audioFiles = {
     { name: "1", url: '/keySound/sounds/AcousticOpenHat10.wav' },
   ],
   drum2: [
-    { name: "0", url: '/keySound/sounds/AcousticOpenHat10.wav' },
+    { name: "0", url: '/keySound/sounds/AcousticMidTom13.wav' },
     { name: "1", url: '/keySound/sounds/AcousticSnare09.wav' },
   ],
   drum3: [
