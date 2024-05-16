@@ -34,7 +34,6 @@ import NotFound from "./pages/notFound";
 // import Setting from "./pages/setting";
 import Drum1 from "components/mediapipe/drum1";
 import AtomicTest from "components/common/atomic/atomicTest";
-import Drum2 from "components/mediapipe/drum2";
 import Admin from "./pages/admin";
 
 import SoundManagerProvider from "components/common/useSoundManager.js";
@@ -98,7 +97,6 @@ const App = () => {
 
           {/* 인게임 */}
           <Route path="/cam/drum" element={<Drum1 />} />
-          <Route path="/cam/guitar" element={<Drum2 />} />
 
           {/* ### */}
           {/* </Route> */}
