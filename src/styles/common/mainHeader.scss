@@ -49,6 +49,13 @@
   background-size: cover;
   margin-right: 20px;
   cursor: pointer;
+  transition: 0.2s;
+}
+
+// 친구창 - open state
+.friendsBtn.open {
+  background-image: url("../../img/friendsBtnClick.png");
+  transition: 0.2s;
 }
 
 // 마이페이지
@@ -59,6 +66,14 @@
   background-image: url("../../img/mypageBtn.png");
   background-repeat: no-repeat;
   background-size: cover;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+// 마이페이지 - open state
+.mypageBtn.open {
+  background-image: url("../../img/mypageBtnClick.png");
+  transition: 0.2s;
 }
 
 // 타이틀
