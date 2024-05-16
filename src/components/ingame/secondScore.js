@@ -74,6 +74,12 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
     const session_instrument = sessionStorage.getItem("instrument");
     const session_motionType = sessionStorage.getItem("motionType");
 
+    if (session_instrument === null || session_motionType === null) {
+      return;
+    }
+
+    playMotionSFX(session_instrument, session_motionType, { volume: 1 });
+
     // console.log("노트 받는지 response:", hittedNotes);
     const sendData = {
       code: gameData.code,
@@ -86,15 +92,11 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
 
     // console.log("보낼 데이터", sendData);
     socket.emit("hit", sendData);
-    playMotionSFX(session_instrument, session_motionType, { volume: 1 });
 
     sessionStorage.setItem("hitNote", hittedNotes);
     sessionStorage.setItem("combo", combo);
   }, [
     hittedNotes,
-    missedNotes,
-    combo,
-    gameData.code,
     myNickname,
     playMotionSFX,
   ]);
@@ -103,36 +105,39 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
   useEffect(() => {
     const scoreUpdateEvents = gameData.players.map((player, index) => {
       const eventName = `liveScore${player.nickname}`;
-      socket.on(eventName, (scoreData, combo, instrument, motionType) => {
-        if (
-          instrument !== undefined &&
-          instrument !== null &&
-          motionType !== null &&
-          motionType !== undefined
-        ) {
-          // 게임 이벤트 발생 시 효과음 재생
-          playMotionSFX(instrument, motionType, { volume: 1 }); // 예시로 볼륨을 1로 설정
 
-          // if (index !== myPosition) {
-          //   TriggerHitEffect(`player${index}`, railRefs.current[index]);
-          // }
-        }
+      if (index !== myPosition) {
+        socket.on(eventName, (scoreData, combo, instrument, motionType) => {
+          if (
+            instrument !== undefined &&
+            instrument !== null &&
+            motionType !== null &&
+            motionType !== undefined
+          ) {
+            // 게임 이벤트 발생 시 효과음 재생
+            playMotionSFX(instrument, motionType, { volume: 1 }); // 예시로 볼륨을 1로 설정
 
-        setPlayerScores((prevScores) => {
-          const updatedScores = {
-            ...prevScores,
-            [player.nickname]: scoreData,
-          };
-          return updatedScores;
+            // if (index !== myPosition) {
+            //   TriggerHitEffect(`player${index}`, railRefs.current[index]);
+            // }
+          }
+
+          setPlayerScores((prevScores) => {
+            const updatedScores = {
+              ...prevScores,
+              [player.nickname]: scoreData,
+            };
+            return updatedScores;
+          });
+
+          handleScore({
+            nickname: player.nickname,
+            score: scoreData,
+            combo: combo,
+          });
         });
-
-        handleScore({
-          nickname: player.nickname,
-          score: scoreData,
-          combo: combo,
-        });
-      });
-      return eventName;
+        return eventName;
+      }
     });
 
     return () => {
