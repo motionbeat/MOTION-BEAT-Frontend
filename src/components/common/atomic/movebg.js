@@ -65,11 +65,12 @@ const BackgroundAnimate = styled.div`
   background-size: cover;
   transition: opacity 1s ease-in-out;
   background-position: center;
-  position: relative;
+  position: fixed;
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
+  z-index: -2;
 `
 
 const Window = styled.img`

@@ -38,11 +38,13 @@ import Drum2 from "./components/mediapipe/drum2";
 import Admin from "./pages/admin";
 
 import SoundManagerProvider from "./components/common/useSoundManager.js";
+import MoveBg from "components/common/atomic/movebg";
 
 const App = () => {
   return (
     <SoundManagerProvider>
       <Router>
+      <MoveBg />
         {/* <ShowTitle /> */}
         <Routes>
           {/* token사용 시 아래 주석과 "###"아래 주석을 해제하세요 */}
