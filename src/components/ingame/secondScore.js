@@ -103,9 +103,9 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
           // console.log("[KHW] instrument, motionType: ", instrument, motionType);
           playMotionSFX(instrument, motionType, { volume: 1 }); // 예시로 볼륨을 1로 설정
 
-          if (index !== myPosition) {
-            TriggerHitEffect(`player${index}`, railRefs.current[index]);
-          }
+          // if (index !== myPosition) {
+          TriggerHitEffect(`player${index}`, railRefs.current[index]);
+          // }
         }
 
         setPlayerScores((prevScores) => {
