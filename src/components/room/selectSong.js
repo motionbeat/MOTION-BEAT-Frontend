@@ -103,11 +103,6 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
             </button>
             <h2>{selectedSong.title}</h2>
             <p>{selectedSong.artist}</p>
-            {/* <Runtime>{selectedSong[0]?.runtime}</Runtime> */}
-            {/* <SongBtn>
-              <img src={PlayBtn} alt="play" onClick={handlePlay} />
-              <img src={StopBtn} alt="stop" onClick={handleStop} />
-            </SongBtn> */}
             <p>{selectedSong.difficulty}</p>
           </div>
         )}

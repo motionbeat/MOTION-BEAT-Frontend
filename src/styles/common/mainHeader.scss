@@ -6,13 +6,10 @@
 //룸헤더 전체 박스
 .allHeaderWrapper {
   display: flex;
-  position: absolute;
+  position: relative;
   width: 90%;
   max-width: 1504px;
   margin: 5% auto 0 auto;
-  top: 0;
-  left: 50%;
-  transform: translateX(-50%);
 }
 
 .exitRoomBtn {                       

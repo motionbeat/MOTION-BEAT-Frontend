@@ -10,15 +10,15 @@ export const login = (nickname)=>{
 }
 
 //
-export const handleSongChange = (socket, setSelectedSong) => {
-  socket.on("change", song => {
-    console.log("change res", song);
-    setSelectedSong([song]);
-  });
+// export const handleSongChange = (socket, setSelectedSong) => {
+//   socket.on("change", song => {
+//     console.log("change res", song);
+//     setSelectedSong([song]);
+//   });
 
-  return () => {
-    socket.off("change");
-  };
-};
+//   return () => {
+//     socket.off("change");
+//   };
+// };
 
 

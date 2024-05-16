@@ -1,39 +1,28 @@
-import React, { useEffect, useRef, useState, useCallback } from "react"
+import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import "../styles/hitEffect.css"
-
-import { useLocation, useNavigate } from "react-router-dom"
-import "../styles/ingame.css"
+import "../styles/hitEffect.css";
+import { useLocation } from "react-router-dom";
+import "../styles/ingame.css";
 import WebCam from "../components/room/webCam";
-
-import "../styles/songSheet.css"
-import styled, { keyframes } from "styled-components"
-
+import "../styles/songSheet.css";
+import styled from "styled-components";
 import Load from "../components/ingame/game/gameLoader.js";
-import { Start } from "../components/ingame/game/gameController.js";
+import GameController from "../components/ingame/game/gameController";
 import { setGameloadData } from "../redux/actions/saveActions.js";
-
-import WebCamFrame from "../components/ingame/webCamFrame.js";
-import Score from "../components/ingame/score.js";
-import { Judge } from "../components/ingame/game/judgement.js"
+import { Judge } from "../components/ingame/game/judgement";
 import Input from "../utils/input";
 import Output from "../utils/output";
 import socket from "../server/server";
-import axios from "axios";
 import GameResult from "../components/ingame/gameResult";
-import { JudgeEffect, JudgeEffectV2 } from "../components/ingame/judgeEffect.js";
 import SecondScore from "../components/ingame/secondScore.js";
 
-import IngameBg from "../img/ingameBg.png"
-import beatFlow0 from "../img/beatflow0.png"
-import beatFlow1 from "../img/beatflow1.png"
+import IngameBg from "../img/ingameBg.png";
+import beatFlow0 from "../img/beatflow0.png";
+import beatFlow1 from "../img/beatflow1.png";
 
-const staticColorsArray
-  = ["250,0,255", "1,248,10", "0,248,203", "249,41,42"];
+const staticColorsArray = ["250,0,255", "1,248,10", "0,248,203", "249,41,42"];
 let myPosition;
 let playerNumber = staticColorsArray.length;
-const backendUrl = process.env.REACT_APP_BACK_API_URL;
-let myColor
 
 const Ingame = () => {
   /* Router */
@@ -42,69 +31,106 @@ const Ingame = () => {
 
   /* Redux */
   const dispatch = useDispatch();
-  const loadedData = useSelector(state => state.gameloadData);
+  const loadedData = useSelector((state) => state.gameloadData);
 
   /* State */
-  const [message, setMessage] = useState("");
+  // const [message, setMessage] = useState("");
   const [gameEnded, setGameEnded] = useState(false); // 게임 종료 상태
-  const [showEnter, setShowEnter] = useState(true);
   const [gameData, setGameData] = useState(gameState.game);
-  // const [audioData, setAudioData] = useState({});
-  const [scores, setScores] = useState({});
+  // const [scores, setScores] = useState({});
+  const [startGameProps, setStartGameProps] = useState(null);
+  const [isGameReady, setGameReady] = useState(false);
 
-  const handleScoresUpdate = (newScores) => {
-    setScores(newScores);
-  };
+  // const handleScoresUpdate = (newScores) => {
+  //   setScores(newScores);
+  // };
   const [modalStatus, setModalStatus] = useState("NotReady");
 
   /* Storage */
   const myNickname = sessionStorage.getItem("nickname");
 
-  // 서버에 보낼 데이터(시작시 기본값)
-  const sendData = {
-    nickname: myNickname,
-    code: gameData.code,
-    score: 0,
-  };
-
   /* Ref */
   const railRefs = useRef([]);
 
   /* I/O 처리 */
+  const handleEnterDown = useCallback(
+    (event) => {
+      // 서버에 보낼 데이터(시작시 기본값)
+      const sendData = {
+        nickname: myNickname,
+        code: gameData.code,
+        score: 0,
+      };
+
+      if (event.key === "Enter" && loadedData) {
+        socket.emit(`playerLoaded`, sendData);
+
+        setModalStatus("Ready");
+        window.removeEventListener("keydown", handleEnterDown); // 이벤트 리스너 제거
+
+        const waitForAllPlayers = new Promise((resolve) => {
+          socket.on(`allPlayersLoaded${sendData.code}`, (data) => {
+            resolve(data);
+          });
+        });
+
+        waitForAllPlayers
+          .then((data) => {
+            const synchedStartTime = WhenSocketOn(data);
+
+            // StartGame 컴포넌트를 렌더링합니다.
+            setStartGameProps({
+              stime: synchedStartTime,
+              data: loadedData,
+              railRefs: railRefs,
+              roomCode: gameData.code,
+              song: gameData.song,
+            });
+            setGameReady(true);
+          })
+          .catch((err) => {
+            console.error("Error", err);
+          });
+      }
+    },
+    [myNickname, railRefs, gameData.code, gameData.song, loadedData]
+  );
 
   /* useEffect 순서를 변경하지 마세요*/
   useEffect(() => {
     if (loadedData) {
       window.addEventListener("keydown", handleEnterDown);
-      ShowModal("NotReady")
+      ShowModal("NotReady");
     }
-  }, [loadedData]);
+  }, [handleEnterDown, loadedData]);
 
   /* 네트워크 */
   useEffect(() => {
-    playerNumber = gameData.players.length
-    myPosition = gameData.players.findIndex(item => item.nickname === myNickname)
-    myColor = staticColorsArray[myPosition]
-    // currentAudio.addEventListener('ended', handleAudioEnd);
+    console.log(gameData);
+
+    playerNumber = gameData.players.length;
+    myPosition = gameData.players.findIndex(
+      (item) => item.nickname === myNickname
+    );
 
     // 방에서 나갈 때 상태 업데이트
     const updatePlayersAfterLeave = (updatedPlayers) => {
-      setGameData(prevRoom => ({
+      setGameData((prevRoom) => ({
         ...prevRoom,
-        players: updatedPlayers
+        players: updatedPlayers,
       }));
     };
 
-    socket.on(`allPlayersEnded${gameData.code}`, (res) => {
+    socket.on(`allPlayersEnded${gameData.code}`, () => {
       // console.log("전체 플레이어 게임 끝");
       setGameEnded(true);
-    })
+    });
 
     return () => {
-      // currentAudio.removeEventListener('ended', handleAudioEnd);
+      // currentAudio.removeEventListener("ended", handleAudioEnd);
       socket.off(`leftRoom${gameData.code}`, updatePlayersAfterLeave);
     };
-  }, []);
+  }, [gameData, myNickname]);
 
   useEffect(() => {
     // 게임 리소스 로딩
@@ -119,18 +145,10 @@ const Ingame = () => {
         // console.log("게임 리소스 로드 완료: " + loadedData);
         // console.log(loadedData);
         dispatch(setGameloadData(loadedData));
-        // console.log(loadedData)
-        // console.log(loadedData.audioData)
-
-        // if (divBGRef.current && loadedData.songData.ingameData.imageUrl) {
-        //   divBGRef.current.style.setProperty('--background-url', `url(${loadedData.songData.ingameData.imageUrl})`);
-        // }
-
       } catch (error) {
-        console.error('Loading failed:', error);
+        console.error("Loading failed:", error);
       }
     };
-
     init();
 
   }, []);
@@ -138,63 +156,20 @@ const Ingame = () => {
 
 
   const WhenSocketOn = (serverTime) => {
-    // const date = new Date(serverTime);
-    // const data3 = Date.now();
-    // console.log(date);
-    // console.log(data3);
     // 여기에는 시작시간 딜레이가 포함됨
-    const timeDiff = serverTime - Date.now()
+    const timeDiff = serverTime - Date.now();
 
-    // const hours = date.getHours().toString().padStart(2, '0');
-    // const minutes = date.getMinutes().toString().padStart(2, '0');
-    // const seconds = date.getSeconds().toString().padStart(2, '0');
-
-    // const formattedTime = `${hours}:${minutes}:${seconds}`;
-
-    // sessionStorage.setItem("serverTime");
-    // console.log("서버타임", serverTime);
-    // console.log("서버타임 변환", formattedTime);
-
-    // console.log(timeDiff);
     setModalStatus("Hide");
 
-    return timeDiff
-  }
-
-  const handleEnterDown = useCallback((event) => {
-    if (event.key === "Enter" && loadedData) {
-      // console.log("시행됨")
-      socket.emit(`playerLoaded`, sendData);
-      // console.log(sendData)
-
-      setModalStatus("Ready");
-      window.removeEventListener("keydown", handleEnterDown); // 이벤트 리스너 제거
-
-      const waitForAllPlayers = new Promise((resolve) => {
-        socket.on(`allPlayersLoaded${sendData.code}`, (data) => {
-          resolve(data);
-        })
-      })
-
-      waitForAllPlayers.then((data) => {
-        const synchedStartTime = WhenSocketOn(data);
-
-        Start({ stime: synchedStartTime, data: loadedData, eventKey: event.key, railRefs: railRefs, send: sendData, myPosition: myPosition, roomCode: gameData.code });
-      }).catch((err) => {
-        console.error("Error", err);
-      });
-    }
-  }, [loadedData, sendData.code, sendData]);
-
-  // 아마 입력 감지
-  const handleKeyPressed = (msg) => {
-    setMessage(msg);
+    return timeDiff;
   };
 
   // 재생 상태 변경
   useEffect(() => {
     if (playerNumber !== railRefs.current.length) {
-      railRefs.current = staticColorsArray.map((_, index) => railRefs.current[index] || React.createRef());
+      railRefs.current = staticColorsArray.map(
+        (_, index) => railRefs.current[index] || React.createRef()
+      );
     }
   }, [loadedData]);
 
@@ -202,18 +177,8 @@ const Ingame = () => {
     return <p>Loading...</p>;
   }
 
-  const SongSheet = ({ railRefs, myPosition, Colors }) => {
+  const SongSheet = ({ railRefs, myPosition }) => {
     const [isActive, setIsActive] = useState(false);
-
-    const handleKeyDown = useCallback((key, time) => {
-      setIsActive(true);
-
-      // console.log(key, "버튼눌림 at : ", time)
-      // console.log(loadedData.audioData)
-      Judge(key, time, gameData.players[myPosition].instrument, loadedData.audioData.audioFiles, myPosition, railRefs.current[myPosition]);
-      /* 반응성 향상 */
-      handleKeyUp();
-    }, [loadedData]);
 
     const handleKeyUp = useCallback(() => {
       /* 반응성 향상 */
@@ -222,15 +187,26 @@ const Ingame = () => {
       }, 200);
     }, []);
 
-    // console.log(gameData);
-    // console.log(gameData.players);
-    // console.log(gameData.players[0]);
-    // console.log(gameData.players[0].instrument);
-    // console.log(gameData.players.length);
+    const handleKeyDown = useCallback(
+      (key, time) => {
+        setIsActive(true);
+
+        Judge(
+          key,
+          time,
+          gameData.players[myPosition].instrument,
+          myPosition,
+          railRefs.current[myPosition]
+        );
+        /* 반응성 향상 */
+        handleKeyUp();
+      },
+      [handleKeyUp, myPosition, railRefs]
+    );
 
     return (
       <div className="background-songSheet">
-        <div className="hitLine"></div>
+        <div className="hitLine">{/* <div className="test"></div> */}</div>
         {gameData.players.map((player, index) => {
           if (!railRefs?.current[index]) {
             return null;
@@ -239,10 +215,13 @@ const Ingame = () => {
           return (
             <VerticalRail
               ref={railRefs.current[index]}
-              color={`rgba(${staticColorsArray[index]}, ${index === myPosition ? 1 : 0.4})`}
+              color={`rgba(${staticColorsArray[index]}, ${
+                index === myPosition ? 1 : 0.4
+              })`}
               top={`${(100 / gameData.players.length) * index}%`}
               data-instrument={gameData.players[index].instrument}
-              key={index}>
+              key={index}
+            >
               {index === myPosition ? (
                 <>
                   <Indicator />
@@ -252,13 +231,15 @@ const Ingame = () => {
                   <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
                   <Output />
                 </>
-              ) : <JudgeBox key={index}>
-                <div id={`player${index}HitEffect`} className="hit-effect" />
-              </JudgeBox>}
+              ) : (
+                <JudgeBox key={index}>
+                  <div id={`player${index}HitEffect`} className="hit-effect" />
+                </JudgeBox>
+              )}
             </VerticalRail>
           );
         })}
-      </div >
+      </div>
     );
   };
 
@@ -268,61 +249,84 @@ const Ingame = () => {
         return null;
       case "NotReady":
         return (
-          // <div style={{
-          //   position: "fixed", top: "0", right: "0", height: "100vh", width: "100vw", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)", zIndex: "5000"
-          // }}>
-          <div style={{
-            position: "fixed", top: "0", right: "0", height: "100vh", width: "100vw", display: "flex", alignItems: "center", justifyContent: "center", zIndex: "5000", backgroundImage: `url(${IngameBg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover"
-          }}>
+          <div
+            style={{
+              position: "fixed",
+              top: "0",
+              right: "0",
+              height: "100vh",
+              width: "100vw",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: "5000",
+              backgroundImage: `url(${IngameBg})`,
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover",
+            }}
+          >
             <p style={{ color: "white", fontSize: "100px" }}>Enter "Enter"</p>
-          </div >
+          </div>
         );
       case "Ready":
         return (
-          // <div style={{
-          //   position: "fixed", top: "0", right: "0", height: "100vh", width: "100vw", display: "flex", alignItems: "center", justifyContent: "center", background: "rgba(0,0,0,0.5)", zIndex: "5000"
-          // }}>
-          <div style={{
-            position: "fixed", top: "0", right: "0", height: "100vh", width: "100vw", display: "flex", alignItems: "center", justifyContent: "center", zIndex: "5000", backgroundImage: `url(${IngameBg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover"
-          }}>
+          <div
+            style={{
+              position: "fixed",
+              top: "0",
+              right: "0",
+              height: "100vh",
+              width: "100vw",
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              zIndex: "5000",
+              backgroundImage: `url(${IngameBg})`,
+              backgroundRepeat: "no-repeat",
+              backgroundSize: "cover",
+            }}
+          >
             <div style={{ position: "relative" }}>
-              <img style={{ position: "absolute", top: "-300%", left: "-70%" }} src={beatFlow0} alt="loadingImg0"></img>
-              <img style={{ position: "absolute", top: "-280%", left: "-68%" }} src={beatFlow1} alt="loadingImg1"></img>
+              <img
+                style={{ position: "absolute", top: "-300%", left: "-70%" }}
+                src={beatFlow0}
+                alt="loadingImg0"
+              ></img>
+              <img
+                style={{ position: "absolute", top: "-280%", left: "-68%" }}
+                src={beatFlow1}
+                alt="loadingImg1"
+              ></img>
               <p style={{ color: "white", fontSize: "100px" }}>Loading...</p>
             </div>
-          </div >
+          </div>
         );
       default:
         return <>Error</>;
     }
-  }
-
-  // console.log(loadedData);
-  // console.log(loadedData.skinData);
-  // console.log(loadedData.skinData.colors);
-  // console.log(loadedData.skinData.userData);
-  // console.log(gameEnded);
-
-  // // 노래 재생 끝났을 때의 함수
-  // const handleAudioEnd = () => {
-  //   console.log("노래 재생이 끝났습니다.");
-  //   setIsPlaying(false); // 노래 재생 상태 업데이트
-  //   socket.emit("gameEnded", sendData)
-  //   // 필요한 추가 동작 수행
-  // };
+  };
 
   return (
     <>
-      <div style={{ position: "relative", backgroundImage: `url(${IngameBg})`, backgroundRepeat: "no-repeat", backgroundSize: "cover", width: "100vw", height: "100vh", backgroundClip: "padding-box", paddingTop: "5%" }}>
+      <div
+        style={{
+          position: "relative",
+          backgroundImage: `url(${IngameBg})`,
+          backgroundRepeat: "no-repeat",
+          backgroundSize: "cover",
+          width: "100vw",
+          height: "100vh",
+          backgroundClip: "padding-box",
+          paddingTop: "5%",
+        }}
+      >
         {gameEnded ? (
           <>
             <GameResult roomCode={gameData.code} />
           </>
         ) : (
           <>
-            {/* <div ref={divBGRef} className="background-albumCover" /> */}
-            <SongSheet railRefs={railRefs} myPosition={myPosition} Colors={gameData.players.length} >
-            </SongSheet>
+            <SongSheet railRefs={railRefs} myPosition={myPosition}></SongSheet>
             <div style={{ display: "inline", position: "relative" }}>
               {/* <WebCamFrame myColor={myColor} roomCode={gameData.code} style={{visibility:"hidden"}} /> */}
               <SecondScore gameData={gameData} railRefs={railRefs} myPosition={myPosition} />
@@ -332,14 +336,15 @@ const Ingame = () => {
         )}
       </div>
       {ShowModal(modalStatus)}
+      {isGameReady && <GameController {...startGameProps} />}
     </>
-  )
+  );
 };
 
-export default Ingame
+export default Ingame;
 
 const VerticalRail = styled.div`
-  display:block;
+  display: block;
   position: relative;
   top: ${({ top }) => `calc(${top} + 11%)`};
   width: 100%;
@@ -356,7 +361,7 @@ const Indicator = styled.div`
   width: 5px;
   margin-left: 10%;
   background-color: white;
-`
+`;
 
 const JudgeBox = styled.div`
   position: absolute;
@@ -366,5 +371,8 @@ const JudgeBox = styled.div`
   background-color: ${({ isactive }) => isactive ? 'yellow' : 'rgba(0,0,0,1)'};
   box-shadow: ${({ isactive }) => isactive ? '0 0 10px 5px yellow' : 'none'};
   margin-left: 5%;
-  transition: ${({ isactive }) => isactive ? 'none' : 'background-color 0.5s ease-out, box-shadow 0.5s ease-out'};
+  transition: ${({ isactive }) =>
+    isactive
+      ? "none"
+      : "background-color 0.5s ease-out, box-shadow 0.5s ease-out"};
 `;

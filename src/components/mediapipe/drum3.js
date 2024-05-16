@@ -9,20 +9,12 @@ class Drum3 extends Component {
             leftWristY: null,
             rightWristY: null,
             postureStatus: "X",
-            // backgroundMusicVolume: 0.2,
-            // timer: 0,
-            // bgmPlaying: false,
-            // soundTimes: [],
-            // hitCount: 0,
             lastPlayedSound: null
         };
 
         this.videoRef = React.createRef();
         this.canvasRef = React.createRef();
         this.pose = undefined;
-        // this.soundA = new Audio('/effect/tom.mp3');
-        // this.soundB = new Audio('/effect/snare.mp3');
-        // this.backgroundMusic = new Audio('/song/본능적으로.mp4');
     }
 
     componentDidMount() {
@@ -43,18 +35,6 @@ class Drum3 extends Component {
         });
         window.dispatchEvent(event);
     }
-
-    // startTimer = () => {
-    //     setInterval(() => {
-    //         if (this.state.bgmPlaying) {
-    //             this.setState(prevState => ({ timer: prevState.timer + 1 }));
-    //         }
-    //     }, 1000);
-    // }
-
-    // toggleBgmPlaying = () => {
-    //     this.setState(prevState => ({ bgmPlaying: !prevState.bgmPlaying }));
-    // }
 
     initializePose() {
         this.pose = new posedetection.Pose({

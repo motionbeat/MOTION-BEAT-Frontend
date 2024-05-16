@@ -1,11 +1,15 @@
 import axios from "axios";
+import { useAudio } from "../components/common/useSoundManager.js";
 
 const Admin = () => {
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
+  const { playNormalSFX } = useAudio();
 
   const roomBoomBtn = async () => {
     try {
-      const response = await axios.delete(`${backendUrl}/api/rooms/admin/delete`, {
+      playNormalSFX("click1", { volume: 1 });
+
+      await axios.delete(`${backendUrl}/api/rooms/admin/delete`, {
           headers: {
               "Content-Type": "application/json",
               "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
@@ -21,7 +25,9 @@ const Admin = () => {
 
   const gameBoomBtn = async () => {
     try {
-      const response = await axios.delete(`${backendUrl}/api/games/admin/delete`, {
+      playNormalSFX("click2", { volume: 1 });
+
+      await axios.delete(`${backendUrl}/api/games/admin/delete`, {
           headers: {
               "Content-Type": "application/json",
               "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
@@ -42,4 +48,5 @@ const Admin = () => {
     </>
   )
 }
+
 export default Admin

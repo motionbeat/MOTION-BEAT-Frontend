@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from 'react-router-dom';
-import "./App.css"
+import React from "react";
+import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import "./App.css";
 
 /* 웹 접속 */
-import Title from "./components/title";
-import Splash from "./components/splash";
+// import Title from "./components/title";
+// import Splash from "./components/splash";
 
 /* 로그인 전 (인증인가 X)*/
 import Login from "./pages/login";
@@ -24,23 +24,27 @@ import Room from "./pages/room";
 /* 인게임 */
 import Ingame from "./pages/ingame";
 
-import Redirect from "./pages/redirect";
+// import Redirect from "./pages/redirect";
 import { KakaoCallback } from "./apis/kko";
 import { GoogleCallback } from "./apis/ggl";
 
 import NotFound from "./pages/notFound";
-import AddSong from "./pages/addSong";
-import PrivateRoute from "./utils/checkAuth";
-import Setting from "./pages/setting";
+// import AddSong from "./pages/addSong";
+// import PrivateRoute from "./utils/checkAuth";
+// import Setting from "./pages/setting";
 import Drum1 from "./components/mediapipe/drum1";
 import AtomicTest from "./components/common/atomic/atomicTest";
 import Drum2 from "./components/mediapipe/drum2";
 import Admin from "./pages/admin";
 
+import SoundManagerProvider from "./components/common/useSoundManager.js";
+import MoveBg from "components/common/atomic/movebg";
+
 const App = () => {
   return (
-    <>
+    <SoundManagerProvider>
       <Router>
+      <MoveBg />
         {/* <ShowTitle /> */}
         <Routes>
           {/* token사용 시 아래 주석과 "###"아래 주석을 해제하세요 */}
@@ -88,9 +92,9 @@ const App = () => {
           <Route path="/admin" element={<Admin />} />
         </Routes>
       </Router>
-    </>
+    </SoundManagerProvider>
   );
-}
+};
 
 // const ShowTitle = () => {
 //   const location = useLocation();

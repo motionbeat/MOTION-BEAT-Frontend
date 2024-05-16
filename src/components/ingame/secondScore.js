@@ -1,18 +1,19 @@
 import { useCallback, useEffect, useState } from "react";
 import socket from "../../server/server.js";
-import { ingameSendData } from '../../redux/actions/sendDataAction';
-import { useDispatch, useSelector } from "react-redux";
-import "../../styles/room/webcam.scss"
+import { ingameSendData } from "../../redux/actions/sendDataAction";
+import { useDispatch } from "react-redux";
+import "../../styles/room/webcam.scss";
+import { useAudio } from "../common/useSoundManager.js";
 
 export const SecondScore = ({ gameData, railRefs, myPosition }) => {
   const [playerScores, setPlayerScores] = useState({});
+  const { playMotionSFX } = useAudio();
   const [playerCombos, setPlayerCombos] = useState({});
   const [hittedNotes, setHittedNotes] = useState(0);
   const [missedNotes, setMissedNotes] = useState(0);
   const [combo, setCombo] = useState(0);
   const dispatch = useDispatch();
   const myNickname = sessionStorage.getItem("nickname");
-  let audioFiles = JSON.parse(sessionStorage.getItem("audioFiles"));
 
   const handleScore = (res) => {
     // console.log("Score received:", res.nickname, res.score);
@@ -51,15 +52,22 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
       updateScore(event.detail.result);
     };
 
-    window.addEventListener('scoreUpdate', handleScoreUpdate);
+    window.addEventListener("scoreUpdate", handleScoreUpdate);
 
     return () => {
-      window.removeEventListener('scoreUpdate', handleScoreUpdate);
+      window.removeEventListener("scoreUpdate", handleScoreUpdate);
     };
   }, [updateScore]);
 
   useEffect(() => {
-    dispatch(ingameSendData({ code: gameData.code, nickname: myNickname, score: hittedNotes, combo: combo }));
+    dispatch(
+      ingameSendData({
+        code: gameData.code,
+        nickname: myNickname,
+        score: hittedNotes,
+        combo: combo
+      })
+    );
   }, [hittedNotes, dispatch, gameData.code, myNickname, combo]);
 
   useEffect(() => {
@@ -72,13 +80,13 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
       instrument: sessionStorage.getItem("instrument"),
       motionType: sessionStorage.getItem("motion")
     }
-    console.log("보낼 데이터",sendData);
+
+    // console.log("보낼 데이터", sendData);
     socket.emit("hit", sendData);
 
     sessionStorage.setItem("hitNote", hittedNotes);
     sessionStorage.setItem("combo", combo);
-
-  }, [hittedNotes, missedNotes, combo])
+  }, [hittedNotes, missedNotes, combo, gameData.code, myNickname]);
 
   // hit 출력
   useEffect(() => {
@@ -91,27 +99,22 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
           motionType !== null &&
           motionType !== undefined
         ) {
-          let motionIndex;
+          // 게임 이벤트 발생 시 효과음 재생
+          // console.log("[KHW] instrument, motionType: ", instrument, motionType);
+          playMotionSFX(instrument, motionType, { volume: 1 }); // 예시로 볼륨을 1로 설정
 
-          switch (motionType) {
-            case "A":
-              motionIndex = 0;
-              break;
-            case "B":
-              motionIndex = 1;
-              break;
-            default:
-              motionIndex = 0;
-              break;
-          }
-
-          new Audio(audioFiles[instrument][motionIndex].url).play();
-          // eventName 이걸 parse해서 nickname 추출해서, railRefs에 일치하는 nickname찾아서 거기에 제일 가까운 히트판정 난 note를 지워야 하네.
-
-          if (index !== myPosition) {
-            TriggerHitEffect(`player${index}`, railRefs.current[index]);
-          }
+          // if (index !== myPosition) {
+          TriggerHitEffect(`player${index}`, railRefs.current[index]);
+          // }
         }
+
+        setPlayerScores((prevScores) => {
+          const updatedScores = {
+            ...prevScores,
+            [player.nickname]: scoreData,
+          };
+          return updatedScores;
+        });
 
         handleScore({ nickname: player.nickname, score: scoreData, combo: combo });
       });
@@ -123,7 +126,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
         socket.off(eventName);
       });
     };
-  }, [gameData.players, audioFiles, myPosition, railRefs]);
+  }, [gameData.players, myPosition, playMotionSFX, railRefs]);
 
   return (
     <>
@@ -132,7 +135,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
           <div className="score" key={index}>
             {/* <p name={player.nickname} className={`hitCombo ${combo > 0 ? 'show' : ''}`} key={`${player.nickname}-${combo}`}>{combo}COMBO</p> */}
             <p name={player.nickname} className={`hitCombo ${playerCombos[player.nickname] > 0 ? 'show' : ''}`} key={`${player.nickname}-${playerCombos[player.nickname]}`}>{playerCombos[player.nickname]} COMBO</p>
-            <p name={player.nickname} className="hitScore">score : {playerScores[player.nickname]* 100 || 0}</p>
+            <p name={player.nickname} className="hitScore">score : {playerScores[player.nickname] * 100 || 0}</p>
           </div>
         ))}
       </div>
@@ -142,14 +145,16 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
 
 export const TriggerHitEffect = (target, elem) => {
   const hitEffect = document.getElementById(`${target}HitEffect`);
-  if (!hitEffect) return;  // hitEffect가 없으면 함수 실행 중지
+  if (!hitEffect) return; // hitEffect가 없으면 함수 실행 중지
 
-  const notes = Array.from(elem?.current.children ?? []).filter(child => child.hasAttribute('data-index'));
+  const notes = Array.from(elem?.current.children ?? []).filter((child) =>
+    child.hasAttribute("data-index")
+  );
 
   let closestNote = null;
   let minIndex = Infinity;
   for (const note of notes) {
-    const index = parseInt(note.getAttribute('data-index'), 10);
+    const index = parseInt(note.getAttribute("data-index"), 10);
     if (index < minIndex) {
       minIndex = index;
       closestNote = note;
@@ -161,11 +166,11 @@ export const TriggerHitEffect = (target, elem) => {
     elem.current.removeChild(closestNote);
   }
 
-  hitEffect.classList.add('active');
+  hitEffect.classList.add("active");
 
   setTimeout(() => {
-    hitEffect.classList.remove('active'); // 애니메이션이 끝나고 클래스를 제거
-  }, 700); // 애니메이션 시간과 동일하게 설정
-}
+    hitEffect.classList.remove("active"); // 애니메이션이 끝나고 클래스를 제거
+  }, 200); // 애니메이션 시간과 동일하게 설정
+};
 
 export default SecondScore;

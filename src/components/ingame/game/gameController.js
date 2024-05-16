@@ -1,8 +1,6 @@
-import { useSelector, useCallback } from "react-redux";
-import { now } from "../../../utils/time.js";
-import styled, { keyframes } from "styled-components"
+import { useEffect, useState } from "react";
+import { useAudio } from "../../../components/common/useSoundManager.js";
 import socket from "../../../server/server.js";
-import { useState } from "react";
 import "../../../styles/songSheet.css"
 
 const audioPlayer = document.getElementById("audioPlayer");
@@ -11,10 +9,11 @@ if (!audioPlayer) {
   console.error("Audio player not found");
 }
 
-const playAudio = (data) => {
-  audioPlayer.src = data.musicData.sound;
+const playAudio = (sound) => {
+  audioPlayer.src = sound;
   // console.log(audioPlayer.src)
   audioPlayer.currentTime = 0;
+  audioPlayer.volume = 0
   audioPlayer.play()
     .then(() => {
       console.log("Audio started successfully");
@@ -22,115 +21,113 @@ const playAudio = (data) => {
     .catch((error) => console.error("Error playing audio:", error));
 };
 
-
-export const Start = ({ stime, data, eventKey, railRefs, send, myPositio, roomCode }) => {
-  const animationDuration = 5000;
+export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomCode }) => {
+  const animationDuration = 6000;
+  const { playBGM, currentBGM } = useAudio();
   const processedNotes = new Set(); // 처리된 노트들을 추적하는 집합
-  let audioTime;
+  const notes = data?.musicData?.notes;
 
-  if (!data?.musicData) {
-    console.error("Invalid data passed to Start function");
-    return;  // Early return to prevent further errors
-  }
+  useEffect(() => {
+    let audioTime;
+    let bgmTimeout;
+    const lastPart = data?.musicData?.sound?.split('/').pop();
+    // console.log(lastPart);
+    // BGM 재생 타이머 설정
+    if (notes?.length > 0) {
+      bgmTimeout = setTimeout(() => {
+        // console.log("stime:", stime);
+        playAudio(data.musicData.sound);
+        playBGM(lastPart, { loop: false, volume: 1 });
 
-  setTimeout(() => {
-    playAudio(data);
-  }, stime)
+        // console.log(data.musicData.sound);
 
-  const WhenPause = () => {
-    console.log("노래 재생이 일시정지 되었습니다.");
-  }
+        WhenStart();
+      }, stime);
+    }
 
-  audioPlayer.addEventListener("pause", WhenPause);
+    const WhenStart = () => {
+      let count = 1200;
 
-  const WhenEnd = () => {
-    console.log("노래 재생이 끝났습니다. End 함수를 호출하기 전 5초 대기합니다.");
-    setTimeout(() => End(), 5000);
-  }
+      const ScheduleNotes = () => {
+        audioTime = parseInt(audioPlayer.currentTime * 1000, 10);
 
-  audioPlayer.addEventListener("ended", WhenEnd);
+        for (const note of notes) {
+          const startTime = note.time - animationDuration;
 
-  const WhenStart = () => {
-    let count = 1200;
-
-    const ScheduleNotes = () => {
-      audioTime = audioPlayer.currentTime * 1000;
-
-      const notes = data.musicData.notes;
-      for (const note of notes) {
-        const startTime = note.time - animationDuration;
-
-        /* 주의 : 생성시간과 연관됨 */
-        if (startTime <= audioTime && !processedNotes.has(note)) {
-          processedNotes.add(note);  // 노트를 처리된 상태로 표시
-          GenerateNote(note, count);  // 노트 생성 및 애니메이션 시작
-          count++;
+          // TODO: <이상림> getElapsedTime() 함수를 사용하여 현재 시간을 가져와야 함
+          if (startTime <= audioTime && !processedNotes.has(note)) {
+            processedNotes.add(note);
+            GenerateNote(note, startTime, count);
+            count++;
+          }
         }
-      }
+        requestAnimationFrame(ScheduleNotes);
+      };
+
       requestAnimationFrame(ScheduleNotes);
     };
 
-    requestAnimationFrame(ScheduleNotes);
-  }
+    const GenerateNote = (note, noteStart, index) => {
+      const { motion, time } = note;
 
-  if (!audioPlayer.dataset.listenersAdded) {
-    audioPlayer.dataset.listenersAdded = "true";
-    audioPlayer.addEventListener("play", WhenStart);
-  }
+      const noteElement = document.createElement("div");
+      noteElement.style.left = `100%`;
+      noteElement.className = "Note";
+      noteElement.style.zIndex = index;
+      noteElement.textContent = `${motion}`;
+      noteElement.setAttribute("data-motion", motion);
+      noteElement.setAttribute("data-time", time);
+      noteElement.setAttribute("data-instrument", note.instrument);
+      noteElement.setAttribute("data-index", index);
 
-  const GenerateNote = (note, index) => {
-    const { motion, time } = note;
-    /* 주의 : 생성시간과 연관됨 */
-    // console.log("노트 생성", motion, "eta", time, "ms");
-
-    const noteElement = document.createElement("div");
-    noteElement.style.left = `100%`;
-    noteElement.className = "Note";
-    noteElement.style.zIndex = index;
-    noteElement.textContent = `${motion}`;
-    noteElement.setAttribute('data-motion', motion);
-    /* 주의 : 생성시간과 연관됨 */
-    noteElement.setAttribute('data-time', time);
-    noteElement.setAttribute('data-instrument', note.instrument);
-    noteElement.setAttribute('data-index', index);
-    // console.log("노트 생성", noteElement);
-
-    for (const idx in railRefs.current) {
-      if (railRefs.current[idx].current?.dataset.instrument === note.instrument)
-        railRefs.current[idx].current.appendChild(noteElement);
-    }
-
-    const AnimateNote = (noteTime) => {
-      const currTime = audioPlayer.currentTime * 1000;
-      const positionPercent = ((noteTime - currTime) / animationDuration) * 100;
-
-      if (positionPercent <= -3) {
-        noteElement.remove();
-      } else {
-        noteElement.style.left = `${positionPercent}%`;
-        requestAnimationFrame(() => AnimateNote(noteTime));
+      for (const idx in railRefs.current) {
+        if (
+          railRefs.current[idx].current?.dataset.instrument === note.instrument
+        ) {
+          railRefs.current[idx].current.appendChild(noteElement);
+        }
       }
+
+      const AnimateNote = () => {
+        const currTime = parseInt(audioPlayer.currentTime * 1000, 10);
+        const positionPercent = ((time - currTime) / animationDuration) * 100;
+
+        if (positionPercent <= -3) {
+          noteElement.remove();
+        } else {
+          noteElement.style.left = `${positionPercent}%`;
+          requestAnimationFrame(AnimateNote);
+        }
+      };
+      requestAnimationFrame(AnimateNote);
     };
 
-    requestAnimationFrame(() => AnimateNote(time));
-  };
+    const End = () => {
+      console.log("게임 종료");
 
-  const End = () => {
-    console.log("게임 종료");
-    const sendData = {
-      score: sessionStorage.getItem("hitNote"),
-      nickname: sessionStorage.getItem("nickname"),
-      code: roomCode
+      const sendData = {
+        score: sessionStorage.getItem("hitNote"),
+        nickname: sessionStorage.getItem("nickname"),
+        code: roomCode,
+      };
+
+      socket.emit("gameEnded", sendData);
+      sessionStorage.removeItem("hitNote");
+    };
+
+    if (currentBGM?.source && currentBGM?.source.playbackState !== "running") {
+      WhenStart();
     }
 
-    socket.emit("gameEnded", (sendData));
+    return () => {
+      clearTimeout(bgmTimeout);
+      if (currentBGM?.source) {
+        currentBGM.source.stop();
+      }
+    };
+  }, [data.musicData, railRefs, roomCode, notes]);
 
-    sessionStorage.removeItem("hitNote");
-
-    document.removeEventListener('keydown', playAudio);  // Clean up event listener
-    audioPlayer.dataset.listenersAdded = false;
-  };
-
-
-  return { End };
+  return null;
 };
+
+export default Start;
