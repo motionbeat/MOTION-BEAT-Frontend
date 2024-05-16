@@ -100,8 +100,8 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
           motionType !== undefined
         ) {
           // 게임 이벤트 발생 시 효과음 재생
+          // console.log("[KHW] instrument, motionType: ", instrument, motionType);
           playMotionSFX(instrument, motionType, { volume: 1 }); // 예시로 볼륨을 1로 설정
-          // console.log("악기랑 모션: ", instrument, motionType);
 
           if (index !== myPosition) {
             TriggerHitEffect(`player${index}`, railRefs.current[index]);
