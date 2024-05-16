@@ -1,12 +1,8 @@
 {
   "bgm": [
+    { "name": "0.mp3", "url": "/song/0.mp3" },
     { "name": "1.mp3", "url": "/song/1.mp3" },
     { "name": "2.mp3", "url": "/song/2.mp3" },
-    { "name": "3.mp3", "url": "/song/3.mp3" },
-    { "name": "4.mp3", "url": "/song/4.mp3" },
-    { "name": "5.mp3", "url": "/song/5.mp3" },
-    { "name": "6.mp3", "url": "/song/6.mp3" },
-    { "name": "본능적으로.mp4", "url": "/song/본능적으로.mp4" },
     { "name": "test.mp3", "url": "/song/test.mp3" }
   ],
   "normalSfx": [
@@ -19,7 +15,7 @@
       { "name": "B", "url": "/keySound/sounds/AcousticOpenHat10.wav" }
     ],
     "drum2": [
-      { "name": "A", "url": "/keySound/sounds/AcousticOpenHat10.wav" },
+      { "name": "A", "url": "/keySound/sounds/AcousticMidTom13.wav" },
       { "name": "B", "url": "/keySound/sounds/AcousticSnare09.wav" }
     ],
     "drum3": [
