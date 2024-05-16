@@ -13,9 +13,9 @@ import Signup from "./pages/signup";
 
 /* 메인 (인증인가 O)*/
 import Main from "./pages/main";
-import Playtype from "./components/main/playtype";
-import Tutorial from "./components/main/tutorial";
-import Ranking from "./components/main/ranking";
+import Playtype from "components/main/playtype";
+import Tutorial from "components/main/tutorial";
+import Ranking from "components/main/ranking";
 import Settings from "components/main/settings";
 
 /* 룸(=대기방) */
@@ -32,12 +32,12 @@ import NotFound from "./pages/notFound";
 // import AddSong from "./pages/addSong";
 // import PrivateRoute from "./utils/checkAuth";
 // import Setting from "./pages/setting";
-import Drum1 from "./components/mediapipe/drum1";
-import AtomicTest from "./components/common/atomic/atomicTest";
-import Drum2 from "./components/mediapipe/drum2";
+import Drum1 from "components/mediapipe/drum1";
+import AtomicTest from "components/common/atomic/atomicTest";
+import Drum2 from "components/mediapipe/drum2";
 import Admin from "./pages/admin";
 
-import SoundManagerProvider from "./components/common/useSoundManager.js";
+import SoundManagerProvider from "components/common/useSoundManager.js";
 import MoveBg from "components/common/atomic/movebg";
 
 const App = () => {
