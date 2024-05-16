@@ -20,7 +20,7 @@ const MoveBg = () => {
 
   useEffect(() => {
     const updateStyles = (setStyles) => {
-      setStyles({ opacity: Math.random(), brightness: Math.random() * 2 });
+      setStyles({ opacity: Math.random(), brightness: Math.random() * 5 });
     };
 
     const intervalId1 = setInterval(() => updateStyles(setStyles1), 1000);
