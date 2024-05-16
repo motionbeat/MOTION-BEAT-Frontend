@@ -57,7 +57,7 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
 
     result = "hit";
     sessionStorage.setItem("instrument", instrument);
-    sessionStorage.setItem("motion", currentMotion);
+    sessionStorage.setItem("motionType", currentMotion);
 
     dispatch(result);
     // TriggerMyHitEffect(`player${myPosition}`, myRailRef);

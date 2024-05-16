@@ -90,6 +90,7 @@ const SoundManagerProvider = ({ children }) => {
         return;
       }
 
+      // TODO: <김현우> 이 구간에서 지연 발생 가능성이 있을지 한 번 더 검토해보기 - Hyeonwoo, 2024.05.16
       const source = audioContext.current.createBufferSource();
       source.buffer = buffer;
       const gainNode = audioContext.current.createGain();
