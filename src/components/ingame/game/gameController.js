@@ -115,6 +115,14 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
       sessionStorage.removeItem("hitNote");
     };
 
+    const handleAudioEnded = () => {
+      End();
+    };
+
+    if (audioPlayer) {
+      audioPlayer.addEventListener('ended', handleAudioEnded);
+    }
+
     if (currentBGM?.source && currentBGM?.source.playbackState !== "running") {
       WhenStart();
     }
@@ -123,6 +131,9 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
       clearTimeout(bgmTimeout);
       if (currentBGM?.source) {
         currentBGM.source.stop();
+      }
+      if (audioPlayer) {
+        audioPlayer.removeEventListener('ended', handleAudioEnded);
       }
     };
   }, [data.musicData, railRefs, roomCode, notes]);
