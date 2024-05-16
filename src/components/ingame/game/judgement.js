@@ -60,9 +60,9 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
     sessionStorage.setItem("motion", currentMotion);
 
     dispatch(result);
-    TriggerMyHitEffect(`player${myPosition}`, myRailRef);
+    // TriggerMyHitEffect(`player${myPosition}`, myRailRef);
 
-    closestNote.remove(); // 해당 노트를 화면에서 숨김
+    // closestNote.remove(); // 해당 노트를 화면에서 숨김
     return;
   }
 
@@ -74,21 +74,21 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
   }
 };
 
-const TriggerMyHitEffect = (target, elem, closestNote) => {
-  const hitEffect = document.getElementById(`${target}HitEffect`);
-  // console.log(hitEffect)
-  if (!hitEffect) return;  // hitEffect가 없으면 함수 실행 중지
+// const TriggerMyHitEffect = (target, elem, closestNote) => {
+//   const hitEffect = document.getElementById(`${target}HitEffect`);
+//   // console.log(hitEffect)
+//   if (!hitEffect) return;  // hitEffect가 없으면 함수 실행 중지
 
-  if (closestNote) {
-    elem.current.removeChild(closestNote);
-  }
+//   if (closestNote) {
+//     elem.current.removeChild(closestNote);
+//   }
 
-  hitEffect.classList.add('active');
+//   hitEffect.classList.add('active');
 
-  setTimeout(() => {
-    hitEffect.classList.remove('active'); // 애니메이션이 끝나고 클래스를 제거
-  }, 350); // 애니메이션 시간과 동일하게 설정
-}
+//   setTimeout(() => {
+//     hitEffect.classList.remove('active'); // 애니메이션이 끝나고 클래스를 제거
+//   }, 350); // 애니메이션 시간과 동일하게 설정
+// }
 
 // const PlayMyKeySound = (parsedkey, idx) => {
 //   const audio1 = document.getElementById(`keySound0player${idx}`);
