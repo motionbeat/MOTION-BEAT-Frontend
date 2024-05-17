@@ -40,29 +40,30 @@ import SoundManagerProvider from "components/common/useSoundManager.js";
 import MoveBg from "components/common/atomic/movebg";
 
 const App = () => {
-  useEffect(() => {
-    const handleBeforeUnload = (event) => {
-      event.preventDefault();
-      event.returnValue = ''; // Chrome에서 경고 대화 상자를 표시하려면 이 줄이 필요합니다
-    };
+  // [moon] 새로고침과 뒤로가기를 막는 시스템 지우면 안됨
+  // useEffect(() => {
+  //   const handleBeforeUnload = (event) => {
+  //     event.preventDefault();
+  //     event.returnValue = ''; // Chrome에서 경고 대화 상자를 표시하려면 이 줄이 필요합니다
+  //   };
 
-    const handlePopState = (event) => {
-      if (window.confirm("이 페이지를 떠나시겠습니까?")) {
-        window.history.go(1); // 뒤로가기를 방지합니다
-      } else {
-        window.history.pushState(null, null, window.location.pathname); // 현재 상태를 유지합니다
-      }
-    };
+  //   const handlePopState = (event) => {
+  //     if (window.confirm("이 페이지를 떠나시겠습니까?")) {
+  //       window.history.go(1); // 뒤로가기를 방지합니다
+  //     } else {
+  //       window.history.pushState(null, null, window.location.pathname); // 현재 상태를 유지합니다
+  //     }
+  //   };
 
-    window.addEventListener("beforeunload", handleBeforeUnload);
-    window.addEventListener("popstate", handlePopState);
+  //   window.addEventListener("beforeunload", handleBeforeUnload);
+  //   window.addEventListener("popstate", handlePopState);
 
-    // 컴포넌트가 언마운트될 때 이벤트 리스너를 정리합니다
-    return () => {
-      window.removeEventListener("beforeunload", handleBeforeUnload);
-      window.removeEventListener("popstate", handlePopState);
-    };
-  }, []);
+  //   // 컴포넌트가 언마운트될 때 이벤트 리스너를 정리합니다
+  //   return () => {
+  //     window.removeEventListener("beforeunload", handleBeforeUnload);
+  //     window.removeEventListener("popstate", handlePopState);
+  //   };
+  // }, []);
 
   return (
     <SoundManagerProvider>

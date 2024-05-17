@@ -16,7 +16,6 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
   const myNickname = sessionStorage.getItem("nickname");
 
   const handleScore = (res) => {
-    // console.log("Score received:", res.nickname, res.score);
     setPlayerScores((prevScores) => {
       const updatedScores = {
         ...prevScores,
@@ -33,18 +32,48 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
     });
   };
 
+  const sendScoreUpdate = (score, combo) => {
+    const session_instrument = sessionStorage.getItem("instrument");
+    const session_motionType = sessionStorage.getItem("motionType");
+  
+    if (session_instrument === null || session_motionType === null) {
+      return;
+    }
+  
+    playMotionSFX(session_instrument, session_motionType, { volume: 1 });
+  
+    const sendData = {
+      code: gameData.code,
+      nickname: myNickname,
+      currentScore: score,
+      combo: combo,
+      instrument: session_instrument,
+      motionType: session_motionType,
+    };
+  
+    socket.emit("hit", sendData);
+    sessionStorage.setItem("hitNote", score);
+    sessionStorage.setItem("combo", combo);
+  };
+
   // 점수를 업데이트하는 함수
   const updateScore = useCallback((result) => {
     if (result === "hit") {
-      // setHittedNotes(hittedNotes + 1);
-      setHittedNotes((prev) => prev + 1);
-      setCombo((prevCombo) => prevCombo + 1);
-    } else if (result === "miss") {
-      // setMissedNotes(missedNotes + 1);
+      // setHittedNotes((prev) => prev + 1);
+      // setCombo((prevCombo) => prevCombo + 1);
+      setHittedNotes((prev) => {
+        const newHittedNotes = prev + 1;
+        const newCombo = combo + 1;
+        sendScoreUpdate(newHittedNotes, newCombo);
+        setCombo(newCombo);
+        return newHittedNotes;
+      });
+    } else if (result === "miss" || result === "ignore") {
       setMissedNotes((prev) => prev + 1);
+      sendScoreUpdate(hittedNotes, 0);
       setCombo(0);
     }
-  }, []);
+  }, [combo, hittedNotes]);
 
   // 외부에서 이벤트를 받아서 점수 업데이트가 필요할 경우를 위한 이벤트 리스너 설정
   useEffect(() => {
@@ -68,7 +97,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
         combo: combo,
       })
     );
-  }, [hittedNotes, dispatch, gameData.code, myNickname, combo]);
+  }, [hittedNotes, combo, dispatch, gameData.code, myNickname]);
 
   useEffect(() => {
     const session_instrument = sessionStorage.getItem("instrument");
@@ -78,7 +107,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
       return;
     }
 
-    playMotionSFX(session_instrument, session_motionType, { volume: 1 });
+    playMotionSFX(session_instrument, session_motionType, { volume: 1.7 });
 
     // console.log("노트 받는지 response:", hittedNotes);
     const sendData = {
@@ -95,11 +124,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
 
     sessionStorage.setItem("hitNote", hittedNotes);
     sessionStorage.setItem("combo", combo);
-  }, [
-    hittedNotes,
-    myNickname,
-    playMotionSFX,
-  ]);
+  }, [hittedNotes, myNickname, playMotionSFX, combo]);
 
   // hit 출력
   useEffect(() => {
@@ -115,10 +140,10 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
             motionType !== undefined
           ) {
             // 게임 이벤트 발생 시 효과음 재생
-            playMotionSFX(instrument, motionType, { volume: 1 }); // 예시로 볼륨을 1로 설정
+            playMotionSFX(instrument, motionType, { volume: 2 }); // 예시로 볼륨을 1로 설정
 
             // if (index !== myPosition) {
-            //   TriggerHitEffect(`player${index}`, railRefs.current[index]);
+              TriggerHitEffect(`player${index}`, railRefs.current[index]);
             // }
           }
 
@@ -149,10 +174,9 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
 
   return (
     <>
-      <div className="scoreWrapper">
+      {/* <div className="scoreWrapper">
         {gameData.players.map((player, index) => (
           <div className="score" key={index}>
-            {/* <p name={player.nickname} className={`hitCombo ${combo > 0 ? 'show' : ''}`} key={`${player.nickname}-${combo}`}>{combo}COMBO</p> */}
             <p
               name={player.nickname}
               className={`hitCombo ${
@@ -165,6 +189,33 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
             <p name={player.nickname} className="hitScore">
               score : {playerScores[player.nickname] * 100 || 0}
             </p>
+          </div>
+        ))}
+      </div> */}
+      <div className="scoreWrapper">
+        {gameData.players.map((player, index) => (
+          <div className="score" key={index}>
+            {player.nickname === myNickname ? (
+              <>
+                <p className={`hitCombo ${combo > 0 ? "show" : ""}`}>
+                  {combo} COMBO
+                </p>
+                <p className="hitScore">score : {hittedNotes * 100 || 0}</p>
+              </>
+            ) : (
+              <>
+                <p
+                  className={`hitCombo ${
+                    playerCombos[player.nickname] > 0 ? "show" : ""
+                  }`}
+                >
+                  {playerCombos[player.nickname]} COMBO
+                </p>
+                <p className="hitScore">
+                  score : {playerScores[player.nickname] * 100 || 0}
+                </p>
+              </>
+            )}
           </div>
         ))}
       </div>

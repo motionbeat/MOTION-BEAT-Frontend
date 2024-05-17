@@ -40,10 +40,10 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
   // console.log("MININDEX:" + minIndex + "JUDGEDNOTES:")
   const timeDiff = noteTime - time;
 
-  // if (((timeDiff > 500 && timeDiff < 1000) || (timeDiff < -500 && timeDiff > -1000)) && closestNote.getAttribute('data-motion') === Parser(key)) {
-  //   console.log("MISS!")
-  //   dispatch("miss");
-  // } else
+  if (((timeDiff > 500 && timeDiff < 1000) || (timeDiff < -500 && timeDiff > -1000)) && closestNote.getAttribute('data-motion') === Parser(key)) {
+    console.log("MISS!")
+    dispatch("miss");
+  }
 
   /* timeDiff가 >=0,<=500 사이에 있고, 같은 모션 키를 입력했을 경우  */
   let currentMotion = Parser(key);

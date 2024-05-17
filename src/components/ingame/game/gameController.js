@@ -37,7 +37,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
       bgmTimeout = setTimeout(() => {
         // console.log("stime:", stime);
         playAudio(data.musicData.sound);
-        playBGM(lastPart, { loop: false, volume: 1 });
+        playBGM(lastPart, { loop: false, volume: 0.5 });
 
         // console.log(data.musicData.sound);
 
