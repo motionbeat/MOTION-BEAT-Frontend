@@ -17,6 +17,7 @@ MOTION-BEAT / Frontend/<br>
 │ │ │ │ └── /gameController.js(오디오 감지와 노트 생성)<br>
 │ │ │ │ └── /gameLoader.js(인게임 진입 후 데이터 로드)<br>
 │ │ │ │ └── /judgement.js(노트 타격 판정)<br>
+│ │ │ /secondScore.js(점수&히트콤보 컴포넌트)<br>
 │ │ └── /main(메인)<br>
 │ │ └── /mediapipe(모션인식)<br>
 │ │ └── /room(대기 방)<br>
