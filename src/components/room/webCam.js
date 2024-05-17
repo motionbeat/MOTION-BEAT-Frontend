@@ -95,7 +95,7 @@ const WebCam = ({ players = [], roomCode }) => {
         const token = await createToken(sessionId);
         if (token) {
           session
-            .connect(token, myNickname)
+            .connect(token, { clientData: myNickname })
             .then(() => {
               const publisher = OV.current.initPublisher(undefined, {
                 audioSource: undefined,
@@ -132,15 +132,11 @@ const WebCam = ({ players = [], roomCode }) => {
 
       const subscriber = session.subscribe(event.stream, videoContainer);
 
-      const streamNickname = event.stream.connection.data.split(" ")[0]; // 닉네임 데이터 추출
-      if (streamNickname === myNickname) {
-        myVideoRef.current.appendChild(subscriber.videos[0].video);
-      } else {
-        if (!otherVideosRef.current[streamNickname]) {
-          otherVideosRef.current[streamNickname] = document.createElement("div");
-        }
-        otherVideosRef.current[streamNickname].appendChild(videoContainer);
+      const streamNickname = JSON.parse(event.stream.connection.data).clientData; // 닉네임 데이터 추출
+      if (!otherVideosRef.current[streamNickname]) {
+        otherVideosRef.current[streamNickname] = document.createElement("div");
       }
+      otherVideosRef.current[streamNickname].appendChild(videoContainer);
 
       setSubscribers((prevSubscribers) => [
         ...prevSubscribers,
@@ -203,7 +199,7 @@ return (
                   />
                 )}
                 <p>
-                  {nickname} &nbsp; {instrument}
+                  {nickname}
                 </p>
               </div>
             </div>
