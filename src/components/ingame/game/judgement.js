@@ -81,8 +81,12 @@ const TriggerMyHitEffect = (target, elem, closestNote) => {
   if (!hitEffect) return;  // hitEffect가 없으면 함수 실행 중지
 
   if (closestNote) {
-    elem.current.removeChild(closestNote);
-    // console.log("[SL] Trigger안에서 My 클로젯 노트 Remove", closestNote, closestNote.getAttribute("data-index"));
+    if (elem.current.contains(closestNote)) {
+      elem.current.removeChild(closestNote);
+      // console.log("[SL] Trigger안에서 My 클로젯 노트 Remove", closestNote, closestNote.getAttribute("data-index"));
+    } else {
+      console.error('closestNote is not a child of elem.current');
+    }
   }
 
   hitEffect.classList.add('active');
