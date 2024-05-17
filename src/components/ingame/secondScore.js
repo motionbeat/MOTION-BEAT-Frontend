@@ -72,6 +72,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
     const handleScoreUpdate = (event) => {
       updateScore(event.detail.result);
     };
+    console.log("유즈이펙트1: 업데이트 스코어");
 
     window.addEventListener("scoreUpdate", handleScoreUpdate);
 
@@ -89,7 +90,9 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
         combo: combo,
       })
     );
-  }, [hittedNotes, combo, dispatch, gameData.code, myNickname]);
+    console.log("유즈이펙트2: 소켓 전송");
+    // console.log("유즈이펙트2: 디스패치");
+  }, [hittedNotes, dispatch, gameData.code, myNickname]);
 
   useEffect(() => {
     const session_instrument = sessionStorage.getItem("instrument");
@@ -134,6 +137,8 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
     return () => {
       scoreUpdateEvents.forEach((cleanup) => cleanup && cleanup());
     };
+
+    console.log("유즈이펙트4: 소켓 수신");
   }, [gameData.players, myPosition, playMotionSFX, railRefs]);
 
   return (
@@ -190,6 +195,11 @@ export const TriggerHitEffect = (target, elem) => {
   // 가장 작은 'data-index'를 가진 자식 요소가 있으면 제거
   if (closestNote) {
     elem.current.removeChild(closestNote);
+    console.log(
+      "[SL] All Trigger에서 클로젯 노트 Remove: ",
+      closestNote,
+      closestNote.getAttribute("data-index")
+    );
   }
 
   hitEffect.classList.add("active");

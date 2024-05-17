@@ -12,6 +12,7 @@ const Score = ({ roomCode }) => {
 
   useEffect(() => {
     dispatch(ingameSendData({ code: roomCode, nickname: myNickname, score: hittedNotes }));
+    console.log("유즈이펙트1");
   }, [hittedNotes, dispatch, roomCode, myNickname]);
 
   // 점수를 업데이트하는 함수
@@ -34,6 +35,7 @@ const Score = ({ roomCode }) => {
     return () => {
       window.removeEventListener('scoreUpdate', handleScoreUpdate);
     };
+    console.log("유즈이펙트2");
   }, [updateScore]);
 
   useEffect(() => {
@@ -46,7 +48,7 @@ const Score = ({ roomCode }) => {
       motionType: sessionStorage.getItem("motion")
     }
     socket.emit("hit", sendData, (res) => {
-      // console.log("Hit update response:", res);
+      console.log("유즈이펙트3 Hit update response:", res);
     });
 
     sessionStorage.setItem("hitNote", hittedNotes);
