@@ -41,6 +41,9 @@ const Ingame = () => {
   const [startGameProps, setStartGameProps] = useState(null);
   const [isGameReady, setGameReady] = useState(false);
 
+  console.log("게임스테이트",gameState)
+  console.log("게임데이터",gameData);
+
   // const handleScoresUpdate = (newScores) => {
   //   setScores(newScores);
   // };
@@ -326,7 +329,7 @@ const Ingame = () => {
       >
         {gameEnded ? (
           <>
-            <GameResult roomCode={gameData.code} />
+            <GameResult roomCode={gameData.code} gameData={gameData} />
           </>
         ) : (
           <>

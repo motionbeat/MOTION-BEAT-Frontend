@@ -48,6 +48,7 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
         const firstSong = response.data;
         sessionStorage.setItem("songTitle", firstSong.title);
         sessionStorage.setItem("songArtist", firstSong.artist);
+        sessionStorage.setItem("songArtist", firstSong.imagePath);
         setSelectedSong(firstSong);
       } catch (error) {
         console.error("Error random songs:", error);
@@ -72,6 +73,7 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
     setSelectedSong(song);
     sessionStorage.setItem("songTitle", song.title);
     sessionStorage.setItem("songArtist", song.artist);
+    sessionStorage.setItem("songArtist", song.imagePath);
 
     const sendData = {
       song,

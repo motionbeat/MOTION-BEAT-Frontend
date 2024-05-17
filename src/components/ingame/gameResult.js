@@ -7,12 +7,13 @@ import FirstCrown from "../../img/crown.png"
 import "../../styles/ingame/gameResult.scss"
 import GameExitBtn from "../common/atomic/room/gameExitBtn.js";
 
-const GameResult = ( {roomCode} ) => {
+const GameResult = ( {roomCode}, gameData ) => {
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
   const [resultData, setResultData] = useState([]);
   const navigate = useNavigate();
   const songTitle = sessionStorage.getItem("songTitle");
   const songArtist = sessionStorage.getItem("songArtist");
+  console.log("데이터 잘 받아와지나 테스트", gameData);
 
   // 결과창 출력
   useEffect(() => {
@@ -68,10 +69,10 @@ const GameResult = ( {roomCode} ) => {
                 {index === 0 ? (
                   <>
                     <img className="crown" src={FirstCrown} alt="1등 전용" />
-                    <p>{player.nickname}: {player.score}</p>
+                    <p>{player.nickname}: {player.score*100}</p>
                   </>
                 ) : (
-                  <p>{player.nickname}: {player.score}</p>
+                  <p>{player.nickname}: {player.score*100}</p>
                 )}
               </div>
             ))}
