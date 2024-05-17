@@ -13,7 +13,6 @@ if (!audioPlayer) {
 
 const playAudio = (sound) => {
   audioPlayer.src = sound;
-  // console.log(audioPlayer.src)
   audioPlayer.currentTime = 0;
   audioPlayer.volume = 0
   audioPlayer.play()
@@ -30,7 +29,9 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
   const notes = data?.musicData?.notes;
 
   useEffect(() => {
-    myInstrument = railRefs.current[myPosition].current?.dataset.instrument;
+    if (railRefs.current[myPosition]) {
+      myInstrument = railRefs.current[myPosition].current?.dataset.instrument;
+    }
   }, [railRefs, myPosition]);
 
   useEffect(() => {
@@ -52,8 +53,10 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
     }
 
     const WhenStart = () => {
-      console.log("내 포지션: ", myPosition);
-      console.log("내 악기: ", myInstrument);
+      // console.log("내 포지션: ", myPosition);
+      // console.log("내 악기: ", myInstrument);
+      // console.log("ref: ", railRefs);
+      // console.log("myRef: ", railRefs.current[myPosition].current);
       let count = 1200;
 
       const ScheduleNotes = () => {
@@ -82,9 +85,9 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
       noteElement.style.left = `100%`;
       noteElement.className = "Note";
       noteElement.style.zIndex = index;
-      if(motion === "A") {
+      if (motion === "A") {
         noteElement.textContent = "L";
-      } else { 
+      } else {
         noteElement.textContent = "R"
       }
       noteElement.setAttribute("data-motion", motion);
@@ -92,6 +95,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
       noteElement.setAttribute("data-instrument", note.instrument);
       noteElement.setAttribute("data-index", index);
 
+      // console.log("RAILREFS 갯수: ", railRefs.current);
       for (const idx in railRefs.current) {
         if (
           railRefs.current[idx].current?.dataset.instrument === note.instrument
@@ -110,16 +114,16 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
 
         if (note.instrument === myInstrument) {
           if (positionPercent <= -3) {
-            console.log("내 노트 삭제");
             noteElement.remove();
             cancelAnimationFrame(AnimateNote);
           } else {
             noteElement.style.left = `${positionPercent}%`;
             requestAnimationFrame(AnimateNote);
           }
-        } else {
-          if (positionPercent <= 7) {
-            console.log("다른 플레이어 노트 삭제");
+        }
+
+        if (note.instrument !== myInstrument) {
+          if (positionPercent <= 8) {
             noteElement.remove();
             cancelAnimationFrame(AnimateNote);
           }
