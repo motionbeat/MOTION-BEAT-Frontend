@@ -78,7 +78,6 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
     const handleScoreUpdate = (event) => {
       updateScore(event.detail.result);
     };
-    console.log("유즈이펙트1: 업데이트 스코어");
 
     window.addEventListener("scoreUpdate", handleScoreUpdate);
 
@@ -96,8 +95,6 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
         combo: combo,
       })
     );
-    console.log("유즈이펙트2: 소켓 전송");
-    // console.log("유즈이펙트2: 디스패치");
   }, [hittedNotes, dispatch, gameData.code, myNickname]);
 
   useEffect(() => {
@@ -145,8 +142,6 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
     return () => {
       scoreUpdateEvents.forEach((cleanup) => cleanup && cleanup());
     };
-
-    console.log("유즈이펙트4: 소켓 수신");
   }, [gameData.players, myPosition, playMotionSFX, railRefs]);
 
   return (
