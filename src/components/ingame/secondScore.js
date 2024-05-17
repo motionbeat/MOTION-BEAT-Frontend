@@ -202,7 +202,18 @@ export const TriggerHitEffect = (target, elem) => {
 
   // 가장 작은 'data-index'를 가진 자식 요소가 있으면 제거
   if (closestNote) {
+    if (elem.current.contains(closestNote)) {
+      console.log(
+        "[secondScore] closestNote is a child of elem.current",
+        closestNote
+      );
+      elem.current.removeChild(closestNote);
+    } else {
+      console.error("[secondScore] closestNote is not a child of elem.current");
+    }
+
     elem.current.removeChild(closestNote);
+
     console.log(
       "[SL] All Trigger에서 클로젯 노트 Remove: ",
       closestNote,

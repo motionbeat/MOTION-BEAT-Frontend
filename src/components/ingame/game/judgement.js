@@ -1,7 +1,7 @@
 import { Parser } from "../../../utils/parser";
-import { TriggerHitEffect } from "../secondScore.js";
+// import { TriggerHitEffect } from "../secondScore.js";
 
-let audioElements;
+// let audioElements;
 
 export const Judge = (key, time, instrument, myPosition, myRailRef) => {
   let result = "ignore";
@@ -78,23 +78,27 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
 const TriggerMyHitEffect = (target, elem, closestNote) => {
   const hitEffect = document.getElementById(`${target}HitEffect`);
   // console.log(hitEffect)
-  if (!hitEffect) return;  // hitEffect가 없으면 함수 실행 중지
+  if (!hitEffect) return; // hitEffect가 없으면 함수 실행 중지
 
   if (closestNote) {
     if (elem.current.contains(closestNote)) {
+      console.log(
+        "[judgement] closestNote is a child of elem.current",
+        closestNote
+      );
       elem.current.removeChild(closestNote);
       // console.log("[SL] Trigger안에서 My 클로젯 노트 Remove", closestNote, closestNote.getAttribute("data-index"));
     } else {
-      console.error('closestNote is not a child of elem.current');
+      console.error("[judgement] closestNote is not a child of elem.current");
     }
   }
 
-  hitEffect.classList.add('active');
+  hitEffect.classList.add("active");
 
   setTimeout(() => {
-    hitEffect.classList.remove('active'); // 애니메이션이 끝나고 클래스를 제거
+    hitEffect.classList.remove("active"); // 애니메이션이 끝나고 클래스를 제거
   }, 350); // 애니메이션 시간과 동일하게 설정
-}
+};
 
 // const PlayMyKeySound = (parsedkey, idx) => {
 //   const audio1 = document.getElementById(`keySound0player${idx}`);
