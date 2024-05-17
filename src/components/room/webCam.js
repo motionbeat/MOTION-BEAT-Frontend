@@ -140,75 +140,75 @@ const WebCam = ({ players = [], roomCode }) => {
 
       setSubscribers((prevSubscribers) => [
         ...prevSubscribers,
-        subscriber,
+        { subscriber, streamNickname },
       ]);
     });
 
-  session.on("streamDestroyed", (event) => {
-    setSubscribers((subs) =>
-      subs.filter((sub) => sub !== event.stream.streamManager)
-    );
-  });
+    session.on("streamDestroyed", (event) => {
+      setSubscribers((subs) =>
+        subs.filter((sub) => sub.subscriber !== event.stream.streamManager)
+      );
+    });
 
-  initSession(roomCode, session);
+    initSession(roomCode, session);
 
-  return () => {
-    if (session) {
-      session.disconnect();
-    }
+    return () => {
+      if (session) {
+        session.disconnect();
+      }
+    };
+
+  }, [roomCode, initSession]);
+
+  const dispatchKey = (key) => {
+    const event = new KeyboardEvent("keydown", {
+      key: key,
+      code: key.toUpperCase(),
+      which: key.charCodeAt(0),
+      keyCode: key.charCodeAt(0),
+      shiftKey: false,
+      ctrlKey: false,
+      metaKey: false,
+    });
+    window.dispatchEvent(event);
   };
 
-}, [roomCode, initSession]);
-
-const dispatchKey = (key) => {
-  const event = new KeyboardEvent("keydown", {
-    key: key,
-    code: key.toUpperCase(),
-    which: key.charCodeAt(0),
-    keyCode: key.charCodeAt(0),
-    shiftKey: false,
-    ctrlKey: false,
-    metaKey: false,
-  });
-  window.dispatchEvent(event);
-};
-
-return (
-  <>
-    <div className="webCamBox">
-      {Object.entries(playerStatuses).map(
-        ([nickname, { instrument, color }], index) => (
-          <div className="playerContainer" key={index}>
-            <div>
-              <div
-                className="webCamBoxDiv"
-                style={{
-                  backgroundImage: `linear-gradient(to bottom, rgba(${color}, 1), black)`,
-                  boxShadow:
-                    myNickname === nickname && flash
-                      ? "0 0 15px 10px rgba(255, 255, 255, 0.8)"
-                      : "none",
-                }}
-              >
-                {myNickname === nickname ? (
-                  <Drum1 dispatchKey={dispatchKey} />
-                ) : (
-                  <div
-                    ref={(el) => (otherVideosRef.current[nickname] = el)}
-                    className="webCamBoxInner"
-                  />
-                )}
-                <p>
-                  {nickname}
-                </p>
+  return (
+    <>
+      <div className="webCamBox">
+        {Object.entries(playerStatuses).map(
+          ([nickname, { instrument, color }], index) => (
+            <div className="playerContainer" key={index}>
+              <div>
+                <div
+                  className="webCamBoxDiv"
+                  style={{
+                    backgroundImage: `linear-gradient(to bottom, rgba(${color}, 1), black)`,
+                    boxShadow:
+                      myNickname === nickname && flash
+                        ? "0 0 15px 10px rgba(255, 255, 255, 0.8)"
+                        : "none",
+                  }}
+                >
+                  {myNickname === nickname ? (
+                    <Drum1 dispatchKey={dispatchKey} />
+                  ) : (
+                    <div
+                      ref={(el) => { otherVideosRef.current[nickname] = el; }} // 닉네임에 맞는 비디오 컨테이너를 렌더링
+                      className="webCamBoxInner"
+                    />
+                  )}
+                  <p>
+                    {nickname}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-        )
-      )}
-    </div>
-  </>
-);
+          )
+        )}
+      </div>
+    </>
+  );
 };
 
 export default WebCam;
