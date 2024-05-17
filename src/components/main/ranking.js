@@ -29,9 +29,8 @@ const Ranking = () => {
           UserId: sessionStorage.getItem("userId"),
         },
       });
-      setShowRanking(response.data);
-      console.log("랭킹 목록", response.data);
-      console.log("랭킹 목록", response.data[0].players[0].nickname);
+      const sortedRanking = response.data.sort((a, b) => b.totalScore - a.totalScore);
+      setShowRanking(sortedRanking);
     } catch (error) {
       console.error("Error fetching songs:", error);
     }
@@ -57,8 +56,6 @@ const Ranking = () => {
           },
         });
         setSongList(response.data);
-        console.log("서버데이터", response.data);
-        // console.log("받아온 것",selectedItem);
       } catch (error) {
         console.error("Error fetching songs:", error);
       }

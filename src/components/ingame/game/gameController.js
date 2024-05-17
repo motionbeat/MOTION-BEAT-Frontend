@@ -113,6 +113,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
 
       socket.emit("gameEnded", sendData);
       sessionStorage.removeItem("hitNote");
+      sessionStorage.removeItem("combo");
     };
 
     const handleAudioEnded = () => {

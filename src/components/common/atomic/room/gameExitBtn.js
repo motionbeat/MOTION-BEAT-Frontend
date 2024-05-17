@@ -38,6 +38,7 @@ const GameExitBtn = ({roomCode}) => {
         if (response2.data.message === "redirect") {
           sessionStorage.removeItem("songTitle");
           sessionStorage.removeItem("songArtist");
+          sessionStorage.removeItem("songAlbum");
           navigate("/main");
         } 
       }
