@@ -153,8 +153,6 @@ const Ingame = () => {
 
   }, []);
 
-
-
   const WhenSocketOn = (serverTime) => {
     // 여기에는 시작시간 딜레이가 포함됨
     const timeDiff = serverTime - Date.now();
@@ -215,9 +213,8 @@ const Ingame = () => {
           return (
             <VerticalRail
               ref={railRefs.current[index]}
-              color={`rgba(${staticColorsArray[index]}, ${
-                index === myPosition ? 1 : 0.4
-              })`}
+              color={`rgba(${staticColorsArray[index]}, ${index === myPosition ? 1 : 0.4
+                })`}
               top={`${(100 / gameData.players.length) * index}%`}
               data-instrument={gameData.players[index].instrument}
               key={index}

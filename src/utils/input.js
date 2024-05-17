@@ -1,10 +1,10 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setInput } from "../redux/actions/inputActions";
-import { useAudio } from "../components/common/useSoundManager";
+// import { useAudio } from "../components/common/useSoundManager";
 
 const Input = ({ onKeyDown, onKeyUp }) => {
-  const { getElapsedTime } = useAudio();
+  // const { getElapsedTime } = useAudio();
   const dispatch = useDispatch();
 
   useEffect(() => {
@@ -40,7 +40,7 @@ const Input = ({ onKeyDown, onKeyUp }) => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [dispatch, getElapsedTime, onKeyDown, onKeyUp]);
+  }, [dispatch, onKeyDown, onKeyUp]);
 
   return <div className="keyBox" />;
 };
