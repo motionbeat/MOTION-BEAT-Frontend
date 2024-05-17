@@ -3,6 +3,8 @@ import { useAudio } from "../../../components/common/useSoundManager.js";
 import socket from "../../../server/server.js";
 import "../../../styles/songSheet.css"
 
+let myInstrument;
+
 const audioPlayer = document.getElementById("audioPlayer");
 
 if (!audioPlayer) {
@@ -28,6 +30,10 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
   const notes = data?.musicData?.notes;
 
   useEffect(() => {
+    myInstrument = railRefs.current[myPosition].current?.dataset.instrument;
+  }, [railRefs, myPosition]);
+
+  useEffect(() => {
     let audioTime;
     let bgmTimeout;
     const lastPart = data?.musicData?.sound?.split('/').pop();
@@ -46,6 +52,8 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
     }
 
     const WhenStart = () => {
+      console.log("내 포지션: ", myPosition);
+      console.log("내 악기: ", myInstrument);
       let count = 1200;
 
       const ScheduleNotes = () => {
@@ -54,7 +62,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
         for (const note of notes) {
           const startTime = note.time - animationDuration;
 
-          // TODO: <이상림> getElapsedTime() 함수를 사용하여 현재 시간을 가져와야 함
+          // TODO: <LSL> getElapsedTime() 함수를 사용하여 현재 시간을 가져와야 함
           if (startTime <= audioTime && !processedNotes.has(note)) {
             processedNotes.add(note);
             GenerateNote(note, startTime, count);
@@ -89,16 +97,35 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
       }
 
       const AnimateNote = () => {
+        // if (time - lasTime >= interval) {
+        //   lastTime = time;
+        // }
+
         const currTime = parseInt(audioPlayer.currentTime * 1000, 10);
         const positionPercent = ((time - currTime) * 100 / animationDuration).toFixed(1);
 
-        if (positionPercent <= -3) {
-          noteElement.remove();
+        if (note.instrument === myInstrument) {
+          if (positionPercent <= -3) {
+            console.log("내 노트 삭제");
+            noteElement.remove();
+            cancelAnimationFrame(AnimateNote);
+          } else {
+            noteElement.style.left = `${positionPercent}%`;
+            requestAnimationFrame(AnimateNote);
+          }
         } else {
-          noteElement.style.left = `${positionPercent}%`;
-          requestAnimationFrame(AnimateNote);
+          if (positionPercent <= 7) {
+            console.log("다른 플레이어 노트 삭제");
+            noteElement.remove();
+            cancelAnimationFrame(AnimateNote);
+          }
+          else {
+            noteElement.style.left = `${positionPercent}%`;
+            requestAnimationFrame(AnimateNote);
+          }
         }
       };
+
       requestAnimationFrame(AnimateNote);
     };
 
@@ -138,7 +165,6 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
       }
     };
   }, [data.musicData, railRefs, roomCode, notes]);
-
   return null;
 };
 
