@@ -18,13 +18,21 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
 
   // 노래 재생
   const handlePlay = () => {
-    audioRef.current.play();
+    const audio = audioRef.current;
+    if (audio) {
+      audio.play().catch((error) => {
+        console.error("Error playing audio:", error);
+      });
+    }
   };
 
   // 노래 중지
   const handleStop = () => {
-    audioRef.current.pause(); // 일시정지
-    audioRef.current.currentTime = 0; // 재생 위치를 처음으로 설정
+    const audio = audioRef.current;
+    if (audio) {
+      audio.pause(); // 일시정지
+      audio.currentTime = 0; // 재생 위치를 처음으로 설정
+    }
   };
 
   // 노래 이미지 클릭 시 선택 모달
@@ -33,7 +41,7 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
       setModalOn(!modalOn);
     }
   };
-
+  
   useEffect(() => {
     const findSong = async () => {
       try {
@@ -58,7 +66,6 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
     findSong();
 
     const handleSongChange = (song) => {
-      console.log("received");
       setSelectedSong(song);
     };
     socket.on(`songChanged`, handleSongChange);
@@ -93,10 +100,10 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
 
   return (
     <>
-      {/* <audio ref={audioRef} src="/song/0.mp3" /> */}
+      <audio ref={audioRef} src="/song/3.mp3" />
       <div className="showSongWrapper">
         <div className="songImg">
-          <img src={`thumbnail/${selectedSong?.imagePath}`} alt="lemon" />
+          <img src={`thumbnail/${selectedSong?.imagePath}`} alt="album" onMouseEnter={handlePlay} onMouseLeave={handleStop} />
         </div>
         {selectedSong && (
           <div className="roomSelectSongBox">
