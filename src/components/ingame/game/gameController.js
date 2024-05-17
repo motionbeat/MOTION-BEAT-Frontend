@@ -74,7 +74,11 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
       noteElement.style.left = `100%`;
       noteElement.className = "Note";
       noteElement.style.zIndex = index;
-      noteElement.textContent = `${motion}`;
+      if(motion === "A") {
+        noteElement.textContent = "L";
+      } else { 
+        noteElement.textContent = "R"
+      }
       noteElement.setAttribute("data-motion", motion);
       noteElement.setAttribute("data-time", time);
       noteElement.setAttribute("data-instrument", note.instrument);

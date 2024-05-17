@@ -7,6 +7,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/room/room.scss";
 import RoomHeader from "../components/common/atomic/room/roomHeader.js";
 import RoomPlayers from "components/room/roomPlayer.js";
+import NewChatting from "components/room/newChatting.js";
 
 const Room = () => {
   const location = useLocation();
@@ -16,6 +17,12 @@ const Room = () => {
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
   const myNickname = sessionStorage.getItem("nickname");
   const [allReady, setAllReady] = useState(true);
+  const [openChat, setOpenChat] = useState(false);
+
+  // 채팅 열기
+  const chattingOpen = () => {
+    setOpenChat(!openChat);
+  }
 
   //joinRoom을 쏴줘야 함
   useEffect(() => {
@@ -117,7 +124,10 @@ const Room = () => {
                     <button>복사</button>
                   </div>
                 )}
-                <button className="chattingBtn">채팅하기</button>
+                <div style={{position:"relative"}}>
+                  <button className="chattingBtn" onClick={chattingOpen}>채팅하기</button>
+                  {openChat && <NewChatting roomCode={room.code} />}
+                </div>
               </div>
             </div>
             <RoomPlayers
