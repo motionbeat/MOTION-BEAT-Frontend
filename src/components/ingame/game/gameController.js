@@ -90,7 +90,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
 
       const AnimateNote = () => {
         const currTime = parseInt(audioPlayer.currentTime * 1000, 10);
-        const positionPercent = ((time - currTime) / animationDuration) * 100;
+        const positionPercent = ((time - currTime) * 100 / animationDuration).toFixed(1);
 
         if (positionPercent <= -3) {
           noteElement.remove();
@@ -140,5 +140,9 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
 
   return null;
 };
+
+// const StartAnimation = (fps) => {
+//   fpsInterval = 1000 / fps;
+// }
 
 export default Start;
