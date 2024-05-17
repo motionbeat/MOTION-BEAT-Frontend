@@ -73,7 +73,7 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
     setSelectedSong(song);
     sessionStorage.setItem("songTitle", song.title);
     sessionStorage.setItem("songArtist", song.artist);
-    sessionStorage.setItem("songArtist", song.imagePath);
+    sessionStorage.setItem("songAlbum", song.imagePath);
 
     const sendData = {
       song,

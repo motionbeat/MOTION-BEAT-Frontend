@@ -13,6 +13,7 @@ const GameResult = ( {roomCode}, gameData ) => {
   const navigate = useNavigate();
   const songTitle = sessionStorage.getItem("songTitle");
   const songArtist = sessionStorage.getItem("songArtist");
+  const songAlbum = sessionStorage.getItem("songAlbum");
   console.log("데이터 잘 받아와지나 테스트", gameData);
 
   // 결과창 출력
@@ -50,9 +51,9 @@ const GameResult = ( {roomCode}, gameData ) => {
           <div className="scoreGrade">SSS</div>
         </div> */}
         <div className="gameResultMainWrapper">
-          <div>
+          <div className="songBox">
             <div className="songWrapper">
-              <img src="#"/>
+              <img src={`thumbnail/${songAlbum}`} alt="songAlbum"/>
               <div className="songInfo">
                 <h1>{songTitle}</h1>
                 <p>{songArtist}</p>
