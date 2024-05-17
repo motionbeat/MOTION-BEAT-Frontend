@@ -340,7 +340,6 @@ const Ingame = () => {
               <WebCam
                 players={gameData.players}
                 roomCode={gameData.code}
-                ingame={true}
                 gameData={gameData}
                 railRefs={railRefs}
                 myPosition={myPosition}

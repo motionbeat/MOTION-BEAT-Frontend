@@ -3,20 +3,18 @@ import axios from "axios";
 import Drum1 from "../mediapipe/drum1.js";
 import "../../styles/room/webcam.scss";
 import { OpenVidu } from "openvidu-browser";
-// import { PlayKeySoundWithParser } from "../ingame/game/judgement";
 
 const staticColorsArray = ["250,0,255", "1,248,10", "0,248,203", "249,41,42"];
 
-const WebCam = ({ players = [], roomCode, ingame }) => {
+const WebCam = ({ players = [], roomCode}) => {
   const [playerStatuses, setPlayerStatuses] = useState({});
   const myNickname = sessionStorage.getItem("nickname");
   const [session, setSession] = useState(null);
   const [publisher, setPublisher] = useState(null);
   const [subscribers, setSubscribers] = useState([]);
-  const OV = useRef(new OpenVidu());
+  const OV = useRef(null);  // OpenVidu 인스턴스를 저장할 useRef
   const myVideoRef = useRef(null);
   const otherVideosRef = useRef({});
-  // const [combo, setCombo] = useState(parseInt(sessionStorage.getItem("combo"), 10) || 0);
   const [hitNote, setHitNote] = useState(0);
   const [flash, setFlash] = useState(false);
 
@@ -35,20 +33,18 @@ const WebCam = ({ players = [], roomCode, ingame }) => {
   }, [hitNote]);
 
   useEffect(() => {
-    setPlayerStatuses(prevStatuses => {
+    setPlayerStatuses((prevStatuses) => {
       const updatedStatuses = players.reduce((acc, player, index) => {
         acc[player.nickname] = {
           nickname: player.nickname,
           instrument: player.instrument,
-          color: staticColorsArray[index % staticColorsArray.length]
+          color: staticColorsArray[index % staticColorsArray.length],
         };
         return acc;
-      }, []);
-
+      }, {});
       return updatedStatuses;
     });
   }, [players]);
-
 
   const createSession = useCallback(async (sessionId) => {
     try {
@@ -58,9 +54,9 @@ const WebCam = ({ players = [], roomCode, ingame }) => {
         {
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
-            "UserId": sessionStorage.getItem("userId"),
-            "Nickname": sessionStorage.getItem("nickname")
+            Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
+            UserId: sessionStorage.getItem("userId"),
+            Nickname: sessionStorage.getItem("nickname"),
           },
         }
       );
@@ -79,9 +75,9 @@ const WebCam = ({ players = [], roomCode, ingame }) => {
         {
           headers: {
             "Content-Type": "application/json",
-            "Authorization": `Bearer ${sessionStorage.getItem("userToken")}`,
-            "UserId": sessionStorage.getItem("userId"),
-            "Nickname": sessionStorage.getItem("nickname")
+            Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
+            UserId: sessionStorage.getItem("userId"),
+            Nickname: sessionStorage.getItem("nickname"),
           },
         }
       );
@@ -92,111 +88,135 @@ const WebCam = ({ players = [], roomCode, ingame }) => {
     }
   }, []);
 
-  const initSession = useCallback(async (roomCode, session) => {
-    const sessionId = await createSession(roomCode);
-    if (sessionId) {
-      const token = await createToken(sessionId);
-      if (token) {
-        session
-          .connect(token, myNickname)
-          .then(() => {
-            const publisher = OV.current.initPublisher(undefined, {
-              audioSource: undefined,
-              videoSource: undefined,
-              publishAudio: false,
-              publishVideo: true,
-              resolution: "390x300",
-              frameRate: 30,
-              mirror: true,
+  const initSession = useCallback(
+    async (roomCode, session) => {
+      const sessionId = await createSession(roomCode);
+      if (sessionId) {
+        const token = await createToken(sessionId);
+        if (token) {
+          session
+            .connect(token, myNickname)
+            .then(() => {
+              const publisher = OV.current.initPublisher(undefined, {
+                audioSource: undefined,
+                videoSource: undefined,
+                publishAudio: false,
+                publishVideo: true,
+                resolution: "390x300",
+                frameRate: 30,
+                mirror: true,
+              });
+              session.publish(publisher);
+              setPublisher(publisher);
+            })
+            .catch((error) => {
+              console.error("Error connecting to the session:", error);
             });
-            session.publish(publisher);
-            setPublisher(publisher);
-          })
-          .catch((error) => {
-            console.error(
-              "Error connecting to the session:",
-              error
-            );
-          });
+        }
       }
-    }
-  }, [createSession, createToken, myNickname]);
+    },
+    [createSession, createToken, myNickname]
+  );
 
-  // OpenVidu
   useEffect(() => {
-    if (ingame) {
-      const session = OV.current.initSession();
-      setSession(session);
-
-      session.on("streamCreated", (event) => {
-
-        const isSelf = event.stream.connection.connectionId === session.connection.connectionId;
-        let videoContainer = document.createElement("div"); // 비디오를 위한 새로운 div 생성
-        videoContainer.className = "videoContainer"; // 클래스 이름 설정(스타일링 용)
-
-        const subscriber = session.subscribe(event.stream, videoContainer);
-
-        if (isSelf) {
-          myVideoRef.current.appendChild(subscriber.videos[0].video);
-        } else {
-          const streamNickname = event.stream.connection.data.split(' ')[0]; // 닉네임 데이터 추출
-          if (!otherVideosRef.current[streamNickname]) {
-            otherVideosRef.current[streamNickname] = document.createElement("div");
-          }
-          otherVideosRef.current[streamNickname].appendChild(videoContainer);
-        }
-
-        // isSelf가 true 때도, 즉 내 영상일 때도 subscribers에 추가해야 할지 논의 필요 - Hyeonwoo, 2024.05.11
-        setSubscribers((prevSubscribers) => [
-          ...prevSubscribers,
-          subscriber,
-        ]);
-      });
-
-      session.on("streamDestroyed", (event) => {
-        setSubscribers((subs) =>
-          subs.filter((sub) => sub !== event.stream.streamManager)
-        );
-      });
-
-      initSession(roomCode, session);
-
-      return () => {
-        if (ingame && session) {
-          session.disconnect();
-        }
-      }
+    if (!OV.current) {
+      OV.current = new OpenVidu();  // OpenVidu 인스턴스를 한 번만 초기화
     }
-  }, [ingame, roomCode, initSession]);
+
+    const session = OV.current.initSession();
+    setSession(session);
+
+    session.on("streamCreated", (event) => {
+      const isSelf =
+        event.stream.connection.connectionId ===
+        session.connection.connectionId;
+      let videoContainer = document.createElement("div"); // 비디오를 위한 새로운 div 생성
+      videoContainer.className = "videoContainer"; // 클래스 이름 설정(스타일링 용)
+
+      const subscriber = session.subscribe(event.stream, videoContainer);
+
+      if (isSelf) {
+        myVideoRef.current.appendChild(subscriber.videos[0].video);
+      } else {
+        const streamNickname = event.stream.connection.data.split(" ")[0]; // 닉네임 데이터 추출
+        if (!otherVideosRef.current[streamNickname]) {
+          otherVideosRef.current[streamNickname] =
+            document.createElement("div");
+        }
+        otherVideosRef.current[streamNickname].appendChild(videoContainer);
+      }
+
+      setSubscribers((prevSubscribers) => [
+        ...prevSubscribers,
+        subscriber,
+      ]);
+    });
+
+    session.on("streamDestroyed", (event) => {
+      setSubscribers((subs) =>
+        subs.filter((sub) => sub !== event.stream.streamManager)
+      );
+    });
+
+    initSession(roomCode, session);
+
+    return () => {
+      if (session) {
+        session.disconnect();
+      }
+    };
+
+  }, [roomCode, initSession]);
+
+  const dispatchKey = (key) => {
+    const event = new KeyboardEvent("keydown", {
+      key: key,
+      code: key.toUpperCase(),
+      which: key.charCodeAt(0),
+      keyCode: key.charCodeAt(0),
+      shiftKey: false,
+      ctrlKey: false,
+      metaKey: false,
+    });
+    window.dispatchEvent(event);
+  };
 
   return (
     <>
       <div className="webCamBox">
-        {Object.entries(playerStatuses).map(([nickname, { instrument, color }], index) => (
-          <div className="playerContainer" key={index}>
-            <div>
-              <div className="webCamBoxDiv" style={{
-                backgroundImage: `linear-gradient(to bottom, rgba(${color}, 1), black)`,
-                boxShadow: myNickname === nickname && flash ? "0 0 15px 10px rgba(255, 255, 255, 0.8)" : "none"
-              }}>
-                {myNickname === nickname ? (
-                  // <div ref={myVideoRef} className="webCamBoxInner"/>
-                  <Drum1 />
-                  // </div>
-                ) : (
-                  <div
-                    ref={(el) => (otherVideosRef.current[nickname] = el)}
-                    className="webCamBoxInner"
-                  />
-                )}
-                <p>{nickname} &nbsp; {instrument}</p>
-
+        {Object.entries(playerStatuses).map(
+          ([nickname, { instrument, color }], index) => (
+            <div className="playerContainer" key={index}>
+              <div>
+                <div
+                  className="webCamBoxDiv"
+                  style={{
+                    backgroundImage: `linear-gradient(to bottom, rgba(${color}, 1), black)`,
+                    boxShadow:
+                      myNickname === nickname && flash
+                        ? "0 0 15px 10px rgba(255, 255, 255, 0.8)"
+                        : "none",
+                  }}
+                >
+                  {myNickname === nickname ? (
+                    <Drum1 dispatchKey={dispatchKey} />
+                  ) : (
+                    <div
+                      ref={(el) => (otherVideosRef.current[nickname] = el)}
+                      className="webCamBoxInner"
+                    />
+                  )}
+                  <p>
+                    {nickname} &nbsp; {instrument}
+                  </p>
+                </div>
               </div>
             </div>
-          </div>
-        ))}
+          )
+        )}
       </div>
     </>
   );
 };
+
 export default WebCam;

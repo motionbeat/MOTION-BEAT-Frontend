@@ -1,28 +1,13 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
 import * as posedetection from "@mediapipe/pose";
 
-const Drum1 = () => {
-  // const [isModelLoaded, setIsModelLoaded] = useState(false);
+const Drum1 = ({ dispatchKey }) => {
   const [postureStatus, setPostureStatus] = useState("X");
-  // const [lastPlayedSound, setLastPlayedSound] = useState(null);
   const videoRef = useRef(null);
   const canvasRef = useRef(null);
   const poseRef = useRef(null);
   const leftWristInArea = useRef(false);
   const rightWristInArea = useRef(false);
-
-  const dispatchKey = (key) => {
-    const event = new KeyboardEvent("keydown", {
-      key: key,
-      code: key.toUpperCase(),
-      which: key.charCodeAt(0),
-      keyCode: key.charCodeAt(0),
-      shiftKey: false,
-      ctrlKey: false,
-      metaKey: false,
-    });
-    window.dispatchEvent(event);
-  };
 
   const initializePose = useCallback(() => {
     poseRef.current = new posedetection.Pose({
@@ -35,7 +20,6 @@ const Drum1 = () => {
       smoothLandmarks: false,
       enableSegmentation: false,
     });
-    // setIsModelLoaded(true);
   }, []);
 
   const initializeMediaStream = useCallback(async () => {
@@ -137,18 +121,15 @@ const Drum1 = () => {
     (newStatus) => {
       if (postureStatus !== newStatus) {
         setPostureStatus(newStatus);
-        // setLastPlayedSound(newStatus);
-
         if (newStatus === "A") {
           dispatchKey("d");
         } else if (newStatus === "B") {
           dispatchKey("f");
         }
-
         setTimeout(() => setPostureStatus("X"), 0.01);
       }
     },
-    [postureStatus]
+    [postureStatus, dispatchKey]
   );
 
   useEffect(() => {
