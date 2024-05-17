@@ -81,15 +81,20 @@ const TriggerMyHitEffect = (target, elem, closestNote) => {
   if (!hitEffect) return; // hitEffect가 없으면 함수 실행 중지
 
   if (closestNote) {
-    if (elem.current.contains(closestNote)) {
-      console.log(
-        "[judgement] closestNote is a child of elem.current",
-        closestNote
-      );
+    if (elem.current && elem.current.contains(closestNote)) {
       elem.current.removeChild(closestNote);
-      // console.log("[SL] Trigger안에서 My 클로젯 노트 Remove", closestNote, closestNote.getAttribute("data-index"));
+      // console.log(elem);
+      // console.log(elem.current);
+      // console.log(closestNote);
+      console.log(
+        "[SL] All Trigger에서 자식 클로짓 노트 삭제: ",
+        closestNote,
+        closestNote.getAttribute("data-index")
+      );
     } else {
-      console.error("[judgement] closestNote is not a child of elem.current");
+      console.warn("[SL] closestNote is not a child of elem.current");
+      // console.log("elem.current:", elem.current);
+      // console.log("closestNote:", closestNote);
     }
   }
 

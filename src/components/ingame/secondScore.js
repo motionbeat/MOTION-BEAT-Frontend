@@ -202,23 +202,21 @@ export const TriggerHitEffect = (target, elem) => {
 
   // 가장 작은 'data-index'를 가진 자식 요소가 있으면 제거
   if (closestNote) {
-    if (elem.current.contains(closestNote)) {
-      console.log(
-        "[secondScore] closestNote is a child of elem.current",
-        closestNote
-      );
+    if (elem.current && elem.current.contains(closestNote)) {
       elem.current.removeChild(closestNote);
+      // console.log(elem);
+      // console.log(elem.current);
+      // console.log(closestNote);
+      console.log(
+        "[SL] All Trigger에서 자식 클로짓 노트 삭제: ",
+        closestNote,
+        closestNote.getAttribute("data-index")
+      );
     } else {
-      console.error("[secondScore] closestNote is not a child of elem.current");
+      console.warn("[SL] closestNote is not a child of elem.current");
+      // console.log("elem.current:", elem.current);
+      // console.log("closestNote:", closestNote);
     }
-
-    elem.current.removeChild(closestNote);
-
-    console.log(
-      "[SL] All Trigger에서 클로젯 노트 Remove: ",
-      closestNote,
-      closestNote.getAttribute("data-index")
-    );
   }
 
   hitEffect.classList.add("active");
