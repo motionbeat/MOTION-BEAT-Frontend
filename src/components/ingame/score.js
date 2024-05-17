@@ -35,7 +35,6 @@ const Score = ({ roomCode }) => {
     return () => {
       window.removeEventListener('scoreUpdate', handleScoreUpdate);
     };
-    // console.log("유즈이펙트2");
   }, [updateScore]);
 
   useEffect(() => {

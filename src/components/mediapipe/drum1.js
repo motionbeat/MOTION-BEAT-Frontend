@@ -29,7 +29,7 @@ const Drum1 = ({ dispatchKey }) => {
     if (navigator.mediaDevices.getUserMedia) {
       try {
         const stream = await navigator.mediaDevices.getUserMedia({
-          video: { frameRate: { ideal: 60 } },
+          video: { frameRate: { ideal: 18 } },
         });
         video.srcObject = stream;
         video.play();

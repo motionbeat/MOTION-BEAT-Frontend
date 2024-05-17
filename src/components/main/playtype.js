@@ -32,8 +32,6 @@ const Playtype = () => {
           "Nickname": sessionStorage.getItem("nickname")
         },
       });
-      console.log("닉네임",myNickname);
-      console.log("보낼 코드", response.data.code);
 
       const joinRoomData = {
         nickname: myNickname,
