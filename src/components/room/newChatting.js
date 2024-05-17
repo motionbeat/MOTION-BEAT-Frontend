@@ -3,21 +3,9 @@ import socket from "../../server/server.js";
 import "../../styles/room/chatting.scss"
 
 const NewChatting = (roomCode) => {
-  const [isChatVisible, setIsChatVisible] = useState(false);
-  const [chatHeight, setChatHeight] = useState('0');
   const [message, setMessage] = useState('');
   const [messageList, setMessageList] = useState([]);
   const userNickname = sessionStorage.getItem("nickname");
-
-  const toggleChat = () => {
-    setIsChatVisible(!isChatVisible);
-
-    if (!isChatVisible) {
-        setChatHeight('300px');
-    } else {
-        setChatHeight('0px');
-    }
-  };
 
   // 메시지 입력 핸들러
   const handleMessageChange = (e) => {
@@ -50,9 +38,19 @@ const NewChatting = (roomCode) => {
   return (
     <>
       <div className="chattingWrapper">
-        <div>
-          아아앙아
+        <div className="chattingContentBox">
+          <div className="chattingContent">
+            {messageList.map((item, index) => (
+              <div key={index}>{item.userNickname} : {item.message}</div>
+            ))}
+          </div>
         </div>
+        <form onSubmit={handleSendMessage}>
+          <div className="chattingInput">
+            <input type="text" placeholder="채팅 입력" value={message} onChange={handleMessageChange} />
+            <button type="submit" disabled={message === ""} onClick={handleSendMessage}></button>
+          </div>
+        </form>
       </div>
     </>
   )
