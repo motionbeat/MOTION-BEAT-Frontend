@@ -349,7 +349,7 @@ const Ingame = () => {
         )}
       </div>
       {ShowModal(modalStatus)}
-      {isGameReady && <GameController {...startGameProps} />}
+      {isGameReady && <GameController {...startGameProps} myPosition={myPosition} />}
     </>
   );
 };
