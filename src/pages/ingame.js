@@ -2,7 +2,6 @@ import React, { useEffect, useRef, useState, useCallback } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import "../styles/hitEffect.css";
 import { useLocation } from "react-router-dom";
-import "../styles/ingame.css";
 import WebCam from "../components/room/webCam";
 import "../styles/songSheet.css";
 import styled from "styled-components";
