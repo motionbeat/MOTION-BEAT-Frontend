@@ -17,17 +17,20 @@ const Room = () => {
   const myNickname = sessionStorage.getItem("nickname");
   const [allReady, setAllReady] = useState(true); // 전부 준비 상태
   const [openChat, setOpenChat] = useState(false); // 채팅 열기
-  const [isBlinking, setIsBlinking] = useState(false); // 깜빡임
+  const [isBlinking, setIsBlinking] = useState(false); // 코드 복사 시 깜빡임
+  const [newMessageAlert, setNewMessageAlert] = useState(false); // 메세지 알림
 
   // 채팅 열기
   const chattingOpen = () => {
     setOpenChat(!openChat);
+    if (!openChat) {
+      setNewMessageAlert(false);
+    }
   }
 
   //joinRoom을 쏴줘야 함
   useEffect(() => {
     const updatePlayers = (updatedPlayers) => {
-      console.log("테스트", updatedPlayers);
       setRoom((prev) => ({
         ...prev,
         players: updatedPlayers,
@@ -140,8 +143,11 @@ const Room = () => {
                   </div>
                 )}
                 <div style={{position:"relative"}}>
-                  <button className="chattingBtn" onClick={chattingOpen}>채팅하기</button>
-                  {openChat && <NewChatting roomCode={room.code} />}
+                  <button className="chattingBtn" onClick={chattingOpen}>
+                    채팅하기
+                    {newMessageAlert && <span className="alertDot"></span>}
+                  </button>
+                  <NewChatting roomCode={room.code} isVisible={openChat} setNewMessageAlert={setNewMessageAlert} />
                 </div>
               </div>
             </div>

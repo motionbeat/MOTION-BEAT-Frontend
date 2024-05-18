@@ -11,8 +11,7 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
   const [selectedSong, setSelectedSong] = useState();
   const [selectFavorite, setSelectFavorite] = useState(false);
   const audioRef = useRef(null); // 노래 가져오기
-
-  const songNum = songNumber;
+  const [playSong, setPlaySong] = useState(songNumber);
   const myNickname = sessionStorage.getItem("nickname");
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
 
@@ -45,7 +44,7 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
   useEffect(() => {
     const findSong = async () => {
       try {
-        const response = await axios.get(`${backendUrl}/api/songs/${songNum}`, {
+        const response = await axios.get(`${backendUrl}/api/songs/${playSong}`, {
           headers: {
             "Content-Type": "application/json",
             Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
@@ -74,11 +73,12 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
     return () => {
       socket.off("songChanged", handleSongChange);
     };
-  }, [backendUrl, songNum]);
+  }, [backendUrl, playSong]);
 
   // 노래 선택
   const handleSongSelect = (song) => {
     setSelectedSong(song);
+    setPlaySong(song.number);
     sessionStorage.setItem("songTitle", song.title);
     sessionStorage.setItem("songArtist", song.artist);
     sessionStorage.setItem("songAlbum", song.imagePath);
@@ -101,10 +101,18 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
 
   return (
     <>
-      <audio ref={audioRef} src="/song/3.mp3" />
+      <audio ref={audioRef} src={`/song/${playSong}.mp3`} />
       <div className="showSongWrapper">
-        <div className="songImg">
-          <img src={`thumbnail/${selectedSong?.imagePath}`} alt="album" onMouseEnter={handlePlay} onMouseLeave={handleStop} />
+        <div className="songImg" onMouseEnter={handlePlay} onMouseLeave={handleStop} >
+          {/* 사운드 웨이브 */}
+          <div class="sound-wave">
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+            <div class="bar"></div>
+          </div>
+          <img src={`thumbnail/${selectedSong?.imagePath}`} alt="album" />
         </div>
         {selectedSong && (
           <div className="roomSelectSongBox">

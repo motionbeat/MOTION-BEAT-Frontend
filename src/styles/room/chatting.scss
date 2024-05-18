@@ -112,3 +112,15 @@
 .otherMessage {
   color: #77c9ff;
 }
+
+.alertDot {
+  display: block;
+  position: absolute;
+  top: 57%;
+  right: 10%;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  background-color: rgba(235, 33, 66, 0.849);
+  transition: 0.5s;
+}
