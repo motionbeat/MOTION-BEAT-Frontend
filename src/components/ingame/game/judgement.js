@@ -86,11 +86,11 @@ const TriggerMyHitEffect = (target, elem, closestNote) => {
       // console.log(elem);
       // console.log(elem.current);
       // console.log(closestNote);
-      console.log(
-        "[SL] All Trigger에서 자식 클로짓 노트 삭제: ",
-        closestNote,
-        closestNote.getAttribute("data-index")
-      );
+      // console.log(
+      //   "[SL] All Trigger에서 자식 클로짓 노트 삭제: ",
+      //   closestNote,
+      //   closestNote.getAttribute("data-index")
+      // );
     } else {
       console.warn("[SL] closestNote is not a child of elem.current");
       // console.log("elem.current:", elem.current);

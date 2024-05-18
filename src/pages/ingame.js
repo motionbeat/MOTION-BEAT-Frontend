@@ -22,7 +22,6 @@ import beatFlow1 from "../img/beatflow1.png";
 
 const staticColorsArray = ["250,0,255", "1,248,10", "0,248,203", "249,41,42"];
 let myPosition;
-let playerNumber = staticColorsArray.length;
 
 const Ingame = () => {
   /* Router */
@@ -40,6 +39,9 @@ const Ingame = () => {
   // const [scores, setScores] = useState({});
   const [startGameProps, setStartGameProps] = useState(null);
   const [isGameReady, setGameReady] = useState(false);
+
+  let playerNumber = gameData.players.length;
+  // console.log("초기 플레이어 수: ", playerNumber);
 
   // const handleScoresUpdate = (newScores) => {
   //   setScores(newScores);
@@ -82,7 +84,7 @@ const Ingame = () => {
             setStartGameProps({
               stime: synchedStartTime,
               data: loadedData,
-              railRefs: railRefs,
+              railRefs: railRefs.current,
               roomCode: gameData.code,
               song: gameData.song,
             });
@@ -93,7 +95,7 @@ const Ingame = () => {
           });
       }
     },
-    [myNickname, railRefs, gameData.code, gameData.song, loadedData]
+    [myNickname, railRefs.current, gameData.code, gameData.song, loadedData]
   );
 
   /* useEffect 순서를 변경하지 마세요*/
@@ -106,9 +108,8 @@ const Ingame = () => {
 
   /* 네트워크 */
   useEffect(() => {
-    console.log(gameData);
+    // console.log(gameData);
 
-    playerNumber = gameData.players.length;
     myPosition = gameData.players.findIndex(
       (item) => item.nickname === myNickname
     );
@@ -168,11 +169,15 @@ const Ingame = () => {
   // 재생 상태 변경
   useEffect(() => {
     if (playerNumber !== railRefs.current.length) {
-      railRefs.current = staticColorsArray.map(
-        (_, index) => railRefs.current[index] || React.createRef()
+      // playerNumber 길이만큼 ref를 생성
+      railRefs.current = Array.from({ length: playerNumber }, (_, index) =>
+        railRefs.current[index] || React.createRef()
       );
     }
-  }, [loadedData]);
+    // console.log("TEST", playerNumber);
+    // console.log("TEST", railRefs.current);
+
+  }, [loadedData, playerNumber]);
 
   if (!staticColorsArray) {
     return <p>Loading...</p>;
@@ -229,6 +234,7 @@ const Ingame = () => {
                     <div
                       id={`player${myPosition}HitEffect`}
                       className="hit-effect"
+                      key={myPosition}
                     />
                   </JudgeBox>
                   <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
@@ -236,7 +242,11 @@ const Ingame = () => {
                 </>
               ) : (
                 <JudgeBox key={index}>
-                  <div id={`player${index}HitEffect`} className="hit-effect" />
+                  <div
+                    id={`player${index}HitEffect`}
+                    className="hit-effect"
+                    key={index}
+                  />
                 </JudgeBox>
               )}
             </VerticalRail>

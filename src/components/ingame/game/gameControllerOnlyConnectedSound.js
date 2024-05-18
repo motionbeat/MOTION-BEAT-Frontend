@@ -1,4 +1,4 @@
-/* 이 파일은 예비 입니다. */
+/* 이 파일 이름을 gameController.js로 바꾸세요 */
 import { useEffect, useState } from "react";
 import { useAudio } from "../../../components/common/useSoundManager.js";
 import socket from "../../../server/server.js";
@@ -35,6 +35,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
     if (railRefs[myPosition]) {
       myInstrument = railRefs[myPosition].current?.dataset.instrument;
     }
+
   }, [railRefs, myPosition]);
 
   useEffect(() => {
@@ -60,7 +61,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
       // console.log("내 악기: ", myInstrument);
       // console.log("ref: ", railRefs);
       // console.log("myRef: ", railRefs.current[myPosition].current);
-      const existingInstruments = Array.from(railRefs).map(element => element.current.dataset.instrument);
+      const existingInstruments = Array.from(railRefs.current).map(element => element.dataset.instrument);
       // console.log("TEST 1:", existingInstruments);
 
       let count = 1200;

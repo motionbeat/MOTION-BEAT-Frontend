@@ -119,7 +119,9 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
 
       const handleEvent = (scoreData, combo, instrument, motionType) => {
         if (instrument && motionType) {
-          playMotionSFX(instrument, motionType, { volume: 2 });
+          /* 타 플레이어 소리 차단 */
+          // playMotionSFX(instrument, motionType, { volume: 2 });
+          /* 타 플레이어 이펙트 활성화 */
           TriggerHitEffect(`player${index}`, railRefs.current[index]);
         }
 
@@ -176,7 +178,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
   );
 };
 
-export const TriggerHitEffect = (target, elem) => {
+export const TriggerHitEffect = (target) => {
   const hitEffect = document.getElementById(`${target}HitEffect`);
   if (!hitEffect) return; // hitEffect가 없으면 함수 실행 중지
 

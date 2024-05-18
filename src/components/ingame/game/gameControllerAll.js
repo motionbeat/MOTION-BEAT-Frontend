@@ -1,10 +1,11 @@
-/* 이 파일은 예비 입니다. */
+/* 이 파일 이름을 gameController.js로 바꾸세요 */
 import { useEffect, useState } from "react";
 import { useAudio } from "../../../components/common/useSoundManager.js";
 import socket from "../../../server/server.js";
 import "../../../styles/songSheet.css"
 
 let myInstrument;
+
 const audioPlayer = document.getElementById("audioPlayer");
 
 if (!audioPlayer) {
@@ -21,7 +22,6 @@ const playAudio = (sound) => {
     })
     .catch((error) => console.error("Error playing audio:", error));
 };
-
 
 export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomCode }) => {
 
@@ -60,9 +60,6 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
       // console.log("내 악기: ", myInstrument);
       // console.log("ref: ", railRefs);
       // console.log("myRef: ", railRefs.current[myPosition].current);
-      const existingInstruments = Array.from(railRefs).map(element => element.current.dataset.instrument);
-      // console.log("TEST 1:", existingInstruments);
-
       let count = 1200;
 
       const ScheduleNotes = () => {
@@ -73,12 +70,9 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
 
           // TODO: <LSL> getElapsedTime() 함수를 사용하여 현재 시간을 가져와야 함
           if (startTime <= audioTime && !processedNotes.has(note)) {
-            /* 연결된 플레이어들의 악기 만 재생 */
-            if (existingInstruments.includes(note.instrument)) {
-              processedNotes.add(note);
-              GenerateNote(note, startTime, count);
-              count++;
-            }
+            processedNotes.add(note);
+            GenerateNote(note, startTime, count);
+            count++;
           }
         }
         requestAnimationFrame(ScheduleNotes);
