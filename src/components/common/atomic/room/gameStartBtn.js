@@ -20,7 +20,7 @@ const StartButton = styled.button`
   line-height: 60px;
   text-align: center;
   color: #FFFFFF;
-  cursor: pointer;
+  // cursor: pointer;
 
   &:hover {
     opacity: 0.8;

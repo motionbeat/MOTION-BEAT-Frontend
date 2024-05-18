@@ -2,6 +2,8 @@
   margin: 0;
   padding: 0;
   box-sizing: border-box;
+  cursor: none;
+  
 }
 
 /* body, html { */
@@ -12,3 +14,12 @@
   /* background-repeat: no-repeat; */
   /* background-size: cover; */
 /* } */
+
+.custom-cursor {
+  position: fixed;
+  width: 65px; /* 원하는 커서 너비 */
+  height: 65px; /* 원하는 커서 높이 */
+  background: url('img/cursor/customCursor.svg') no-repeat center center / contain;
+  pointer-events: none; /* 커서가 다른 요소와 상호작용하지 않도록 설정 */
+  z-index: 10000;
+}

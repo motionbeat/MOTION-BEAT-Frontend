@@ -65,8 +65,15 @@ const App = () => {
   //   };
   // }, []);
 
+  document.addEventListener('mousemove', (e) => {
+    const customCursor = document.querySelector('.custom-cursor');
+    customCursor.style.left = `${e.clientX}px`;
+    customCursor.style.top = `${e.clientY}px`;
+  });
+
   return (
     <SoundManagerProvider>
+        <div class="custom-cursor"></div>
         <Router>
           <MoveBg />
           {/* <ShowTitle /> */}

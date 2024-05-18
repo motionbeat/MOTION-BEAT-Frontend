@@ -2,7 +2,7 @@ import { useEffect, useRef, useState } from "react";
 import socket from "../../server/server.js";
 import "../../styles/room/chatting.scss";
 
-const NewChatting = (roomCode) => {
+const NewChatting = ({roomCode, isVisible, setNewMessageAlert }) => {
   const [message, setMessage] = useState("");
   const [messageList, setMessageList] = useState([]);
   const userNickname = sessionStorage.getItem("nickname");
@@ -51,6 +51,11 @@ const NewChatting = (roomCode) => {
           { userNickname: res.user.nickname, message: res.chat },
         ];
         saveMessagesToSessionStorage(updatedMessages);
+
+        // 알림 상태 업데이트
+        if (!isVisible) {
+          setNewMessageAlert(true);
+        }
         return updatedMessages;
       });
     });
@@ -58,11 +63,15 @@ const NewChatting = (roomCode) => {
     return () => {
       socket.off("message");
     };
-  }, [roomCode]);
+  }, [roomCode, isVisible, setNewMessageAlert]);
 
   useEffect(() => {
     scrollToBottom();
   }, [messageList]);
+
+  if (!isVisible) {
+    return null; // 채팅창이 보이지 않도록 함
+  }
 
   return (
     <>

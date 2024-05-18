@@ -14,20 +14,20 @@
   ],
   "motionSfx": {
     "drum1": [
-      { "name": "A", "url": "/keySound/alldrum/kick1.wav" },
-      { "name": "B", "url": "/keySound/sounds/AcousticOpenHat10.wav" }
+      { "name": "A", "url": "/keySound/hitSound/1L.wav" },
+      { "name": "B", "url": "/keySound/hitSound/1R.wav" }
     ],
     "drum2": [
-      { "name": "A", "url": "/keySound/sounds/AcousticMidTom13.wav" },
-      { "name": "B", "url": "/keySound/sounds/AcousticSnare09.wav" }
+      { "name": "A", "url": "/keySound/hitSound/2L.wav" },
+      { "name": "B", "url": "/keySound/hitSound/2R.wav" }
     ],
     "drum3": [
-      { "name": "A", "url": "/keySound/sounds/AcousticKick24.wav" },
-      { "name": "B", "url": "/keySound/sounds/AcousticCrashDamped14.wav" }
+      { "name": "A", "url": "/keySound/hitSound/3L.wav" },
+      { "name": "B", "url": "/keySound/hitSound/3R.wav" }
     ],
     "drum4": [
-      { "name": "A", "url": "/keySound/alldrum/tom2.mp3" },
-      { "name": "B", "url": "/keySound/alldrum/crash1.wav" }
+      { "name": "A", "url": "/keySound/hitSound/4L.wav" },
+      { "name": "B", "url": "/keySound/hitSound/4R.wav" }
     ]
   }
 }

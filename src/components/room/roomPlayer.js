@@ -212,7 +212,7 @@ const ReadyBtn = styled.button`
   color: white;
   border: 3px solid ${(props) => (props.isReady ? "#6EDACD" : "#CA7900")};
   padding: 10px;
-  cursor: pointer;
+  // cursor: pointer;
   border-radius: 100px;
   padding: 10px 0;
   font-size: 32px;

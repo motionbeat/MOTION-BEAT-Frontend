@@ -95,7 +95,7 @@ const ChatBtn = styled.div`
     width: 55px;
     height: 55px;
     border-radius: 50%;
-    cursor: pointer;
+    // cursor: pointer;
     margin-bottom: 20px;
 
     img {
