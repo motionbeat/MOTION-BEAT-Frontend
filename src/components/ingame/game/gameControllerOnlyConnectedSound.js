@@ -5,6 +5,7 @@ import socket from "../../../server/server.js";
 import "../../../styles/songSheet.css"
 
 let myInstrument;
+
 const audioPlayer = document.getElementById("audioPlayer");
 
 if (!audioPlayer) {
@@ -22,7 +23,6 @@ const playAudio = (sound) => {
     .catch((error) => console.error("Error playing audio:", error));
 };
 
-
 export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomCode }) => {
 
   // console.log("TESTSTART:", railRefs)
@@ -35,7 +35,6 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
     if (railRefs[myPosition]) {
       myInstrument = railRefs[myPosition].current?.dataset.instrument;
     }
-
   }, [railRefs, myPosition]);
 
   useEffect(() => {
