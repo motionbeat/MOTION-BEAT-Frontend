@@ -76,6 +76,25 @@ const SoundManagerProvider = ({ children }) => {
     loadAllSounds();
   }, [loadAllSounds]);
 
+  const getSourceFromPool = (buffer) => {
+    let source;
+    if (pausedSources.current[buffer]) {
+      source = pausedSources.current[buffer].pop();
+    } else {
+      source = audioContext.current.createBufferSource();
+      source.buffer = buffer;
+    }
+    return source;
+  };
+
+  const returnSourceToPool = (source) => {
+    const buffer = source.buffer;
+    if (!pausedSources.current[buffer]) {
+      pausedSources.current[buffer] = [];
+    }
+    pausedSources.current[buffer].push(source);
+  };
+
   const playSound = useCallback(
     (category, setName, soundName, options = {}) => {
       const buffer =
@@ -90,9 +109,7 @@ const SoundManagerProvider = ({ children }) => {
         return;
       }
 
-      // TODO: <김현우> 이 구간에서 지연 발생 가능성이 있을지 한 번 더 검토해보기 - Hyeonwoo, 2024.05.16
-      const source = audioContext.current.createBufferSource();
-      source.buffer = buffer;
+      const source = getSourceFromPool(buffer);
       const gainNode = audioContext.current.createGain();
 
       gainNode.gain.value = options.volume !== undefined ? options.volume : 1;
@@ -100,7 +117,6 @@ const SoundManagerProvider = ({ children }) => {
       source.loop = !!options.loop;
       source.start(0, options.offset || 0);
 
-      // 현재 재생 중인 사운드 소스를 저장
       if (!currentSources.current[category]) {
         currentSources.current[category] = {};
       }
@@ -136,7 +152,6 @@ const SoundManagerProvider = ({ children }) => {
           : audioBuffers.current[category]?.[soundName];
 
       if (!buffer) {
-        // Load the sound if it is not already loaded
         const sound =
           category === "motionSfx"
             ? soundData[category][setName].find((s) => s.name === soundName)
@@ -204,8 +219,7 @@ const SoundManagerProvider = ({ children }) => {
     if (pausedSource) {
       const { buffer, gainNode, offset } = pausedSource;
 
-      const source = audioContext.current.createBufferSource();
-      source.buffer = buffer;
+      const source = getSourceFromPool(buffer);
       source.connect(gainNode).connect(audioContext.current.destination);
       source.loop = !!pausedSource.loop;
       source.start(0, offset);
@@ -246,7 +260,8 @@ const SoundManagerProvider = ({ children }) => {
 
     if (soundSource) {
       soundSource.source.stop();
-      // 소스 삭제
+      returnSourceToPool(soundSource.source);
+
       if (category === "motionSfx") {
         delete currentSources.current[category][setName][soundName];
       } else {
@@ -288,7 +303,7 @@ const SoundManagerProvider = ({ children }) => {
       loadAndPlaySound("motionSfx", setName, name, options),
     pauseSound,
     resumeSound,
-    stopSound
+    stopSound,
   };
 
   return (
