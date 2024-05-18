@@ -30,9 +30,10 @@
   height: 87%;
   background-color: rgba(0, 0, 0, 0.6);
   border-radius: 20px 20px 0 0;
+  font-size: 20px;
   font-family: "Pretendard";
   backdrop-filter: blur(20px);
-  color: white;
+  color: #77c9ff;
   display: flex;
   flex-direction: column;
   padding: 15px;
@@ -40,7 +41,7 @@
 
 .chattingContent {
   flex: 1;
-  overflow: auto;
+  overflow-y: scroll;
   display: flex;
   flex-direction: column;
 
@@ -49,6 +50,25 @@
     display: block;
     flex: 1;
   }
+
+  div {
+    margin: 5px 0;
+  }
+}
+.chattingContent::-webkit-scrollbar {
+  width: 4px;
+}
+.chattingContent::-webkit-scrollbar-thumb {
+  /* 스크롤바의 길이 */
+  height: 1%; 
+  /* 스크롤바의 색상 */
+  background: linear-gradient(108.62deg, #FF00C5 2.2%, #00FFF0 115.74%);
+  border-radius: 5px;
+}
+.chattingContent::-webkit-scrollbar-track {
+  /*스크롤바 뒷 배경 색상*/
+  background: #444444;
+  border-radius: 5px;
 }
 
 // 채팅 입력
@@ -82,4 +102,13 @@
   button {
     visibility: hidden;
   }
+}
+
+// 채팅 구분
+.myMessage {
+  color: #FF66B9;
+}
+
+.otherMessage {
+  color: #77c9ff;
 }

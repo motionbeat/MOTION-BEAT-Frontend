@@ -89,7 +89,7 @@ const Room = () => {
             }
           );
 
-          console.log("시작", response.data);
+          sessionStorage.removeItem("messages");
         } catch (error) {
           console.error("Error start res:", error);
         }

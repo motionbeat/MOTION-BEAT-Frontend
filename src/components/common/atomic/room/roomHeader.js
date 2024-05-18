@@ -26,7 +26,10 @@ const RoomHeader = ({room}) => {
         console.log("leaveRoom res", res);
       })
 
-      if(response.data.message === "redirect") navigate("/main");
+      if(response.data.message === "redirect") {
+        sessionStorage.removeItem("messages");
+        navigate("/main"); 
+      }
     } catch (error) {
       console.error("leave room error", error);
     }
