@@ -18,7 +18,7 @@ const ExitButton = styled.button`
   font-weight: bold;
   border-radius: 16px;
   border: 1px solid #35383F;
-  cursor: pointer;
+  // cursor: pointer;
 
   &:hover {
     opacity: 0.8;

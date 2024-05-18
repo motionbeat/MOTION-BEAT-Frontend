@@ -21,7 +21,7 @@ const FriendsBtn = styled.button`
   box-sizing: border-box;
   box-shadow: inset -10px -10px 10px rgba(0, 0, 0, 0.4), inset 10px 10px 10px rgba(255, 255, 255, 0.4);
   border: 1px solid linear-gradient(144.4deg, #FC92E4 100%, #00DBFF 90%);
-  cursor: pointer;
+  // cursor: pointer;
 
   &:hover {
     opacity: 0.8;

@@ -1,7 +1,6 @@
 import React, { useEffect, useState } from "react";
 import socket from "../server/server.js";
 import SelectSong from "../components/room/selectSong";
-import RoomChatting from "../components/room/roomChatting";
 import axios from "axios";
 import { useLocation, useNavigate } from "react-router-dom";
 import "../styles/room/room.scss";
@@ -16,8 +15,9 @@ const Room = () => {
   const [room, setRoom] = useState(roomData);
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
   const myNickname = sessionStorage.getItem("nickname");
-  const [allReady, setAllReady] = useState(true);
-  const [openChat, setOpenChat] = useState(false);
+  const [allReady, setAllReady] = useState(true); // 전부 준비 상태
+  const [openChat, setOpenChat] = useState(false); // 채팅 열기
+  const [isBlinking, setIsBlinking] = useState(false); // 깜빡임
 
   // 채팅 열기
   const chattingOpen = () => {
@@ -98,6 +98,19 @@ const Room = () => {
     }
   };
 
+  // 방 코드 클립보드에 복사
+  const copyToClipboard = () => {
+    navigator.clipboard.writeText(room.code)
+      .then(() => {
+        console.log('방 코드가 복사되었습니다.');
+        setIsBlinking(true); // 깜빡임 효과를 트리거
+        setTimeout(() => setIsBlinking(false), 1500);
+      })
+      .catch(err => {
+        console.error('방 코드 복사 실패: ', err);
+      });
+  };
+
   return (
     <>
       <div className="room-wrapper">
@@ -120,8 +133,10 @@ const Room = () => {
                 </button>
                 {room.type !== "match" && (
                   <div className="secretCodeWrapper">
-                    <div className="secretCode">입장코드 : {room.code}</div>
-                    <button>복사</button>
+                    <div className="secretCode">
+                      입장코드 : <span className={`${isBlinking ? "blink" : ""}`}>{room.code}</span>
+                    </div>
+                    <button onClick={copyToClipboard}>복사</button>
                   </div>
                 )}
                 <div style={{position:"relative"}}>
@@ -138,7 +153,6 @@ const Room = () => {
             />
           </div>
         </div>
-        <RoomChatting roomCode={room.code} />
       </div>
     </>
   );

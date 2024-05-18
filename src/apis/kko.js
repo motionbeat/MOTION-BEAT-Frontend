@@ -42,7 +42,7 @@ export const KakaoLoginButton = ({ setEvent }) => {
         borderRadius:"16px",
         border:"1px solid #35383F",
         backgroundColor:"#1F222A",
-        cursor:"pointer"
+        // cursor:"pointer"
       }} onClick={handleLogin}>
         <img style={{
         width:"24px",
