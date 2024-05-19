@@ -158,8 +158,8 @@ const Drum1 = ({ dispatchKey }) => {
         <video
           ref={videoRef}
           style={{
-            width: "100%",
-            height: "100%",
+            width: "380px",
+            height: "300px",
             position: "absolute",
             top: "0",
             left: "10px",
