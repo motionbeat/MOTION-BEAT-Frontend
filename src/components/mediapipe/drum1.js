@@ -8,6 +8,8 @@ const Drum1 = ({ dispatchKey }) => {
   const poseRef = useRef(null);
   const leftWristInArea = useRef(false);
   const rightWristInArea = useRef(false);
+  const streamRef = useRef(null);  // 스트림을 추적하기 위한 ref
+  const animationFrameIdRef = useRef(null);  // 애니메이션 프레임 ID를 추적하기 위한 ref
 
   const initializePose = useCallback(() => {
     poseRef.current = new posedetection.Pose({
@@ -33,10 +35,11 @@ const Drum1 = ({ dispatchKey }) => {
         });
         video.srcObject = stream;
         video.play();
+        streamRef.current = stream;  // 스트림을 ref에 저장
 
         const onFrame = async () => {
           await poseRef.current.send({ image: video });
-          requestAnimationFrame(onFrame);
+          animationFrameIdRef.current = requestAnimationFrame(onFrame);
         };
 
         poseRef.current.onResults((results) => {
@@ -127,6 +130,23 @@ const Drum1 = ({ dispatchKey }) => {
   useEffect(() => {
     initializePose();
     initializeMediaStream();
+    return () => {
+      // 컴포넌트가 언마운트될 때 스트림을 중지
+      if (streamRef.current) {
+        streamRef.current.getTracks().forEach(track => track.stop());
+      }
+
+      // 애니메이션 프레임 루프 취소
+      if (animationFrameIdRef.current) {
+        cancelAnimationFrame(animationFrameIdRef.current);
+      }
+
+      // Pose 인스턴스 정리
+      if (poseRef.current) {
+        poseRef.current.close();
+        poseRef.current = null;
+      }
+    };
   }, [initializePose, initializeMediaStream]);
 
   return (
