@@ -9,20 +9,22 @@
 }
 
 .Note {
-  width: 70px;
-  height: 70px;
+  width: 72.5px;
+  height: 72.5px;
   position: absolute;
   border-radius: 50%;
-  font-size: 35px;
-  line-height: 1.9;
+  font-size: 45px;
+  line-height: 1.4;
   font-weight: bold;
-  top: -200%;
+  top: -400%;
   left: 50%;
-  transform: translate(-50%, -100%);
+  /* transform: translate(-50%, -50%); */
   background-color: inherit;
   box-shadow: 0 0 7px 7px white;
   animation-timing-function: linear;
   text-align: center;
+  color: white;
+  /* -webkit-text-stroke: 1px black; */
 }
 
 @keyframes fadeRight {

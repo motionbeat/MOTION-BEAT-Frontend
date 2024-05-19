@@ -237,7 +237,7 @@ const Ingame = () => {
                     />
                   </JudgeBox>
                   <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
-                  <Output />
+                  {/* <Output /> */}
                 </>
               ) : (
                 <JudgeBox key={index}>
@@ -372,9 +372,11 @@ const VerticalRail = styled.div`
   top: ${({ top }) => `calc(${top} + 11%)`};
   width: 100%;
   height: 3%;
+  // height: 25%;
   border: 20px;
   background: ${({ color }) => color};
   box-shadow: 3px 3px 3px rgba(255, 255, 255, 0.3);
+  border: 1px solid white;
 `;
 
 const Indicator = styled.div`

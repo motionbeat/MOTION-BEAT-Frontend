@@ -45,13 +45,15 @@ const MoveBg = () => {
   return (
     <>
     <BackgroundAnimate style={{ backgroundImage: `url(${loginBg0})` }}>
-      <Window src={Window01} style={{ opacity: styles1.opacity, filter: `brightness(${styles1.brightness})` }} />
-      <Window src={Window02} style={{ opacity: styles2.opacity, filter: `brightness(${styles2.brightness})` }} />
-      <Window src={Window03} style={{ opacity: styles3.opacity, filter: `brightness(${styles3.brightness})` }} />
-      <Window src={Window04} style={{ opacity: styles4.opacity, filter: `brightness(${styles4.brightness})` }} />
-      <Window src={Window05} style={{ opacity: styles5.opacity, filter: `brightness(${styles5.brightness})` }} />
-      <Window src={Window06} style={{ opacity: styles6.opacity, filter: `brightness(${styles6.brightness})` }} />
-      <Window src={Window07} style={{ opacity: styles7.opacity, filter: `brightness(${styles7.brightness})` }} />
+      <WindowWrapper>
+        <Window src={Window01} style={{ opacity: styles1.opacity, filter: `brightness(${styles1.brightness})` }} />
+        <Window src={Window02} style={{ opacity: styles2.opacity, filter: `brightness(${styles2.brightness})` }} />
+        <Window src={Window03} style={{ opacity: styles3.opacity, filter: `brightness(${styles3.brightness})` }} />
+        <Window src={Window04} style={{ opacity: styles4.opacity, filter: `brightness(${styles4.brightness})` }} />
+        <Window src={Window05} style={{ opacity: styles5.opacity, filter: `brightness(${styles5.brightness})` }} />
+        <Window src={Window06} style={{ opacity: styles6.opacity, filter: `brightness(${styles6.brightness})` }} />
+        <Window src={Window07} style={{ opacity: styles7.opacity, filter: `brightness(${styles7.brightness})` }} />
+      </WindowWrapper>
     </BackgroundAnimate>
     </>
   )
@@ -72,6 +74,12 @@ const BackgroundAnimate = styled.div`
   right: 0;
   bottom: 0;
   z-index: -2;
+`
+
+const WindowWrapper = styled.div`
+  width: 100vw;
+  height: 100vh;
+  position: relative;
 `
 
 const Window = styled.img`
@@ -133,52 +141,51 @@ const Window = styled.img`
       bottom: 9vh;
     }
     &:nth-child(6) {
-      right: 16.7vw;
-      bottom: 9vh;
+      bottom: 8.5vh;
     }
     &:nth-child(7) {
+      bottom: 5.5vh;
       right: 6.7vw;
-      bottom: 5.9vh;
     }
   }
 
-  @media (max-width: 720px) and (max-height: 480px) {
-    // 720x480 해상도에서 위치 조정
-    &:nth-child(1) {
-      width: 5vw;
-      bottom: 25vh;
-      left: 0;
-      display: none;
-    }
-    &:nth-child(2) {
-      width: 4.5vw;
-      bottom: 13.4vh;
-      left: 12.3vw;
-    }
-    &:nth-child(3) {
-      width: 3vw;
-      bottom: 12.4vh;
-      left: 20vw;
-    }
-    &:nth-child(4) {
-      width: 1vw;
-      bottom: 14vh;
-      right: 37vw;
-    }
-    &:nth-child(5) {
-      width: 0.8vw;
-      bottom: 14vh;
-      right: 35.7vw;
-    }
-    &:nth-child(6) {
-      width: 7vw;
-      bottom: 14vh;
-      right: 16.6vw;
-    }
-    &:nth-child(7) {
-      width: 2.5vw;
-      bottom: 11vh;
-      right: 6.8vw;
-    }
-  }
+  // @media (max-width: 720px) and (max-height: 480px) {
+  //   // 720x480 해상도에서 위치 조정
+  //   &:nth-child(1) {
+  //     width: 5vw;
+  //     bottom: 25vh;
+  //     left: 0;
+  //     display: none;
+  //   }
+  //   &:nth-child(2) {
+  //     width: 4.5vw;
+  //     bottom: 13.4vh;
+  //     left: 12.3vw;
+  //   }
+  //   &:nth-child(3) {
+  //     width: 3vw;
+  //     bottom: 12.4vh;
+  //     left: 20vw;
+  //   }
+  //   &:nth-child(4) {
+  //     width: 1vw;
+  //     bottom: 14vh;
+  //     right: 37vw;
+  //   }
+  //   &:nth-child(5) {
+  //     width: 0.8vw;
+  //     bottom: 14vh;
+  //     right: 35.7vw;
+  //   }
+  //   &:nth-child(6) {
+  //     width: 7vw;
+  //     bottom: 14vh;
+  //     right: 16.6vw;
+  //   }
+  //   &:nth-child(7) {
+  //     width: 2.5vw;
+  //     bottom: 11vh;
+  //     right: 6.8vw;
+  //   }
+  // }
 `

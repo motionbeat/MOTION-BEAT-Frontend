@@ -82,35 +82,11 @@ const Signup = () => {
 
 
   return (
-    // <form onSubmit={handleSubmit}>
-    //   <p>환❤️❤️ 회원가입  ❤️❤️영</p>
-    //   <div>
-    //     <input ref={emailRef} placeholder="이메일"></input>
-    //     {errors.email && <p style={{ color: 'red' }}>{errors.email[0]}</p>}
-    //   </div>
-    //   <div>
-    //     <input ref={nicknameRef} placeholder="닉네임"></input>
-    //     {errors.nickname && <p style={{ color: 'red' }}>{errors.nickname[0]}</p>}
-    //   </div>
-    //   <div>
-    //     <input ref={pwRef} type="password" placeholder="비밀번호"></input>
-    //     {errors.pw && <p style={{ color: 'red' }}>{errors.pw[0]}</p>}
-    //   </div>
-    //   <div>
-    //     <input ref={pwAgainRef} type="password" placeholder="비밀번호확인"></input>
-    //     {!errors.pw && errors.pwAgain && <p style={{ color: 'red' }}>{errors.pwAgain[0]}</p>}
-    //   </div>
-    //   <div>
-    //     <button onClick={handleRevert}>revert</button>
-    //     <button type="submit">create accout</button>
-    //   </div>
-    // </form>
-
     <div className="signupWrapper">
     <div className="signupForm">
       <div className="signupHeader">
-        <div className="signupBackArrow">
-          <img src={BackArrow} alt="뒤로가기" />
+        <div className="signupBackArrow" onClick={handleRevert}>
+          <img src={BackArrow} alt="뒤로가기"  />
         </div>
         <div className="signupTitle">회원가입</div>
       </div>

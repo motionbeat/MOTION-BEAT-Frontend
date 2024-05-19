@@ -105,7 +105,9 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
       return;
     }
 
-    playMotionSFX(session_instrument, session_motionType, { volume: 1.7 });
+    const volume = session_motionType === "A" ? 1 : 2;
+    playMotionSFX(session_instrument, session_motionType, { volume: volume });
+    // playMotionSFX(session_instrument, session_motionType, { volume: 1.7 });
   }, [hittedNotes, myNickname, playMotionSFX]);
 
   // hit 출력
@@ -121,6 +123,9 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
         if (instrument && motionType) {
           /* 타 플레이어 소리 차단 */
           // playMotionSFX(instrument, motionType, { volume: 2 });
+          /* 모션별 소리 */
+          // const volume = motionType === "A" ? 1 : 2;
+          // playMotionSFX(instrument, motionType, { volume });
           /* 타 플레이어 이펙트 활성화 */
           TriggerHitEffect(`player${index}`, railRefs.current[index]);
         }
