@@ -18,5 +18,5 @@ body {
   color: var(--main-text-color); */
   /* text-align: center; */
   /* 둘다는 overflow:hidden, 세로스크롤은 overflow-y: hidden */
-  overflow-x: hidden;
+  /* overflow-x: hidden; */
 }

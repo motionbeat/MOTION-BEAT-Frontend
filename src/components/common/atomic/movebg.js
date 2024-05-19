@@ -63,8 +63,9 @@ const BackgroundAnimate = styled.div`
   height: 100vh;
   background-repeat: no-repeat;
   background-size: cover;
-  transition: opacity 1s ease-in-out;
+  background-attachment: fixed; 
   background-position: center;
+  transition: opacity 1s ease-in-out;
   position: fixed;
   top: 0;
   left: 0;
@@ -74,85 +75,109 @@ const BackgroundAnimate = styled.div`
 `
 
 const Window = styled.img`
-  width: 6vw;
   position: absolute;
   transition: opacity 0.2s ease-in-out, filter 0.2s ease-in-out;;
+
+  // 1920x1080 기본 스타일
   &:nth-child(1) {
     width: 6vw;
-    bottom: 9vh;
+    bottom: 14vh;
     left: 0;
   }
   &:nth-child(2) {
     width: 4.5vw;
-    bottom: 8.2vh;
+    bottom: 13.5vh;
     left: 12.3vw;
   }
   &:nth-child(3) {
     width: 3vw;
-    bottom: 7.3vh;
+    bottom: 12.5vh;
     left: 20vw;
   }
   &:nth-child(4) {
     width: 1.2vw;
-    bottom: 8.8vh;
+    bottom: 13.5vh;
     right: 36.9vw;
   }
   &:nth-child(5) {
     width: 0.9vw;
-    bottom: 8.8vh;
+    bottom: 13.5vh;
     right: 35.6vw;
   }
   &:nth-child(6) {
     width: 7vw;
-    bottom: 8.8vh;
+    bottom: 14vh;
     right: 16.7vw;
   }
   &:nth-child(7) {
     width: 2.5vw;
-    bottom: 5.5vh;
+    bottom: 11vh;
     right: 6.9vw;
   }
-`
 
-// const Window1 = styled.img`
-//   width: 6vw;
-//   position: absolute;
-//   bottom: 9vh;
-//   left: 0;
-// `
-// const Window2 = styled.img`
-//   width: 4.5vw;
-//   position: absolute;
-//   bottom: 8.2vh;
-//   left: 12.3vw;
-// `
-// const Window3 = styled.img`
-//   width: 3vw;
-//   position: absolute;
-//   bottom: 7.3vh;
-//   left: 20vw;
-// `
-// const Window4 = styled.img`
-//   width: 1.2vw;
-//   position: absolute;
-//   bottom: 8.8vh;
-//   right: 36.9vw;
-// `
-// const Window5 = styled.img`
-//   width: 0.9vw;
-//   position: absolute;
-//   bottom: 8.8vh;
-//   right: 35.6vw;
-// `
-// const Window6 = styled.img`
-//   width: 7vw;
-//   position: absolute;
-//   bottom: 8.8vh;
-//   right: 16.7vw;
-// `
-// const Window7 = styled.img`
-//   width: 2.5vw;
-//   position: absolute;
-//   bottom: 5.5vh;
-//   right: 6.9vw;
-// `
+  @media (max-width: 1920px) and (max-height: 1200px) {
+    // 1920x1200 해상도에서 위치 조정
+    &:nth-child(1) {
+      bottom: 9vh;
+    }
+    &:nth-child(2) {
+      bottom: 8vh;
+    }
+    &:nth-child(3) {
+      bottom: 7vh;
+    }
+    &:nth-child(4) {
+      bottom: 9vh;
+    }
+    &:nth-child(5) {
+      bottom: 9vh;
+    }
+    &:nth-child(6) {
+      right: 16.7vw;
+      bottom: 9vh;
+    }
+    &:nth-child(7) {
+      right: 6.7vw;
+      bottom: 5.9vh;
+    }
+  }
+
+  @media (max-width: 720px) and (max-height: 480px) {
+    // 720x480 해상도에서 위치 조정
+    &:nth-child(1) {
+      width: 5vw;
+      bottom: 25vh;
+      left: 0;
+    }
+    &:nth-child(2) {
+      width: 4.5vw;
+      bottom: 13.4vh;
+      left: 12.3vw;
+    }
+    &:nth-child(3) {
+      width: 3vw;
+      bottom: 12.4vh;
+      left: 20vw;
+    }
+    &:nth-child(4) {
+      width: 1vw;
+      bottom: 14vh;
+      right: 37vw;
+    }
+    &:nth-child(5) {
+      width: 0.8vw;
+      bottom: 14vh;
+      right: 35.7vw;
+    }
+    &:nth-child(6) {
+      width: 7vw;
+      bottom: 14vh;
+      right: 16.6vw;
+    }
+    &:nth-child(7) {
+      width: 2.5vw;
+      bottom: 11vh;
+      right: 6.8vw;
+    }
+  }
+`
