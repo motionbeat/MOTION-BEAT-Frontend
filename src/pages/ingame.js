@@ -226,28 +226,28 @@ const Ingame = () => {
               data-instrument={gameData.players[index].instrument}
               key={index}
             >
-              {index === myPosition ? (
-                <>
-                  <Indicator />
-                  <JudgeBox isactive={isActive} key={index}>
+                {index === myPosition ? (
+                  <>
+                    <Indicator />
+                    <JudgeBox isactive={isActive} key={index}>
+                      <div
+                        id={`player${myPosition}HitEffect`}
+                        className="hit-effect"
+                        key={myPosition}
+                      />
+                    </JudgeBox>
+                    <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
+                    {/* <Output /> */}
+                  </>
+                ) : (
+                  <JudgeBox key={index}>
                     <div
-                      id={`player${myPosition}HitEffect`}
+                      id={`player${index}HitEffect`}
                       className="hit-effect"
-                      key={myPosition}
+                      key={index}
                     />
                   </JudgeBox>
-                  <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
-                  {/* <Output /> */}
-                </>
-              ) : (
-                <JudgeBox key={index}>
-                  <div
-                    id={`player${index}HitEffect`}
-                    className="hit-effect"
-                    key={index}
-                  />
-                </JudgeBox>
-              )}
+                )}
             </VerticalRail>
           );
         })}
@@ -367,7 +367,7 @@ const Ingame = () => {
 export default Ingame;
 
 const VerticalRail = styled.div`
-  display: block;
+  // display: block;
   position: relative;
   top: ${({ top }) => `calc(${top} + 11%)`};
   width: 100%;
@@ -376,12 +376,15 @@ const VerticalRail = styled.div`
   border: 20px;
   background: ${({ color }) => color};
   box-shadow: 3px 3px 3px rgba(255, 255, 255, 0.3);
-  border: 1px solid white;
+  display: flex;
+  justify-content: center;
+  align-items: center; 
 `;
 
 const Indicator = styled.div`
   position: absolute;
   top: 0%;
+  left: -1%;
   height: 100%;
   width: 5px;
   margin-left: 10%;
@@ -391,12 +394,13 @@ const Indicator = styled.div`
 const JudgeBox = styled.div`
   position: absolute;
   top: 0%;
+  left: 3.5%;
   height: 100%;
   width: 20px;
   background-color: ${({ isactive }) =>
     isactive ? "yellow" : "rgba(0,0,0,1)"};
   box-shadow: ${({ isactive }) => (isactive ? "0 0 10px 5px yellow" : "none")};
-  margin-left: 5%;
+  // margin-left: 5%;
   transition: ${({ isactive }) =>
     isactive
       ? "none"

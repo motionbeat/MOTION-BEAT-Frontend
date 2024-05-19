@@ -16,15 +16,16 @@
   font-size: 45px;
   line-height: 1.4;
   font-weight: bold;
-  top: -400%;
+  top: 50%;
   left: 50%;
   /* transform: translate(-50%, -50%); */
+  margin-top: -36.25px;
+  margin-left: -36.25px;
   background-color: inherit;
   box-shadow: 0 0 7px 7px white;
   animation-timing-function: linear;
   text-align: center;
   color: white;
-  /* -webkit-text-stroke: 1px black; */
 }
 
 @keyframes fadeRight {
@@ -41,8 +42,8 @@
 
 .hitLine {
   position: absolute;
-  left: 6%;
-  width: 70px;
+  left: 4.2%;
+  width: 5.5%;
   height: inherit;
   background: linear-gradient(to right, rgba(255, 0, 197, 1), rgba(255, 192, 203, 0));
   z-index: 5;
