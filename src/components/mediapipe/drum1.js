@@ -98,23 +98,15 @@ const Drum1 = ({ dispatchKey }) => {
     const widthSegment = width / 2;
     const heightSegment = height / 4;
 
-    const centerX_A = widthSegment / 2;
-    const centerY_A = 3 * heightSegment + heightSegment / 2;
-    const radiusX_A = widthSegment / 2;
-    const radiusY_A = heightSegment / 2;
-    ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
-    ctx.beginPath();
-    ctx.ellipse(centerX_A, centerY_A, radiusX_A, radiusY_A, 0, 0, Math.PI * 2);
-    ctx.fill();
+    // Draw the first detection area (red rectangle)
+    ctx.strokeStyle = "rgba(255, 0, 0, 1)";
+    ctx.lineWidth = 6;
+    ctx.strokeRect(0, 3 * heightSegment - 10, widthSegment * 0.9, heightSegment);
 
-    const centerX_B = widthSegment + widthSegment / 2;
-    const centerY_B = 3 * heightSegment + heightSegment / 2;
-    const radiusX_B = widthSegment / 2;
-    const radiusY_B = heightSegment / 2;
-    ctx.fillStyle = "rgba(0, 0, 255, 0.5)";
-    ctx.beginPath();
-    ctx.ellipse(centerX_B, centerY_B, radiusX_B, radiusY_B, 0, 0, Math.PI * 2);
-    ctx.fill();
+    // Draw the second detection area (blue rectangle)
+    ctx.strokeStyle = "rgba(0, 0, 255, 1)";
+    ctx.lineWidth = 6;
+    ctx.strokeRect(widthSegment + 15, 3 * heightSegment - 10, widthSegment * 0.9, heightSegment);
   };
 
   const updatePostureStatus = useCallback(
@@ -156,20 +148,22 @@ const Drum1 = ({ dispatchKey }) => {
           }}
           playsInline
           autoPlay
+          width="380"
+          height="300"
         />
         <canvas
           ref={canvasRef}
           style={{
             position: "absolute",
             top: "0",
-            left: "0",
+            left: "10px",
             width: "100%",
             height: "100%",
             opacity: 0.9,
             zIndex: 2,
           }}
-          width="540"
-          height="380"
+          width="380"
+          height="300"
         />
       </div>
     </div>
