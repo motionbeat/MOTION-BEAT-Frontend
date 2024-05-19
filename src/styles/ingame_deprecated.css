@@ -1,6 +1,6 @@
 .Note {
   position: absolute;
-  display: inline-block;
+  /* display: inline-block; */
   top: 0px;
 
   height: 100%;
@@ -10,7 +10,7 @@
   z-index: 1200;
   background-color: rgba(255, 255, 255, 0.649);
 
-  color: black;
+  
   font-size: 25px;
   text-align: center;
 

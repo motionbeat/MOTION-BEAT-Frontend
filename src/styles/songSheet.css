@@ -16,11 +16,13 @@
   font-size: 35px;
   line-height: 1.9;
   font-weight: bold;
-  top: 50%;
+  top: -200%;
   left: 50%;
-  transform: translate(-50%, -50%);
+  transform: translate(-50%, -100%);
   background-color: inherit;
   box-shadow: 0 0 7px 7px white;
+  animation-timing-function: linear;
+  text-align: center;
 }
 
 @keyframes fadeRight {
