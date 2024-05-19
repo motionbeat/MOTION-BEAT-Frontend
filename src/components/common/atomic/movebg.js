@@ -148,6 +148,7 @@ const Window = styled.img`
       width: 5vw;
       bottom: 25vh;
       left: 0;
+      display: none;
     }
     &:nth-child(2) {
       width: 4.5vw;

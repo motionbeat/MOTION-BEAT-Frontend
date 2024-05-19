@@ -1,0 +1,164 @@
+@font-face {
+  font-family: "Lato";
+  src: url("../fonts/Lato/Lato-Light.ttf");
+}
+
+@font-face {
+  font-family: "pretendard";
+  src: url("../fonts/pretendard/Pretendard-SemiBold.ttf");
+}
+
+.signupWrapper {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  width: 421px;
+  height: 780px;
+  background-image: url("../img/signupBox.png");
+}
+
+.signupForm {
+  width: 80%;
+  margin: 0 auto;
+  text-align: center;
+}
+
+// 뒤로가기와 타이틀
+.signupHeader {
+  margin: 20px 0 30px 0;
+  position: relative;
+}
+
+.signupBackArrow {
+  width: 28px;
+  height: 28px;
+  position: absolute;
+  left: -6%;
+  top: 0;
+
+  img {
+    width: inherit;
+    height: inherit;
+  }
+}
+
+.signupTitle {
+  width: 80px;
+  height: 34px;
+  font-size: 20px;
+  font-family: "pretendard";
+  color: white;
+  text-align: center;
+  margin: 0 auto;
+  font-weight: 500;
+}
+
+// 입력박스
+.formInputWrapper {
+  width: 100%;
+  margin-bottom: 30px;
+  
+  p {
+    font-size: 14px;
+    font-family: "pretendard";
+    color: #9EA3B2;
+    text-align: left;
+    font-weight: bold;
+    margin-bottom: 10px;
+    padding-left: 5px;
+  }
+}
+
+.inputBox {
+  width: 100%;
+  height: 60px;
+  border-radius: 16px;
+  display: flex;
+  background-color: #252932;
+  align-items: center;
+  padding: 0 20px;
+
+  img {
+    width: 24px;
+    height: 24px;
+    margin-right: 10px;
+  }
+
+  input {
+    font-size: 14px;
+    color: white;
+    width: 80%;
+    height: 34px;
+    border: none;
+    background-color: transparent;
+    outline: none;
+  }
+}
+
+// 아이디저장, 비번찾기
+.subFuncBox {
+  width: 100%;
+  display: flex;
+  justify-content: space-between;
+  color: #C8C8C8;
+  font-size: 14px;
+  font-family: "pretendard";
+  margin-top: 15px;
+
+  div {
+    display: flex;
+
+    input {
+      margin-right: 5px;
+    }
+  }
+}
+
+// 로그인 버튼
+.loginBtnBox {
+  width: 100%;
+  margin-top: 60px;
+  margin-bottom: 50px;
+
+  button {
+    width: inherit;
+    padding: 20px 0;
+    border-radius: 16px;
+    background-color: #47B5B4;
+    color: white;
+    font-size: 16px;
+    font-family: "pretendard";
+    font-weight: bold;
+    // cursor: pointer;
+  }
+}
+
+//소셜 로그인
+.socialLogin {
+  width: 58%;
+  margin: 0 auto 40px auto;
+  display: flex;
+  justify-content: space-around;
+}
+
+// 회원가입
+.signupBox {
+  width: 58%;
+  margin: 0 auto;
+
+  p {
+    color: #9EA3BE;
+    font-size: 14px;
+    font-family: "pretendard";
+  }
+
+  span {
+    color: #0075FF;
+    font-size: 14px;
+    font-family: "pretendard";
+    margin-left: 10px;
+    font-weight: 600;
+    text-decoration: underline;
+  }
+}

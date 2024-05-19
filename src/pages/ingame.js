@@ -330,6 +330,7 @@ const Ingame = () => {
           height: "100vh",
           backgroundClip: "padding-box",
           paddingTop: "5%",
+          overflowX: "hidden"
         }}
       >
         {gameEnded ? (
