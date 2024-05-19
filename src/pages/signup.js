@@ -41,7 +41,7 @@ const Signup = () => {
     e.preventDefault();
 
     const formData = {
-      email: emailRef.current.value,
+      email: emailRef.current.value.toLowerCase(),
       nickname: nicknameRef.current.value,
       pw: pwRef.current.value,
       pwAgain: pwAgainRef.current.value,

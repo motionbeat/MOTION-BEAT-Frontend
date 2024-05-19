@@ -36,7 +36,7 @@ const Login = () => {
 
     /* input 값 추출 */
     const formData = {
-      email: emailRef.current.value,
+      email: emailRef.current.value.toLowerCase(),
       pw: pwRef.current.value,
     };
 
