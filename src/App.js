@@ -1,5 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
-import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
+import React, { useEffect, useRef } from "react";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  useLocation,
+} from "react-router-dom";
 import "./App.css";
 
 /* 웹 접속 */
@@ -19,8 +24,6 @@ import Ranking from "components/main/ranking";
 import Settings from "components/main/settings";
 import Room from "./pages/room";
 import Ingame from "./pages/ingame";
-
-// import Redirect from "./pages/redirect";
 import { KakaoCallback } from "./apis/kko";
 import { GoogleCallback } from "./apis/ggl";
 
@@ -34,19 +37,18 @@ import SoundManagerProvider from "components/common/useSoundManager.js";
 import MoveBg from "components/common/atomic/movebg";
 
 const App = () => {
-  // const audioRef = useRef(null);
+  return (
+    <SoundManagerProvider>
+      <Router>
+        <AppContent />
+      </Router>
+    </SoundManagerProvider>
+  );
+};
 
-  // const RouteListener = () => {
-  //   const location = useLocation();
-
-  //   useEffect(() => {
-  //     if (location.pathname === "/room" && audioRef.current) {
-  //       audioRef.current.pause();
-  //       audioRef.current.currentTime = 0;
-  //     }
-  //   }, [location]);
-  //   return null;
-  // };
+const AppContent = () => {
+  const audioRef = useRef(null);
+  const location = useLocation();
 
   // [moon] 새로고침과 뒤로가기를 막는 시스템 지우면 안됨
   // useEffect(() => {
@@ -73,101 +75,103 @@ const App = () => {
   //   };
   // }, []);
 
-  document.addEventListener("mousemove", (e) => {
-    const customCursor = document.querySelector(".custom-cursor");
-    customCursor.style.left = `${e.clientX}px`;
-    customCursor.style.top = `${e.clientY}px`;
-  });
+  useEffect(() => {
+    const handleMouseMove = (e) => {
+      const customCursor = document.querySelector(".custom-cursor");
+      customCursor.style.left = `${e.clientX}px`;
+      customCursor.style.top = `${e.clientY}px`;
+    };
 
-  // // 노래 재생
-  // useEffect(() => {
-  //   const handlePlay = () => {
-  //     const audio = audioRef.current;
-  //     if (audio) {
-  //       audio.play().catch((error) => {
-  //         console.error("Error playing audio:", error);
-  //       });
-  //     }
-  //   };
+    document.addEventListener("mousemove", handleMouseMove);
 
-  //   const handleUserInteraction = () => {
-  //     handlePlay();
-  //     document.removeEventListener("click", handleUserInteraction);
-  //     document.removeEventListener("keydown", handleUserInteraction);
-  //   };
+    return () => {
+      document.removeEventListener("mousemove", handleMouseMove);
+    };
+  }, []);
 
-  //   document.addEventListener("click", handleUserInteraction);
-  //   document.addEventListener("keydown", handleUserInteraction);
+  // 노래 재생
+  useEffect(() => {
+    const handlePlay = () => {
+      const audio = audioRef.current;
+      if (audio) {
+        audio.play().catch((error) => {
+          console.error("Error playing audio:", error);
+        });
+      }
+    };
 
-  //   return () => {
-  //     document.removeEventListener("click", handleUserInteraction);
-  //     document.removeEventListener("keydown", handleUserInteraction);
-  //   };
-  // }, []);
+    const handleUserInteraction = () => {
+      handlePlay();
+      document.removeEventListener("click", handleUserInteraction);
+      document.removeEventListener("keydown", handleUserInteraction);
+    };
+
+    document.addEventListener("click", handleUserInteraction);
+    document.addEventListener("keydown", handleUserInteraction);
+
+    return () => {
+      document.removeEventListener("click", handleUserInteraction);
+      document.removeEventListener("keydown", handleUserInteraction);
+    };
+  }, []);
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (location.pathname === "/room" && audio) {
+      audio.pause();
+    }
+  }, [location]);
 
   return (
-    <SoundManagerProvider>
-      {/* <audio ref={audioRef} src={"/bgm/kneticSona.mp3"} loop /> */}
+    <>
+      <audio ref={audioRef} src={"/bgm/kneticSona.mp3"} loop volume="0.5" />
       <div className="custom-cursor"></div>
-      <Router>
-        {/* <ShowTitle /> */}
-        <Routes>
-          {/* token사용 시 아래 주석과 "###"아래 주석을 해제하세요 */}
-          {/* 웹 접속 */}
-          {/* <Route path="/" element={<Splash />} /> */}
-          <Route path="/" element={<Login />} />
+      {/* <ShowTitle /> */}
+      <Routes>
+        {/* token사용 시 아래 주석과 "###"아래 주석을 해제하세요 */}
+        {/* 웹 접속 */}
+        {/* <Route path="/" element={<Splash />} /> */}
+        <Route path="/" element={<Login />} />
 
-          {/* 로그인 전 */}
-          <Route path="/login" element={<Login />} />
-          <Route path="/forgotPw" element={<ForgotPw />} />
-          <Route path="/signup" element={<Signup />} />
+        {/* 로그인 전 */}
+        <Route path="/login" element={<Login />} />
+        <Route path="/forgotPw" element={<ForgotPw />} />
+        <Route path="/signup" element={<Signup />} />
 
-          {/* 메인 */}
-          {/* token사용 시 아래 주석과 "###"아래 주석을 해제하세요 */}
-          {/* <Route element={<PrivateRoute />}> */}
-          <Route path="/main" element={<Main />} />
-          <Route path="/main/playtype" element={<Playtype />} />
-          <Route path="/main/tutorial" element={<Tutorial />} />
-          <Route path="/main/ranking" element={<Ranking />} />
-          <Route path="/main/setting" element={<Settings />} />
+        {/* 메인 */}
+        {/* token사용 시 아래 주석과 "###"아래 주석을 해제하세요 */}
+        {/* <Route element={<PrivateRoute />}> */}
+        <Route path="/main" element={<Main />} />
+        <Route path="/main/playtype" element={<Playtype />} />
+        <Route path="/main/tutorial" element={<Tutorial />} />
+        <Route path="/main/ranking" element={<Ranking />} />
+        <Route path="/main/setting" element={<Settings />} />
 
-          {/* 룸(=대기방) */}
-          <Route path="/room" element={<Room />} />
+        {/* 룸(=대기방) */}
+        <Route path="/room" element={<Room />} />
 
-          {/* 인게임 */}
-          <Route path="/ingame" element={<Ingame />} />
+        {/* 인게임 */}
+        <Route path="/ingame" element={<Ingame />} />
 
-          {/* 인게임 */}
-          <Route path="/cam/drum" element={<Drum1 />} />
+        {/* 인게임 */}
+        <Route path="/cam/drum" element={<Drum1 />} />
 
-          {/* ### */}
-          {/* </Route> */}
+        {/* ### */}
+        {/* </Route> */}
 
-          {/* Redirect */}
-          <Route path="/callback/google-login" element={<GoogleCallback />} />
-          <Route path="/callback/kakao-login" element={<KakaoCallback />} />
+        {/* Redirect */}
+        <Route path="/callback/google-login" element={<GoogleCallback />} />
+        <Route path="/callback/kakao-login" element={<KakaoCallback />} />
 
-          {/* 404 */}
-          <Route path="*" element={<NotFound />} />
+        {/* 404 */}
+        <Route path="*" element={<NotFound />} />
 
-          {/* 테스트 */}
-          <Route path="/atomic" element={<AtomicTest />} />
+        {/* 테스트 */}
+        <Route path="/atomic" element={<AtomicTest />} />
 
-          <Route path="/admin" element={<Admin />} />
-        </Routes>
-      </Router>
-    </SoundManagerProvider>
+        <Route path="/admin" element={<Admin />} />
+      </Routes>
+    </>
   );
 };
-
-// const ShowTitle = () => {
-//   const location = useLocation();
-
-//   const excludeTitle = ["/", "/ingame"];
-
-//   return excludeTitle.indexOf(location.pathname) !== -1 ? null : (
-//     <Title style={{ textAlign: "center" }} />
-//   );
-// }
-
 export default App;

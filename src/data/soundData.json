@@ -5,7 +5,7 @@
     { "name": "2.mp3", "url": "/song/2.mp3" },
     { "name": "3.mp3", "url": "/song/3.mp3" },
     { "name": "그대에게.mp3", "url": "/song/그대에게.mp3" },
-    { "name": "loginBGM", "url": "/bgm/bitRushArcade.mp3" }
+    { "name": "kneticSona.mp3", "url": "/bgm/kneticSona.mp3" }
   ],
   "normalSfx": [
     { "name": "clickback_02_01.wav", "url": "/keySound/system/clickback_02_01.wav" },
