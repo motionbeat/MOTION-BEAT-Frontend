@@ -238,7 +238,7 @@ const Ingame = () => {
                     />
                   </JudgeBox>
                   <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
-                  <Output />
+                  {/* <Output /> */}
                 </>
               ) : (
                 <JudgeBox key={index}>
@@ -382,7 +382,7 @@ const Indicator = styled.div`
   top: 0%;
   height: 100%;
   width: 5px;
-  margin-left: 10%;
+  margin-left: 7%;
   background-color: white;
 `;
 
@@ -394,7 +394,7 @@ const JudgeBox = styled.div`
   background-color: ${({ isactive }) =>
     isactive ? "yellow" : "rgba(0,0,0,1)"};
   box-shadow: ${({ isactive }) => (isactive ? "0 0 10px 5px yellow" : "none")};
-  margin-left: 5%;
+  margin-left: 2%;
   transition: ${({ isactive }) =>
     isactive
       ? "none"
