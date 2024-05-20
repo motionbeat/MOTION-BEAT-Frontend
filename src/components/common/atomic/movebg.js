@@ -45,7 +45,7 @@ const MoveBg = () => {
   return (
     <>
     <BackgroundAnimate style={{ backgroundImage: `url(${loginBg0})` }}>
-      <WindowWrapper>
+      {/* <WindowWrapper> */}
         <Window src={Window01} style={{ opacity: styles1.opacity, filter: `brightness(${styles1.brightness})` }} />
         <Window src={Window02} style={{ opacity: styles2.opacity, filter: `brightness(${styles2.brightness})` }} />
         <Window src={Window03} style={{ opacity: styles3.opacity, filter: `brightness(${styles3.brightness})` }} />
@@ -53,7 +53,7 @@ const MoveBg = () => {
         <Window src={Window05} style={{ opacity: styles5.opacity, filter: `brightness(${styles5.brightness})` }} />
         <Window src={Window06} style={{ opacity: styles6.opacity, filter: `brightness(${styles6.brightness})` }} />
         <Window src={Window07} style={{ opacity: styles7.opacity, filter: `brightness(${styles7.brightness})` }} />
-      </WindowWrapper>
+      {/* </WindowWrapper> */}
     </BackgroundAnimate>
     </>
   )
@@ -74,118 +74,55 @@ const BackgroundAnimate = styled.div`
   right: 0;
   bottom: 0;
   z-index: -2;
+  display: flex;
+  justify-content: center;
+  align-items: center;
 `
 
-const WindowWrapper = styled.div`
-  width: 100vw;
-  height: 100vh;
-  position: relative;
-`
+// const WindowWrapper = styled.div`
+//   width: 100vw;
+//   height: 100vh;
+//   position: relative;
+// `
 
 const Window = styled.img`
   position: absolute;
-  transition: opacity 0.2s ease-in-out, filter 0.2s ease-in-out;;
+  transition: opacity 0.2s ease-in-out, filter 0.2s ease-in-out;
 
-  // 1920x1080 기본 스타일
+  // 창의 크기와 위치를 상대적으로 설정
   &:nth-child(1) {
     width: 6vw;
-    bottom: 14vh;
     left: 0;
+    bottom: 9vh;
   }
   &:nth-child(2) {
     width: 4.5vw;
-    bottom: 13.5vh;
-    left: 12.3vw;
+    left: 12.2vw;
+    bottom: 8.3vh;
   }
   &:nth-child(3) {
     width: 3vw;
-    bottom: 12.5vh;
     left: 20vw;
+    bottom: 7vh;
   }
   &:nth-child(4) {
     width: 1.2vw;
-    bottom: 13.5vh;
-    right: 36.9vw;
+    right: 36.8vw;
+    bottom: 8.5vh;
   }
   &:nth-child(5) {
     width: 0.9vw;
-    bottom: 13.5vh;
-    right: 35.6vw;
+    right: 35.7vw;
+    bottom: 8.6vh;
   }
   &:nth-child(6) {
     width: 7vw;
-    bottom: 14vh;
     right: 16.7vw;
+    bottom: 9vh;
   }
   &:nth-child(7) {
     width: 2.5vw;
-    bottom: 11vh;
-    right: 6.9vw;
+    right: 7vw;
+    bottom: 6vh;
   }
-
-  @media (max-width: 1920px) and (max-height: 1200px) {
-    // 1920x1200 해상도에서 위치 조정
-    &:nth-child(1) {
-      bottom: 9vh;
-    }
-    &:nth-child(2) {
-      bottom: 8vh;
-    }
-    &:nth-child(3) {
-      bottom: 7vh;
-    }
-    &:nth-child(4) {
-      bottom: 9vh;
-    }
-    &:nth-child(5) {
-      bottom: 9vh;
-    }
-    &:nth-child(6) {
-      bottom: 8.5vh;
-    }
-    &:nth-child(7) {
-      bottom: 5.5vh;
-      right: 6.7vw;
-    }
-  }
-
-  // @media (max-width: 720px) and (max-height: 480px) {
-  //   // 720x480 해상도에서 위치 조정
-  //   &:nth-child(1) {
-  //     width: 5vw;
-  //     bottom: 25vh;
-  //     left: 0;
-  //     display: none;
-  //   }
-  //   &:nth-child(2) {
-  //     width: 4.5vw;
-  //     bottom: 13.4vh;
-  //     left: 12.3vw;
-  //   }
-  //   &:nth-child(3) {
-  //     width: 3vw;
-  //     bottom: 12.4vh;
-  //     left: 20vw;
-  //   }
-  //   &:nth-child(4) {
-  //     width: 1vw;
-  //     bottom: 14vh;
-  //     right: 37vw;
-  //   }
-  //   &:nth-child(5) {
-  //     width: 0.8vw;
-  //     bottom: 14vh;
-  //     right: 35.7vw;
-  //   }
-  //   &:nth-child(6) {
-  //     width: 7vw;
-  //     bottom: 14vh;
-  //     right: 16.6vw;
-  //   }
-  //   &:nth-child(7) {
-  //     width: 2.5vw;
-  //     bottom: 11vh;
-  //     right: 6.8vw;
-  //   }
-  // }
 `
