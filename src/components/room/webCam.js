@@ -97,17 +97,24 @@ const WebCam = ({ players = [], roomCode }) => {
           session
             .connect(token, { clientData: myNickname })
             .then(() => {
-              const publisher = OV.current.initPublisher(undefined, {
-                audioSource: undefined,
-                videoSource: undefined,
-                publishAudio: false,
-                publishVideo: true,
-                resolution: "390x300",
-                frameRate: 30,
-                mirror: true,
-              });
-              session.publish(publisher);
-              setPublisher(publisher);
+              navigator.mediaDevices.getUserMedia({ video: true })
+                .then((stream) => {
+                  const videoSource = stream.getVideoTracks()[0];
+                  const publisher = OV.current.initPublisher(undefined, {
+                    audioSource: false,
+                    videoSource: videoSource,
+                    publishAudio: false,
+                    publishVideo: true,
+                    resolution: "390x300",
+                    frameRate: 30,
+                    mirror: true,
+                  });
+                  session.publish(publisher);
+                  setPublisher(publisher);
+                })
+                .catch((error) => {
+                  console.error("Error getting user media:", error);
+                });
             })
             .catch((error) => {
               console.error("Error connecting to the session:", error);
@@ -144,7 +151,12 @@ const WebCam = ({ players = [], roomCode }) => {
       ]);
     });
 
-    session.on("streamDestroyed", (event) => {
+     session.on("streamDestroyed", (event) => {
+      const streamNickname = JSON.parse(event.stream.connection.data).clientData; // 닉네임 데이터 추출
+      if (otherVideosRef.current[streamNickname]) {
+        otherVideosRef.current[streamNickname].innerHTML = ""; // 비디오 컨테이너를 비움
+      }
+
       setSubscribers((subs) =>
         subs.filter((sub) => sub.subscriber !== event.stream.streamManager)
       );
@@ -194,10 +206,21 @@ const WebCam = ({ players = [], roomCode }) => {
                     <Drum1 dispatchKey={dispatchKey} />
                   ) : (
                     <div
-                      ref={(el) => { otherVideosRef.current[nickname] = el; }} // 닉네임에 맞는 비디오 컨테이너를 렌더링
-                      className="webCamBoxInner"
-                    />
-                  )}
+                    ref={(el) => { otherVideosRef.current[nickname] = el; }} // 닉네임에 맞는 비디오 컨테이너를 렌더링
+                    className="webCamBoxInner"
+                  >
+                    {/* 비디오 컨테이너가 동적으로 업데이트 되도록 설정 */}
+                    {subscribers.map((sub) => 
+                      sub.streamNickname === nickname && (
+                        <div key={sub.streamNickname} ref={(el) => {
+                          if (el) {
+                            el.appendChild(sub.subscriber.videos[0].video);
+                          }
+                        }} />
+                      )
+                    )}
+                  </div>
+                )}
                   <p>
                     {nickname}
                   </p>
