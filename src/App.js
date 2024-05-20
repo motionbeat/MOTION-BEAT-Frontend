@@ -141,16 +141,20 @@ const AppContent = () => {
 
   useEffect(() => {
     const audio = audioRef.current;
-    if (location.pathname === "/room" && audio) {
+    const pausePaths = ["/room", "/ingame"];
+
+    if (pausePaths.includes(location.pathname) && audio) {
       setWasPlaying(!audio.paused);
       audio.pause();
-    } else if (location.pathname !== "/room" && wasPlaying) {
-      audio.play().catch((error) => {
-        console.error("Error resuming audio:", error);
-      });
+    } else if (!pausePaths.includes(location.pathname) && wasPlaying) {
+      if (audio.paused) {
+        audio.play().catch((error) => {
+          console.error("Error resuming audio:", error);
+        });
+      }
       setWasPlaying(false);
     }
-  }, [location, wasPlaying]);
+  }, [location.pathname, wasPlaying]);
 
   return (
     <div ref={pageRef} className="pageEvent">

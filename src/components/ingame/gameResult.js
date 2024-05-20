@@ -7,7 +7,7 @@ import FirstCrown from "../../img/crown.png"
 import "../../styles/ingame/gameResult.scss"
 import GameExitBtn from "../common/atomic/room/gameExitBtn.js";
 
-const GameResult = ( {roomCode}, gameData ) => {
+const GameResult = ( {roomCode, gameData} ) => {
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
   const [resultData, setResultData] = useState([]);
   const navigate = useNavigate();
@@ -15,6 +15,8 @@ const GameResult = ( {roomCode}, gameData ) => {
   const songArtist = sessionStorage.getItem("songArtist");
   const songAlbum = sessionStorage.getItem("songAlbum");
   console.log("데이터 잘 받아와지나 테스트", gameData);
+  const instrumentCounts = JSON.parse(sessionStorage.getItem("instrumentCounts"));
+  console.log("악기별 노트가 몇개인지", instrumentCounts);
 
   // 결과창 출력
   useEffect(() => {

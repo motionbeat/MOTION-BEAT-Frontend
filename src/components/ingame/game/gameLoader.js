@@ -77,8 +77,7 @@ const LoadNotes = async (song, players) => {
       }
     });
     /* 내 악기 */
-    notes = await response.data.notes
-
+    notes = await response.data.note
     console.log("노트 정보", response.data.notes);
   } catch (error) {
     console.error("Error start res:", error);
@@ -91,7 +90,29 @@ const LoadNotes = async (song, players) => {
     console.log("Song data loaded.");
     resolve();
   }, 800));
-  return { notes, sound };
+
+  const instrumentCounts = countInstruments(notes);
+  console.log("악기별 노트 개수", instrumentCounts);
+
+  sessionStorage.setItem("instrumentCounts", JSON.stringify(instrumentCounts));
+
+  return { notes, sound, instrumentCounts };
+};
+
+// 악기별 노트 세기
+const countInstruments = (notes) => {
+  const instrumentCounts = {};
+
+  notes.forEach(note => {
+    const instrument = note.instrument;
+    if (instrumentCounts[instrument]) {
+      instrumentCounts[instrument]++;
+    } else {
+      instrumentCounts[instrument] = 1;
+    }
+  });
+
+  return instrumentCounts;
 };
 
 const ConnectServer = async () => {
