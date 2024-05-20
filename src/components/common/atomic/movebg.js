@@ -46,13 +46,13 @@ const MoveBg = () => {
     <>
     <BackgroundAnimate style={{ backgroundImage: `url(${loginBg0})` }}>
       {/* <WindowWrapper> */}
-        <Window src={Window01} style={{ opacity: styles1.opacity, filter: `brightness(${styles1.brightness})` }} />
+        {/* <Window src={Window01} style={{ opacity: styles1.opacity, filter: `brightness(${styles1.brightness})` }} />
         <Window src={Window02} style={{ opacity: styles2.opacity, filter: `brightness(${styles2.brightness})` }} />
         <Window src={Window03} style={{ opacity: styles3.opacity, filter: `brightness(${styles3.brightness})` }} />
         <Window src={Window04} style={{ opacity: styles4.opacity, filter: `brightness(${styles4.brightness})` }} />
         <Window src={Window05} style={{ opacity: styles5.opacity, filter: `brightness(${styles5.brightness})` }} />
         <Window src={Window06} style={{ opacity: styles6.opacity, filter: `brightness(${styles6.brightness})` }} />
-        <Window src={Window07} style={{ opacity: styles7.opacity, filter: `brightness(${styles7.brightness})` }} />
+        <Window src={Window07} style={{ opacity: styles7.opacity, filter: `brightness(${styles7.brightness})` }} /> */}
       {/* </WindowWrapper> */}
     </BackgroundAnimate>
     </>

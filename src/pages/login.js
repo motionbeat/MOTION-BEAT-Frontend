@@ -5,30 +5,57 @@ import { CheckLoginValidate } from "../utils/checkValidate";
 import { KakaoLoginButton } from "../apis/kko";
 import { GoogleLoginButton } from "../apis/ggl";
 import socket from "../server/server.js";
-import "../styles/login.scss";
 import { login } from "../server/socketEvents.js";
 import BackArrow from "../img/backArrow.png";
 import emailIcon from "../img/emailIcon.png";
 import pwIcon from "../img/pwIcon.png";
 import MoveBg from "../components/common/atomic/movebg.js";
+import "../styles/login.scss";
+// import { useAudio } from "../components/common/useSoundManager.js";
 
 const Login = () => {
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
-  /* ID PW */
-  const emailRef = useRef(null);
-  const pwRef = useRef(null);
-
+  const emailRef = useRef(null); // 이메일
+  const pwRef = useRef(null); // 비번
   const [isLoading, setIsLoading] = useState(false);
   const [errors, setErrors] = useState({});
-  const audioRef = useRef(null); // 노래 가져오기
-
+  // const { playBGM } = useAudio(); // 음악 재생
   /* Navi */
   const navigate = useNavigate();
-
   /* Popup */
   const [popupClosedByUser, setPopupClosedByUser] = useState(false);
+  const audioRef = useRef(null);
 
-  /*  */
+  // useEffect(() => {
+  //   playBGM('loginBGM', { loop: true, volume: 1 });
+  // }, [playBGM]);
+
+  // 노래 재생
+  useEffect(() => {
+    const handlePlay = () => {
+      const audio = audioRef.current;
+      if (audio) {
+        audio.play().catch((error) => {
+          console.error("Error playing audio:", error);
+        });
+      }
+    };
+
+    const handleUserInteraction = () => {
+      handlePlay();
+      document.removeEventListener("click", handleUserInteraction);
+      document.removeEventListener("keydown", handleUserInteraction);
+    };
+
+    document.addEventListener("click", handleUserInteraction);
+    document.addEventListener("keydown", handleUserInteraction);
+
+    return () => {
+      document.removeEventListener("click", handleUserInteraction);
+      document.removeEventListener("keydown", handleUserInteraction);
+    };
+  }, []);
+
   const handleSubmit = async (event) => {
     event.preventDefault();
 
@@ -99,15 +126,16 @@ const Login = () => {
 
   return (
     <>
-      <MoveBg />
       {/* <h1 className="login-title">MOTION BEAT</h1> */}
+      <MoveBg />
+      <audio ref={audioRef} src={"/bgm/littleChalie.mp3"} loop />
       <div className="loginWrapper">
         <div className="loginForm">
           <div className="loginHeader">
             <div className="loginBackArrow">
               <img src={BackArrow} alt="뒤로가기" />
             </div>
-            <div className="loginTitle">로그인</div>
+            <div className="loginTitle">LOGIN</div>
           </div>
           <form onSubmit={handleSubmit}>
             <div className="formInputWrapper">
@@ -140,7 +168,7 @@ const Login = () => {
               <p onClick={handleForgot}>비밀번호 찾기</p>
             </div>
             <div className="loginBtnBox">
-              <button type="submit">로그인</button>
+              <button type="submit">LOGIN</button>
             </div>
             <div className="socialLogin">
               <KakaoLoginButton setEvent={setPopupClosedByUser}>

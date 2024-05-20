@@ -32,11 +32,11 @@
 }
 
 .signupBackArrow {
-  width: 28px;
-  height: 28px;
+  width: 40px;
+  height: 40px;
   position: absolute;
   left: -6%;
-  top: 0;
+  top: 20%;
 
   img {
     width: inherit;
@@ -45,13 +45,13 @@
 }
 
 .signupTitle {
-  width: 80px;
+  width: 80%;
   height: 34px;
-  font-size: 20px;
+  font-size: 43px;
   font-family: "pretendard";
   color: white;
   text-align: center;
-  margin: 0 auto;
+  margin: 20px auto;
   font-weight: 500;
 }
 
@@ -59,9 +59,8 @@
 .formInputWrapper {
   width: 100%;
   margin-bottom: 20px;
-  
   p {
-    font-size: 14px;
+    font-size: 16px;
     font-family: "pretendard";
     color: #9EA3B2;
     text-align: left;
@@ -119,19 +118,22 @@
 // 로그인 버튼
 .loginBtnBox {
   width: 100%;
-  margin-top: 60px;
-  margin-bottom: 30px;
+  margin-top: 30px;
+  margin-bottom: 50px;
 
   button {
     width: inherit;
-    padding: 20px 0;
+    padding: 10px 0;
     border-radius: 16px;
     background-color: #47B5B4;
     color: white;
-    font-size: 16px;
+    font-size: 30px;
     font-family: "pretendard";
     font-weight: bold;
-    // cursor: pointer;
+
+    &:hover {
+      opacity: 0.7;
+    }
   }
 }
 

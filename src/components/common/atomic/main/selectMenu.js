@@ -1,15 +1,40 @@
 import styled from "styled-components";
 import mainSeleceBar from "../../../../img/selectBar.png"
 import "../../../../styles/main/selectMenu.scss"
+import { useEffect, useRef } from "react";
 
 const SelectMenu = ({mainMenu, handleClick}) => {
+  const hoverEffectAudioRef = useRef(null);
+
+  useEffect(() => {
+    const audio = hoverEffectAudioRef.current;
+    if (audio) {
+      audio.addEventListener('canplaythrough', () => {
+        console.log("Audio is ready to play");
+      }, { once: true });
+      audio.load();
+    }
+  }, []);
+
+  const handleMouseEnter = () => {
+    const audio = hoverEffectAudioRef.current;
+    if (audio) {
+      console.log("Playing audio on hover");
+      audio.play().catch((error) => {
+        console.error("Error playing audio:", error);
+      });
+    }
+  };
+
+
   return (
     <>
+      <audio ref={hoverEffectAudioRef} src="/system/menuHover.mp3" />
       <SelectMenuWrapper style={{display:"flex", margin:"20px 0"}}>
         <SelectBars>
           <img src={mainSeleceBar} alt="선택 테두리" />
         </SelectBars>
-        <div className="selectCategory">
+        <div className="selectCategory" onMouseEnter={handleMouseEnter}>
           <span className="categoryText" onClick={() => handleClick(mainMenu)}>{mainMenu}</span>
         </div>
         <SelectBars>
