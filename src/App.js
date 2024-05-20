@@ -1,4 +1,4 @@
-import React, { useEffect, useRef } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   BrowserRouter as Router,
   Routes,
@@ -49,6 +49,8 @@ const App = () => {
 const AppContent = () => {
   const audioRef = useRef(null);
   const location = useLocation();
+  const [wasPlaying, setWasPlaying] = useState(false);
+  const pageRef = useRef(null);
 
   // [moon] 새로고침과 뒤로가기를 막는 시스템 지우면 안됨
   // useEffect(() => {
@@ -75,6 +77,27 @@ const AppContent = () => {
   //   };
   // }, []);
 
+  // 페이지 이동 효과
+  useEffect(() => {
+    const excludedPaths = ["/main/playtype"];
+    const shouldAnimate = !excludedPaths.includes(location.pathname);
+
+    if (shouldAnimate) {
+      const handleTransition = () => {
+        const pageElement = pageRef.current;
+        if (pageElement) {
+          pageElement.classList.add('animate_content');
+          setTimeout(() => {
+            pageElement.classList.remove('animate_content');
+          }, 3200);
+        }
+      };
+
+      handleTransition();
+    }
+  }, [location]);
+
+  // 커서 이벤트
   useEffect(() => {
     const handleMouseMove = (e) => {
       const customCursor = document.querySelector(".custom-cursor");
@@ -94,6 +117,7 @@ const AppContent = () => {
     const handlePlay = () => {
       const audio = audioRef.current;
       if (audio) {
+        audio.volume = 0.1;
         audio.play().catch((error) => {
           console.error("Error playing audio:", error);
         });
@@ -118,13 +142,20 @@ const AppContent = () => {
   useEffect(() => {
     const audio = audioRef.current;
     if (location.pathname === "/room" && audio) {
+      setWasPlaying(!audio.paused);
       audio.pause();
+    } else if (location.pathname !== "/room" && wasPlaying) {
+      audio.play().catch((error) => {
+        console.error("Error resuming audio:", error);
+      });
+      setWasPlaying(false);
     }
-  }, [location]);
+  }, [location, wasPlaying]);
 
   return (
-    <>
-      <audio ref={audioRef} src={"/bgm/kneticSona.mp3"} loop volume="0.5" />
+    <div ref={pageRef} className="pageEvent">
+      <MoveBg />
+      <audio ref={audioRef} src={"/bgm/kneticSona.mp3"} loop />
       <div className="custom-cursor"></div>
       {/* <ShowTitle /> */}
       <Routes>
@@ -171,7 +202,7 @@ const AppContent = () => {
 
         <Route path="/admin" element={<Admin />} />
       </Routes>
-    </>
+    </div>
   );
 };
 export default App;
