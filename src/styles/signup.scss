@@ -58,7 +58,7 @@
 // 입력박스
 .formInputWrapper {
   width: 100%;
-  margin-bottom: 30px;
+  margin-bottom: 20px;
   
   p {
     font-size: 14px;
@@ -120,7 +120,7 @@
 .loginBtnBox {
   width: 100%;
   margin-top: 60px;
-  margin-bottom: 50px;
+  margin-bottom: 30px;
 
   button {
     width: inherit;
@@ -162,4 +162,15 @@
     font-weight: 600;
     text-decoration: underline;
   }
+}
+
+// 중복확인
+.duplicate {
+  width: 68px;
+  padding: 7px 0;
+  font-size: 14px;
+  border: 1px solid #d9d9d9;
+  border-radius: 8px;
+  font-family: "Pretendard";
+  font-weight: bold;
 }

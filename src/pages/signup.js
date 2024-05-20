@@ -111,6 +111,7 @@ const Signup = () => {
           <p>Nickname</p>
           <div className="inputBox">
             <input type="text" placeholder="mobe" ref={nicknameRef} />
+            <button className="duplicate" type="button">중복 확인</button>
           </div>
           {errors.nickname && <p style={{ color: 'red' }}>{errors.nickname[0]}</p>}
         </div>
