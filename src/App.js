@@ -1,5 +1,5 @@
 import React, { useEffect, useRef, useState } from "react";
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import { BrowserRouter as Router, Routes, Route, useLocation } from "react-router-dom";
 import "./App.css";
 
 /* 웹 접속 */
@@ -17,11 +17,7 @@ import Playtype from "components/main/playtype";
 import Tutorial from "components/main/tutorial";
 import Ranking from "components/main/ranking";
 import Settings from "components/main/settings";
-
-/* 룸(=대기방) */
 import Room from "./pages/room";
-
-/* 인게임 */
 import Ingame from "./pages/ingame";
 
 // import Redirect from "./pages/redirect";
@@ -29,9 +25,7 @@ import { KakaoCallback } from "./apis/kko";
 import { GoogleCallback } from "./apis/ggl";
 
 import NotFound from "./pages/notFound";
-// import AddSong from "./pages/addSong";
 // import PrivateRoute from "./utils/checkAuth";
-// import Setting from "./pages/setting";
 import Drum1 from "components/mediapipe/drum1";
 import AtomicTest from "components/common/atomic/atomicTest";
 import Admin from "./pages/admin";
@@ -40,8 +34,20 @@ import SoundManagerProvider from "components/common/useSoundManager.js";
 import MoveBg from "components/common/atomic/movebg";
 
 const App = () => {
-  // const audioRef = useRef(null);
-  
+  const audioRef = useRef(null);
+
+  const RouteListener = () => {
+    const location = useLocation();
+
+    useEffect(() => {
+      if (location.pathname === "/room" && audioRef.current) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      }
+    }, [location]);
+    return null;
+  };
+
   // [moon] 새로고침과 뒤로가기를 막는 시스템 지우면 안됨
   // useEffect(() => {
   //   const handleBeforeUnload = (event) => {
@@ -73,35 +79,35 @@ const App = () => {
     customCursor.style.top = `${e.clientY}px`;
   });
 
-  // // 노래 재생
-  // useEffect(() => {
-  //   const handlePlay = () => {
-  //     const audio = audioRef.current;
-  //     if (audio) {
-  //       audio.play().catch((error) => {
-  //         console.error("Error playing audio:", error);
-  //       });
-  //     }
-  //   };
+  // 노래 재생
+  useEffect(() => {
+    const handlePlay = () => {
+      const audio = audioRef.current;
+      if (audio) {
+        audio.play().catch((error) => {
+          console.error("Error playing audio:", error);
+        });
+      }
+    };
 
-  //   const handleUserInteraction = () => {
-  //     handlePlay();
-  //     document.removeEventListener("click", handleUserInteraction);
-  //     document.removeEventListener("keydown", handleUserInteraction);
-  //   };
+    const handleUserInteraction = () => {
+      handlePlay();
+      document.removeEventListener("click", handleUserInteraction);
+      document.removeEventListener("keydown", handleUserInteraction);
+    };
 
-  //   document.addEventListener("click", handleUserInteraction);
-  //   document.addEventListener("keydown", handleUserInteraction);
+    document.addEventListener("click", handleUserInteraction);
+    document.addEventListener("keydown", handleUserInteraction);
 
-  //   return () => {
-  //     document.removeEventListener("click", handleUserInteraction);
-  //     document.removeEventListener("keydown", handleUserInteraction);
-  //   };
-  // }, []);
+    return () => {
+      document.removeEventListener("click", handleUserInteraction);
+      document.removeEventListener("keydown", handleUserInteraction);
+    };
+  }, []);
 
   return (
     <SoundManagerProvider>
-      {/* <audio ref={audioRef} src={"/bgm/bitRushArcade.mp3"} loop /> */}
+      <audio ref={audioRef} src={"/bgm/kneticSona.mp3"} loop />
       <div className="custom-cursor"></div>
       <Router>
         {/* <ShowTitle /> */}

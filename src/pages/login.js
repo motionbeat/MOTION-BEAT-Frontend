@@ -24,37 +24,37 @@ const Login = () => {
   const navigate = useNavigate();
   /* Popup */
   const [popupClosedByUser, setPopupClosedByUser] = useState(false);
-  const audioRef = useRef(null);
+  // const audioRef = useRef(null);
 
   // useEffect(() => {
   //   playBGM('loginBGM', { loop: true, volume: 1 });
   // }, [playBGM]);
 
   // 노래 재생
-  useEffect(() => {
-    const handlePlay = () => {
-      const audio = audioRef.current;
-      if (audio) {
-        audio.play().catch((error) => {
-          console.error("Error playing audio:", error);
-        });
-      }
-    };
+  // useEffect(() => {
+  //   const handlePlay = () => {
+  //     const audio = audioRef.current;
+  //     if (audio) {
+  //       audio.play().catch((error) => {
+  //         console.error("Error playing audio:", error);
+  //       });
+  //     }
+  //   };
 
-    const handleUserInteraction = () => {
-      handlePlay();
-      document.removeEventListener("click", handleUserInteraction);
-      document.removeEventListener("keydown", handleUserInteraction);
-    };
+  //   const handleUserInteraction = () => {
+  //     handlePlay();
+  //     document.removeEventListener("click", handleUserInteraction);
+  //     document.removeEventListener("keydown", handleUserInteraction);
+  //   };
 
-    document.addEventListener("click", handleUserInteraction);
-    document.addEventListener("keydown", handleUserInteraction);
+  //   document.addEventListener("click", handleUserInteraction);
+  //   document.addEventListener("keydown", handleUserInteraction);
 
-    return () => {
-      document.removeEventListener("click", handleUserInteraction);
-      document.removeEventListener("keydown", handleUserInteraction);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener("click", handleUserInteraction);
+  //     document.removeEventListener("keydown", handleUserInteraction);
+  //   };
+  // }, []);
 
   const handleSubmit = async (event) => {
     event.preventDefault();
@@ -128,7 +128,7 @@ const Login = () => {
     <>
       {/* <h1 className="login-title">MOTION BEAT</h1> */}
       <MoveBg />
-      <audio ref={audioRef} src={"/bgm/littleChalie.mp3"} loop />
+      {/* <audio ref={audioRef} src={"/bgm/littleChalie.mp3"} loop /> */}
       <div className="loginWrapper">
         <div className="loginForm">
           <div className="loginHeader">
