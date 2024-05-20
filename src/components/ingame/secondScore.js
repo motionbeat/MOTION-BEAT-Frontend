@@ -117,9 +117,9 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
     //   volume = session_motionType === "A" ? 1.4 : 1.9;
     // }
 
-    const volume = session_motionType === "A" ? 1 : 2;
+    // const volume = session_motionType === "A" ? 1 : 2;
+    const volume = 1.5;
     playMotionSFX(session_instrument, session_motionType, { volume: volume });
-    // playMotionSFX(session_instrument, session_motionType, { volume: 1.7 });
   }, [hittedNotes, myNickname, playMotionSFX]);
 
   // hit 출력
