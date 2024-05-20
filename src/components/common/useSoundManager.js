@@ -19,12 +19,30 @@ const SoundManagerProvider = ({ children }) => {
   );
   const audioBuffers = useRef({ bgm: {}, normalSfx: {}, motionSfx: {} });
   const currentSources = useRef({}); // 현재 재생 중인 사운드 소스들을 저장
-  const pausedSources = useRef({}); // 일시 정지된 사운드 소스들을 저장
+  // const pausedSources = useRef({}); // 일시 정지된 사운드 소스들을 저장
   const [currentBGM, setCurrentBGM] = useState({
     source: null,
     startTime: null,
     buffer: null,
+    offset: 0, // 오프셋 추가
   });
+  const [bgmEndedCallback, setBgmEndedCallback] = useState(null); // BGM 종료 콜백 함수
+
+  // const deepClone = (obj) => {
+  //   if (obj === null || typeof obj !== "object") return obj;
+
+  //   if (Array.isArray(obj)) {
+  //     return obj.map((item) => deepClone(item));
+  //   }
+
+  //   const clonedObj = {};
+  //   for (const key in obj) {
+  //     if (obj.hasOwnProperty(key)) {
+  //       clonedObj[key] = deepClone(obj[key]);
+  //     }
+  //   }
+  //   return clonedObj;
+  // };
 
   const loadSound = useCallback(async (category, setName, sound) => {
     try {
@@ -73,27 +91,17 @@ const SoundManagerProvider = ({ children }) => {
   }, [loadSound]);
 
   useEffect(() => {
+    // console.log("[KHW] SoundManagerProvider useEffect - loadAllSounds()");
     loadAllSounds();
   }, [loadAllSounds]);
 
-  const getSourceFromPool = (buffer) => {
-    let source;
-    if (pausedSources.current[buffer]) {
-      source = pausedSources.current[buffer].pop();
-    } else {
-      source = audioContext.current.createBufferSource();
-      source.buffer = buffer;
-    }
-    return source;
-  };
-
-  const returnSourceToPool = (source) => {
-    const buffer = source.buffer;
-    if (!pausedSources.current[buffer]) {
-      pausedSources.current[buffer] = [];
-    }
-    pausedSources.current[buffer].push(source);
-  };
+  // const returnSourceToPool = (source) => {
+  //   const key = source.buffer.url || source.buffer.name; // buffer의 고유 식별자를 사용합니다.
+  //   if (!pausedSources.current[key]) {
+  //     pausedSources.current[key] = [];
+  //   }
+  //   pausedSources.current[key].push(source);
+  // };
 
   const playSound = useCallback(
     (category, setName, soundName, options = {}) => {
@@ -108,6 +116,28 @@ const SoundManagerProvider = ({ children }) => {
         );
         return;
       }
+
+      const getSourceFromPool = (buffer) => {
+        let source;
+        // const key = buffer.url || buffer.name; // buffer의 고유 식별자를 사용합니다.
+
+        // if (
+        //   pausedSources.current[key] &&
+        //   pausedSources.current[key].length > 0
+        // ) {
+        //   source = pausedSources.current[key].pop();
+        // } else {
+        //   source = audioContext.current.createBufferSource();
+        //   source.buffer = buffer;
+        //   source.onended = () => returnSourceToPool(source); // 종료 시 자동 반환
+        // }
+
+        source = audioContext.current.createBufferSource();
+        source.buffer = buffer;
+        // source.onended = () => returnSourceToPool(source); // 종료 시 자동 반환
+
+        return source;
+      };
 
       const source = getSourceFromPool(buffer);
       const gainNode = audioContext.current.createGain();
@@ -171,87 +201,6 @@ const SoundManagerProvider = ({ children }) => {
     [loadSound, playSound]
   );
 
-  const pauseSound = useCallback((category, setName, soundName) => {
-    const soundSource =
-      category === "motionSfx"
-        ? currentSources.current[category]?.[setName]?.[soundName]
-        : currentSources.current[category]?.[soundName];
-
-    if (soundSource) {
-      const { source, startTime, offset } = soundSource;
-      const elapsedTime = audioContext.current.currentTime - startTime;
-      const newOffset = elapsedTime + offset;
-
-      source.stop();
-
-      if (!pausedSources.current[category]) {
-        pausedSources.current[category] = {};
-      }
-      if (category === "motionSfx") {
-        if (!pausedSources.current[category][setName]) {
-          pausedSources.current[category][setName] = {};
-        }
-        pausedSources.current[category][setName][soundName] = {
-          ...soundSource,
-          offset: newOffset,
-        };
-      } else {
-        pausedSources.current[category][soundName] = {
-          ...soundSource,
-          offset: newOffset,
-        };
-      }
-
-      delete currentSources.current[category]?.[setName]?.[soundName];
-    } else {
-      console.warn(
-        `Sound ${soundName} in category ${category} and set ${setName} not found`
-      );
-    }
-  }, []);
-
-  const resumeSound = useCallback((category, setName, soundName) => {
-    const pausedSource =
-      category === "motionSfx"
-        ? pausedSources.current[category]?.[setName]?.[soundName]
-        : pausedSources.current[category]?.[soundName];
-
-    if (pausedSource) {
-      const { buffer, gainNode, offset } = pausedSource;
-
-      const source = getSourceFromPool(buffer);
-      source.connect(gainNode).connect(audioContext.current.destination);
-      source.loop = !!pausedSource.loop;
-      source.start(0, offset);
-
-      if (!currentSources.current[category]) {
-        currentSources.current[category] = {};
-      }
-      if (category === "motionSfx") {
-        if (!currentSources.current[category][setName]) {
-          currentSources.current[category][setName] = {};
-        }
-        currentSources.current[category][setName][soundName] = {
-          ...pausedSource,
-          source,
-          startTime: audioContext.current.currentTime,
-        };
-      } else {
-        currentSources.current[category][soundName] = {
-          ...pausedSource,
-          source,
-          startTime: audioContext.current.currentTime,
-        };
-      }
-
-      delete pausedSources.current[category]?.[setName]?.[soundName];
-    } else {
-      console.warn(
-        `Paused sound ${soundName} in category ${category} and set ${setName} not found`
-      );
-    }
-  }, []);
-
   const stopSound = useCallback((category, setName, soundName) => {
     const soundSource =
       category === "motionSfx"
@@ -260,7 +209,7 @@ const SoundManagerProvider = ({ children }) => {
 
     if (soundSource) {
       soundSource.source.stop();
-      returnSourceToPool(soundSource.source);
+      // returnSourceToPool(soundSource.source);
 
       if (category === "motionSfx") {
         delete currentSources.current[category][setName][soundName];
@@ -274,37 +223,89 @@ const SoundManagerProvider = ({ children }) => {
     }
   }, []);
 
-  const dispatchSoundEvent = useCallback((eventName) => {
-    window.dispatchEvent(new CustomEvent(eventName));
-  }, []);
+  // BGM 재생 시간 계산 함수
+  const getBGMElapsedTime = () => {
+    if (!currentBGM.source) {
+      console.error("[KHW] currentBGM.source is null");
+      return 0; // 현재 재생 중인 BGM이 없으면 0 반환
+    }
+
+    const elapsedTime =
+      audioContext.current.currentTime -
+      currentBGM.startTime +
+      currentBGM.offset;
+
+    console.log(
+      "[KHW] audioContext.current.currentTime: ",
+      audioContext.current.currentTime
+    );
+    console.log("[KHW] currentBGM.startTime: ", currentBGM.startTime);
+    console.log("[KHW] currentBGM.offset: ", currentBGM.offset);
+    console.log("[KHW] elapsedTime: ", elapsedTime);
+
+    return elapsedTime;
+  };
+
+  // BGM 재생 상태 확인 함수
+  const isBGMPlaying = () => {
+    return currentBGM.source !== null;
+  };
+
+  // BGM 종료 콜백 설정 함수
+  const onBGMended = (callback) => {
+    setBgmEndedCallback(() => callback);
+  };
 
   const value = {
     playBGM: (name, options) => {
-      if (currentBGM.source) {
-        if (typeof currentBGM.source.stop === "function") {
-          currentBGM.source.stop();
-        }
-      }
       loadAndPlaySound("bgm", "", name, options).then(({ source, buffer }) => {
-        dispatchSoundEvent("BGMPlayedSuccessfully");
         source.onended = () => {
-          dispatchSoundEvent("BGMEndedSuccessfully");
+          if (bgmEndedCallback) {
+            bgmEndedCallback(); // 콜백 호출
+          }
+
+          console.log("[KHW] BGM ended");
+
+          setCurrentBGM({
+            source: null,
+            startTime: null,
+            buffer: null,
+            offset: 0,
+          });
         };
+
         setCurrentBGM({
           source,
           startTime: audioContext.current.currentTime,
           buffer,
+          offset: options.offset || 0,
         });
+
+        // setCurrentBGM((prevBGM) => {
+        //   // 깊은 복사로 currentBGM 상태를 업데이트
+        //   const newBGM = deepClone(prevBGM);
+        //   newBGM.source = source;
+        //   newBGM.startTime = audioContext.current.currentTime;
+        //   newBGM.buffer = buffer;
+        //   newBGM.offset = options.offset || 0;
+        //   console.log("[KHW] newBGM: ", newBGM); // 확인용 로그 추가
+        //   return newBGM;
+        // });
       });
     },
     playNormalSFX: (name, options) =>
       loadAndPlaySound("normalSfx", "", name, options),
     playMotionSFX: (setName, name, options) =>
       loadAndPlaySound("motionSfx", setName, name, options),
-    pauseSound,
-    resumeSound,
     stopSound,
+    getBGMElapsedTime, // BGM 경과 시간 함수 추가
+    isBGMPlaying, // BGM 재생 상태 함수 추가
+    onBGMended, // BGM 종료 콜백 설정 함수 추가
   };
+
+  useEffect(() => {
+    console.log("[KHW] currentBGM updated: ", currentBGM);
+  }, [currentBGM]);
 
   return (
     <AudioContext.Provider value={value}>{children}</AudioContext.Provider>

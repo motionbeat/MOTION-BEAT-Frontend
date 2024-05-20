@@ -1,20 +1,21 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
 import { setInput } from "../redux/actions/inputActions";
-// import { useAudio } from "../components/common/useSoundManager";
+import { useAudio } from "../components/common/useSoundManager";
 
 const Input = ({ onKeyDown, onKeyUp }) => {
-  // const { getElapsedTime } = useAudio();
+  const { getBGMElapsedTime } = useAudio();
   const dispatch = useDispatch();
 
   useEffect(() => {
-    const inputKeyList = ["D", "F", "J", "K"];
+    const inputKeyList = ["D", "F"];
     const handleKeyDown = (event) => {
       const key = event.key.toUpperCase();
-      const audioPlayer = document.getElementById("audioPlayer");
+      // const audioPlayer = document.getElementById("audioPlayer");
 
       if (inputKeyList.includes(key)) {
-        const keyExactTime = parseInt(audioPlayer.currentTime * 1000, 10);
+        // const keyExactTime = parseInt(audioPlayer.currentTime * 1000, 10);
+        const keyExactTime = parseInt(getBGMElapsedTime() * 1000, 10);
         // console.log("키 눌린 시간: ", keyExactTime);
         dispatch(setInput(key));
 
@@ -40,7 +41,7 @@ const Input = ({ onKeyDown, onKeyUp }) => {
       window.removeEventListener("keydown", handleKeyDown);
       window.removeEventListener("keyup", handleKeyUp);
     };
-  }, [dispatch, onKeyDown, onKeyUp]);
+  }, [dispatch, getBGMElapsedTime, onKeyDown, onKeyUp]);
 
   return <div className="keyBox" />;
 };

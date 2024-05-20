@@ -10,7 +10,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
   const { playMotionSFX } = useAudio();
   const [playerCombos, setPlayerCombos] = useState({});
   const [hittedNotes, setHittedNotes] = useState(0);
-  const [missedNotes, setMissedNotes] = useState(0);
+  // const [missedNotes, setMissedNotes] = useState(0);
   const [combo, setCombo] = useState(0);
   const dispatch = useDispatch();
   const myNickname = sessionStorage.getItem("nickname");
@@ -65,7 +65,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
         });
         setCombo((prev) => prev + 1);
       } else if (result === "miss" || result === "ignore") {
-        setMissedNotes((prev) => prev + 1);
+        // setMissedNotes((prev) => prev + 1);
         sendScoreUpdate(hittedNotes, 0);
         setCombo(0);
       }

@@ -95,7 +95,7 @@ const Ingame = () => {
           });
       }
     },
-    [myNickname, railRefs.current, gameData.code, gameData.song, loadedData]
+    [myNickname, gameData.code, gameData.song, loadedData]
   );
 
   /* useEffect 순서를 변경하지 마세요*/
@@ -170,13 +170,13 @@ const Ingame = () => {
   useEffect(() => {
     if (playerNumber !== railRefs.current.length) {
       // playerNumber 길이만큼 ref를 생성
-      railRefs.current = Array.from({ length: playerNumber }, (_, index) =>
-        railRefs.current[index] || React.createRef()
+      railRefs.current = Array.from(
+        { length: playerNumber },
+        (_, index) => railRefs.current[index] || React.createRef()
       );
     }
     // console.log("TEST", playerNumber);
     // console.log("TEST", railRefs.current);
-
   }, [loadedData, playerNumber]);
 
   if (!staticColorsArray) {
@@ -221,8 +221,9 @@ const Ingame = () => {
           return (
             <VerticalRail
               ref={railRefs.current[index]}
-              color={`rgba(${staticColorsArray[index]}, ${index === myPosition ? 1 : 0.4
-                })`}
+              color={`rgba(${staticColorsArray[index]}, ${
+                index === myPosition ? 1 : 0.4
+              })`}
               top={`${(100 / gameData.players.length) * index}%`}
               data-instrument={gameData.players[index].instrument}
               key={index}
@@ -331,7 +332,7 @@ const Ingame = () => {
           height: "100vh",
           backgroundClip: "padding-box",
           paddingTop: "5%",
-          overflowX: "hidden"
+          overflowX: "hidden",
         }}
       >
         {gameEnded ? (
@@ -360,7 +361,9 @@ const Ingame = () => {
         )}
       </div>
       {ShowModal(modalStatus)}
-      {isGameReady && <GameController {...startGameProps} myPosition={myPosition} />}
+      {isGameReady && (
+        <GameController {...startGameProps} myPosition={myPosition} />
+      )}
     </>
   );
 };
