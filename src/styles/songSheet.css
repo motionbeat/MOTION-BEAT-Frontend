@@ -42,7 +42,7 @@
 
 .hitLine {
   position: absolute;
-  left: 4.2%;
+  left: 1%;
   width: 5.5%;
   height: inherit;
   background: linear-gradient(to right, rgba(255, 0, 197, 1), rgba(255, 192, 203, 0));
