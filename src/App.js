@@ -34,19 +34,19 @@ import SoundManagerProvider from "components/common/useSoundManager.js";
 import MoveBg from "components/common/atomic/movebg";
 
 const App = () => {
-  const audioRef = useRef(null);
+  // const audioRef = useRef(null);
 
-  const RouteListener = () => {
-    const location = useLocation();
+  // const RouteListener = () => {
+  //   const location = useLocation();
 
-    useEffect(() => {
-      if (location.pathname === "/room" && audioRef.current) {
-        audioRef.current.pause();
-        audioRef.current.currentTime = 0;
-      }
-    }, [location]);
-    return null;
-  };
+  //   useEffect(() => {
+  //     if (location.pathname === "/room" && audioRef.current) {
+  //       audioRef.current.pause();
+  //       audioRef.current.currentTime = 0;
+  //     }
+  //   }, [location]);
+  //   return null;
+  // };
 
   // [moon] 새로고침과 뒤로가기를 막는 시스템 지우면 안됨
   // useEffect(() => {
@@ -79,35 +79,35 @@ const App = () => {
     customCursor.style.top = `${e.clientY}px`;
   });
 
-  // 노래 재생
-  useEffect(() => {
-    const handlePlay = () => {
-      const audio = audioRef.current;
-      if (audio) {
-        audio.play().catch((error) => {
-          console.error("Error playing audio:", error);
-        });
-      }
-    };
+  // // 노래 재생
+  // useEffect(() => {
+  //   const handlePlay = () => {
+  //     const audio = audioRef.current;
+  //     if (audio) {
+  //       audio.play().catch((error) => {
+  //         console.error("Error playing audio:", error);
+  //       });
+  //     }
+  //   };
 
-    const handleUserInteraction = () => {
-      handlePlay();
-      document.removeEventListener("click", handleUserInteraction);
-      document.removeEventListener("keydown", handleUserInteraction);
-    };
+  //   const handleUserInteraction = () => {
+  //     handlePlay();
+  //     document.removeEventListener("click", handleUserInteraction);
+  //     document.removeEventListener("keydown", handleUserInteraction);
+  //   };
 
-    document.addEventListener("click", handleUserInteraction);
-    document.addEventListener("keydown", handleUserInteraction);
+  //   document.addEventListener("click", handleUserInteraction);
+  //   document.addEventListener("keydown", handleUserInteraction);
 
-    return () => {
-      document.removeEventListener("click", handleUserInteraction);
-      document.removeEventListener("keydown", handleUserInteraction);
-    };
-  }, []);
+  //   return () => {
+  //     document.removeEventListener("click", handleUserInteraction);
+  //     document.removeEventListener("keydown", handleUserInteraction);
+  //   };
+  // }, []);
 
   return (
     <SoundManagerProvider>
-      <audio ref={audioRef} src={"/bgm/kneticSona.mp3"} loop />
+      {/* <audio ref={audioRef} src={"/bgm/kneticSona.mp3"} loop /> */}
       <div className="custom-cursor"></div>
       <Router>
         {/* <ShowTitle /> */}
