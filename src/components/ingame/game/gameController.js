@@ -1,4 +1,4 @@
-/* 모든 악기 효과음이 자동 재생되는 버전 */
+/* 이 파일에서는 게임에 연결된 유저의 키음(노트의 악기음)만 나옵니다. */
 import { useEffect, useState } from "react";
 import { useAudio } from "../../../components/common/useSoundManager.js";
 import socket from "../../../server/server.js";
@@ -26,7 +26,6 @@ const playAudio = (sound) => {
 export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomCode }) => {
 
   // console.log("TESTSTART:", railRefs)
-  // 원래 6초였으나, 베토벤 drum2의 노트 타이밍 때문에 5초로 수정 - Hyeonwoo, 2024.05.20
   const animationDuration = 5000;
   const { playBGM, currentBGM, playMotionSFX } = useAudio();
   const processedNotes = new Set(); // 처리된 노트들을 추적하는 집합
@@ -60,7 +59,11 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
       // console.log("내 포지션: ", myPosition);
       // console.log("내 악기: ", myInstrument);
       // console.log("ref: ", railRefs);
-      // console.log("myRef: ", railRefs.current[myPosition].current);
+      // console.log("ref: ", railRefs[myPosition]);
+      // console.log("myRef: ", railRefs[myPosition].current);
+      const existingInstruments = Array.from(railRefs).map(element => element.current.dataset.instrument);
+      // console.log("TEST 1:", existingInstruments);
+
       let count = 1200;
 
       const ScheduleNotes = () => {
@@ -71,9 +74,12 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
 
           // TODO: <LSL> getElapsedTime() 함수를 사용하여 현재 시간을 가져와야 함
           if (startTime <= audioTime && !processedNotes.has(note)) {
-            processedNotes.add(note);
-            GenerateNote(note, startTime, count);
-            count++;
+            /* 연결된 플레이어들의 악기 만 재생 */
+            if (existingInstruments.includes(note.instrument)) {
+              processedNotes.add(note);
+              GenerateNote(note, startTime, count);
+              count++;
+            }
           }
         }
         requestAnimationFrame(ScheduleNotes);
@@ -206,7 +212,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
         audioPlayer.removeEventListener('ended', handleAudioEnded);
       }
     };
-  }, [data.musicData, railRefs, roomCode, notes]);
+  }, [data.musicData, railRefs, roomCode, notes,]);
   return null;
 };
 

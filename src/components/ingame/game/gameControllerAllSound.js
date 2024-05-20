@@ -1,4 +1,4 @@
-/* 이 파일 이름을 gameController.js로 바꾸세요 */
+/* 이 파일에서는 노래에 포함된 모든 악기의 키음(노트의 악기음)이 나옵니다. */
 import { useEffect, useState } from "react";
 import { useAudio } from "../../../components/common/useSoundManager.js";
 import socket from "../../../server/server.js";
@@ -26,6 +26,7 @@ const playAudio = (sound) => {
 export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomCode }) => {
 
   // console.log("TESTSTART:", railRefs)
+  // 원래 6초였으나, 베토벤 drum2의 노트 타이밍 때문에 5초로 수정 - Hyeonwoo, 2024.05.20
   const animationDuration = 5000;
   const { playBGM, currentBGM, playMotionSFX } = useAudio();
   const processedNotes = new Set(); // 처리된 노트들을 추적하는 집합
@@ -60,9 +61,6 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
       // console.log("내 악기: ", myInstrument);
       // console.log("ref: ", railRefs);
       // console.log("myRef: ", railRefs.current[myPosition].current);
-      const existingInstruments = Array.from(railRefs.current).map(element => element.dataset.instrument);
-      // console.log("TEST 1:", existingInstruments);
-
       let count = 1200;
 
       const ScheduleNotes = () => {
@@ -73,12 +71,9 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
 
           // TODO: <LSL> getElapsedTime() 함수를 사용하여 현재 시간을 가져와야 함
           if (startTime <= audioTime && !processedNotes.has(note)) {
-            /* 연결된 플레이어들의 악기 만 재생 */
-            if (existingInstruments.includes(note.instrument)) {
-              processedNotes.add(note);
-              GenerateNote(note, startTime, count);
-              count++;
-            }
+            processedNotes.add(note);
+            GenerateNote(note, startTime, count);
+            count++;
           }
         }
         requestAnimationFrame(ScheduleNotes);
@@ -139,7 +134,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
         }
 
         if (note.instrument !== myInstrument) {
-          if (positionPercent <= 8) {
+          if (positionPercent <= 3) {
             /* 타 플레이어 모든 소리 활성화 */
             AutoPlay(note.instrument, note.motion);
             // console.log(note.pnumber);

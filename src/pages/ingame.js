@@ -278,7 +278,7 @@ const Ingame = () => {
               backgroundSize: "cover",
             }}
           >
-            <p style={{ color: "white", fontSize: "100px" }}>Enter "Enter"</p>
+            <p style={{ color: "white", fontSize: "100px" }}>Press "Enter"</p>
           </div>
         );
       case "Ready":
