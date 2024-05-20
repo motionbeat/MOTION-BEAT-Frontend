@@ -123,7 +123,7 @@ const Main = () => {
 
   return (
     <>
-      <MoveBg />
+      {/* <MoveBg /> */}
       <MainHeader roomName={roomName} />
       {/* <HeaderBtn /> */}
       <div>
