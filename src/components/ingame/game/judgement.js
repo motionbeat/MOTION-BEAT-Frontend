@@ -50,7 +50,7 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
 
   if (
     timeDiff >= -100 &&
-    timeDiff <= 300 &&
+    timeDiff <= 450 &&
     closestNote.getAttribute("data-motion") === currentMotion
   ) {
     // console.log("HIT from : ", timeDiff, " = ", noteTime, "-", time);
