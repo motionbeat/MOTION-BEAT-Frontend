@@ -2,16 +2,16 @@ import { Parser } from "../../../utils/parser";
 // import { TriggerHitEffect } from "../secondScore.js";
 
 // let audioElements;
-const dispatch = (result) => {
-  const event = new CustomEvent("scoreUpdate", { detail: { result } });
-  window.dispatchEvent(event);
-};
 
 export const Judge = (key, time, instrument, myPosition, myRailRef) => {
   let result = "ignore";
 
   // console.log("TEST1");
   // console.log(instrument);
+  const dispatch = (result) => {
+    const event = new CustomEvent("scoreUpdate", { detail: { result } });
+    window.dispatchEvent(event);
+  };
 
   const notes = document.querySelectorAll(
     `.Note[data-instrument="${instrument}"]`
@@ -45,21 +45,12 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
   //   dispatch("miss");
   // }
 
-  // TODO: <L익S명L> 이 코드에 대한 위치의 검증 필요
   /* timeDiff가 >=0,<=500 사이에 있고, 같은 모션 키를 입력했을 경우  */
   let currentMotion = Parser(key);
-  /* timeDiff가 0.5이상 차이나거나, 같은 모션 키를 입력하지 않았을 경우 */
-  if (timeDiff < 400) {
-    // console.log("IGNORE");
-    // console.log("[SL] judgement (3) timeDiff < 400: ", timeDiff, closestNote.getAttribute("data-index"));
-    closestNote.setAttribute("data-index", minIndex + 100);
-    // console.log("[SL] judgement (4) timeDiff < 400: ", timeDiff, closestNote.getAttribute("data-index"));
-    return dispatch("ignore");
-  }
 
   if (
-    timeDiff >= 400 &&
-    timeDiff <= 850 &&
+    timeDiff >= 300 &&
+    timeDiff <= 750 &&
     closestNote.getAttribute("data-motion") === currentMotion
   ) {
     // console.log("HIT from : ", timeDiff, " = ", noteTime, "-", time);
@@ -69,18 +60,24 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
     sessionStorage.setItem("motionType", currentMotion);
 
     dispatch(result);
-    // console.log("[SL] judgement (1) 에서 My 클로젯 노트 Remove: ", closestNote.getAttribute("data-index"));
     TriggerMyHitEffect(`player${myPosition}`, myRailRef, closestNote);
-    // console.log("[SL] judgement (2) 에서 My 클로젯 노트 Remove: ", closestNote);
+    // console.log("[SL] judgement 에서 My 클로젯 노트 Remove");
 
     // closestNote.remove(); // 해당 노트를 화면에서 숨김
     return;
+  }
+
+  /* timeDiff가 0.5이상 차이나거나, 같은 모션 키를 입력하지 않았을 경우 */
+  if (timeDiff < 300) {
+    // console.log("IGNORE");
+    closestNote.setAttribute("data-index", minIndex + 100);
+    return dispatch("ignore");
   }
 };
 
 const TriggerMyHitEffect = (target, elem, closestNote) => {
   const hitEffect = document.getElementById(`${target}HitEffect`);
-  // console.log("[SL] TriggerMyHitEffect:", hitEffect);
+  // console.log(hitEffect)
   if (!hitEffect) return; // hitEffect가 없으면 함수 실행 중지
 
   if (closestNote) {
@@ -94,6 +91,10 @@ const TriggerMyHitEffect = (target, elem, closestNote) => {
       //   closestNote,
       //   closestNote.getAttribute("data-index")
       // );
+    } else {
+      console.warn("[SL] closestNote is not a child of elem.current");
+      // console.log("elem.current:", elem.current);
+      // console.log("closestNote:", closestNote);
     }
   }
 
@@ -103,3 +104,34 @@ const TriggerMyHitEffect = (target, elem, closestNote) => {
     hitEffect.classList.remove("active"); // 애니메이션이 끝나고 클래스를 제거
   }, 350); // 애니메이션 시간과 동일하게 설정
 };
+
+// const PlayMyKeySound = (parsedkey, idx) => {
+//   const audio1 = document.getElementById(`keySound0player${idx}`);
+//   const audio2 = docsument.getElementById(`keySound1player${idx}`);
+
+//   console.log(audio1)
+//   console.log(audio2)
+
+//   switch (parsedkey) {
+//     case "A":
+//       audioElements.audio1.play();
+//       break;
+//     case "B":
+//       audioElements.audio2.play();
+//       break;
+//     default:
+//       break;
+//   }
+// };
+
+// // 아래 코드들을 안 써도 지우면 난리 오류 나니 꼭 확인 필요~!!! - Hyeonwoo, 2024.05.15
+// export const PlayKeySoundWithParser = (key) => {
+//   PlayKeySound(Parser(key));
+// };
+
+// const PlayKeySound = (key) => {
+//   const keySound0Player = document.getElementById("keySound0Player");
+//   const keySound1Player = document.getElementById("keySound1Player");
+//   closestNote.remove();  // 해당 노트를 화면에서 숨김
+//   return
+// }
