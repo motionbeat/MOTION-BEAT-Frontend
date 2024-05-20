@@ -155,7 +155,8 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
     };
 
     const AutoPlay = (inst, motion) => {
-      playMotionSFX(inst, motion, { volume: 2 });
+      const volume = 1.5;
+      playMotionSFX(inst, motion, { volume });
     }
 
     const AutoEffect = (target) => {

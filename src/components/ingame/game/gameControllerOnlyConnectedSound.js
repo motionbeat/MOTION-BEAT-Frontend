@@ -26,7 +26,7 @@ const playAudio = (sound) => {
 export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomCode }) => {
 
   // console.log("TESTSTART:", railRefs)
-  const animationDuration = 6000;
+  const animationDuration = 5000;
   const { playBGM, currentBGM, playMotionSFX } = useAudio();
   const processedNotes = new Set(); // 처리된 노트들을 추적하는 집합
   const notes = data?.musicData?.notes;
@@ -160,7 +160,8 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
     };
 
     const AutoPlay = (inst, motion) => {
-      playMotionSFX(inst, motion, { volume: 2 });
+      const volume = 1.5;
+      playMotionSFX(inst, motion, { volume });
     }
 
     const AutoEffect = (target) => {
