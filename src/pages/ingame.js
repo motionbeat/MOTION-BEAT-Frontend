@@ -384,6 +384,7 @@ const VerticalRail = styled.div`
   display: block;
   position: relative;
   top: 50%;
+  transform: translate(0%, -50%); 
   width: 100%;
   height: 1vw;
   background: ${({ color }) => color};
@@ -397,7 +398,7 @@ const Indicator = styled.div`
   transform: translate(0%, -50%);
   height: 400%;
   width: 2px;
-  margin-left: 20%;
+  margin-left: 22%;
   background-color: white;
   z-Index: 20;
 `;
@@ -406,7 +407,7 @@ const JudgeBox = styled.div`
   position: absolute;
   top: 50%;
   left: 12vw;
-  width: 7.5%;
+  width: 16%;
   height: 4vw;
   transform: translate(0%, -50%);
   background-image: ${({ backgroundImageUrl }) => `url(${backgroundImageUrl})`};
