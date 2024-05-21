@@ -43,6 +43,10 @@ const Tutorial = () => {
     };
 
   useEffect(() => {
+    socket.emit(`joinRoom`, roomData, (res) => {
+      console.log("joinRoom res", res);
+    });
+
     const findSong = async () => {
       try {
         console.log("노래불러옴스타트");
