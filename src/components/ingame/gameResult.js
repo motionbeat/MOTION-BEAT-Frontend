@@ -65,12 +65,14 @@ const GameResult = ({ roomCode, gameData }) => {
   }, [roomCode]);
 
   useEffect(() => {
-    if (audioRef.current) {
-      audioRef.current.play().catch((error) => {
-        console.error("Failed to play audio:", error);
+    const audio = audioRef.current;
+    if (audio) {
+      audio.volume = 0.5;
+      audio.play().catch((error) => {
+        console.error("Error playing audio:", error);
       });
     }
-  }, []);
+  });
 
   // 노트 맞춘 비율 계산 함수
   const calculateHitRate = (player) => {
@@ -109,13 +111,15 @@ const GameResult = ({ roomCode, gameData }) => {
                     <div className="firstPlayer">
                       <img className="crown" src={FirstCrown} alt="1등 전용" />
                       <p>
-                        {player.nickname}: {player.score * 100}p({calculateHitRate(player)}%)
+                        {player.nickname}: {player.score * 100}p(
+                        {calculateHitRate(player)}%)
                       </p>
                     </div>
                   </>
                 ) : (
                   <p>
-                    {player.nickname}: {player.score * 100} (노트 맞춘 비율: {calculateHitRate(player)}%)
+                    {player.nickname}: {player.score * 100} (노트 맞춘 비율:{" "}
+                    {calculateHitRate(player)}%)
                   </p>
                 )}
               </div>

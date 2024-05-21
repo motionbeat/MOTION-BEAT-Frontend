@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useCallback, useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
 import Modal from "../components/modal";
@@ -16,12 +16,11 @@ const Main = () => {
   const [currentView, setCurrentView] = useState(null);
   const [tutorialStarted, setTutorialStarted] = useState(false); // 두번 호출 막기
 
-  const startTutorial = async () => {
+  const startTutorial = useCallback(async () => {
     if (tutorialStarted) return;
     setTutorialStarted(true);
     try {
-      const response = await axios.post(`${backendUrl}/api/rooms/tutorial`,
-      {}, {
+      const response = await axios.post(`${backendUrl}/api/rooms/tutorial`, {}, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
@@ -30,13 +29,14 @@ const Main = () => {
         },
         withCredentials: true,
       });
-      console.log("Tutorial started:", response.data);
-      const roomCode = response.data.code;
-      navigate("/main/tutorial", { state: { roomCode } });
+      const roomData = response.data;
+      setRoomName("Tutorial");
+      navigate("/main/tutorial", { state: { roomData } });
     } catch (error) {
       console.error("Error start res:", error);
+      setTutorialStarted(false); // 에러가 발생하면 다시 false로 설정
     }
-  };
+  }, [tutorialStarted, backendUrl, navigate]);
 
   // const openModal = (element) => {
   //   setCurrentElement(element);
@@ -92,21 +92,15 @@ const Main = () => {
 
     switch (mainMenu) {
       case "PLAY":
-        console.log("Playtype 컴포넌트를 불러옵니다.");
         setRoomName("PLAY");
-        // setCurrentView(<Playtype />)
         navigate("/main/playtype");
         break;
 
       case "TUTORIAL":
-        console.log("Tutorial 컴포넌트를 불러옵니다.");
-        setRoomName("Tutorial");
-        // setCurrentView(<Tutorial />)
         startTutorial();
         break;
 
       case "RANKINGS":
-        console.log("Ranking 컴포넌트를 불러옵니다.");
         setRoomName("Rankings");
         // setCurrentView(<Ranking />)
         navigate("/main/ranking");

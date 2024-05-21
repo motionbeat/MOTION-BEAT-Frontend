@@ -111,6 +111,8 @@ const Playtype = () => {
           }
         );
 
+        console.log("방 들어옴");
+
         const joinRoomData = {
           nickname: myNickname,
           code: response.data.code,
