@@ -47,7 +47,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
       bgmTimeout = setTimeout(() => {
         // console.log("stime:", stime);
         playAudio(data.musicData.sound);
-        playBGM(lastPart, { loop: false, volume: 0.2 });
+        playBGM(lastPart, { loop: false, volume: 0.85 });
 
         // console.log(data.musicData.sound);
 
@@ -166,7 +166,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
     };
 
     const AutoPlay = (inst, motion) => {
-      const volume = 1.5;
+      const volume = 1.7;
       playMotionSFX(inst, motion, { volume });
     }
 

@@ -105,20 +105,20 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
       return;
     }
 
-    // 포지션별 사운드 설정
-    // let volume = 1;
-    // if (session_instrument === "drum1") {
-    //   volume = session_motionType === "A" ? 1 : 2;
-    // } else if (session_instrument === "drum2") {
-    //   volume = session_motionType === "A" ? 1.2 : 1.7;
-    // } else if (session_instrument === "drum3") {
-    //   volume = session_motionType === "A" ? 1.3 : 1.8;
-    // } else if (session_instrument === "drum4") {
-    //   volume = session_motionType === "A" ? 1.4 : 1.9;
-    // }
+    //포지션별 사운드 설정
+    let volume = 1;
+    if (session_instrument === "drum1") {
+      volume = session_motionType === "A" ? 2 : 1.6;
+    } else if (session_instrument === "drum2") {
+      volume = session_motionType === "A" ? 1.5 : 2;
+    } else if (session_instrument === "drum3") {
+      volume = session_motionType === "A" ? 1.7 : 0.6;
+    } else if (session_instrument === "drum4") {
+      volume = session_motionType === "A" ? 1 : 1.5;
+    }
 
     // const volume = session_motionType === "A" ? 1 : 2;
-    const volume = 1.5;
+    // const volume = 1.5;
     playMotionSFX(session_instrument, session_motionType, { volume: volume });
   }, [hittedNotes, myNickname, playMotionSFX]);
 
