@@ -11,7 +11,7 @@
   height: 65px; /* 원하는 커서 높이 */
   background: url('img/cursor/customCursor.svg') no-repeat center center / contain;
   pointer-events: none; /* 커서가 다른 요소와 상호작용하지 않도록 설정 */
-  z-index: 10000;
+  z-index: 20000;
 }
 
 .pageEvent {
