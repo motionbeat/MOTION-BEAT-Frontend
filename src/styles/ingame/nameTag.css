@@ -21,8 +21,8 @@
 .nameTagOverlay {
   position: absolute;
   top: 50%;
-  left: 25%;
-  transform: translate(-50%, -50%);
+  left: 10%;
+  transform: translate(0%, -50%);
   color: white;
   font-size: 45px;
   font-weight: bold;
