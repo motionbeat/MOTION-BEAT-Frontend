@@ -92,7 +92,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
       const { motion, time } = note;
 
       const noteElement = document.createElement("div");
-      noteElement.style.left = `100%`;
+      noteElement.style.left = `300%`;
       noteElement.className = "Note";
       noteElement.style.zIndex = index;
       if (motion === "A") {
@@ -117,8 +117,6 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
           // console.log(noteElement.key);
           railRef.current.appendChild(noteElement);
         }
-
-
       });
 
       const AnimateNote = () => {
@@ -126,11 +124,17 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
         //   lastTime = time;
         // }
 
-        const currTime = parseInt(audioPlayer.currentTime * 1000, 10);
-        const positionPercent = ((time - currTime) * 100 / animationDuration).toFixed(1);
+        const currTime = parseInt(audioPlayer.currentTime * 1000, 10) - 1000;
+        const positionPercent = ((time - currTime) * 100 / animationDuration).toFixed(1) + 300;
 
         if (note.instrument === myInstrument) {
-          if (positionPercent <= -3) {
+          // if (positionPercent >= 100) {
+          //   noteElement.display = "none";
+          // } else {
+          //   noteElement.display = ""
+          // }
+
+          if (positionPercent <= 5) {
             noteElement.remove();
             cancelAnimationFrame(AnimateNote);
           } else {
@@ -140,17 +144,18 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
         }
 
         if (note.instrument !== myInstrument) {
-          if (positionPercent <= 3) {
-            /* 타 플레이어 모든 소리 활성화 */
-            AutoPlay(note.instrument, note.motion);
-            // console.log(note.pnumber);
-            // console.log(`player${noteElement.key}HitEffect`);
-            /* 타 플레이어 이펙트 차단 */
-            /* AutoEffect(`player${noteElement.key}HitEffect`); */
-            noteElement.remove();
-            cancelAnimationFrame(AnimateNote);
-          }
-          else {
+          if (positionPercent <= 17.5) {
+            (async () => {
+              /* 타 플레이어 모든 소리 활성화 */
+              await AutoPlay(note.instrument, note.motion);
+              // console.log(note.pnumber);
+              // console.log(`player${noteElement.key}HitEffect`);
+              /* 타 플레이어 이펙트 차단 */
+              /* AutoEffect(`player${noteElement.key}HitEffect`); */
+              noteElement.remove();
+              cancelAnimationFrame(AnimateNote);
+            })();
+          } else {
             noteElement.style.left = `${positionPercent}%`;
             requestAnimationFrame(AnimateNote);
           }

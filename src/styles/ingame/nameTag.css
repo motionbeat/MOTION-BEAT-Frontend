@@ -5,12 +5,11 @@
   left: 0;
   transform: translate(0%, -50%);
   width: 235px;
-  height: 300%;
+  height: 400%;
   z-index: 12000;
 }
 
 .nameTagImage {
-  display: block;
   width: 100%;
   height: 100%;
   background-size: cover;
