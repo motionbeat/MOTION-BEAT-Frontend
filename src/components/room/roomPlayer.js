@@ -24,24 +24,29 @@ const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
 
   useEffect(() => {
     // 서버에서 플레이어 정보를 받아와서 상태를 업데이트
-    setPlayerStatuses(
+    setPlayerStatuses((prevStatuses) =>
       players.reduce((acc, player) => {
         acc[player.nickname] = {
+          ...prevStatuses[player.nickname], // 기존 상태를 유지
           nickname: player.nickname,
           instrument: player.instrument,
           isReady: player.isReady, // 서버에서 받은 isReady 값을 사용
         };
         return acc;
-      }, {})
+      }, prevStatuses)
     );
 
     // 플레이어들에게 무작위 이미지 할당
-    setPlayerImages(
+    setPlayerImages((prevImages) =>
       players.reduce((acc, player) => {
-        acc[player.nickname] =
-          sonaImages[Math.floor(Math.random() * sonaImages.length)];
+        if (!prevImages[player.nickname]) {
+          acc[player.nickname] =
+            sonaImages[Math.floor(Math.random() * sonaImages.length)];
+        } else {
+          acc[player.nickname] = prevImages[player.nickname];
+        }
         return acc;
-      }, {})
+      }, prevImages)
     );
   }, [players]);
 
