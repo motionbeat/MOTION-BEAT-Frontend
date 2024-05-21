@@ -117,7 +117,7 @@ const AppContent = () => {
     const handlePlay = () => {
       const audio = audioRef.current;
       if (audio) {
-        audio.volume = 0.5;
+        audio.volume = 0.8;
         audio.play().catch((error) => {
           console.error("Error playing audio:", error);
         });
