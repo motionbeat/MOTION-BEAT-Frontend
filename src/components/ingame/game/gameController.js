@@ -144,7 +144,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
         }
 
         if (note.instrument !== myInstrument) {
-          if (positionPercent <= 17.5) {
+          if (positionPercent <= 22) {
             (async () => {
               /* 타 플레이어 모든 소리 활성화 */
               await AutoPlay(note.instrument, note.motion);
