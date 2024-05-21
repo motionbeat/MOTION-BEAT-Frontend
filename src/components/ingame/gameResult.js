@@ -118,7 +118,7 @@ const GameResult = ({ roomCode, gameData }) => {
                   </>
                 ) : (
                   <p>
-                    {player.nickname}: {player.score * 100} (노트 맞춘 비율:{" "}
+                    {player.nickname}: {player.score * 100}p(
                     {calculateHitRate(player)}%)
                   </p>
                 )}
