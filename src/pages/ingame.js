@@ -221,44 +221,46 @@ const Ingame = () => {
           }
 
           return (
-            <VerticalRail
-              ref={railRefs.current[index]}
-              color={`rgba(${staticColorsArray[index]}, ${index === myPosition ? 1 : 0.4
-                })`}
-              top={`${(100 / gameData.players.length) * index}%`}
-              data-instrument={gameData.players[index].instrument}
-              key={index}
-            >
-              {index === myPosition ? (
-                <>
-                  <div className="nameTagContainer">
-                    <div className="nameTagImage">
+            <div style={{ height: `${100 / gameData.players.length}%` }}>
+              <VerticalRail
+                ref={railRefs.current[index]}
+                color={`rgba(${staticColorsArray[index]}, ${index === myPosition ? 1 : 0.4
+                  })`}
+                top={`${(100 / gameData.players.length) * index}%`}
+                data-instrument={gameData.players[index].instrument}
+                key={`VerticalRail${index}`}
+              >
+                {index === myPosition ? (
+                  <>
+                    <JudgeBox isactive={isActive} key={`JudgeBox${myPosition}`} backgroundImageUrl="/image/hitindex.png" />
+                    <div className="nameTagContainer">
+                      <div className="nameTagImage">
+                      </div>
+                      <div className="nameTagOverlay">
+                        {myNickname}
+                      </div>
                     </div>
-                    <div className="nameTagOverlay">
-                      {myNickname}
-                    </div>
-                  </div>
-                  <Indicator />
-                  <JudgeBox isactive={isActive} key={index} />
-                  <div
-                    id={`player${myPosition}HitEffect`}
-                    className="hit-effect"
-                    key={myPosition}
-                  />
-                  <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
-                  {/* <Output /> */}
-                </>
-              ) : (
-                <>
-                  <JudgeBox key={index} />
-                  <div
-                    id={`player${index}HitEffect`}
-                    className="hit-effect"
-                    key={index}
-                  />
-                </>
-              )}
-            </VerticalRail>
+                    <Indicator />
+                    <div
+                      id={`player${myPosition}HitEffect`}
+                      className="hit-effect"
+                      key={`div${myPosition}`}
+                    />
+                    <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
+                    {/* <Output /> */}
+                  </>
+                ) : (
+                  <>
+                    <JudgeBox key={`JudgeBox${index}`} />
+                    <div
+                      id={`player${index}HitEffect`}
+                      className="hit-effect"
+                      key={`div${myPosition}`}
+                    />
+                  </>
+                )}
+              </VerticalRail>
+            </div>
           );
         })
         }
@@ -378,37 +380,40 @@ const Ingame = () => {
 export default Ingame;
 
 const VerticalRail = styled.div`
+  top: 0;
   display: block;
   position: relative;
-  top: ${({ top }) => `calc(${top} + 11%)`};
+  top: 50%;
+  transform: translate(0%, -50%); 
   width: 100%;
-  height: 10%;
-  border: 20px;
+  height: 1vw;
   background: ${({ color }) => color};
   box-shadow: 3px 3px 3px rgba(255, 255, 255, 0.3);
+  z-Index:5;
 `;
 
 const Indicator = styled.div`
   position: absolute;
-  top: 0%;
-  height: 100%;
-  width: 5px;
-  margin-left: 20%;
+  top: 50%;
+  transform: translate(0%, -50%);
+  height: 400%;
+  width: 2px;
+  margin-left: 22%;
   background-color: white;
   z-Index: 20;
 `;
 
 const JudgeBox = styled.div`
   position: absolute;
-  top: 0%;
-  height: 100%;
-  width: 20px;
-  margin-left: 15%;
-  background-color: ${({ isactive }) =>
-    isactive ? "yellow" : "rgba(0,0,0,1)"};
-  box-shadow: ${({ isactive }) => (isactive ? "0 0 10px 5px yellow" : "none")};
-  transition: ${({ isactive }) =>
-    isactive
-      ? "none"
-      : "background-color 0.5s ease-out, box-shadow 0.5s ease-out"};
+  top: 50%;
+  left: 12vw;
+  width: 16%;
+  height: 4vw;
+  transform: translate(0%, -50%);
+  background-image: ${({ backgroundImageUrl }) => `url(${backgroundImageUrl})`};
+  background-size: cover; /* Adjust as needed */
+  transition: ${({ isactive }) => (isactive ? 'none' : 'opacity 0.5s ease-out, visibility 0.5s ease-out')};
+  z-index: 6; /* Ensure correct capitalization for z-index */
+  opacity: ${({ isactive }) => (isactive ? 1 : 0)};
+  visibility: ${({ isactive }) => (isactive ? 'visible' : 'hidden')};
 `;

@@ -119,7 +119,7 @@ const AppContent = () => {
     const handlePlay = () => {
       const audio = audioRef.current;
       if (audio) {
-        audio.volume = 0.5;
+        audio.volume = 0.8;
         audio.play().catch((error) => {
           console.error("Error playing audio:", error);
         });
@@ -172,9 +172,10 @@ const AppContent = () => {
   return (
     <div ref={pageRef} className="pageEvent">
       <MoveBg />
-      <button onClick={handleClick}>MuteBG
+      {/* BGM단추 */}
+      {/* <button onClick={handleClick}>MuteBG
         <audio ref={audioRef} src={"/bgm/kneticSona.mp3"} loop />
-      </button>
+      </button> */}
       <div className="custom-cursor"></div>
       {/* <ShowTitle /> */}
       <Routes>

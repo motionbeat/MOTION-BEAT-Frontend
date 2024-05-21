@@ -47,7 +47,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
       bgmTimeout = setTimeout(() => {
         // console.log("stime:", stime);
         playAudio(data.musicData.sound);
-        playBGM(lastPart, { loop: false, volume: 0.2 });
+        playBGM(lastPart, { loop: false, volume: 0.85 });
 
         // console.log(data.musicData.sound);
 
@@ -92,7 +92,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
       const { motion, time } = note;
 
       const noteElement = document.createElement("div");
-      noteElement.style.left = `100%`;
+      noteElement.style.left = `300%`;
       noteElement.className = "Note";
       noteElement.style.zIndex = index;
       if (motion === "A") {
@@ -117,8 +117,6 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
           // console.log(noteElement.key);
           railRef.current.appendChild(noteElement);
         }
-
-
       });
 
       const AnimateNote = () => {
@@ -126,11 +124,17 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
         //   lastTime = time;
         // }
 
-        const currTime = parseInt(audioPlayer.currentTime * 1000, 10);
-        const positionPercent = ((time - currTime) * 100 / animationDuration).toFixed(1);
+        const currTime = parseInt(audioPlayer.currentTime * 1000, 10) - 1000;
+        const positionPercent = ((time - currTime) * 100 / animationDuration).toFixed(1) + 300;
 
         if (note.instrument === myInstrument) {
-          if (positionPercent <= -3) {
+          // if (positionPercent >= 100) {
+          //   noteElement.display = "none";
+          // } else {
+          //   noteElement.display = ""
+          // }
+
+          if (positionPercent <= 5) {
             noteElement.remove();
             cancelAnimationFrame(AnimateNote);
           } else {
@@ -140,7 +144,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
         }
 
         if (note.instrument !== myInstrument) {
-          if (positionPercent <= 3) {
+          if (positionPercent <= 22) {
             /* 타 플레이어 모든 소리 활성화 */
             AutoPlay(note.instrument, note.motion);
             // console.log(note.pnumber);
@@ -149,8 +153,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
             /* AutoEffect(`player${noteElement.key}HitEffect`); */
             noteElement.remove();
             cancelAnimationFrame(AnimateNote);
-          }
-          else {
+          } else {
             noteElement.style.left = `${positionPercent}%`;
             requestAnimationFrame(AnimateNote);
           }
@@ -161,7 +164,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
     };
 
     const AutoPlay = (inst, motion) => {
-      const volume = 1.5;
+      const volume = 1.7;
       playMotionSFX(inst, motion, { volume });
     }
 
