@@ -19,7 +19,7 @@ import Signup from "./pages/signup";
 /* 메인 (인증인가 O)*/
 import Main from "./pages/main";
 import Playtype from "components/main/playtype";
-import Tutorial from "components/main/tutorial";
+import Tutorial from "pages/tutorial";
 import Ranking from "components/main/ranking";
 import Settings from "components/main/settings";
 import Room from "./pages/room";
@@ -117,7 +117,7 @@ const AppContent = () => {
     const handlePlay = () => {
       const audio = audioRef.current;
       if (audio) {
-        audio.volume = 0.1;
+        audio.volume = 0.5;
         audio.play().catch((error) => {
           console.error("Error playing audio:", error);
         });
@@ -141,7 +141,7 @@ const AppContent = () => {
 
   useEffect(() => {
     const audio = audioRef.current;
-    const pausePaths = ["/room", "/ingame"];
+    const pausePaths = ["/room", "/ingame", "/main/tutorial"];
 
     if (pausePaths.includes(location.pathname) && audio) {
       setWasPlaying(!audio.paused);

@@ -44,7 +44,7 @@
   width: 100%;
   min-height: 434px;
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-around;
   // border: 1px solid white;
   background-color: rgba(24, 26, 32, 0.4);
   backdrop-filter: blur(20px);
@@ -55,14 +55,14 @@
 // 버튼
 .exitBtnWrapper {
   display: flex;
-  justify-content: flex-end;
+  justify-content: space-around;
   position: absolute;
   right: 5%;
   top: 5%;
 }
 
 .songBox {
-  width: 300px;
+  width: 30%;
 }
 
 // 노래
@@ -105,16 +105,20 @@
   font-weight: bold;
 }
 
+.firstPlayer {
+  position: relative;
+}
+
 // 스코어 랭킹
 .crown {
   position: absolute;
-  top: -30%;
-  left: -30%;
+  top: -40%;
+  left: -11%;
 }
 
 .scoreRankingWrapper {
   // width: 30%;
-  margin: 0 15%;
+  // margin: 0 15%;
 }
 
 .scoreRanking {

@@ -1,11 +1,9 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import axios from "axios";
-import socket from "../server/server.js";
 import Modal from "../components/modal";
 import "../styles/main/main.scss";
 import SelectMenu from "../components/common/atomic/main/selectMenu.js";
-import MoveBg from "../components/common/atomic/movebg.js";
 import MainHeader from "components/common/atomic/main/mainHeader.js";
 
 const Main = () => {
@@ -16,18 +14,25 @@ const Main = () => {
   const [roomName, setRoomName] = useState("");
   const [isMenuButtonSelected, setIsMenuButtonSelected] = useState(false);
   const [currentView, setCurrentView] = useState(null);
+  const [tutorialStarted, setTutorialStarted] = useState(false); // 두번 호출 막기
 
   const startTutorial = async () => {
+    if (tutorialStarted) return;
+    setTutorialStarted(true);
     try {
-      const response = await axios.post(`${backendUrl}/api/rooms/tutorial`, {
+      const response = await axios.post(`${backendUrl}/api/rooms/tutorial`,
+      {}, {
         headers: {
           "Content-Type": "application/json",
           Authorization: `Bearer ${sessionStorage.getItem("userToken")}`,
           UserId: sessionStorage.getItem("userId"),
           Nickname: sessionStorage.getItem("nickname"),
         },
+        withCredentials: true,
       });
       console.log("Tutorial started:", response.data);
+      const roomCode = response.data.code;
+      navigate("/main/tutorial", { state: { roomCode } });
     } catch (error) {
       console.error("Error start res:", error);
     }
@@ -98,7 +103,6 @@ const Main = () => {
         setRoomName("Tutorial");
         // setCurrentView(<Tutorial />)
         startTutorial();
-        navigate("/main/tutorial");
         break;
 
       case "RANKINGS":

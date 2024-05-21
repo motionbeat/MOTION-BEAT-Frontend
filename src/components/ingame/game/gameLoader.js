@@ -79,6 +79,7 @@ const LoadNotes = async (song, players) => {
     /* 내 악기 */
     notes = await response.data.notes
 
+    sessionStorage.setItem("notes", JSON.stringify(notes));
     console.log("노트 정보", response.data.notes);
   } catch (error) {
     console.error("Error start res:", error);
