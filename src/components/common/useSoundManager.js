@@ -286,6 +286,8 @@ const SoundManagerProvider = ({ children }) => {
         }
       }
       loadAndPlaySound("bgm", "", name, options).then(({ source, buffer }) => {
+        console.log("[SL] Request Sound");
+
         dispatchSoundEvent("BGMPlayedSuccessfully");
         source.onended = () => {
           dispatchSoundEvent("BGMEndedSuccessfully");
