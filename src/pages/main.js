@@ -5,6 +5,7 @@ import Modal from "../components/modal";
 import "../styles/main/main.scss";
 import SelectMenu from "../components/common/atomic/main/selectMenu.js";
 import MainHeader from "components/common/atomic/main/mainHeader.js";
+import socket from "server/server.js";
 
 const Main = () => {
   const navigate = useNavigate();
@@ -17,8 +18,9 @@ const Main = () => {
   const [tutorialStarted, setTutorialStarted] = useState(false); // 두번 호출 막기
 
   const startTutorial = useCallback(async () => {
-    if (tutorialStarted) return;
+    if (tutorialStarted || sessionStorage.getItem("tutorialStarted") === "true") return;
     setTutorialStarted(true);
+    sessionStorage.setItem("tutorialStarted", "true");
     try {
       const response = await axios.post(`${backendUrl}/api/rooms/tutorial`, {}, {
         headers: {
@@ -31,10 +33,12 @@ const Main = () => {
       });
       const roomData = response.data;
       setRoomName("Tutorial");
+
       navigate("/main/tutorial", { state: { roomData } });
     } catch (error) {
       console.error("Error start res:", error);
       setTutorialStarted(false); // 에러가 발생하면 다시 false로 설정
+      sessionStorage.removeItem("tutorialStarted");
     }
   }, [tutorialStarted, backendUrl, navigate]);
 
@@ -121,9 +125,7 @@ const Main = () => {
 
   return (
     <>
-      {/* <MoveBg /> */}
       <MainHeader roomName={roomName} />
-      {/* <HeaderBtn /> */}
       <div>
         <Modal
           isOpen={isModalOpen}

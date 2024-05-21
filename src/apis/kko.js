@@ -37,16 +37,16 @@ export const KakaoLoginButton = ({ setEvent }) => {
   return (
     <>
       <button style={{
-        width:"80px",
-        height:"60px",
+        width:"120px",
+        height:"75px",
         borderRadius:"16px",
         border:"1px solid #35383F",
         backgroundColor:"#1F222A",
         // cursor:"pointer"
       }} onClick={handleLogin}>
         <img style={{
-        width:"24px",
-        height:"24px"
+        width:"40px",
+        height:"40px"
         }} src={kakaoImg} alt='카카오로그인' />
       </button>
     </>
