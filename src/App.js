@@ -112,6 +112,8 @@ const AppContent = () => {
     };
   }, []);
 
+
+
   // 노래 재생
   useEffect(() => {
     const handlePlay = () => {
@@ -156,10 +158,23 @@ const AppContent = () => {
     }
   }, [location.pathname, wasPlaying]);
 
+  const handleClick = () => {
+    if (audioRef.current) {
+      if (audioRef.current.currentTime) {
+        audioRef.current.pause();
+        audioRef.current.currentTime = 0;
+      } else {
+        audioRef.current.play();
+      }
+    }
+  }
+
   return (
     <div ref={pageRef} className="pageEvent">
       <MoveBg />
-      <audio ref={audioRef} src={"/bgm/kneticSona.mp3"} loop />
+      <button onClick={handleClick}>MuteBG
+        <audio ref={audioRef} src={"/bgm/kneticSona.mp3"} loop />
+      </button>
       <div className="custom-cursor"></div>
       {/* <ShowTitle /> */}
       <Routes>
