@@ -96,7 +96,7 @@ const WebCam = ({ players = [], roomCode }) => {
         if (token) {
           session
             .connect(token, { clientData: myNickname })
-            .then(() => {
+            .then((stream) => {
               navigator.mediaDevices.getUserMedia({ video: true })
                 .then((stream) => {
                   const videoSource = stream.getVideoTracks()[0];
@@ -151,10 +151,13 @@ const WebCam = ({ players = [], roomCode }) => {
       ]);
     });
 
-     session.on("streamDestroyed", (event) => {
+    session.on("streamDestroyed", (event) => {
       const streamNickname = JSON.parse(event.stream.connection.data).clientData; // 닉네임 데이터 추출
       if (otherVideosRef.current[streamNickname]) {
-        otherVideosRef.current[streamNickname].innerHTML = ""; // 비디오 컨테이너를 비움
+        const videoContainer = otherVideosRef.current[streamNickname];
+        if (videoContainer && videoContainer.contains(event.element)) {
+          videoContainer.removeChild(event.element);
+        }
       }
 
       setSubscribers((subs) =>
