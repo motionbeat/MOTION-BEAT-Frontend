@@ -4,8 +4,6 @@ import "../styles/hitEffect.css";
 import { useLocation } from "react-router-dom";
 // import "../styles/ingame.css";
 import WebCam from "../components/room/webCam";
-import "../styles/songSheet.css";
-import styled from "styled-components";
 import Load from "../components/ingame/game/gameLoader.js";
 import GameController from "../components/ingame/game/gameController";
 import { setGameloadData } from "../redux/actions/saveActions.js";
@@ -15,6 +13,10 @@ import Output from "../utils/output";
 import socket from "../server/server";
 import GameResult from "../components/ingame/gameResult";
 import SecondScore from "../components/ingame/secondScore.js";
+
+import styled from "styled-components";
+import "../styles/songSheet.css";
+import "../styles/ingame/nameTag.css"
 
 import IngameBg from "../img/ingameBg.png";
 import beatFlow0 from "../img/beatflow0.png";
@@ -229,30 +231,38 @@ const Ingame = () => {
             >
               {index === myPosition ? (
                 <>
+                  <div className="nameTagContainer">
+                    <div className="nameTagImage">
+                    </div>
+                    <div className="nameTagOverlay">
+                      {myNickname}
+                    </div>
+                  </div>
                   <Indicator />
-                  <JudgeBox isactive={isActive} key={index}>
-                    <div
-                      id={`player${myPosition}HitEffect`}
-                      className="hit-effect"
-                      key={myPosition}
-                    />
-                  </JudgeBox>
+                  <JudgeBox isactive={isActive} key={index} />
+                  <div
+                    id={`player${myPosition}HitEffect`}
+                    className="hit-effect"
+                    key={myPosition}
+                  />
                   <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
                   {/* <Output /> */}
                 </>
               ) : (
-                <JudgeBox key={index}>
+                <>
+                  <JudgeBox key={index} />
                   <div
                     id={`player${index}HitEffect`}
                     className="hit-effect"
                     key={index}
                   />
-                </JudgeBox>
+                </>
               )}
             </VerticalRail>
           );
-        })}
-      </div>
+        })
+        }
+      </div >
     );
   };
 
@@ -372,7 +382,7 @@ const VerticalRail = styled.div`
   position: relative;
   top: ${({ top }) => `calc(${top} + 11%)`};
   width: 100%;
-  height: 3%;
+  height: 10%;
   border: 20px;
   background: ${({ color }) => color};
   box-shadow: 3px 3px 3px rgba(255, 255, 255, 0.3);
@@ -383,8 +393,9 @@ const Indicator = styled.div`
   top: 0%;
   height: 100%;
   width: 5px;
-  margin-left: 7%;
+  margin-left: 20%;
   background-color: white;
+  z-Index: 20;
 `;
 
 const JudgeBox = styled.div`
@@ -392,10 +403,10 @@ const JudgeBox = styled.div`
   top: 0%;
   height: 100%;
   width: 20px;
+  margin-left: 15%;
   background-color: ${({ isactive }) =>
     isactive ? "yellow" : "rgba(0,0,0,1)"};
   box-shadow: ${({ isactive }) => (isactive ? "0 0 10px 5px yellow" : "none")};
-  margin-left: 2%;
   transition: ${({ isactive }) =>
     isactive
       ? "none"
