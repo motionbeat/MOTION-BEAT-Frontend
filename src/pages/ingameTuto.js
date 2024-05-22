@@ -7,7 +7,7 @@ import WebCam from "../components/room/webCam";
 import "../styles/songSheet.css";
 import styled from "styled-components";
 import Load from "../components/ingame/game/gameLoader.js";
-import GameController from "../components/ingame/game/gameController";
+import GameControllerTuto from "../components/ingame/game/gameControllerTuto"
 import { setGameloadData } from "../redux/actions/saveActions.js";
 import { Judge } from "../components/ingame/game/judgement";
 import Input from "../utils/input";
@@ -21,7 +21,7 @@ import beatFlow0 from "../img/beatflow0.png";
 import beatFlow1 from "../img/beatflow1.png";
 
 const staticColorsArray = ["250,0,255", "1,248,10", "0,248,203", "249,41,42"];
-let myPosition;
+let myPosition = 0;
 
 const Ingame = () => {
   /* Router */
@@ -33,19 +33,12 @@ const Ingame = () => {
   const loadedData = useSelector((state) => state.gameloadData);
 
   /* State */
-  // const [message, setMessage] = useState("");
-  const [gameEnded, setGameEnded] = useState(false); // 게임 종료 상태
+  const [gameEnded, setGameEnded] = useState(false);
   const [gameData, setGameData] = useState(gameState.game);
-  // const [scores, setScores] = useState({});
   const [startGameProps, setStartGameProps] = useState(null);
   const [isGameReady, setGameReady] = useState(false);
 
-  let playerNumber = gameData.players.length;
-  // console.log("초기 플레이어 수: ", playerNumber);
-
-  // const handleScoresUpdate = (newScores) => {
-  //   setScores(newScores);
-  // };
+  let playerNumber = 1;
   const [modalStatus, setModalStatus] = useState("NotReady");
 
   /* Storage */
@@ -57,18 +50,16 @@ const Ingame = () => {
   /* I/O 처리 */
   const handleEnterDown = useCallback(
     (event) => {
-      // 서버에 보낼 데이터(시작시 기본값)
       const sendData = {
         nickname: myNickname,
         code: gameData.code,
-        score: 0,
       };
 
-      if (event.key === "Enter" && loadedData) {
+      if (event.key === "Enter") {
         socket.emit(`playerLoaded`, sendData);
 
         setModalStatus("Ready");
-        window.removeEventListener("keydown", handleEnterDown); // 이벤트 리스너 제거
+        window.removeEventListener("keydown", handleEnterDown);
 
         const waitForAllPlayers = new Promise((resolve) => {
           socket.on(`allPlayersLoaded${sendData.code}`, (data) => {
@@ -88,9 +79,8 @@ const Ingame = () => {
               roomCode: gameData.code,
               song: gameData.song,
             });
-            console.log("components Set!");
+            setGameReady(true);
           })
-          .then(() => setGameReady(true))
           .catch((err) => {
             console.error("Error", err);
           });
@@ -110,10 +100,7 @@ const Ingame = () => {
   /* 네트워크 */
   useEffect(() => {
     // console.log(gameData);
-
-    myPosition = gameData.players.findIndex(
-      (item) => item.nickname === myNickname
-    );
+    myPosition = 0;
 
     // 방에서 나갈 때 상태 업데이트
     const updatePlayersAfterLeave = (updatedPlayers) => {
@@ -191,7 +178,7 @@ const Ingame = () => {
       /* 반응성 향상 */
       setTimeout(() => {
         setIsActive(false);
-      }, 200);
+      }, 50);
     }, []);
 
     const handleKeyDown = useCallback(
@@ -201,7 +188,7 @@ const Ingame = () => {
         Judge(
           key,
           time,
-          gameData.players[myPosition].instrument,
+          "drum1",
           myPosition,
           railRefs.current[myPosition]
         );
@@ -214,6 +201,7 @@ const Ingame = () => {
     return (
       <div className="background-songSheet">
         <div className="hitLine">{/* <div className="test"></div> */}</div>
+        <Output />
         {gameData.players.map((player, index) => {
           if (!railRefs?.current[index]) {
             return null;
@@ -228,28 +216,16 @@ const Ingame = () => {
               data-instrument={gameData.players[index].instrument}
               key={index}
             >
-              {index === myPosition ? (
-                <>
-                  <Indicator />
-                  <JudgeBox isactive={isActive} key={index}>
-                    <div
-                      id={`player${myPosition}HitEffect`}
-                      className="hit-effect"
-                      key={myPosition}
-                    />
-                  </JudgeBox>
-                  <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
-                  {/* <Output /> */}
-                </>
-              ) : (
-                <JudgeBox key={index}>
-                  <div
-                    id={`player${index}HitEffect`}
-                    className="hit-effect"
-                    key={index}
-                  />
-                </JudgeBox>
-              )}
+              <Indicator />
+              <JudgeBox isactive={isActive} key={index}>
+                <div
+                  id={`player${myPosition}HitEffect`}
+                  className="hit-effect"
+                  key={myPosition}
+                />
+              </JudgeBox>
+              <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
+
             </VerticalRail>
           );
         })}
@@ -337,18 +313,18 @@ const Ingame = () => {
       >
         {gameEnded ? (
           <>
-            <GameResult roomCode={gameData.code} gameData={gameData} />
+            {/* <GameResult roomCode={gameData.code} gameData={gameData} /> */}
           </>
         ) : (
           <>
             <SongSheet railRefs={railRefs} myPosition={myPosition}></SongSheet>
             <div style={{ display: "inline", position: "relative" }}>
               {/* <WebCamFrame myColor={myColor} roomCode={gameData.code} style={{visibility:"hidden"}} /> */}
-              <SecondScore
+              {/* <SecondScore
                 gameData={gameData}
                 railRefs={railRefs}
                 myPosition={myPosition}
-              />
+              /> */}
               <WebCam
                 players={gameData.players}
                 roomCode={gameData.code}
@@ -361,7 +337,7 @@ const Ingame = () => {
         )}
       </div>
       {ShowModal(modalStatus)}
-      {isGameReady && <GameController {...startGameProps} myPosition={myPosition} />}
+      {isGameReady && <GameControllerTuto {...startGameProps} myPosition={myPosition} />}
     </>
   );
 };

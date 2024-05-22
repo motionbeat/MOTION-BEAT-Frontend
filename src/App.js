@@ -24,6 +24,7 @@ import Ranking from "components/main/ranking";
 import Settings from "components/main/settings";
 import Room from "./pages/room";
 import Ingame from "./pages/ingame";
+import IngameTuto from "./pages/ingameTuto";
 import { KakaoCallback } from "./apis/kko";
 import { GoogleCallback } from "./apis/ggl";
 
@@ -187,6 +188,7 @@ const AppContent = () => {
 
         {/* 인게임 */}
         <Route path="/ingame" element={<Ingame />} />
+        <Route path="/ingameTuto" element={<IngameTuto />} />
 
         {/* 인게임 */}
         <Route path="/cam/drum" element={<Drum1 />} />
