@@ -20,7 +20,7 @@ const Output = () => {
     if (textIndex < text.length - 1) {
       timer = setTimeout(() => {
         setTextIndex(prevIndex => prevIndex + 1);
-      }, textIndex === 0 ? 10000 : 14000); // 첫 번째 텍스트는 10초, 나머지는 7초 대기
+      }, textIndex === 0 ? 7000 : 10000);
     }
 
     return () => clearTimeout(timer); // 컴포넌트 언마운트 시 타이머를 클리어합니다.

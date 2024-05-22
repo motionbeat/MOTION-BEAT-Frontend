@@ -331,8 +331,8 @@ const ImageChanger = () => {
 
   useEffect(() => {
     const blinkInterval = 500; // 교차하는 간격 (밀리초)
-    const totalBlinkDuration = 4000; // 전체 교차 지속 시간 (밀리초)
-    const switchImageDelay = 15000; // 최종적으로 이미지가 바뀌는 시간 (밀리초)
+    const totalBlinkDuration = 6000; // 전체 교차 지속 시간 (밀리초)
+    const switchImageDelay = 10000; // 최종적으로 이미지가 바뀌는 시간 (밀리초)
 
     const startBlinking = () => {
       let blinkCount = 0;
