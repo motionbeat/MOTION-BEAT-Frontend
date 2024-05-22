@@ -24,12 +24,11 @@ const playAudio = (sound) => {
 };
 
 export const StartTuto = ({ stime, data, railRefs, myPosition, roomCode }) => {
+
   const animationDuration = 10000;
   const { playBGM, currentBGM, playMotionSFX } = useAudio();
   const processedNotes = new Set();
   const notes = data?.musicData?.notes;
-  const [textIndex, setTextIndex] = useState(0);
-  const [count, setCount] = useState(0);
 
   useEffect(() => {
     if (railRefs[myPosition]) {
@@ -40,8 +39,6 @@ export const StartTuto = ({ stime, data, railRefs, myPosition, roomCode }) => {
   useEffect(() => {
     let audioTime;
     let bgmTimeout;
-    let nextTextTimeout;
-
     const lastPart = data?.musicData?.sound?.split('/').pop();
 
     if (notes?.length > 0) {

@@ -16,6 +16,9 @@ import socket from "../server/server";
 import GameResult from "../components/ingame/gameResult";
 import SecondScore from "../components/ingame/secondScore.js";
 import GameExitBtn from "components/common/atomic/room/gameExitBtn.js";
+import { TriggerMyHitEffect } from "../components/ingame/game/judgement";
+import { Parser } from "utils/parser";
+import { useAudio } from "components/common/useSoundManager";
 
 import IngameBg from "../img/ingameBg.png";
 import beatFlow0 from "../img/beatflow0.png";
@@ -28,6 +31,7 @@ const Ingame = () => {
   /* Router */
   const location = useLocation(); // 이전 페이지에서 데이터 가져오기
   const gameState = location.state || {}; // 가져온 데이터 넣기
+  const { playMotionSFX } = useAudio();
 
   /* Redux */
   const dispatch = useDispatch();
@@ -186,13 +190,17 @@ const Ingame = () => {
       (key, time) => {
         setIsActive(true);
 
-        Judge(
+        const result = JudgeTuto(
           key,
           time,
           "drum1",
           myPosition,
           railRefs.current[myPosition]
         );
+
+        if (result === true) {
+          playMotionSFX("drum1", Parser(key), { volume: 2 });
+        }
         /* 반응성 향상 */
         handleKeyUp();
       },
@@ -372,3 +380,51 @@ const JudgeBox = styled.div`
       ? "none"
       : "background-color 0.5s ease-out, box-shadow 0.5s ease-out"};
 `;
+
+const JudgeTuto = (key, time, instrument, myPosition, myRailRef) => {
+  let result = "ignore";
+
+  const notes = document.querySelectorAll(
+    `.Note[data-instrument="${instrument}"]`
+  );
+  let closestNote = null;
+  let minIndex = Infinity;
+
+  notes.forEach((note) => {
+    const index = parseInt(note.getAttribute("data-index"), 10);
+    if (!isNaN(index) && index < minIndex) {
+      minIndex = index;
+      closestNote = note;
+    }
+  });
+
+  if (!closestNote) {
+    return result;
+  }
+
+  const noteTime = parseInt(closestNote.getAttribute("data-time"), 10);
+
+  const timeDiff = noteTime - time;
+
+  let currentMotion = Parser(key);
+
+  if (
+    timeDiff >= -100 &&
+    timeDiff <= 450 &&
+    closestNote.getAttribute("data-motion") === currentMotion
+  ) {
+    result = "hit";
+    sessionStorage.setItem("instrument", instrument);
+    sessionStorage.setItem("motionType", currentMotion);
+
+
+    TriggerMyHitEffect(`player${0}`, myRailRef, closestNote);
+
+    return true;
+  }
+
+  if (timeDiff < -100) {
+    closestNote.setAttribute("data-index", minIndex + 100);
+    return false;
+  }
+};
