@@ -4,8 +4,6 @@ import "../styles/hitEffect.css";
 import { useLocation } from "react-router-dom";
 // import "../styles/ingame.css";
 import WebCam from "../components/room/webCam";
-import "../styles/songSheet.css";
-import styled from "styled-components";
 import Load from "../components/ingame/game/gameLoader.js";
 import GameController from "../components/ingame/game/gameController";
 import { setGameloadData } from "../redux/actions/saveActions.js";
@@ -19,6 +17,10 @@ import SecondScore from "../components/ingame/secondScore.js";
 import IngameBg from "../img/ingameBg.png";
 import beatFlow0 from "../img/beatflow0.png";
 import beatFlow1 from "../img/beatflow1.png";
+
+import styled from "styled-components";
+import "../styles/songSheet.css";
+import "../styles/ingame/nameTag.css"
 
 const staticColorsArray = ["250,0,255", "1,248,10", "0,248,203", "249,41,42"];
 let myPosition;
@@ -213,47 +215,59 @@ const Ingame = () => {
 
     return (
       <div className="background-songSheet">
-        <div className="hitLine">{/* <div className="test"></div> */}</div>
+        <div className="hitLine" />
         {gameData.players.map((player, index) => {
           if (!railRefs?.current[index]) {
             return null;
           }
 
           return (
-            <VerticalRail
-              ref={railRefs.current[index]}
-              color={`rgba(${staticColorsArray[index]}, ${index === myPosition ? 1 : 0.4
-                })`}
-              top={`${(100 / gameData.players.length) * index}%`}
-              data-instrument={gameData.players[index].instrument}
-              key={index}
-            >
-              {index === myPosition ? (
-                <>
-                  <Indicator />
-                  <JudgeBox isactive={isActive} key={index}>
+            <div style={{ height: `${100 / gameData.players.length}%` }}>
+              <VerticalRail
+                ref={railRefs.current[index]}
+                color={`rgba(${staticColorsArray[index]}, ${index === myPosition ? 0.4 : 0.2
+                  })`}
+                top={`${(100 / gameData.players.length) * index}%`}
+                data-instrument={gameData.players[index].instrument}
+                key={index}
+              >
+                {index === myPosition ? (
+                  <>
+                    <JudgeBox isactive={isActive} key={`JudgeBox${myPosition}`} backgroundImageUrl="/image/keyindex.png" />
+                    <div style={{ position: "absolute", width: "100%", height: "25%", top: "50%", transform: "translate(0%, -50%)", backgroundColor: `rgba(${staticColorsArray[myPosition]},1)` }} />
+                    <div className="nameTagContainer">
+                      {/* <div className="nameTagImage">
+                      </div> */}
+                      <div className="nameTagOverlay">
+                        {myNickname}
+                      </div>
+                    </div>
+
+
+                    <Indicator />
                     <div
                       id={`player${myPosition}HitEffect`}
                       className="hit-effect"
-                      key={myPosition}
+                      key={`div${myPosition}`}
+                    />
+                    <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
+                    {/* <Output /> */}
+                  </>
+                ) : (
+                  <JudgeBox key={index}>
+                    <div
+                      id={`player${index}HitEffect`}
+                      className="hit-effect"
+                      key={index}
                     />
                   </JudgeBox>
-                  <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
-                  {/* <Output /> */}
-                </>
-              ) : (
-                <JudgeBox key={index}>
-                  <div
-                    id={`player${index}HitEffect`}
-                    className="hit-effect"
-                    key={index}
-                  />
-                </JudgeBox>
-              )}
-            </VerticalRail>
+                )}
+              </VerticalRail>
+            </div>
           );
-        })}
-      </div>
+        })
+        }
+      </div >
     );
   };
 
@@ -371,9 +385,10 @@ export default Ingame;
 const VerticalRail = styled.div`
   display: block;
   position: relative;
-  top: ${({ top }) => `calc(${top} + 11%)`};
+  top: 50%;
+  transform: translate(0%, -50%);
   width: 100%;
-  height: 3%;
+  height: 100%;
   border: 20px;
   background: ${({ color }) => color};
   box-shadow: 3px 3px 3px rgba(255, 255, 255, 0.3);
@@ -381,24 +396,25 @@ const VerticalRail = styled.div`
 
 const Indicator = styled.div`
   position: absolute;
-  top: 0%;
+  top: 50%;
+  transform: translate(0%, -50%);
   height: 100%;
-  width: 5px;
+  width: 2px;
   margin-left: 7%;
   background-color: white;
 `;
 
 const JudgeBox = styled.div`
   position: absolute;
-  top: 0%;
+  top: 50%;
+  left: 1vw;
+  width: 16%;
   height: 100%;
-  width: 20px;
-  background-color: ${({ isactive }) =>
-    isactive ? "yellow" : "rgba(0,0,0,1)"};
-  box-shadow: ${({ isactive }) => (isactive ? "0 0 10px 5px yellow" : "none")};
-  margin-left: 2%;
-  transition: ${({ isactive }) =>
-    isactive
-      ? "none"
-      : "background-color 0.5s ease-out, box-shadow 0.5s ease-out"};
+  transform: translate(0%, -50%);
+  background-image: ${({ backgroundImageUrl }) => `url(${backgroundImageUrl})`};
+  background-size: cover; /* Adjust as needed */
+  transition: ${({ isactive }) => (isactive ? 'none' : 'opacity 0.5s ease-out, visibility 0.5s ease-out')};
+  z-index: 6; /* Ensure correct capitalization for z-index */
+  opacity: ${({ isactive }) => (isactive ? 1 : 0)};
+  visibility: ${({ isactive }) => (isactive ? 'visible' : 'hidden')};
 `;
