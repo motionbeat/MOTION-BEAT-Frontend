@@ -15,6 +15,7 @@ import Output from "../utils/output";
 import socket from "../server/server";
 import GameResult from "../components/ingame/gameResult";
 import SecondScore from "../components/ingame/secondScore.js";
+import GameExitBtn from "components/common/atomic/room/gameExitBtn.js";
 
 import IngameBg from "../img/ingameBg.png";
 import beatFlow0 from "../img/beatflow0.png";
@@ -311,30 +312,23 @@ const Ingame = () => {
           overflowX: "hidden"
         }}
       >
-        {gameEnded ? (
-          <>
-            {/* <GameResult roomCode={gameData.code} gameData={gameData} /> */}
-          </>
-        ) : (
-          <>
-            <SongSheet railRefs={railRefs} myPosition={myPosition}></SongSheet>
-            <div style={{ display: "inline", position: "relative" }}>
-              {/* <WebCamFrame myColor={myColor} roomCode={gameData.code} style={{visibility:"hidden"}} /> */}
-              {/* <SecondScore
+        <GameExitBtn roomCode={gameData.code} />
+        <SongSheet railRefs={railRefs} myPosition={myPosition}></SongSheet>
+        <div style={{ display: "inline", position: "relative" }}>
+          {/* <WebCamFrame myColor={myColor} roomCode={gameData.code} style={{visibility:"hidden"}} /> */}
+          {/* <SecondScore
                 gameData={gameData}
                 railRefs={railRefs}
                 myPosition={myPosition}
               /> */}
-              <WebCam
-                players={gameData.players}
-                roomCode={gameData.code}
-                gameData={gameData}
-                railRefs={railRefs}
-                myPosition={myPosition}
-              />
-            </div>
-          </>
-        )}
+          <WebCam
+            players={gameData.players}
+            roomCode={gameData.code}
+            gameData={gameData}
+            railRefs={railRefs}
+            myPosition={myPosition}
+          />
+        </div>
       </div>
       {ShowModal(modalStatus)}
       {isGameReady && <GameControllerTuto {...startGameProps} myPosition={myPosition} />}

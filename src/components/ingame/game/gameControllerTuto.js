@@ -2,7 +2,6 @@ import { useEffect, useState } from "react";
 import { useAudio } from "../../../components/common/useSoundManager.js";
 import socket from "../../../server/server.js";
 import "../../../styles/songSheet.css";
-import { useDispatch } from "react-redux";
 import { setInput } from "../../../redux/actions/inputActions";
 
 let myInstrument;
@@ -30,7 +29,7 @@ export const StartTuto = ({ stime, data, railRefs, myPosition, roomCode }) => {
   const processedNotes = new Set();
   const notes = data?.musicData?.notes;
   const [textIndex, setTextIndex] = useState(0);
-  const dispatch = useDispatch();
+  const [count, setCount] = useState(0);
 
   useEffect(() => {
     if (railRefs[myPosition]) {
@@ -54,35 +53,8 @@ export const StartTuto = ({ stime, data, railRefs, myPosition, roomCode }) => {
       }, stime);
     }
 
-    const text = [
-      `왼쪽 팔을 접었다가 아래로 휘둘러,
-      빨간 박스 안으로 주먹이 들어가게 하세요`,
-      `이번에는 오른쪽 팔을 휘둘러,
-      파란 박스 안으로!`,
-      "잘했어요!",
-      `노래가 끝날 때 까지
-      연습해봐요`
-    ];
-
     const WhenStart = () => {
       let count = 1200;
-
-      const showNextText = () => {
-        setTextIndex((prevIndex) => {
-          const newIndex = (prevIndex + 1) % text.length;
-          dispatch(setInput(text[newIndex]));
-
-          // newIndex가 text 배열의 마지막 인덱스가 아니면 setTimeout 호출
-          if (newIndex !== text.length - 1) {
-            nextTextTimeout = setTimeout(showNextText, 10000); // 10초 후에 다음 텍스트 출력
-          }
-
-          return newIndex;
-        });
-      };
-
-      dispatch(setInput(text[0])); // 첫 번째 텍스트 즉시 출력
-      nextTextTimeout = setTimeout(showNextText, 10000); // 10초 후에 첫 번째 텍스트 출력
 
       const ScheduleNotes = () => {
         audioTime = parseInt(audioPlayer.currentTime * 1000, 10);
@@ -145,13 +117,7 @@ export const StartTuto = ({ stime, data, railRefs, myPosition, roomCode }) => {
       requestAnimationFrame(AnimateNote);
     };
 
-    const AutoPlay = (inst, motion) => {
-      const volume = 1.7;
-      playMotionSFX(inst, motion, { volume });
-    };
-
     const End = () => {
-
       console.log("게임 종료");
 
       const sendData = {
@@ -179,7 +145,6 @@ export const StartTuto = ({ stime, data, railRefs, myPosition, roomCode }) => {
 
     return () => {
       clearTimeout(bgmTimeout);
-      clearTimeout(nextTextTimeout); // 추가된 부분
       if (currentBGM?.source) {
         currentBGM.source.stop();
       }
@@ -187,7 +152,7 @@ export const StartTuto = ({ stime, data, railRefs, myPosition, roomCode }) => {
         audioPlayer.removeEventListener('ended', handleAudioEnded);
       }
     };
-  }, [data.musicData, railRefs, roomCode, notes, dispatch]);
+  }, [data.musicData, railRefs, roomCode, notes]);
 
   return null;
 };
