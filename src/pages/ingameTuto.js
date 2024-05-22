@@ -1,8 +1,7 @@
 import React, { useEffect, useRef, useState, useCallback } from "react";
-import { useDispatch, useSelector } from "react-redux";
 import "../styles/hitEffect.css";
+import { useDispatch, useSelector } from "react-redux";
 import { useLocation } from "react-router-dom";
-// import "../styles/ingame.css";
 import WebCam from "../components/room/webCam";
 import "../styles/songSheet.css";
 import styled from "styled-components";
@@ -104,7 +103,6 @@ const Ingame = () => {
 
   /* 네트워크 */
   useEffect(() => {
-    // console.log(gameData);
     myPosition = 0;
 
     // 방에서 나갈 때 상태 업데이트
@@ -116,12 +114,10 @@ const Ingame = () => {
     };
 
     socket.on(`allPlayersEnded${gameData.code}`, () => {
-      // console.log("전체 플레이어 게임 끝");
       setGameEnded(true);
     });
 
     return () => {
-      // currentAudio.removeEventListener("ended", handleAudioEnd);
       socket.off(`leftRoom${gameData.code}`, updatePlayersAfterLeave);
     };
   }, [gameData, myNickname]);
@@ -130,18 +126,12 @@ const Ingame = () => {
     // 게임 리소스 로딩
     const init = async () => {
       try {
-        // console.log("게임데이터:", gameData);
-        // console.log("myPosition", myPosition);
-        // console.log("게임데이터 ", gameData.players);
-        // console.log("TEST", gameData.players[myPosition].instrument)
         const loadedData = await Load(
           gameData.song,
           gameData.players,
           gameData.players[myPosition].instrument
         );
 
-        // console.log("게임 리소스 로드 완료: " + loadedData);
-        // console.log(loadedData);
         dispatch(setGameloadData(loadedData));
       } catch (error) {
         console.error("Loading failed:", error);
@@ -151,25 +141,18 @@ const Ingame = () => {
   }, []);
 
   const WhenSocketOn = (serverTime) => {
-    // 여기에는 시작시간 딜레이가 포함됨
     const timeDiff = serverTime - Date.now();
-
     setModalStatus("Hide");
-
     return timeDiff;
   };
 
   // 재생 상태 변경
   useEffect(() => {
     if (playerNumber !== railRefs.current.length) {
-      // playerNumber 길이만큼 ref를 생성
       railRefs.current = Array.from({ length: playerNumber }, (_, index) =>
         railRefs.current[index] || React.createRef()
       );
     }
-    // console.log("TEST", playerNumber);
-    // console.log("TEST", railRefs.current);
-
   }, [loadedData, playerNumber]);
 
   if (!staticColorsArray) {
@@ -180,7 +163,6 @@ const Ingame = () => {
     const [isActive, setIsActive] = useState(false);
 
     const handleKeyUp = useCallback(() => {
-      /* 반응성 향상 */
       setTimeout(() => {
         setIsActive(false);
       }, 50);
@@ -201,7 +183,6 @@ const Ingame = () => {
         if (result === true) {
           playMotionSFX("drum1", Parser(key), { volume: 2 });
         }
-        /* 반응성 향상 */
         handleKeyUp();
       },
       [handleKeyUp, myPosition, railRefs]
@@ -209,7 +190,7 @@ const Ingame = () => {
 
     return (
       <div className="background-songSheet">
-        <div className="hitLine">{/* <div className="test"></div> */}</div>
+        <div className="hitLine"></div>
         <Output />
         {gameData.players.map((player, index) => {
           if (!railRefs?.current[index]) {
@@ -234,7 +215,6 @@ const Ingame = () => {
                 />
               </JudgeBox>
               <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
-
             </VerticalRail>
           );
         })}
@@ -317,21 +297,13 @@ const Ingame = () => {
           height: "100vh",
           backgroundClip: "padding-box",
           paddingTop: "5%",
-          overflowX: "hidden"
+          overflowX: "hidden",
         }}
       >
         <GameExitBtn roomCode={gameData.code} />
         <SongSheet railRefs={railRefs} myPosition={myPosition}></SongSheet>
-        <div style={{ display: "inline", position: "relative" }}>
-          {/* <WebCamFrame myColor={myColor} roomCode={gameData.code} style={{visibility:"hidden"}} /> */}
-          {/* <SecondScore
-                gameData={gameData}
-                railRefs={railRefs}
-                myPosition={myPosition}
-              /> */}
-          <div>
-            IGM HERE
-          </div>
+        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", position: "relative" }}>
+          <ImageChanger />
           <WebCam
             players={gameData.players}
             roomCode={gameData.code}
@@ -342,12 +314,61 @@ const Ingame = () => {
         </div>
       </div>
       {ShowModal(modalStatus)}
-      {isGameReady && <GameControllerTuto {...startGameProps} myPosition={myPosition} />}
+      {isGameReady && (
+        <GameControllerTuto {...startGameProps} myPosition={myPosition} />
+      )}
     </>
   );
 };
 
 export default Ingame;
+
+const ImageChanger = () => {
+  const [imageSrc, setImageSrc] = useState('');
+  const [isBlinking, setIsBlinking] = useState(false);
+  const blinkTimerRef = useRef(null);
+  const timerRef = useRef(null);
+
+  useEffect(() => {
+    const blinkInterval = 500; // 교차하는 간격 (밀리초)
+    const totalBlinkDuration = 4000; // 전체 교차 지속 시간 (밀리초)
+    const switchImageDelay = 15000; // 최종적으로 이미지가 바뀌는 시간 (밀리초)
+
+    const startBlinking = () => {
+      let blinkCount = 0;
+      const maxBlinkCount = totalBlinkDuration / blinkInterval;
+
+      blinkTimerRef.current = setInterval(() => {
+        setImageSrc((prevSrc) =>
+          prevSrc === '/image/foldedArm.png' ? '/image/straightArm.png' : '/image/foldedArm.png'
+        );
+        blinkCount++;
+        if (blinkCount >= maxBlinkCount) {
+          clearInterval(blinkTimerRef.current);
+          setIsBlinking(false);
+          setImageSrc('/image/straightArm.png');
+        }
+      }, blinkInterval);
+    };
+
+    timerRef.current = setTimeout(() => {
+      setImageSrc('/image/foldedArm.png'); // 처음 20초 후에 초기 이미지 설정
+      setIsBlinking(true);
+      startBlinking();
+    }, switchImageDelay);
+
+    return () => {
+      clearInterval(blinkTimerRef.current);
+      clearTimeout(timerRef.current);
+    };
+  }, []);
+
+  return (
+    <div style={{ margin: "30px 200px 0 200px" }} >
+      <img src={imageSrc} style={{ borderRadius: "24px", width: "400px", height: "400px", padding: "0 0 20px 0" }} />
+    </div>
+  );
+};
 
 const VerticalRail = styled.div`
   display: block;
@@ -419,7 +440,6 @@ const JudgeTuto = (key, time, instrument, myPosition, myRailRef) => {
     result = "hit";
     sessionStorage.setItem("instrument", instrument);
     sessionStorage.setItem("motionType", currentMotion);
-
 
     TriggerMyHitEffect(`player${0}`, myRailRef, closestNote);
 
