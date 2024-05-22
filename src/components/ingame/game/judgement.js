@@ -75,10 +75,10 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
   }
 };
 
-const TriggerMyHitEffect = (target, elem, closestNote) => {
-  const hitEffect = document.getElementById(`${target}HitEffect`);
-  // console.log(hitEffect)
-  if (!hitEffect) return; // hitEffect가 없으면 함수 실행 중지
+export const TriggerMyHitEffect = (target, elem, closestNote) => {
+  /*   const hitEffect = document.getElementById(`${target}HitEffect`);
+    // console.log(hitEffect)
+    if (!hitEffect) return; // hitEffect가 없으면 함수 실행 중지 */
 
   if (closestNote) {
     if (elem.current && elem.current.contains(closestNote)) {
@@ -98,11 +98,11 @@ const TriggerMyHitEffect = (target, elem, closestNote) => {
     }
   }
 
-  hitEffect.classList.add("active");
-
-  setTimeout(() => {
-    hitEffect.classList.remove("active"); // 애니메이션이 끝나고 클래스를 제거
-  }, 350); // 애니메이션 시간과 동일하게 설정
+  /*   hitEffect.classList.add("active");
+  
+    setTimeout(() => {
+      hitEffect.classList.remove("active"); // 애니메이션이 끝나고 클래스를 제거
+    }, 350); // 애니메이션 시간과 동일하게 설정 */
 };
 
 // const PlayMyKeySound = (parsedkey, idx) => {

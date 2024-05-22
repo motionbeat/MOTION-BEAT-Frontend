@@ -7,13 +7,14 @@ import { useAudio } from "../common/useSoundManager.js";
 
 export const SecondScore = ({ gameData, railRefs, myPosition }) => {
   const [playerScores, setPlayerScores] = useState({});
-  const { playMotionSFX } = useAudio();
   const [playerCombos, setPlayerCombos] = useState({});
   const [hittedNotes, setHittedNotes] = useState(0);
   const [missedNotes, setMissedNotes] = useState(0);
   const [combo, setCombo] = useState(0);
+
   const dispatch = useDispatch();
   const myNickname = sessionStorage.getItem("nickname");
+  const { playMotionSFX } = useAudio();
 
   const handleScore = (res) => {
     setPlayerScores((prevScores) => ({
@@ -59,7 +60,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
           const newHittedNotes = prev + 1;
           const newCombo = combo + 1;
           sendScoreUpdate(newHittedNotes, newCombo);
-          TriggerHitEffect(`player${myPosition}`, railRefs.current[myPosition]);
+          // TriggerHitEffect(`player${myPosition}`, railRefs.current[myPosition]);
 
           return newHittedNotes;
         });
@@ -119,6 +120,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
 
     // const volume = session_motionType === "A" ? 1 : 2;
     // const volume = 1.5;
+    console.log("자가 플레이어 소리 테스트");
     playMotionSFX(session_instrument, session_motionType, { volume: volume });
   }, [hittedNotes, myNickname, playMotionSFX]);
 
@@ -134,6 +136,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
       const handleEvent = (scoreData, combo, instrument, motionType) => {
         if (instrument && motionType) {
           /* 타 플레이어 소리 차단 */
+          console.log("타 플레이어 소리 테스트");
           // playMotionSFX(instrument, motionType, { volume: 2 });
           /* 모션별 소리 */
           // const volume = motionType === "A" ? 1 : 2;
