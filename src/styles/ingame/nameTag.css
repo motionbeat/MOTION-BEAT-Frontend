@@ -1,0 +1,31 @@
+.nameTagContainer {
+  position: absolute;
+  display: inline-block;
+  top: 50%;
+  left: 0;
+  transform: translate(0%, -50%);
+  width: 235px;
+  height: 400%;
+  z-index: 12000;
+}
+
+.nameTagImage {
+  width: 100%;
+  height: 100%;
+  background-size: cover;
+  background-position: right center;
+  background-repeat: no-repeat;
+  background-image: url("/public/image/nameTag.png");
+}
+
+.nameTagOverlay {
+  position: absolute;
+  top: 50%;
+  left: 10%;
+  transform: translate(0%, -50%);
+  color: white;
+  font-size: 45px;
+  font-weight: bold;
+  pointer-events: none;
+}
+d
