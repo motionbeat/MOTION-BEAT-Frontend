@@ -1,5 +1,5 @@
 import React from 'react';
-import { useSelector } from "react-redux";
+import { useSelector, useDispatch } from "react-redux";
 
 const Output = () => {
   const message = useSelector(state => state.message.message);
@@ -12,9 +12,9 @@ const Output = () => {
       left: "50%",
       transform: "translate(-50%, -50%)",
       color: "white",
-      textAlign: "center"
+      textAlign: "center",
+      fontSize: "50px",
     }}>
-      <h1>Output</h1>
       <p>{message}</p>
     </div>
   );

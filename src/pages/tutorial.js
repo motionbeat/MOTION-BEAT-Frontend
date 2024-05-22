@@ -23,24 +23,23 @@ const Tutorial = () => {
   const [randomImage, setRandomImage] = useState("");
   const audioRef = useRef(null); // 노래 가져오기
 
-    // 노래 재생
-    const handlePlay = () => {
-      const audio = audioRef.current;
-      if (audio) {
-        audio.play().catch((error) => {
-          console.error("Error playing audio:", error);
-        });
-      }
-    };
-  
-    // 노래 중지
-    const handleStop = () => {
-      const audio = audioRef.current;
-      if (audio) {
-        audio.pause(); // 일시정지
-        audio.currentTime = 0; // 재생 위치를 처음으로 설정
-      }
-    };
+  // 노래 재생
+  const handlePlay = () => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.play().catch((error) => {
+        console.error("Error playing audio:", error);
+      });
+    }
+  };
+
+  const handleStop = () => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.pause(); // 일시정지
+      audio.currentTime = 0; // 재생 위치를 처음으로 설정
+    }
+  };
 
   useEffect(() => {
     socket.emit(`joinRoom`, roomData, (res) => {
@@ -70,7 +69,6 @@ const Tutorial = () => {
         console.error("Error random songs:", error);
       }
     };
-
     findSong();
 
     const randomIndex = Math.floor(Math.random() * sonaImages.length);
@@ -96,10 +94,10 @@ const Tutorial = () => {
               },
             }
           );
-            // 게임을 시작할 때 다같이 게임시작하기 위한 소켓
-            socket.on(`gameStarted${room.code}`, async (game) => {
-              navigate("/ingame", { state: { game } });
-            });
+          // 게임을 시작할 때 다같이 게임시작하기 위한 소켓
+          socket.on(`gameStarted${room.code}`, async (game) => {
+            navigate("/ingameTuto", { state: { game } });
+          });
         } catch (error) {
           console.error("Error start res:", error);
         }

@@ -1,6 +1,5 @@
 import React, { useEffect } from "react";
 import { useDispatch } from "react-redux";
-import { setInput } from "../redux/actions/inputActions";
 // import { useAudio } from "../components/common/useSoundManager";
 
 const Input = ({ onKeyDown, onKeyUp }) => {
@@ -16,7 +15,6 @@ const Input = ({ onKeyDown, onKeyUp }) => {
       if (inputKeyList.includes(key)) {
         const keyExactTime = parseInt(audioPlayer.currentTime * 1000, 10);
         // console.log("키 눌린 시간: ", keyExactTime);
-        dispatch(setInput(key));
 
         if (onKeyDown) {
           onKeyDown(key, keyExactTime); // 외부로 키를 전달할 콜백 함수 호출
