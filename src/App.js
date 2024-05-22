@@ -30,7 +30,7 @@ import { GoogleCallback } from "./apis/ggl";
 
 import NotFound from "./pages/notFound";
 // import PrivateRoute from "./utils/checkAuth";
-import Drum1 from "components/mediapipe/drum1";
+import Drum1 from "components/mediapipe/mediapipe";
 import AtomicTest from "components/common/atomic/atomicTest";
 import Admin from "./pages/admin";
 
