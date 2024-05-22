@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
-import Drum1 from "../mediapipe/drum1.js";
+import Drum1 from "../mediapipe/mediapipe.js";
 import "../../styles/room/webcam.scss";
 import { OpenVidu } from "openvidu-browser";
 
