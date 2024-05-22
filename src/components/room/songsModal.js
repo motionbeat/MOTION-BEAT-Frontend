@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import axios from 'axios';
 import "../../styles/room/musicModal.scss"
 import emptyStar from "../../img/emptyStar.png"
@@ -8,11 +8,37 @@ import { useAudio } from "../../components/common/useSoundManager.js";
 const SongsModal = ({ modalOn, handleCloseModal ,handleSongSelect }) => {
   const [songs, setSongs] = useState([]);
   const [difficulty, setDifficulty] = useState("all");
+  const [hoveredSong, setHoveredSong] = useState(null); 
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
   const { playNormalSFX } = useAudio();
+  const audioRef = useRef(null); // 노래 가져오기
+
+  // 노래 재생
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (audio && hoveredSong) {
+      audio.src = `/song/${hoveredSong}.mp3`;
+      audio.play().catch((error) => {
+        console.error("오디오 재생 중 오류 발생:", error);
+      });
+    }
+  }, [hoveredSong]);
+
+  // 노래 중지
+  const handleStop = () => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.pause(); // 일시정지
+      audio.currentTime = 0; // 재생 위치를 처음으로 설정
+    }
+  };
 
   const handleClickSound = () => {
     playNormalSFX("menuHover.mp3", { volume: 1 });
+  };
+
+  const songSelectSound = () => {
+    playNormalSFX("selectSong.mp3", { volume: 0.5 });
   };
 
   const fetchSongs = async () => {
@@ -86,6 +112,7 @@ const SongsModal = ({ modalOn, handleCloseModal ,handleSongSelect }) => {
 
   return (
     <>
+      <audio ref={audioRef} />
       <div className={`modal-backdrop ${modalOn ? 'active' : ''}`}></div>
       <div className="musicModalBox">
         {/* 노래선택 카테고리 */}
@@ -107,11 +134,15 @@ const SongsModal = ({ modalOn, handleCloseModal ,handleSongSelect }) => {
         {/* 노래 목록 */}
         <div className="musicModalRight">
           {songs.map((song) => (
-            <div className="songInfoWrapper" key={song.id} >
-              <div className="songAlbumImg" onClick={() => handleSongSelect(song)}>
+            <div className="songInfoWrapper" key={song.id}
+              onMouseEnter={() => setHoveredSong(song.number)}
+              onMouseLeave={handleStop}>
+              <div className="songAlbumImg" onClick={() => {handleSongSelect(song); songSelectSound();}}>
                 <img src={`/thumbnail/${song.imagePath}`} alt = "songAlbum" />
               </div>
-              <div className="songInfo" onClick={() => handleSongSelect(song)}>
+              <div className="songInfo"
+                onClick={() => {handleSongSelect(song); songSelectSound();}}
+                >
                 <h2>{song.title}</h2>
                 <p>{song.artist}</p>
                 <p>{song.difficulty}</p>

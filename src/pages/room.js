@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import socket from "../server/server.js";
 import SelectSong from "../components/room/selectSong";
 import axios from "axios";
@@ -7,6 +7,7 @@ import "../styles/room/room.scss";
 import RoomHeader from "../components/common/atomic/room/roomHeader.js";
 import RoomPlayers from "components/room/roomPlayer.js";
 import NewChatting from "components/room/newChatting.js";
+import { useAudio } from "../components/common/useSoundManager.js";
 
 const Room = () => {
   const location = useLocation();
@@ -19,6 +20,22 @@ const Room = () => {
   const [openChat, setOpenChat] = useState(false); // 채팅 열기
   const [isBlinking, setIsBlinking] = useState(false); // 코드 복사 시 깜빡임
   const [newMessageAlert, setNewMessageAlert] = useState(false); // 메세지 알림
+  const { playNormalSFX } = useAudio();
+  const audioRef = useRef(null);
+
+  const handleClickSound = () => {
+    playNormalSFX("start.mp3", { volume: 1 });
+  };
+
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.volume = 0.4;
+      audio.play().catch((error) => {
+        console.error("Error playing audio:", error);
+      });
+    }
+  });
 
   // 채팅 열기
   const chattingOpen = () => {
@@ -75,6 +92,7 @@ const Room = () => {
   // 방장 시작버튼
   const startGameHandler = async () => {
     if (myNickname === room.hostName) {
+      handleClickSound();
       const gameStart = async () => {
         try {
           const response = await axios.post(
@@ -116,6 +134,7 @@ const Room = () => {
 
   return (
     <>
+      <audio ref={audioRef} src={"/bgm/LCK_BANPICK.mp3"} loop />
       <div className="room-wrapper">
         <RoomHeader room={room} />
         <div className="roomMainWrapper">
@@ -129,7 +148,7 @@ const Room = () => {
               <div className="roomMiddleRight">
                 <button
                   className="gameStartBtn"
-                  onClick={() => startGameHandler()}
+                  onClick={startGameHandler}
                   disabled={!allReady}
                 >
                   게임 시작

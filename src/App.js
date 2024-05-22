@@ -163,7 +163,14 @@ const AppContent = () => {
       <MoveBg />
       <audio ref={audioRef} src={"/bgm/kneticSona.mp3"} loop />
       <div className="custom-cursor"></div>
-      {/* <ShowTitle /> */}
+      <svg width="0" height="0" style={{ position: 'absolute' }}>
+        <defs>
+          <filter id="filter">
+            <feTurbulence type="fractalNoise" baseFrequency="0.000001 0.000001" numOctaves="1" result="warp" seed="1"></feTurbulence>
+            <feDisplacementMap xChannelSelector="R" yChannelSelector="G" scale="30" in="SourceGraphic" in2="warp"></feDisplacementMap>
+          </filter>
+        </defs>
+      </svg>
       <Routes>
         {/* token사용 시 아래 주석과 "###"아래 주석을 해제하세요 */}
         {/* 웹 접속 */}

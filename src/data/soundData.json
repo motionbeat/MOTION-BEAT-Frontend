@@ -16,7 +16,10 @@
     { "name": "tom1_weak.mp3", "url": "/keySound/alldrum/tom1_weak1.mp3" },
     { "name": "tom2_weak.mp3", "url": "/keySound/alldrum/tom2_weak.mp3" },
     { "name": "laserGun.mp3", "url": "/keySound/system/laserGun.mp3" },
-    { "name": "menuHover.mp3", "url": "/keySound/system/menuHover.mp3" }
+    { "name": "menuHover.mp3", "url": "/keySound/system/menuHover.mp3" },
+    { "name": "chatAlarm.mp3", "url": "/keySound/system/chatAlarm.mp3" },
+    { "name": "start.mp3", "url": "/keySound/system/start.mp3" },
+    { "name": "selectSong.mp3", "url": "/keySound/system/selectSong.mp3" }
   ],
   "motionSfx": {
     "drum1": [

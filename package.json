@@ -29,6 +29,7 @@
     "@types/jest": "^29.5.12",
     "axios": "^1.6.8",
     "dotenv": "^16.4.5",
+    "gsap": "^3.12.5",
     "http-proxy-middleware": "^3.0.0",
     "install": "^0.13.0",
     "joi": "^17.13.1",
