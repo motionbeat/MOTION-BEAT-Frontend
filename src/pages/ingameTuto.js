@@ -329,6 +329,9 @@ const Ingame = () => {
                 railRefs={railRefs}
                 myPosition={myPosition}
               /> */}
+          <div>
+            IGM HERE
+          </div>
           <WebCam
             players={gameData.players}
             roomCode={gameData.code}
