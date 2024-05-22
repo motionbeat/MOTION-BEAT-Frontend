@@ -4,6 +4,9 @@
     { "name": "1.mp3", "url": "/song/1.mp3" },
     { "name": "2.mp3", "url": "/song/2.mp3" },
     { "name": "3.mp3", "url": "/song/3.mp3" },
+    { "name": "4.mp3", "url": "/song/4.mp3" },
+    { "name": "5.mp3", "url": "/song/5.mp3" },
+    { "name": "6.mp3", "url": "/song/6.mp3" },
     { "name": "그대에게.mp3", "url": "/song/그대에게.mp3" },
     { "name": "kneticSona.mp3", "url": "/bgm/kneticSona.mp3" }
   ],
@@ -11,7 +14,9 @@
     { "name": "clickback_02_01.wav", "url": "/keySound/system/clickback_02_01.wav" },
     { "name": "p2_editor_click.wav", "url": "/keySound/system/p2_editor_click.wav" },
     { "name": "tom1_weak.mp3", "url": "/keySound/alldrum/tom1_weak1.mp3" },
-    { "name": "tom2_weak.mp3", "url": "/keySound/alldrum/tom2_weak.mp3" }
+    { "name": "tom2_weak.mp3", "url": "/keySound/alldrum/tom2_weak.mp3" },
+    { "name": "laserGun.mp3", "url": "/keySound/system/laserGun.mp3" },
+    { "name": "menuHover.mp3", "url": "/keySound/system/menuHover.mp3" }
   ],
   "motionSfx": {
     "drum1": [

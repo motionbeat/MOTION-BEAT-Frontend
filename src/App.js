@@ -36,6 +36,7 @@ import Admin from "./pages/admin";
 
 import SoundManagerProvider from "components/common/useSoundManager.js";
 import MoveBg from "components/common/atomic/movebg";
+import AddSong from "pages/addSong";
 
 const App = () => {
   return (
@@ -207,6 +208,7 @@ const AppContent = () => {
         <Route path="/atomic" element={<AtomicTest />} />
 
         <Route path="/admin" element={<Admin />} />
+        <Route path="/addSong" element={<AddSong />} />
       </Routes>
     </div>
   );

@@ -13,13 +13,13 @@ const SelectMenu = ({mainMenu, handleClick}) => {
     const clickAudio = clickEffectAudioRef.current;
     if (hoverAudio) {
       hoverAudio.addEventListener('canplaythrough', () => {
-        console.log("Hover audio is ready to play");
+        // console.log("Hover audio is ready to play");
       }, { once: true });
       hoverAudio.load();
     }
     if (clickAudio) {
       clickAudio.addEventListener('canplaythrough', () => {
-        console.log("Click audio is ready to play");
+        // console.log("Click audio is ready to play");
       }, { once: true });
       clickAudio.load();
     }

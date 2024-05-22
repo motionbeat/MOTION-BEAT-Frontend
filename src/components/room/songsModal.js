@@ -3,11 +3,17 @@ import axios from 'axios';
 import "../../styles/room/musicModal.scss"
 import emptyStar from "../../img/emptyStar.png"
 import fullStar from "../../img/fullStar.png"
+import { useAudio } from "../../components/common/useSoundManager.js";
 
 const SongsModal = ({ modalOn, handleCloseModal ,handleSongSelect }) => {
   const [songs, setSongs] = useState([]);
   const [difficulty, setDifficulty] = useState("all");
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
+  const { playNormalSFX } = useAudio();
+
+  const handleClickSound = () => {
+    playNormalSFX("menuHover.mp3", { volume: 1 });
+  };
 
   const fetchSongs = async () => {
     try {
@@ -87,15 +93,15 @@ const SongsModal = ({ modalOn, handleCloseModal ,handleSongSelect }) => {
           <div className="backArrow" onClick={handleCloseModal}></div>
           <div className="songSelectBox">
             <div className={`songSelect ${difficulty === 'all' ? 'selected' : ''}`}
-              onClick={() => setDifficulty('all')}>ALL</div>
+              onClick={() => { setDifficulty('all'); handleClickSound(); }}>ALL</div>
             <div className={`songSelect ${difficulty === 'favorite' ? 'selected' : ''}`}  
-              onClick={() => setDifficulty('favorite')}>FAVORITE</div>
+              onClick={() => { setDifficulty('favorite'); handleClickSound(); }}>FAVORITE</div>
             <div className={`songSelect ${difficulty === 'easy' ? 'selected' : ''}`} 
-              onClick={() => setDifficulty('easy')}>EASY</div>
+              onClick={() => { setDifficulty('easy'); handleClickSound(); }}>EASY</div>
             <div className={`songSelect ${difficulty === 'normal' ? 'selected' : ''}`} 
-              onClick={() => setDifficulty('normal')}>NORMAL</div>
+              onClick={() => { setDifficulty('normal'); handleClickSound(); }}>NORMAL</div>
             <div className={`songSelect ${difficulty === 'hard' ? 'selected' : ''}`} 
-              onClick={() => setDifficulty('hard')}>HARD</div>
+              onClick={() => { setDifficulty('hard'); handleClickSound(); }}>HARD</div>
           </div>
         </div>
         {/* 노래 목록 */}

@@ -29,6 +29,14 @@
   background-image: url("../../img/popupRectangle.png");
   margin: 0 20px;
   text-align: center;
+  // border: 8px solid white;
+  // border-radius: 30px;
+
+  &:hover {
+    border: 7.5px solid rgb(252, 228, 250);
+    border-radius: 30px;
+    box-shadow: 0 0 30px 10px rgb(255, 255, 255);
+  }
 
   h1 {
     font-size: 50px;

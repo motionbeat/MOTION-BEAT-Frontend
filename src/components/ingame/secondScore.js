@@ -139,7 +139,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
           // const volume = motionType === "A" ? 1 : 2;
           // playMotionSFX(instrument, motionType, { volume });
           /* 타 플레이어 이펙트 활성화 */
-          TriggerHitEffect(`player${index}`, railRefs.current[index]);
+          // TriggerHitEffect(`player${index}`, railRefs.current[index]);
         }
 
         setPlayerScores((prevScores) => ({

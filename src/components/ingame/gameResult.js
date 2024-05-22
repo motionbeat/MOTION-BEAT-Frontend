@@ -67,7 +67,7 @@ const GameResult = ({ roomCode, gameData }) => {
   useEffect(() => {
     const audio = audioRef.current;
     if (audio) {
-      audio.volume = 0.3;
+      audio.volume = 0.2;
       audio.play().catch((error) => {
         console.error("Error playing audio:", error);
       });
