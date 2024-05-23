@@ -212,7 +212,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
         audioPlayer.removeEventListener('ended', handleAudioEnded);
       }
     };
-  }, [data.musicData, railRefs, roomCode, notes,]);
+  }, [data.musicData, railRefs, roomCode, notes]);
   return null;
 };
 

@@ -21,21 +21,21 @@ const Room = () => {
   const [isBlinking, setIsBlinking] = useState(false); // 코드 복사 시 깜빡임
   const [newMessageAlert, setNewMessageAlert] = useState(false); // 메세지 알림
   const { playNormalSFX } = useAudio();
-  const audioRef = useRef(null);
+  // const audioRef = useRef(null);
 
   const handleClickSound = () => {
     playNormalSFX("start.mp3", { volume: 1 });
   };
 
-  useEffect(() => {
-    const audio = audioRef.current;
-    if (audio) {
-      audio.volume = 0.4;
-      audio.play().catch((error) => {
-        console.error("Error playing audio:", error);
-      });
-    }
-  });
+  // useEffect(() => {
+  //   const audio = audioRef.current;
+  //   if (audio) {
+  //     audio.volume = 0.4;
+  //     audio.play().catch((error) => {
+  //       console.error("Error playing audio:", error);
+  //     });
+  //   }
+  // });
 
   // 채팅 열기
   const chattingOpen = () => {
@@ -134,7 +134,7 @@ const Room = () => {
 
   return (
     <>
-      <audio ref={audioRef} src={"/bgm/LCK_BANPICK.mp3"} loop />
+      {/* <audio ref={audioRef} src={"/bgm/LCK_BANPICK.mp3"} loop /> */}
       <div className="room-wrapper">
         <RoomHeader room={room} />
         <div className="roomMainWrapper">
