@@ -4,6 +4,7 @@ import { useAudio } from "../../../components/common/useSoundManager.js";
 import socket from "../../../server/server.js";
 import "../../../styles/songSheet.css"
 
+const staticColorsArray = ["250,0,255", "1,248,10", "0,248,203", "249,41,42"];
 let myInstrument;
 
 const audioPlayer = document.getElementById("audioPlayer");
@@ -95,6 +96,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
       noteElement.style.left = `100%`;
       noteElement.className = "Note";
       noteElement.style.zIndex = index;
+      noteElement.style.backgroundColor = `rgb(${staticColorsArray[myPosition]})`;
       if (motion === "A") {
         noteElement.textContent = "L";
       } else {
