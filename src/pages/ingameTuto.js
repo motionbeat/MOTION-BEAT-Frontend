@@ -22,6 +22,7 @@ import { useAudio } from "components/common/useSoundManager";
 import IngameBg from "../img/ingameBg.png";
 import beatFlow0 from "../img/beatflow0.png";
 import beatFlow1 from "../img/beatflow1.png";
+import TutoResult from "components/main/tutoResult";
 
 const staticColorsArray = ["250,0,255", "1,248,10", "0,248,203", "249,41,42"];
 let myPosition = 0;
@@ -299,7 +300,7 @@ const Ingame = () => {
       >
         {gameEnded ? (
           <>
-            <GameResult roomCode={gameData.code} gameData={gameData} />
+            <TutoResult roomCode={gameData.code} gameData={gameData} />
           </>
         ) : (
           <>
