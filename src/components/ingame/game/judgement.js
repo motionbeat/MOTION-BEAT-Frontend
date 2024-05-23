@@ -12,7 +12,7 @@ const dispatch = (result) => {
 const effectTime = ((effect, str) => {
   setTimeout(() => {
     effect.classList.remove(str);
-  }, 350);
+  }, 100);
 });
 
 
@@ -21,28 +21,30 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
   const hiteffect = document.getElementById("HitEffect");
   const notes = document.querySelectorAll(`.Note[data-instrument="${instrument}"]`);
 
-  let closestNote = null;
+  if (notes.length === 0) {
+    return;
+  }
+
   let minIndex = Infinity;
 
-  notes.forEach((note) => {
-    const index = parseInt(note.getAttribute("data-index"), 10);
-    if (!isNaN(index) && index < minIndex) {
-      minIndex = index;
-      closestNote = note;
-    }
-  });
+  // notes.forEach((note) => {
+  //   const index = parseInt(note.getAttribute("data-index"), 10);
+  //   if (!isNaN(index) && index < minIndex) {
+  //     minIndex = index;
+  //     closestNote = note;
+  //   }
+  // });
 
   /* 성능향상 기대1 */
-  // const closestNote = Array.from(notes).reduce((closest, note) => {
-  //   const index = parseInt(note.getAttribute("data-index"), 10);
-  //   return (index < closest.minIndex) ? { minIndex: index, note } : closest;
-  // }, { minIndex: Infinity, note: null }).note;
+  const closestNote = Array.from(notes).reduce((closest, note) => {
+    const index = parseInt(note.getAttribute("data-index"), 10);
+    return (index < closest.minIndex) ? { minIndex: index, note } : closest;
+  }, { minIndex: Infinity, note: null }).note;
 
   if (!closestNote) {
     return;
   }
 
-  let result = "ignore";
   let currentMotion = Parser(key);
   let cNoteMotion = closestNote.getAttribute("data-motion");
 
