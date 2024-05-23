@@ -234,7 +234,7 @@ const Ingame = () => {
                 {index === myPosition ? (
                   <>
                     <JudgeBox isactive={isActive} key={`JudgeBox${myPosition}`} backgroundImageUrl="/image/keyindex.png" />
-                    <div style={{ position: "absolute", width: "100%", height: "25%", top: "50%", transform: "translate(0%, -50%)", backgroundColor: `rgba(${staticColorsArray[myPosition]},1)` }} />
+                    <div style={{ position: "absolute", width: "100%", height: "25%", top: "50%", transform: "translate(0%, -50%)", backgroundColor: `rgba(${staticColorsArray[myPosition]},1)`, zIndex: "-11" }} />
                     <div className="nameTagContainer">
                       {/* <div className="nameTagImage">
                       </div> */}
@@ -242,8 +242,6 @@ const Ingame = () => {
                         {myNickname}
                       </div>
                     </div>
-
-
                     <Indicator />
                     <div
                       id={`player${myPosition}HitEffect`}
