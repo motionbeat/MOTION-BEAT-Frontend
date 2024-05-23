@@ -10,8 +10,9 @@ const Output = () => {
     `이번에는 오른쪽 팔을 휘둘러,
     파란 박스 안으로!`,
     "잘했어요!",
-    `노래가 끝날 때 까지
-    연습해봐요`
+    "",
+    "노래가 끝날 때 까지 연습해봐요",
+
   ];
 
   useEffect(() => {
@@ -30,7 +31,7 @@ const Output = () => {
     <div style={{
       zIndex: "1000",
       position: "absolute",
-      top: "50%",
+      top: "60%",
       left: "50%",
       transform: "translate(-50%, -50%)",
       color: "white",
