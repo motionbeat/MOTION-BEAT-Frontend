@@ -28,7 +28,7 @@
   color: white;
 }
 
-@keyframes fadeRight {
+/* @keyframes fadeRight {
   0% {
     width: 0;
   }
@@ -40,7 +40,7 @@
   100% {
     width: 0;
   }
-}
+} */
 
 .hitLine {
   position: absolute;

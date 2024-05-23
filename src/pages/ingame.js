@@ -234,7 +234,7 @@ const Ingame = () => {
                 {index === myPosition ? (
                   <>
                     <JudgeBox isactive={isActive} key={`JudgeBox${myPosition}`} backgroundImageUrl="/image/keyindex.png" />
-                    <div style={{ position: "absolute", width: "100%", height: "25%", top: "50%", transform: "translate(0%, -50%)", backgroundColor: `rgba(${staticColorsArray[myPosition]},1)`, zIndex: "-11" }} />
+                    <div style={{ position: "absolute", width: "100%", height: "12.5%", top: "50%", transform: "translate(0%, -50%)", backgroundColor: `rgba(${staticColorsArray[myPosition]},1)`, zIndex: "-11" }} />
                     <div className="nameTagContainer">
                       {/* <div className="nameTagImage">
                       </div> */}
@@ -392,15 +392,15 @@ const VerticalRail = styled.div`
   box-shadow: 3px 3px 3px rgba(255, 255, 255, 0.3);
 `;
 
-const Indicator = styled.div`
-  position: absolute;
-  top: 50%;
-  transform: translate(0%, -50%);
-  height: 100%;
-  width: 2px;
-  margin-left: 7%;
-  background-color: white;
-`;
+// const Indicator = styled.div`
+//   position: absolute;
+//   top: 50%;
+//   transform: translate(0%, -50%);
+//   height: 100%;
+//   width: 2px;
+//   margin-left: 7%;
+//   background-color: white;
+// `;
 
 const JudgeBox = styled.div`
   position: absolute;
