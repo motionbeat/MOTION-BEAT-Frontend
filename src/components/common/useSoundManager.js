@@ -279,7 +279,7 @@ const SoundManagerProvider = ({ children }) => {
   }, []);
 
   const value = {
-    playBGM: (name, options) => {
+    playBGM: async (name, options) => {
       if (currentBGM.source) {
         if (typeof currentBGM.source.stop === "function") {
           currentBGM.source.stop();

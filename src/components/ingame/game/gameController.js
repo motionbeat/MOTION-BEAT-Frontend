@@ -13,7 +13,7 @@ if (!audioPlayer) {
   console.error("Audio player not found");
 }
 
-const playAudio = (sound) => {
+const playAudio = async (sound) => {
   audioPlayer.src = sound;
   audioPlayer.currentTime = 0;
   audioPlayer.volume = 0;
