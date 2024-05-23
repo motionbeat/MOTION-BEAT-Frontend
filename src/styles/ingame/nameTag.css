@@ -21,10 +21,9 @@
 .nameTagOverlay {
   position: absolute;
   top: 50%;
-  left: 60%;
+  left: 100%;
   transform: translate(0%, -50%);
-  color: rgba(255, 255, 255, 0.33);
-  /* 50% 투명도 */
+  color: rgba(255, 255, 255, 0.7);
   font-size: 70px;
   font-weight: bold;
   pointer-events: none;
