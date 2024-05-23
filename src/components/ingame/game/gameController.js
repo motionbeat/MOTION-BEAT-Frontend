@@ -13,7 +13,7 @@ if (!audioPlayer) {
   console.error("Audio player not found");
 }
 
-const playAudio = (sound) => {
+const playAudio = async (sound) => {
   audioPlayer.src = sound;
   audioPlayer.currentTime = 0;
   audioPlayer.volume = 0;
@@ -115,6 +115,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
           railRef.current.dataset.instrument === note.instrument
         ) {
           noteElement.key = index;
+          noteElement.style.backgroundColor = `rgb(${staticColorsArray[myPosition]})`;
           // console.log(noteElement.key);
           railRef.current.appendChild(noteElement);
         }
@@ -133,7 +134,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
             noteElement.remove();
             cancelAnimationFrame(AnimateNote);
           } else {
-            noteElement.style.left = `${positionPercent}%`;
+            noteElement.style.left = `${positionPercent}% `;
             requestAnimationFrame(AnimateNote);
           }
         }
@@ -143,14 +144,14 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
             /* 타 플레이어 모든 소리 활성화 */
             AutoPlay(note.instrument, note.motion);
             // console.log(note.pnumber);
-            // console.log(`player${noteElement.key}HitEffect`);
+            // console.log(`player${ noteElement.key } HitEffect`);
             /* 타 플레이어 이펙트 차단 */
-            /* AutoEffect(`player${noteElement.key}HitEffect`); */
+            /* AutoEffect(`player${ noteElement.key } HitEffect`); */
             noteElement.remove();
             cancelAnimationFrame(AnimateNote);
           }
           else {
-            noteElement.style.left = `${positionPercent}%`;
+            noteElement.style.left = `${positionPercent}% `;
             requestAnimationFrame(AnimateNote);
           }
         }
