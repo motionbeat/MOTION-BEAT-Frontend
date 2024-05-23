@@ -16,7 +16,7 @@ if (!audioPlayer) {
 const playAudio = (sound) => {
   audioPlayer.src = sound;
   audioPlayer.currentTime = 0;
-  audioPlayer.volume = 0
+  audioPlayer.volume = 0;
   audioPlayer.play()
     .then(() => {
       console.log("Audio started successfully");

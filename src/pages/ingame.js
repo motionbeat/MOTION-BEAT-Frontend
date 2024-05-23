@@ -263,8 +263,7 @@ const Ingame = () => {
               </VerticalRail>
             </div>
           );
-        })
-        }
+        })}
       </div >
     );
   };

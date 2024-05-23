@@ -23,7 +23,7 @@ const playAudio = (sound) => {
     .catch((error) => console.error("Error playing audio:", error));
 };
 
-export const StartTuto = ({ stime, data, railRefs, myPosition, roomCode }) => {
+export const StartTuto = ({ stime, data, railRefs,send, myPosition, roomCode }) => {
 
   const animationDuration = 10000;
   const { playBGM, currentBGM, playMotionSFX } = useAudio();

@@ -89,9 +89,7 @@ const Ingame = () => {
             console.error("Error", err);
           });
       }
-    },
-    [myNickname, railRefs.current, gameData.code, gameData.song, loadedData]
-  );
+    }, [myNickname, railRefs.current, gameData.code, gameData.song, loadedData]);
 
   /* useEffect 순서를 변경하지 마세요*/
   useEffect(() => {
@@ -177,7 +175,7 @@ const Ingame = () => {
           time,
           "drum1",
           myPosition,
-          railRefs.current[myPosition]
+          railRefs.current[myPosition],
         );
 
         if (result === true) {
@@ -206,14 +204,13 @@ const Ingame = () => {
               data-instrument={gameData.players[index].instrument}
               key={index}
             >
-              {/* <Indicator /> */}
-              <JudgeBox isactive={isActive} key={index}>
-                <div
-                  id={`player${myPosition}HitEffect`}
-                  className="hit-effect"
-                  key={myPosition}
-                />
-              </JudgeBox>
+              <JudgeBox isactive={isActive} key={`JudgeBox${myPosition}`} backgroundImageUrl="/image/keyindex.png" />
+              <div style={{ position: "absolute", width: "100%", height: "12.5%", top: "50%", transform: "translate(0%, -50%)", backgroundColor: `rgba(${staticColorsArray[myPosition]},1)`, zIndex: "-11" }} />
+              <div
+                id={`player${myPosition}HitEffect`}
+                className="hit-effect"
+                key={`div${myPosition}`}
+              />
               <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
             </VerticalRail>
           );
@@ -300,18 +297,25 @@ const Ingame = () => {
           overflowX: "hidden",
         }}
       >
-        <GameExitBtn roomCode={gameData.code} />
-        <SongSheet railRefs={railRefs} myPosition={myPosition}></SongSheet>
-        <div style={{ display: "flex", justifyContent: "center", alignItems: "center", position: "relative" }}>
-          <ImageChanger />
-          <WebCam
-            players={gameData.players}
-            roomCode={gameData.code}
-            gameData={gameData}
-            railRefs={railRefs}
-            myPosition={myPosition}
-          />
-        </div>
+        {gameEnded ? (
+          <>
+            <GameResult roomCode={gameData.code} gameData={gameData} />
+          </>
+        ) : (
+          <>
+            <SongSheet railRefs={railRefs} myPosition={myPosition}></SongSheet>
+            <div style={{ display: "flex", justifyContent: "center", alignItems: "center", position: "relative" }}>
+              <ImageChanger />
+              <WebCam
+                players={gameData.players}
+                roomCode={gameData.code}
+                gameData={gameData}
+                railRefs={railRefs}
+                myPosition={myPosition}
+              />
+            </div>
+          </>
+        )}
       </div>
       {ShowModal(modalStatus)}
       {isGameReady && (
@@ -323,6 +327,41 @@ const Ingame = () => {
 
 export default Ingame;
 
+const VerticalRail = styled.div`
+  display: block;
+  position: relative;
+  top: 22%;
+  width: 100%;
+  height: 3%;
+  border: 20px;
+  background: ${({ color }) => color};
+  box-shadow: 3px 3px 3px rgba(255, 255, 255, 0.3);
+`;
+
+// const Indicator = styled.div`
+//   position: absolute;
+//   top: 0%;
+//   height: 100%;
+//   width: 5px;
+//   margin-left: 7%;
+//   background-color: white;
+// `;
+
+const JudgeBox = styled.div`
+  position: absolute;
+  top: 50%;
+  left: 1vw;
+  width: 16%;
+  height: 800%;
+  transform: translate(0%, -50%);
+  background-image: ${({ backgroundImageUrl }) => `url(${backgroundImageUrl})`};
+  background-size: cover; /* Adjust as needed */
+  transition: ${({ isactive }) => (isactive ? 'none' : 'opacity 0.5s ease-out, visibility 0.5s ease-out')};
+  z-index: 6; /* Ensure correct capitalization for z-index */
+  opacity: ${({ isactive }) => (isactive ? 1 : 0)};
+  visibility: ${({ isactive }) => (isactive ? 'visible' : 'hidden')};
+`;
+
 const ImageChanger = () => {
   const [imageSrc, setImageSrc] = useState('');
   const [isBlinking, setIsBlinking] = useState(false);
@@ -332,7 +371,7 @@ const ImageChanger = () => {
   useEffect(() => {
     const blinkInterval = 500; // 교차하는 간격 (밀리초)
     const totalBlinkDuration = 6000; // 전체 교차 지속 시간 (밀리초)
-    const switchImageDelay = 10000; // 최종적으로 이미지가 바뀌는 시간 (밀리초)
+    const switchImageDelay = 10000;
 
     const startBlinking = () => {
       let blinkCount = 0;
@@ -364,46 +403,17 @@ const ImageChanger = () => {
   }, []);
 
   return (
-    <div style={{ margin: "30px 200px 0 200px" }} >
-      <img src={imageSrc} style={{ borderRadius: "24px", width: "400px", height: "400px", padding: "0 0 20px 0" }} />
+    <div style={{ margin: "30px 200px 0 200px", width: "400px", height: "400px" }}>
+      {imageSrc ? (
+        <img src={imageSrc} alt="handImg" style={{ borderRadius: "24px", width: "400px", height: "400px", padding: "0 0 20px 0" }} />
+      ) : (
+        <div style={{ width: "400px", height: "400px" }}></div>
+      )}
     </div>
   );
 };
 
-const VerticalRail = styled.div`
-  display: block;
-  position: relative;
-  top: ${({ top }) => `calc(${top} + 11%)`};
-  width: 100%;
-  height: 3%;
-  border: 20px;
-  background: ${({ color }) => color};
-  box-shadow: 3px 3px 3px rgba(255, 255, 255, 0.3);
-`;
 
-const Indicator = styled.div`
-  position: absolute;
-  top: 0%;
-  height: 100%;
-  width: 5px;
-  margin-left: 7%;
-  background-color: white;
-`;
-
-const JudgeBox = styled.div`
-  position: absolute;
-  top: 0%;
-  height: 100%;
-  width: 20px;
-  background-color: ${({ isactive }) =>
-    isactive ? "yellow" : "rgba(0,0,0,1)"};
-  box-shadow: ${({ isactive }) => (isactive ? "0 0 10px 5px yellow" : "none")};
-  margin-left: 2%;
-  transition: ${({ isactive }) =>
-    isactive
-      ? "none"
-      : "background-color 0.5s ease-out, box-shadow 0.5s ease-out"};
-`;
 
 const JudgeTuto = (key, time, instrument, myPosition, myRailRef) => {
   let result = "ignore";
