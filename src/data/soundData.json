@@ -31,8 +31,8 @@
       { "name": "B", "url": "/keySound/hitSound/2R.wav" }
     ],
     "drum3": [
-      { "name": "A", "url": "/keySound/hitSound/3L.wav" },
-      { "name": "B", "url": "/keySound/hitSound/3R.wav" }
+      { "name": "A", "url": "/keySound/hitSound/3R.wav" },
+      { "name": "B", "url": "/keySound/hitSound/3L.mp3" }
     ],
     "drum4": [
       { "name": "A", "url": "/keySound/hitSound/4L.wav" },
