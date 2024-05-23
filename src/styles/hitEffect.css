@@ -12,24 +12,24 @@
   color: white;
   z-index: 5000;
   opacity: 1;
-  transition: opacity 0.1s;
+  transition: opacity 0.2s;
 }
 
 .hit-effect.early::before {
   content: "Early";
-  animation: fadeInEarly 0.1s forwards;
+  animation: fadeInEarly 0.2s forwards;
   color: orange;
 }
 
 .hit-effect.late::before {
   content: "Late";
-  animation: fadeInLate 0.1s forwards;
+  animation: fadeInLate 0.2s forwards;
   color: red;
 }
 
 .hit-effect.perfect::before {
   content: "Perfect";
-  animation: fadeInPerfect 0.1s forwards;
+  animation: fadeInPerfect 0.2s forwards;
   color: cyan;
 }
 
