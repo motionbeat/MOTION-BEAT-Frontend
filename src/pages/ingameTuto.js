@@ -206,7 +206,7 @@ const Ingame = () => {
               data-instrument={gameData.players[index].instrument}
               key={index}
             >
-              <Indicator />
+              {/* <Indicator /> */}
               <JudgeBox isactive={isActive} key={index}>
                 <div
                   id={`player${myPosition}HitEffect`}

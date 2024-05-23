@@ -242,7 +242,7 @@ const Ingame = () => {
                         {myNickname}
                       </div>
                     </div>
-                    <Indicator />
+                    {/* <Indicator /> */}
                     <div
                       id={`player${myPosition}HitEffect`}
                       className="hit-effect"
