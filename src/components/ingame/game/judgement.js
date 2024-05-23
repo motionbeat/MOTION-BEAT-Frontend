@@ -49,7 +49,7 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
   const noteTime = parseInt(closestNote.getAttribute("data-time"), 10);
   const timeDiff = noteTime - time;
 
-  if (timeDiff < -100) {
+  if (timeDiff < 150) {
     closestNote.setAttribute("data-index", minIndex + 100);
     return;
   }
@@ -58,17 +58,17 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
     return;
   }
 
-  if (timeDiff >= 300 && timeDiff <= 450) {
+  if (timeDiff >= 700 && timeDiff <= 1000) {
     closestNote.remove();
     TriggerMyHitEffect("early", hiteffect);
     return dispatch("early");
-  } else if (timeDiff >= 0 && timeDiff <= 300) {
+  } else if (timeDiff >= 400 && timeDiff <= 700) {
     sessionStorage.setItem("instrument", instrument);
     sessionStorage.setItem("motionType", currentMotion);
     closestNote.remove();
     TriggerMyHitEffect("perfect", hiteffect);
     return dispatch("perfect");
-  } else if (timeDiff >= -100 && timeDiff <= 0) {
+  } else if (timeDiff >= 150 && timeDiff <= 400) {
     closestNote.remove();
     TriggerMyHitEffect("late", hiteffect);
     return dispatch("late");

@@ -17,19 +17,19 @@
 
 .hit-effect.early::before {
   content: "Early";
-  animation: fadeInEarly 0.2s forwards;
+  animation: fadeInEarly 0.1s forwards;
   color: orange;
 }
 
 .hit-effect.late::before {
   content: "Late";
-  animation: fadeInLate 0.2s forwards;
+  animation: fadeInLate 0.1s forwards;
   color: red;
 }
 
 .hit-effect.perfect::before {
   content: "Perfect";
-  animation: fadeInPerfect 0.2s forwards;
+  animation: fadeInPerfect 0.1s forwards;
   color: cyan;
 }
 
@@ -60,11 +60,11 @@
 @keyframes fadeInPerfect {
   0% {
     opacity: 0;
-    transform: translate(-50%, -50%) rotate(0deg);
+    transform: translate(-50%, -50%) translateY(50px);
   }
 
   100% {
     opacity: 1;
-    transform: translate(-50%, -50%) rotate(360deg);
+    transform: translate(-50%, -50%) translateY(0);
   }
 }
