@@ -297,9 +297,9 @@ const SoundManagerProvider = ({ children }) => {
         });
       });
     },
-    playNormalSFX: (name, options) =>
+    playNormalSFX: async (name, options) =>
       loadAndPlaySound("normalSfx", "", name, options),
-    playMotionSFX: (setName, name, options) =>
+    playMotionSFX: async (setName, name, options) =>
       loadAndPlaySound("motionSfx", setName, name, options),
     pauseSound,
     resumeSound,
