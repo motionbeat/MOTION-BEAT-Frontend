@@ -9,14 +9,6 @@ const dispatch = (result) => {
   window.dispatchEvent(event);
 };
 
-const effectTime = ((effect, str) => {
-  setTimeout(() => {
-    effect.classList.remove(str);
-  }, 100);
-});
-
-
-
 export const Judge = (key, time, instrument, myPosition, myRailRef) => {
   const hiteffect = document.getElementById("HitEffect");
   const notes = document.querySelectorAll(`.Note[data-instrument="${instrument}"]`);
@@ -80,12 +72,17 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
 };
 
 export const TriggerMyHitEffect = (judgeString, effect) => {
-  console.log("HIT EFFECT :", effect);
-  if (!effect) return; // hitEffect가 없으면 함수 실행 중지 */
+  if (!effect) return;
 
   effect.classList.add(judgeString);
-  effectTime(effect, judgeString);
-}
+
+  const handleAnimationEnd = () => {
+    effect.classList.remove(judgeString);
+    effect.removeEventListener('animationend', handleAnimationEnd);
+  };
+
+  effect.addEventListener('animationend', handleAnimationEnd);
+};
 
 
 // const PlayMyKeySound = (parsedkey, idx) => {

@@ -194,7 +194,7 @@ const Ingame = () => {
       /* 반응성 향상 */
       setTimeout(() => {
         setIsActive(false);
-      }, 200);
+      }, 50);
     }, []);
 
     const handleKeyDown = useCallback(

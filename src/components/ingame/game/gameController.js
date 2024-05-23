@@ -14,14 +14,15 @@ if (!audioPlayer) {
 }
 
 const playAudio = async (sound) => {
-  audioPlayer.src = sound;
-  audioPlayer.currentTime = 0;
-  audioPlayer.volume = 0;
-  audioPlayer.play()
-    .then(() => {
-      console.log("Audio started successfully");
-    })
-    .catch((error) => console.error("Error playing audio:", error));
+  try {
+    audioPlayer.src = sound;
+    audioPlayer.currentTime = 0;
+    audioPlayer.volume = 0;
+    await audioPlayer.play();
+    console.log("Audio started successfully");
+  } catch (error) {
+    console.error("Error playing audio:", error);
+  }
 };
 
 export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomCode }) => {
@@ -30,7 +31,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
   const animationDuration = 5000;
   const { playBGM, currentBGM, playMotionSFX } = useAudio();
   const processedNotes = new Set();
-  const notes = data?.musicData?.notes;
+  let notes = data?.musicData?.notes || [];
 
   useEffect(() => {
     if (railRefs[myPosition]) {
@@ -70,7 +71,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
       const ScheduleNotes = () => {
         audioTime = parseInt(audioPlayer.currentTime * 1000, 10);
 
-        for (const note of notes) {
+        notes.forEach(note => {
           const startTime = note.time - animationDuration;
 
           // TODO: <LSL> getElapsedTime() 함수를 사용하여 현재 시간을 가져와야 함
@@ -78,42 +79,34 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
             /* 연결된 플레이어들의 악기 만 재생 */
             if (existingInstruments.includes(note.instrument)) {
               processedNotes.add(note);
-              GenerateNote(note, startTime, count);
-              count++;
+              GenerateNote(note);
             }
           }
-        }
+        });
+
         requestAnimationFrame(ScheduleNotes);
       };
 
       requestAnimationFrame(ScheduleNotes);
     };
 
-    const GenerateNote = (note, noteStart, index) => {
+    const GenerateNote = (note) => {
       const { motion, time } = note;
 
       const noteElement = document.createElement("div");
-      noteElement.style.left = `100%`;
+      noteElement.style.left = `120%`;
       noteElement.className = "Note";
-      noteElement.style.zIndex = index;
-      if (motion === "A") {
-        noteElement.textContent = "L";
-      } else {
-        noteElement.textContent = "R"
-      }
+      noteElement.style.zIndex = time;
+      noteElement.textContent = motion === "A" ? "L" : "R";
       noteElement.setAttribute("data-motion", motion);
       noteElement.setAttribute("data-time", time + 460);
       noteElement.setAttribute("data-instrument", note.instrument);
-      noteElement.setAttribute("data-index", index);
+      noteElement.setAttribute("data-index", time);
 
       // console.log("RAILREFS 갯수: ", railRefs);
       // console.log("My Inst: ", myInstrument);
       railRefs.forEach((railRef, index) => {
-        // console.log(index)
-        if (
-          railRef.current !== null &&
-          railRef.current.dataset.instrument === note.instrument
-        ) {
+        if (railRef.current && railRef.current.dataset.instrument === note.instrument) {
           noteElement.key = index;
           noteElement.style.backgroundColor = `rgb(${staticColorsArray[index]})`;
           // console.log(noteElement.key);
@@ -137,9 +130,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
             noteElement.style.left = `${positionPercent}% `;
             requestAnimationFrame(AnimateNote);
           }
-        }
-
-        if (note.instrument !== myInstrument) {
+        } else {
           if (positionPercent <= 10) {
             /* 타 플레이어 모든 소리 활성화 */
             AutoPlay(note.instrument, note.motion);
@@ -149,9 +140,8 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
             /* AutoEffect(`player${ noteElement.key } HitEffect`); */
             noteElement.remove();
             cancelAnimationFrame(AnimateNote);
-          }
-          else {
-            noteElement.style.left = `${positionPercent}% `;
+          } else {
+            noteElement.style.left = `${positionPercent}%`;
             requestAnimationFrame(AnimateNote);
           }
         }
