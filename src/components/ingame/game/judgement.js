@@ -49,8 +49,10 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
   let currentMotion = Parser(key);
 
   if (
-    timeDiff >= -100 &&
-    timeDiff <= 450 &&
+    // timeDiff >= -100 &&
+    // timeDiff <= 450 &&
+    timeDiff >= 300 &&
+    timeDiff <= 600 &&
     closestNote.getAttribute("data-motion") === currentMotion
   ) {
     // console.log("HIT from : ", timeDiff, " = ", noteTime, "-", time);
@@ -68,7 +70,7 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
   }
 
   /* timeDiff가 0.5이상 차이나거나, 같은 모션 키를 입력하지 않았을 경우 */
-  if (timeDiff < -100) {
+  if (timeDiff < 300) {
     // console.log("IGNORE");
     closestNote.setAttribute("data-index", minIndex + 100);
     return dispatch("ignore");

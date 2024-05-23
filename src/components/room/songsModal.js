@@ -133,25 +133,25 @@ const SongsModal = ({ modalOn, handleCloseModal ,handleSongSelect }) => {
         </div>
         {/* 노래 목록 */}
         <div className="musicModalRight">
-          {songs.map((song) => (
-            <div className="songInfoWrapper" key={song.id}
-              onMouseEnter={() => setHoveredSong(song.number)}
-              onMouseLeave={handleStop}>
-              <div className="songAlbumImg" onClick={() => {handleSongSelect(song); songSelectSound();}}>
-                <img src={`/thumbnail/${song.imagePath}`} alt = "songAlbum" />
+            {songs.map((song) => (
+              <div className="songInfoWrapper" key={song.id}
+                onMouseEnter={() => setHoveredSong(song.number)}
+                onMouseLeave={handleStop}>
+                <div className="songAlbumImg" onClick={() => {handleSongSelect(song); songSelectSound();}}>
+                  <img src={`/thumbnail/${song.imagePath}`} alt = "songAlbum" />
+                </div>
+                <div className="songInfo"
+                  onClick={() => {handleSongSelect(song); songSelectSound();}}
+                  >
+                  <h2>{song.title}</h2>
+                  <p>{song.artist}</p>
+                  <p>{song.difficulty}</p>
+                </div>
+                <div className="favorite" onClick={() => toggleFavorite(song.title)}>
+                  <img src={song.favorite ? fullStar : emptyStar} alt="favorite" />
+                </div>    
               </div>
-              <div className="songInfo"
-                onClick={() => {handleSongSelect(song); songSelectSound();}}
-                >
-                <h2>{song.title}</h2>
-                <p>{song.artist}</p>
-                <p>{song.difficulty}</p>
-              </div>
-              <div className="favorite" onClick={() => toggleFavorite(song.title)}>
-                <img src={song.favorite ? fullStar : emptyStar} alt="favorite" />
-              </div>    
-            </div>
-          ))}
+            ))}
         </div>
       </div>
     </>

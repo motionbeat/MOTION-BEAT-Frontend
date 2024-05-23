@@ -103,7 +103,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
         noteElement.textContent = "R"
       }
       noteElement.setAttribute("data-motion", motion);
-      noteElement.setAttribute("data-time", time);
+      noteElement.setAttribute("data-time", time+460);
       noteElement.setAttribute("data-instrument", note.instrument);
       noteElement.setAttribute("data-index", index);
 
@@ -129,7 +129,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
         // }
 
         const currTime = parseInt(audioPlayer.currentTime * 1000, 10);
-        const positionPercent = ((time - currTime) * 100 / animationDuration).toFixed(1);
+        const positionPercent = ((time+460 - currTime) * 100 / animationDuration).toFixed(1);
 
         if (note.instrument === myInstrument) {
           if (positionPercent <= -3) {
@@ -142,7 +142,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
         }
 
         if (note.instrument !== myInstrument) {
-          if (positionPercent <= 3) {
+          if (positionPercent <= 10) {
             /* 타 플레이어 모든 소리 활성화 */
             AutoPlay(note.instrument, note.motion);
             // console.log(note.pnumber);
