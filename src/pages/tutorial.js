@@ -48,7 +48,6 @@ const Tutorial = () => {
 
     const findSong = async () => {
       try {
-        console.log("노래불러옴스타트");
         const response = await axios.get(`${backendUrl}/api/songs/0`, {
           headers: {
             "Content-Type": "application/json",

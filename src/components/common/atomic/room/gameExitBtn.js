@@ -39,6 +39,7 @@ const GameExitBtn = ({roomCode}) => {
           sessionStorage.removeItem("songTitle");
           sessionStorage.removeItem("songArtist");
           sessionStorage.removeItem("songAlbum");
+          sessionStorage.removeItem("tutorialStarted");
           navigate("/main");
         } 
       }

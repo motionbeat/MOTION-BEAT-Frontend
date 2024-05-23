@@ -79,7 +79,7 @@ const GameResult = ({ roomCode, gameData }) => {
     const instrument = player.instrument;
     const totalNotes = instrumentCounts[instrument] || 1;
     const hitRate = (player.score / totalNotes) * 100;
-    return hitRate.toFixed(2);
+    return hitRate;
   };
 
   return (
