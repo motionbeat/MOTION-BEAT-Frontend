@@ -2,79 +2,70 @@ import { Parser } from "../../../utils/parser";
 // import { TriggerHitEffect } from "../secondScore.js";
 
 // let audioElements;
+// console.log("TEST1");
+// console.log(instrument);
+const dispatch = (result) => {
+  const event = new CustomEvent("scoreUpdate", { detail: { result } });
+  window.dispatchEvent(event);
+};
 
 export const Judge = (key, time, instrument, myPosition, myRailRef) => {
-  let result = "ignore";
+  const notes = document.querySelectorAll(`.Note[data-instrument="${instrument}"]`);
 
-  // console.log("TEST1");
-  // console.log(instrument);
-  const dispatch = (result) => {
-    const event = new CustomEvent("scoreUpdate", { detail: { result } });
-    window.dispatchEvent(event);
-  };
-
-  const notes = document.querySelectorAll(
-    `.Note[data-instrument="${instrument}"]`
-  );
-  // console.log(notes)
   let closestNote = null;
   let minIndex = Infinity;
 
-  // console.log("TEST2");
   notes.forEach((note) => {
-    const index = parseInt(note.getAttribute("data-index"), 10); // 요소의 data-index 속성 가져오기
+    const index = parseInt(note.getAttribute("data-index"), 10);
     if (!isNaN(index) && index < minIndex) {
-      // index가 유효한 숫자인지 확인
       minIndex = index;
       closestNote = note;
     }
   });
 
+  /* 성능향상 기대1 */
+  // const closestNote = Array.from(notes).reduce((closest, note) => {
+  //   const index = parseInt(note.getAttribute("data-index"), 10);
+  //   return (index < closest.minIndex) ? { minIndex: index, note } : closest;
+  // }, { minIndex: Infinity, note: null }).note;
+
   if (!closestNote) {
-    // console.log("No valid note elements found.");
-    return result;
-  }
-
-  const noteTime = parseInt(closestNote.getAttribute("data-time"), 10);
-
-  // console.log("MININDEX:" + minIndex + "JUDGEDNOTES:")
-  const timeDiff = noteTime - time;
-
-  // if (((timeDiff > 500 && timeDiff < 1000) || (timeDiff < -500 && timeDiff > -1000)) && closestNote.getAttribute('data-motion') === Parser(key)) {
-  //   console.log("MISS!")
-  //   dispatch("miss");
-  // }
-
-  /* timeDiff가 >=0,<=500 사이에 있고, 같은 모션 키를 입력했을 경우  */
-  let currentMotion = Parser(key);
-
-  if (
-    // timeDiff >= -100 &&
-    // timeDiff <= 450 &&
-    timeDiff >= 300 &&
-    timeDiff <= 600 &&
-    closestNote.getAttribute("data-motion") === currentMotion
-  ) {
-    // console.log("HIT from : ", timeDiff, " = ", noteTime, "-", time);
-
-    result = "hit";
-    sessionStorage.setItem("instrument", instrument);
-    sessionStorage.setItem("motionType", currentMotion);
-
-    dispatch(result);
-    TriggerMyHitEffect(`player${myPosition}`, myRailRef, closestNote);
-    // console.log("[SL] judgement 에서 My 클로젯 노트 Remove");
-
-    // closestNote.remove(); // 해당 노트를 화면에서 숨김
     return;
   }
 
-  /* timeDiff가 0.5이상 차이나거나, 같은 모션 키를 입력하지 않았을 경우 */
-  if (timeDiff < 300) {
-    // console.log("IGNORE");
+  let result = "ignore";
+  let currentMotion = Parser(key);
+  let cNoteMotion = closestNote.getAttribute("data-motion");
+
+  const noteTime = parseInt(closestNote.getAttribute("data-time"), 10);
+  const timeDiff = noteTime - time;
+
+  if (timeDiff < -100) {
     closestNote.setAttribute("data-index", minIndex + 100);
-    return dispatch("ignore");
+    return;
   }
+
+  if (currentMotion !== cNoteMotion) {
+    return;
+  }
+
+  if (timeDiff >= 450 && timeDiff <= 800) {
+    closestNote.remove();
+    return dispatch("early");
+  } else if (timeDiff >= -100 && timeDiff <= 450) {
+    sessionStorage.setItem("instrument", instrument);
+    sessionStorage.setItem("motionType", currentMotion);
+    closestNote.remove();
+    return dispatch("hit");
+  } else if (timeDiff <= 1000) {
+    closestNote.remove();
+    return dispatch("late");
+  }
+  // TriggerMyHitEffect(`player${myPosition}`, myRailRef, closestNote);
+  // console.log("[SL] judgement 에서 My 클로젯 노트 Remove");
+  // closestNote.remove(); // 해당 노트를 화면에서 숨김
+
+
 };
 
 export const TriggerMyHitEffect = (target, elem, closestNote) => {
@@ -98,6 +89,7 @@ export const TriggerMyHitEffect = (target, elem, closestNote) => {
       // console.log("elem.current:", elem.current);
       // console.log("closestNote:", closestNote);
     }
+
   }
 
   /*   hitEffect.classList.add("active");
