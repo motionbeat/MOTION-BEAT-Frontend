@@ -1,6 +1,6 @@
 {
   "bgm": [
-    { "name": "0.mp3", "url": "/song/0.wav" },
+    { "name": "0.mp3", "url": "/song/0.mp3" },
     { "name": "1.mp3", "url": "/song/1.mp3" },
     { "name": "2.mp3", "url": "/song/2.mp3" },
     { "name": "3.mp3", "url": "/song/3.mp3" },
