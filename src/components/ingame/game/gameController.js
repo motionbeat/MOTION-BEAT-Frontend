@@ -29,7 +29,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
   // console.log("TESTSTART:", railRefs)
   const animationDuration = 5000;
   const { playBGM, currentBGM, playMotionSFX } = useAudio();
-  const processedNotes = new Set(); // 처리된 노트들을 추적하는 집합
+  const processedNotes = new Set();
   const notes = data?.musicData?.notes;
 
   useEffect(() => {
@@ -96,7 +96,6 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
       noteElement.style.left = `100%`;
       noteElement.className = "Note";
       noteElement.style.zIndex = index;
-      noteElement.style.backgroundColor = `rgb(${staticColorsArray[myPosition]})`;
       if (motion === "A") {
         noteElement.textContent = "L";
       } else {
@@ -119,8 +118,6 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
           // console.log(noteElement.key);
           railRef.current.appendChild(noteElement);
         }
-
-
       });
 
       const AnimateNote = () => {

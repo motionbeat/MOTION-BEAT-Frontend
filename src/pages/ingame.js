@@ -252,13 +252,16 @@ const Ingame = () => {
                     {/* <Output /> */}
                   </>
                 ) : (
-                  <JudgeBox key={index}>
+                  <>
+                    <JudgeBox key={index} />
+                    <div style={{ position: "absolute", width: "100%", height: "12.5%", top: "50%", transform: "translate(0%, -50%)", backgroundColor: `rgba(${staticColorsArray[index]},1)`, zIndex: "-11" }} />
                     <div
                       id={`player${index}HitEffect`}
                       className="hit-effect"
                       key={index}
+
                     />
-                  </JudgeBox>
+                  </>
                 )}
               </VerticalRail>
             </div>
