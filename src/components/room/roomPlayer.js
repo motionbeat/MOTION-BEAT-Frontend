@@ -9,17 +9,17 @@ import sona3 from "../../img/sona3.jpg";
 import sona4 from "../../img/sona4.jpg";
 import GlitchButton from "components/common/atomic/room/glitchButton.js";
 import { useAudio } from "../common/useSoundManager.js";
-import DRUM1 from "../../img/instrument/drum.png";
-import DRUM2 from "../../img/instrument/triangle.png";
-import DRUM3 from "../../img/instrument/tamburin.png";
+// import DRUM1 from "../../img/instrument/drum.png";
+// import DRUM2 from "../../img/instrument/triangle.png";
+// import DRUM3 from "../../img/instrument/tamburin.png";
 
 const sonaImages = [sona1, sona2, sona3, sona4];
 
-const instrumentImages = {
-  "Drum": DRUM1,
-  "Triangle": DRUM2,
-  "Tambourine": DRUM3,
-};
+// const instrumentImages = {
+//   "Drum": DRUM1,
+//   "Triangle": DRUM2,
+//   "Tambourine": DRUM3,
+// };
 
 const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
   const [playerStatuses, setPlayerStatuses] = useState({});
@@ -200,7 +200,7 @@ const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
                 {instruModal && (
                   <div className="instrumentModal">
                     {instrumentList.map((instrument) => {
-                      const instrumentImage = instrumentImages[instrument.instrumentName] || null;
+                      // const instrumentImage = instrumentImages[instrument.instrumentName] || null;
                       return (
                         <div className="instrumentInner" key={instrument.id}>
                           <div className="instrumentBox">
@@ -208,7 +208,7 @@ const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
                               onClick={() =>
                                 selectedInstrument(instrument.instrumentName)
                               }>
-                              {instrumentImage && <img src={instrumentImage} alt={instrument.instrumentName} />}
+                              {/* {instrumentImage && <img src={instrumentImage} alt={instrument.instrumentName} />} */}
                               {instrument.instrumentName}</h3>
                             <div className="instrumentKind">
                               <GlitchButton
