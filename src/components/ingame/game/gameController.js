@@ -102,7 +102,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
         noteElement.textContent = "R"
       }
       noteElement.setAttribute("data-motion", motion);
-      noteElement.setAttribute("data-time", time+460);
+      noteElement.setAttribute("data-time", time + 460);
       noteElement.setAttribute("data-instrument", note.instrument);
       noteElement.setAttribute("data-index", index);
 
@@ -115,7 +115,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
           railRef.current.dataset.instrument === note.instrument
         ) {
           noteElement.key = index;
-          noteElement.style.backgroundColor = `rgb(${staticColorsArray[myPosition]})`;
+          noteElement.style.backgroundColor = `rgb(${staticColorsArray[index]})`;
           // console.log(noteElement.key);
           railRef.current.appendChild(noteElement);
         }
@@ -127,7 +127,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
         // }
 
         const currTime = parseInt(audioPlayer.currentTime * 1000, 10);
-        const positionPercent = ((time+460 - currTime) * 100 / animationDuration).toFixed(1);
+        const positionPercent = ((time + 460 - currTime) * 100 / animationDuration).toFixed(1);
 
         if (note.instrument === myInstrument) {
           if (positionPercent <= -3) {
