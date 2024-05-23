@@ -208,7 +208,7 @@ const Ingame = () => {
               <JudgeBox isactive={isActive} key={`JudgeBox${myPosition}`} backgroundImageUrl="/image/keyindex.png" />
               <div style={{ position: "absolute", width: "100%", height: "12.5%", top: "50%", transform: "translate(0%, -50%)", backgroundColor: `rgba(${staticColorsArray[myPosition]},1)`, zIndex: "-11" }} />
               <div
-                id={`player${myPosition}HitEffect`}
+                id="HitEffect"
                 className="hit-effect"
                 key={`div${myPosition}`}
               />
@@ -337,6 +337,7 @@ const VerticalRail = styled.div`
   border: 20px;
   background: ${({ color }) => color};
   box-shadow: 3px 3px 3px rgba(255, 255, 255, 0.3);
+  z-Index: 4;
 `;
 
 // const Indicator = styled.div`

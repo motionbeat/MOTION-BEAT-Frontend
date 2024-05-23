@@ -4,7 +4,7 @@
   width: 100vw;
   height: 35vh;
   background: rgba(5, 5, 5, 0.4);
-  backdrop-filter: blur(20px);
+  /* backdrop-filter: blur(20px); */
   margin-bottom: 30px;
 }
 
@@ -21,7 +21,6 @@
   /* transform: translate(-50%, -50%); */
   margin-top: -36.25px;
   margin-left: -36.25px;
-  background-color: inherit;
   box-shadow: 0 0 7px 7px white;
   animation-timing-function: linear;
   text-align: center;
@@ -44,10 +43,10 @@
 
 .hitLine {
   position: absolute;
-  left: 1%;
-  width: 5.5%;
+  left: 5%;
+  width: 20%;
   height: inherit;
-  background: linear-gradient(to right, rgba(255, 0, 197, 1), rgba(255, 192, 203, 0));
+  background: linear-gradient(to right, rgba(255, 0, 197, 0.7), rgba(255, 192, 203, 0));
   z-index: 5;
 }
 

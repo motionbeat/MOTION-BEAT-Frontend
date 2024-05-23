@@ -45,6 +45,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
         motionType: session_motionType,
       };
 
+
       socket.emit("hit", sendData);
       sessionStorage.setItem("hitNote", score);
       sessionStorage.setItem("combo", combo);
@@ -55,7 +56,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
   // 점수를 업데이트하는 함수
   const updateScore = useCallback(
     (result) => {
-      if (result === "hit") {
+      if (result === "early" || result === "late" || result === "perfect") {
         setHittedNotes((prev) => {
           const newHittedNotes = prev + 1;
           const newCombo = combo + 1;
@@ -65,11 +66,12 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
           return newHittedNotes;
         });
         setCombo((prev) => prev + 1);
-      } else if (result === "miss" || result === "ignore") {
-        setMissedNotes((prev) => prev + 1);
-        sendScoreUpdate(hittedNotes, 0);
-        setCombo(0);
       }
+      // else if (result === "miss" || result === "ignore") {
+      //   setMissedNotes((prev) => prev + 1);
+      //   sendScoreUpdate(hittedNotes, 0);
+      //   setCombo(0);
+      // }
     },
     [combo, hittedNotes, sendScoreUpdate, myPosition, railRefs]
   );
@@ -120,7 +122,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
 
     // const volume = session_motionType === "A" ? 1 : 2;
     // const volume = 1.5;
-    console.log("자가 플레이어 소리 테스트");
+    // console.log("자가 플레이어 소리 테스트");
     playMotionSFX(session_instrument, session_motionType, { volume: volume });
   }, [hittedNotes, myNickname, playMotionSFX]);
 
@@ -201,39 +203,6 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
 export const TriggerHitEffect = (target) => {
   const hitEffect = document.getElementById(`${target}HitEffect`);
   if (!hitEffect) return; // hitEffect가 없으면 함수 실행 중지
-
-  // const notes = Array.from(elem?.current.children ?? []).filter((child) =>
-  //   child.hasAttribute("data-index")
-  // );
-
-  // let closestNote = null;
-  // let minIndex = Infinity;
-  // for (const note of notes) {
-  //   const index = parseInt(note.getAttribute("data-index"), 10);
-  //   if (index < minIndex) {
-  //     minIndex = index;
-  //     closestNote = note;
-  //   }
-  // }
-
-  // // 가장 작은 'data-index'를 가진 자식 요소가 있으면 제거
-  // if (closestNote) {
-  //   if (elem.current && elem.current.contains(closestNote)) {
-  //     elem.current.removeChild(closestNote);
-  //     // console.log(elem);
-  //     // console.log(elem.current);
-  //     // console.log(closestNote);
-  //     console.log(
-  //       "[SL] All Trigger에서 자식 클로짓 노트 삭제: ",
-  //       closestNote,
-  //       closestNote.getAttribute("data-index")
-  //     );
-  //   } else {
-  //     console.warn("[SL] closestNote is not a child of elem.current");
-  //     // console.log("elem.current:", elem.current);
-  //     // console.log("closestNote:", closestNote);
-  //   }
-  // }
 
   hitEffect.classList.add("active");
 

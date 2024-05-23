@@ -81,6 +81,7 @@ const Ingame = () => {
         waitForAllPlayers
           .then((data) => {
             const synchedStartTime = WhenSocketOn(data);
+            console.log("싱크드 타임", synchedStartTime);
 
             // StartGame 컴포넌트를 렌더링합니다.
             setStartGameProps({
@@ -244,10 +245,10 @@ const Ingame = () => {
                     </div>
                     {/* <Indicator /> */}
                     <div
-                      id={`player${myPosition}HitEffect`}
+                      id="HitEffect"
                       className="hit-effect"
                       key={`div${myPosition}`}
-                    />
+                    ></div>
                     <Input onKeyDown={handleKeyDown} onKeyUp={handleKeyUp} />
                     {/* <Output /> */}
                   </>
@@ -255,12 +256,6 @@ const Ingame = () => {
                   <>
                     <JudgeBox key={index} />
                     <div style={{ position: "absolute", width: "100%", height: "12.5%", top: "50%", transform: "translate(0%, -50%)", backgroundColor: `rgba(${staticColorsArray[index]},1)`, zIndex: "-11" }} />
-                    <div
-                      id={`player${index}HitEffect`}
-                      className="hit-effect"
-                      key={index}
-
-                    />
                   </>
                 )}
               </VerticalRail>
@@ -392,6 +387,7 @@ const VerticalRail = styled.div`
   border: 20px;
   background: ${({ color }) => color};
   box-shadow: 3px 3px 3px rgba(255, 255, 255, 0.3);
+  z-Index: 4;
 `;
 
 // const Indicator = styled.div`
@@ -407,14 +403,14 @@ const VerticalRail = styled.div`
 const JudgeBox = styled.div`
   position: absolute;
   top: 50%;
-  left: 1vw;
-  width: 16%;
+  left: 5%;
+  width: 20%;
   height: 100%;
   transform: translate(0%, -50%);
   background-image: ${({ backgroundImageUrl }) => `url(${backgroundImageUrl})`};
   background-size: cover; /* Adjust as needed */
   transition: ${({ isactive }) => (isactive ? 'none' : 'opacity 0.5s ease-out, visibility 0.5s ease-out')};
-  z-index: 6; /* Ensure correct capitalization for z-index */
+  z-index: 6;
   opacity: ${({ isactive }) => (isactive ? 1 : 0)};
   visibility: ${({ isactive }) => (isactive ? 'visible' : 'hidden')};
 `;

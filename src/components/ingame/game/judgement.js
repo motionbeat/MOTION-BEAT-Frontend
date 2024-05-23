@@ -9,7 +9,16 @@ const dispatch = (result) => {
   window.dispatchEvent(event);
 };
 
+const effectTime = ((effect, str) => {
+  setTimeout(() => {
+    effect.classList.remove(str);
+  }, 350);
+});
+
+
+
 export const Judge = (key, time, instrument, myPosition, myRailRef) => {
+  const hiteffect = document.getElementById("HitEffect");
   const notes = document.querySelectorAll(`.Note[data-instrument="${instrument}"]`);
 
   let closestNote = null;
@@ -49,55 +58,33 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
     return;
   }
 
-  if (timeDiff >= 450 && timeDiff <= 800) {
+  if (timeDiff >= 300 && timeDiff <= 450) {
     closestNote.remove();
+    TriggerMyHitEffect("early", hiteffect);
     return dispatch("early");
-  } else if (timeDiff >= -100 && timeDiff <= 450) {
+  } else if (timeDiff >= 0 && timeDiff <= 300) {
     sessionStorage.setItem("instrument", instrument);
     sessionStorage.setItem("motionType", currentMotion);
     closestNote.remove();
-    return dispatch("hit");
-  } else if (timeDiff <= 1000) {
+    TriggerMyHitEffect("perfect", hiteffect);
+    return dispatch("perfect");
+  } else if (timeDiff >= -100 && timeDiff <= 0) {
     closestNote.remove();
+    TriggerMyHitEffect("late", hiteffect);
     return dispatch("late");
   }
-  // TriggerMyHitEffect(`player${myPosition}`, myRailRef, closestNote);
   // console.log("[SL] judgement 에서 My 클로젯 노트 Remove");
   // closestNote.remove(); // 해당 노트를 화면에서 숨김
-
-
 };
 
-export const TriggerMyHitEffect = (target, elem, closestNote) => {
-  /*   const hitEffect = document.getElementById(`${target}HitEffect`);
-    // console.log(hitEffect)
-    if (!hitEffect) return; // hitEffect가 없으면 함수 실행 중지 */
+export const TriggerMyHitEffect = (judgeString, effect) => {
+  console.log("HIT EFFECT :", effect);
+  if (!effect) return; // hitEffect가 없으면 함수 실행 중지 */
 
-  if (closestNote) {
-    if (elem.current && elem.current.contains(closestNote)) {
-      elem.current.removeChild(closestNote);
-      // console.log(elem);
-      // console.log(elem.current);
-      // console.log(closestNote);
-      // console.log(
-      //   "[SL] All Trigger에서 자식 클로짓 노트 삭제: ",
-      //   closestNote,
-      //   closestNote.getAttribute("data-index")
-      // );
-    } else {
-      console.warn("[SL] closestNote is not a child of elem.current");
-      // console.log("elem.current:", elem.current);
-      // console.log("closestNote:", closestNote);
-    }
+  effect.classList.add(judgeString);
+  effectTime(effect, judgeString);
+}
 
-  }
-
-  /*   hitEffect.classList.add("active");
-  
-    setTimeout(() => {
-      hitEffect.classList.remove("active"); // 애니메이션이 끝나고 클래스를 제거
-    }, 350); // 애니메이션 시간과 동일하게 설정 */
-};
 
 // const PlayMyKeySound = (parsedkey, idx) => {
 //   const audio1 = document.getElementById(`keySound0player${idx}`);
