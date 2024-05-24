@@ -188,7 +188,9 @@ const Ingame = () => {
           railRefs.current[myPosition],
         );
 
-        if (result === true) {
+        console.log(result);
+
+        if (result === "early" || result === "perfect" || result === "late") {
           playMotionSFX("drum1", Parser(key), { volume: 2 });
         }
         handleKeyUp();
@@ -460,16 +462,16 @@ const JudgeTuto = (key, time, instrument, myPosition, myRailRef) => {
   if (timeDiff >= 700 && timeDiff <= 1000) {
     closestNote.remove();
     TriggerMyHitEffect("early", hiteffect);
-    return dispatch("early");
+    return "early";
   } else if (timeDiff >= 450 && timeDiff <= 700) {
     sessionStorage.setItem("instrument", instrument);
     sessionStorage.setItem("motionType", currentMotion);
     closestNote.remove();
     TriggerMyHitEffect("perfect", hiteffect);
-    return dispatch("perfect");
+    return "perfect";
   } else if (timeDiff >= 150 && timeDiff <= 450) {
     closestNote.remove();
     TriggerMyHitEffect("late", hiteffect);
-    return dispatch("late");
+    return "late";
   }
 };
