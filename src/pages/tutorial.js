@@ -107,7 +107,7 @@ const Tutorial = () => {
 
   return (
     <>
-      <audio ref={audioRef} src={`/song/0.wav`} />
+      <audio ref={audioRef} src={`/song/0.mp3`} />
       <div className="room-wrapper">
         <TutorialHeader roomName="Tutorial" roomCode={room.code} />
         <div className="roomMainWrapper">

@@ -1,8 +1,8 @@
 {
   "bgm": [
     {
-      "name": "0.wav",
-      "url": "/song/0.wav"
+      "name": "0.mp3",
+      "url": "/song/0.mp3"
     },
     {
       "name": "1.mp3",
@@ -103,7 +103,7 @@
       },
       {
         "name": "B",
-        "url": "/keySound/hitSound/3R.wav"
+        "url": "/keySound/hitSound/3R.mp3"
       }
     ],
     "drum4": [

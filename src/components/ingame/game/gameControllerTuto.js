@@ -45,10 +45,10 @@ export const StartTuto = ({ stime, data, railRefs, send, myPosition, roomCode })
 
     if (notes?.length > 0) {
       bgmTimeout = setTimeout(() => {
-        // playAudio(data.musicData.sound);
-        playAudio("/song/0.wav");
-        // playBGM(lastPart, { loop: false, volume: 0.85 });
-        playBGM("0.wav", { loop: false, volume: 0.85 });
+        playAudio(data.musicData.sound);
+        // playAudio("/song/0.wav");
+        playBGM(lastPart, { loop: false, volume: 0.85 });
+        // playBGM("0.wav", { loop: false, volume: 0.85 });
 
         WhenStart();
       }, stime);
