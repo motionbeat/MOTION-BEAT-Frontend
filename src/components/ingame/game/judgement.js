@@ -74,6 +74,10 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
 export const TriggerMyHitEffect = async (judgeString, effect) => {
   if (!effect) return;
 
+  // 모든 상태 클래스를 제거
+  ['early', 'late', 'perfect'].forEach(state => {
+    effect.classList.remove(state);
+  });
   effect.classList.add(judgeString);
 
   const handleAnimationEnd = () => {
