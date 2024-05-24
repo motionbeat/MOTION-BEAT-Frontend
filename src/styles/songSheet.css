@@ -3,7 +3,7 @@
   position: relative;
   width: 100vw;
   height: 35vh;
-  background: rgba(5, 5, 5, 0.4);
+  /* background: rgba(5, 5, 5, 0.4); */
   /* backdrop-filter: blur(20px); */
   margin-bottom: 30px;
 }
