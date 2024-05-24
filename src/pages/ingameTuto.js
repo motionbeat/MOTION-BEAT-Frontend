@@ -62,9 +62,10 @@ const Ingame = () => {
       const sendData = {
         nickname: myNickname,
         code: gameData.code,
+        score: 0,
       };
 
-      if (event.key === "Enter") {
+      if (event.key === "Enter" && loadedData) {
         socket.emit(`playerLoaded`, sendData);
 
         setModalStatus("Ready");
@@ -79,6 +80,7 @@ const Ingame = () => {
         waitForAllPlayers
           .then((data) => {
             const synchedStartTime = WhenSocketOn(data);
+            console.log("싱크드 타임", synchedStartTime);
 
             // StartGame 컴포넌트를 렌더링합니다.
             setStartGameProps({
@@ -88,13 +90,16 @@ const Ingame = () => {
               roomCode: gameData.code,
               song: gameData.song,
             });
-            setGameReady(true);
+            // console.log("components Set!");
           })
+          .then(() => setGameReady(true))
           .catch((err) => {
             console.error("Error", err);
           });
       }
-    }, [myNickname, railRefs.current, gameData.code, gameData.song]);
+    },
+    [myNickname, railRefs.current, gameData.code, gameData.song, loadedData]
+  );
 
   /* useEffect 순서를 변경하지 마세요*/
   useEffect(() => {
@@ -339,8 +344,7 @@ const VerticalRail = styled.div`
   width: 100%;
   height: 3%;
   border: 20px;
-  background: ${({ color }) => color};
-
+  
   z-Index: 4;
 `;
 
@@ -356,14 +360,14 @@ const VerticalRail = styled.div`
 const JudgeBox = styled.div`
   position: absolute;
   top: 50%;
-  left: 1vw;
-  width: 16%;
+  left: 10%;
+  width: 20%;
   height: 800%;
   transform: translate(0%, -50%);
   background-image: ${({ backgroundImageUrl }) => `url(${backgroundImageUrl})`};
   background-size: cover; /* Adjust as needed */
   transition: ${({ isactive }) => (isactive ? 'none' : 'opacity 0.5s ease-out, visibility 0.5s ease-out')};
-  z-index: 6; /* Ensure correct capitalization for z-index */
+  z-index: 6;
   opacity: ${({ isactive }) => (isactive ? 1 : 0)};
   visibility: ${({ isactive }) => (isactive ? 'visible' : 'hidden')};
 `;
@@ -457,13 +461,13 @@ const JudgeTuto = (key, time, instrument, myPosition, myRailRef) => {
     closestNote.remove();
     TriggerMyHitEffect("early", hiteffect);
     return dispatch("early");
-  } else if (timeDiff >= 400 && timeDiff <= 700) {
+  } else if (timeDiff >= 450 && timeDiff <= 700) {
     sessionStorage.setItem("instrument", instrument);
     sessionStorage.setItem("motionType", currentMotion);
     closestNote.remove();
     TriggerMyHitEffect("perfect", hiteffect);
     return dispatch("perfect");
-  } else if (timeDiff >= 150 && timeDiff <= 400) {
+  } else if (timeDiff >= 150 && timeDiff <= 450) {
     closestNote.remove();
     TriggerMyHitEffect("late", hiteffect);
     return dispatch("late");
