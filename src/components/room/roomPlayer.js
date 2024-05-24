@@ -18,8 +18,8 @@ const sonaImages = [sona1, sona2, sona3, sona4];
 const instrumentDisplayNames = {
   drum1: "KICK & CRASH",
   drum2: "삼각형",
-  drum3: "탬버린",
-  drum4: "탬버린"
+  drum3: "HAT & SNARE",
+  drum4: "BASS"
 };
 
 const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
