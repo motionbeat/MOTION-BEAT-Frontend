@@ -113,9 +113,9 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
     if (session_instrument === "drum1") {
       volume = session_motionType === "A" ? 2 : 1.6;
     } else if (session_instrument === "drum2") {
-      volume = session_motionType === "A" ? 1.5 : 2;
+      volume = session_motionType === "A" ? 1.5 : 1.7;
     } else if (session_instrument === "drum3") {
-      volume = session_motionType === "A" ? 1.7 : 0.6;
+      volume = session_motionType === "A" ? 1.5 : 1.6;
     } else if (session_instrument === "drum4") {
       volume = session_motionType === "A" ? 1 : 1.5;
     }
