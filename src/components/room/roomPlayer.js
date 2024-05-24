@@ -15,11 +15,12 @@ import { useAudio } from "../common/useSoundManager.js";
 
 const sonaImages = [sona1, sona2, sona3, sona4];
 
-// const instrumentImages = {
-//   "Drum": DRUM1,
-//   "Triangle": DRUM2,
-//   "Tambourine": DRUM3,
-// };
+const instrumentDisplayNames = {
+  drum1: "KICK & CRASH",
+  drum2: "삼각형",
+  drum3: "탬버린",
+  drum4: "탬버린"
+};
 
 const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
   const [playerStatuses, setPlayerStatuses] = useState({});
@@ -194,7 +195,7 @@ const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
                     className="myInstrument"
                     onClick={() => findingInstrument(nickname)}
                   >
-                    {instrument}
+                  {instrumentDisplayNames[instrument] || instrument}
                   </p>
                 </div>
                 {instruModal && (
@@ -208,8 +209,8 @@ const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
                               onClick={() =>
                                 selectedInstrument(instrument.instrumentName)
                               }>
-                              {/* {instrumentImage && <img src={instrumentImage} alt={instrument.instrumentName} />} */}
-                              {instrument.instrumentName}</h3>
+                              {instrumentDisplayNames[instrument.instrumentName] || instrument.instrumentName}
+                              </h3>
                             <div className="instrumentKind">
                               <GlitchButton
                                 onClick={() =>handleButtonClick(instrument.instrumentName, "A")}>Left ♪
