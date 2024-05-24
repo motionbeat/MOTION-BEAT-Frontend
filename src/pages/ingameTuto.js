@@ -24,6 +24,10 @@ import beatFlow0 from "../img/beatflow0.png";
 import beatFlow1 from "../img/beatflow1.png";
 import TutoResult from "components/main/tutoResult";
 
+const dispatch = (result) => {
+  const event = new CustomEvent("scoreUpdate", { detail: { result } });
+  window.dispatchEvent(event);
+};
 const staticColorsArray = ["250,0,255", "1,248,10", "0,248,203", "249,41,42"];
 let myPosition = 0;
 
@@ -90,7 +94,7 @@ const Ingame = () => {
             console.error("Error", err);
           });
       }
-    }, [myNickname, railRefs.current, gameData.code, gameData.song, loadedData]);
+    }, [myNickname, railRefs.current, gameData.code, gameData.song]);
 
   /* useEffect 순서를 변경하지 마세요*/
   useEffect(() => {
@@ -206,7 +210,7 @@ const Ingame = () => {
               key={index}
             >
               <JudgeBox isactive={isActive} key={`JudgeBox${myPosition}`} backgroundImageUrl="/image/keyindex.png" />
-              <div style={{ position: "absolute", width: "100%", height: "12.5%", top: "50%", transform: "translate(0%, -50%)", backgroundColor: `rgba(${staticColorsArray[myPosition]},1)`, zIndex: "-11" }} />
+              <div style={{ position: "absolute", width: "100%", height: "100%", top: "50%", transform: "translate(0%, -50%)", backgroundColor: `rgba(${staticColorsArray[myPosition]},1)`, zIndex: "-11" }} />
               <div
                 id="HitEffect"
                 className="hit-effect"
@@ -415,51 +419,53 @@ const ImageChanger = () => {
   );
 };
 
-
-
 const JudgeTuto = (key, time, instrument, myPosition, myRailRef) => {
-  let result = "ignore";
+  const hiteffect = document.getElementById("HitEffect");
+  const notes = document.querySelectorAll(`.Note[data-instrument="${instrument}"]`);
 
-  const notes = document.querySelectorAll(
-    `.Note[data-instrument="${instrument}"]`
-  );
-  let closestNote = null;
+  if (notes.length === 0) {
+    return;
+  }
+
   let minIndex = Infinity;
 
-  notes.forEach((note) => {
+  const closestNote = Array.from(notes).reduce((closest, note) => {
     const index = parseInt(note.getAttribute("data-index"), 10);
-    if (!isNaN(index) && index < minIndex) {
-      minIndex = index;
-      closestNote = note;
-    }
-  });
+    return (index < closest.minIndex) ? { minIndex: index, note } : closest;
+  }, { minIndex: Infinity, note: null }).note;
 
   if (!closestNote) {
-    return result;
+    return;
   }
-
-  const noteTime = parseInt(closestNote.getAttribute("data-time"), 10);
-
-  const timeDiff = noteTime - time;
 
   let currentMotion = Parser(key);
+  let cNoteMotion = closestNote.getAttribute("data-motion");
 
-  if (
-    timeDiff >= -100 &&
-    timeDiff <= 450 &&
-    closestNote.getAttribute("data-motion") === currentMotion
-  ) {
-    result = "hit";
-    sessionStorage.setItem("instrument", instrument);
-    sessionStorage.setItem("motionType", currentMotion);
+  const noteTime = parseInt(closestNote.getAttribute("data-time"), 10);
+  const timeDiff = noteTime - time;
 
-    TriggerMyHitEffect(`player${0}`, myRailRef, closestNote);
-
-    return true;
+  if (timeDiff < 150) {
+    closestNote.setAttribute("data-index", minIndex + 100);
+    return;
   }
 
-  if (timeDiff < -100) {
-    closestNote.setAttribute("data-index", minIndex + 100);
-    return false;
+  if (currentMotion !== cNoteMotion) {
+    return;
+  }
+
+  if (timeDiff >= 700 && timeDiff <= 1000) {
+    closestNote.remove();
+    TriggerMyHitEffect("early", hiteffect);
+    return dispatch("early");
+  } else if (timeDiff >= 400 && timeDiff <= 700) {
+    sessionStorage.setItem("instrument", instrument);
+    sessionStorage.setItem("motionType", currentMotion);
+    closestNote.remove();
+    TriggerMyHitEffect("perfect", hiteffect);
+    return dispatch("perfect");
+  } else if (timeDiff >= 150 && timeDiff <= 400) {
+    closestNote.remove();
+    TriggerMyHitEffect("late", hiteffect);
+    return dispatch("late");
   }
 };

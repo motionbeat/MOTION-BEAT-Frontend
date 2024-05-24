@@ -12,23 +12,25 @@ if (!audioPlayer) {
   console.error("Audio player not found");
 }
 
-const playAudio = (sound) => {
-  audioPlayer.src = sound;
-  audioPlayer.currentTime = 0;
-  audioPlayer.volume = 0;
-  audioPlayer.play()
-    .then(() => {
-      console.log("Audio started successfully");
-    })
-    .catch((error) => console.error("Error playing audio:", error));
+const playAudio = async (sound) => {
+  try {
+    audioPlayer.src = sound;
+    audioPlayer.currentTime = 0;
+    audioPlayer.volume = 0;
+    await audioPlayer.play();
+    console.log("Audio started successfully");
+  } catch (error) {
+    console.error("Error playing audio:", error);
+  }
 };
 
-export const StartTuto = ({ stime, data, railRefs,send, myPosition, roomCode }) => {
+export const StartTuto = ({ stime, data, railRefs, send, myPosition, roomCode }) => {
 
-  const animationDuration = 10000;
+  const animationDuration = 6000;
   const { playBGM, currentBGM, playMotionSFX } = useAudio();
   const processedNotes = new Set();
-  const notes = data?.musicData?.notes;
+  let notes = data?.musicData?.notes;
+  console.log(notes);
 
   useEffect(() => {
     if (railRefs[myPosition]) {
@@ -43,8 +45,10 @@ export const StartTuto = ({ stime, data, railRefs,send, myPosition, roomCode }) 
 
     if (notes?.length > 0) {
       bgmTimeout = setTimeout(() => {
-        playAudio(data.musicData.sound);
-        playBGM(lastPart, { loop: false, volume: 0.85 });
+        // playAudio(data.musicData.sound);
+        playAudio("/song/0.wav");
+        // playBGM(lastPart, { loop: false, volume: 0.85 });
+        playBGM("0.wav", { loop: false, volume: 0.85 });
 
         WhenStart();
       }, stime);
