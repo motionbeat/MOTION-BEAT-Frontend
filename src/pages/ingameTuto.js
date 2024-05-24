@@ -188,7 +188,9 @@ const Ingame = () => {
           railRefs.current[myPosition],
         );
 
-        if (result === true) {
+        console.log(result);
+
+        if (result === "early" || result === "perfect" || result === "late") {
           playMotionSFX("drum1", Parser(key), { volume: 2 });
         }
         handleKeyUp();
