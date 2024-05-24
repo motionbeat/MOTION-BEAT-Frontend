@@ -385,7 +385,7 @@ const VerticalRail = styled.div`
   width: 100%;
   height: 100%;
   border: 20px;
-  box-shadow: 3px 3px 3px rgba(255, 255, 255, 0.3);
+  
   z-Index: 4;
 `;
 
