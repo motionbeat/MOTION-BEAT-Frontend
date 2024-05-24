@@ -13,8 +13,7 @@ const Drum1 = ({ dispatchKey }) => {
 
   const initializePose = useCallback(() => {
     poseRef.current = new posedetection.Pose({
-      locateFile: (file) =>
-        `https://fastly.jsdelivr.net/npm/@mediapipe/pose/${file}`,
+      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}?v=${new Date().getTime()}`,
     });
     poseRef.current.setOptions({
       upperBodyOnly: true,

@@ -198,7 +198,7 @@ const WebCam = ({ players = [], roomCode }) => {
                 <div
                   className="webCamBoxDiv"
                   style={{
-                    backgroundImage: `linear-gradient(to bottom, rgba(${color}, 1), black)`,
+                    backgroundImage: `linear-gradient(to bottom, rgba(${color}, 1), rgba(${color}, 1))`,
                     // boxShadow:
                     //   myNickname === nickname && flash
                     //     ? "0 0 15px 10px rgba(255, 255, 255, 0.8)"
