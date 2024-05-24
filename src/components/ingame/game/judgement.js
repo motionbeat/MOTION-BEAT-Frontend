@@ -71,7 +71,7 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
   // closestNote.remove(); // 해당 노트를 화면에서 숨김
 };
 
-export const TriggerMyHitEffect = (judgeString, effect) => {
+export const TriggerMyHitEffect = async (judgeString, effect) => {
   if (!effect) return;
 
   effect.classList.add(judgeString);
