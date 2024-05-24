@@ -3,7 +3,7 @@
   position: relative;
   width: 100vw;
   height: 35vh;
-  background: rgba(5, 5, 5, 0.4);
+  /* background: rgba(5, 5, 5, 0.4); */
   /* backdrop-filter: blur(20px); */
   margin-bottom: 30px;
 }
@@ -29,7 +29,7 @@
 
 .hitLine {
   position: absolute;
-  left: 5%;
+  left: 10%;
   width: 20%;
   height: inherit;
   background: linear-gradient(to right, rgba(255, 0, 197, 0.7), rgba(255, 192, 203, 0));

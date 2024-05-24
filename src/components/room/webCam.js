@@ -18,19 +18,19 @@ const WebCam = ({ players = [], roomCode }) => {
   const [hitNote, setHitNote] = useState(0);
   const [flash, setFlash] = useState(false);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const newHitNote = parseInt(sessionStorage.getItem("hitNote"), 10) || 0;
-      if (newHitNote > hitNote) {
-        setHitNote(newHitNote);
-        setFlash(true);
-        setTimeout(() => setFlash(false), 300); // 0.3초 후에 flash를 false로 설정
-      } else {
-        setHitNote(newHitNote);
-      }
-    }, 100); // 짧은 주기로 hitNote 값을 갱신하여 실시간 반응
-    return () => clearInterval(interval); // 컴포넌트 언마운트 시 인터벌 클리어
-  }, [hitNote]);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     const newHitNote = parseInt(sessionStorage.getItem("hitNote"), 10) || 0;
+  //     if (newHitNote > hitNote) {
+  //       setHitNote(newHitNote);
+  //       setFlash(true);
+  //       setTimeout(() => setFlash(false), 300); // 0.3초 후에 flash를 false로 설정
+  //     } else {
+  //       setHitNote(newHitNote);
+  //     }
+  //   }, 100); // 짧은 주기로 hitNote 값을 갱신하여 실시간 반응
+  //   return () => clearInterval(interval); // 컴포넌트 언마운트 시 인터벌 클리어
+  // }, [hitNote]);
 
   useEffect(() => {
     setPlayerStatuses((prevStatuses) => {

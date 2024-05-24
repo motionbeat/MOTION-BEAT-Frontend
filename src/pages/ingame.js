@@ -385,7 +385,6 @@ const VerticalRail = styled.div`
   width: 100%;
   height: 100%;
   border: 20px;
-  background: ${({ color }) => color};
   box-shadow: 3px 3px 3px rgba(255, 255, 255, 0.3);
   z-Index: 4;
 `;
@@ -403,7 +402,7 @@ const VerticalRail = styled.div`
 const JudgeBox = styled.div`
   position: absolute;
   top: 50%;
-  left: 5%;
+  left: 10%;
   width: 20%;
   height: 100%;
   transform: translate(0%, -50%);
