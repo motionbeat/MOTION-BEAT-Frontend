@@ -4,6 +4,7 @@ import socket from "../../../server/server.js";
 import "../../../styles/songSheet.css";
 import { setInput } from "../../../redux/actions/inputActions";
 
+const staticColorsArray = ["250,0,255", "1,248,10", "0,248,203", "249,41,42"];
 let myInstrument;
 
 const audioPlayer = document.getElementById("audioPlayer");
@@ -29,8 +30,7 @@ export const StartTuto = ({ stime, data, railRefs, send, myPosition, roomCode })
   const animationDuration = 6000;
   const { playBGM, currentBGM, playMotionSFX } = useAudio();
   const processedNotes = new Set();
-  let notes = data?.musicData?.notes;
-  // console.log(notes);
+  let notes = data?.musicData?.notes || [];
 
   useEffect(() => {
     if (railRefs[myPosition]) {
@@ -60,13 +60,12 @@ export const StartTuto = ({ stime, data, railRefs, send, myPosition, roomCode })
       const ScheduleNotes = () => {
         audioTime = parseInt(audioPlayer.currentTime * 1000, 10);
 
-        notes.forEach((note, index) => {
+        notes.forEach(note => {
           const startTime = note.time - animationDuration;
 
           if (startTime <= audioTime && !processedNotes.has(note)) {
             processedNotes.add(note);
-            GenerateNote(note, startTime, count, index);
-            count++;
+            GenerateNote(note);
           }
         });
 
@@ -76,35 +75,33 @@ export const StartTuto = ({ stime, data, railRefs, send, myPosition, roomCode })
       requestAnimationFrame(ScheduleNotes);
     };
 
-    const GenerateNote = (note, noteStart, count, index) => {
+    const GenerateNote = (note) => {
       const { motion, time } = note;
 
       const noteElement = document.createElement("div");
-      noteElement.style.left = `100%`;
+      noteElement.style.left = `120%`;
       noteElement.className = "Note";
-      noteElement.style.zIndex = count;
-      if (motion === "A") {
-        noteElement.textContent = "L";
-      } else {
-        noteElement.textContent = "R";
-      }
+      noteElement.style.zIndex = time;
+      noteElement.textContent = motion === "A" ? "L" : "R";
       noteElement.setAttribute("data-motion", motion);
-      noteElement.setAttribute("data-time", time);
+      noteElement.setAttribute("data-time", time + 460);
       noteElement.setAttribute("data-instrument", note.instrument);
-      noteElement.setAttribute("data-index", index);
+      noteElement.setAttribute("data-index", time);
 
-      railRefs.forEach((railRef) => {
-        if (
-          railRef.current !== null &&
-          railRef.current.dataset.instrument === note.instrument
-        ) {
+      // console.log("RAILREFS 갯수: ", railRefs);
+      // console.log("My Inst: ", myInstrument);
+      railRefs.forEach((railRef, index) => {
+        if (railRef.current && railRef.current.dataset.instrument === note.instrument) {
+          noteElement.key = index;
+          noteElement.style.backgroundColor = `rgb(${staticColorsArray[index]})`;
+          // console.log(noteElement.key);
           railRef.current.appendChild(noteElement);
         }
       });
 
       const AnimateNote = () => {
         const currTime = parseInt(audioPlayer.currentTime * 1000, 10);
-        const positionPercent = ((time - currTime) * 100 / animationDuration).toFixed(1);
+        const positionPercent = ((time + 460 - currTime) * 100 / animationDuration).toFixed(1);
 
         if (positionPercent <= -3) {
           noteElement.remove();
@@ -154,7 +151,6 @@ export const StartTuto = ({ stime, data, railRefs, send, myPosition, roomCode })
       }
     };
   }, [data.musicData, railRefs, roomCode, notes]);
-
   return null;
 };
 
