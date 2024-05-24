@@ -17,8 +17,8 @@ const sonaImages = [sona1, sona2, sona3, sona4];
 
 const instrumentDisplayNames = {
   drum1: "KICK & CRASH",
-  drum2: "삼각형",
-  drum3: "HAT & SNARE",
+  drum2: "HIT & SNARE",
+  drum3: "HAT & TOM",
   drum4: "BASS"
 };
 
