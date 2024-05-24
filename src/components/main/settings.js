@@ -41,7 +41,7 @@ const Settings = () => {
       });
       // 이 예에서는 응답을 상태에 저장하고, 성공 메시지를 사용자에게 보여줍니다.
       setApiResponse("성공적으로 연결이 끊겼습니다!");
-      console.log(response.data); // 실제 응답 데이터에 따라 처리할 수 있습니다.
+      // console.log(response.data); // 실제 응답 데이터에 따라 처리할 수 있습니다.
 
       sessionStorage.removeItem("userToken");
       sessionStorage.removeItem("userId");

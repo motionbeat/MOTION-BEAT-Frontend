@@ -91,7 +91,7 @@ const Ingame = () => {
               roomCode: gameData.code,
               song: gameData.song,
             });
-            console.log("components Set!");
+            // console.log("components Set!");
           })
           .then(() => setGameReady(true))
           .catch((err) => {

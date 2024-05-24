@@ -15,7 +15,7 @@ export default function ForgotPw() {
       email: emailRef.current.value,
     };
 
-    console.log(emailRef.current.value);
+    // console.log(emailRef.current.value);
 
     const validationErrors = await CheckForgotValidate(formData);
 
@@ -25,7 +25,7 @@ export default function ForgotPw() {
       return
     }
 
-    console.log("Email sent to : " + emailRef.current.value);
+    // console.log("Email sent to : " + emailRef.current.value);
 
     alert("check your email box");
     navigate("/login");

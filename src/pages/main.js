@@ -79,7 +79,7 @@ const Main = () => {
           },
         }
       );
-      console.log("로그아웃 성공:", response.data);
+      // console.log("로그아웃 성공:", response.data);
       // sessionStorage.removeItem("userId");
       // sessionStorage.removeItem("socketId");
       // sessionStorage.removeItem("nickname");
@@ -117,7 +117,7 @@ const Main = () => {
         break;
 
       default:
-        console.log("알 수 없는 버튼입니다.");
+        // console.log("알 수 없는 버튼입니다.");
         setCurrentView(null);
         break;
     }

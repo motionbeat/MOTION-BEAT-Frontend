@@ -100,7 +100,7 @@ const SongsModal = ({ modalOn, handleCloseModal ,handleSongSelect }) => {
         alert("즐겨찾기가 해제되었습니다.");
       }
       
-      console.log(song);
+      // console.log(song);
     } catch (error) {
       console.error("Error updating favorite status:", error);
     }

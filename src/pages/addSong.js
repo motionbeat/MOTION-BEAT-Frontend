@@ -32,7 +32,7 @@ const AddSong = () => {
           "Nickname": sessionStorage.getItem("nickname")
         },
       });
-      console.log("success", response);
+      // console.log("success", response);
 
     } catch (error) {
         console.error("Error fetching songs:", error);

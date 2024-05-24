@@ -73,7 +73,7 @@ const Room = () => {
 
     // 모두 준비 시 시작할 수 있게 체크
     socket.on("allReady", (res) => {
-      console.log("전부 준비", res);
+      // console.log("전부 준비", res);
       setAllReady(res);
     });
 
@@ -123,7 +123,7 @@ const Room = () => {
   const copyToClipboard = () => {
     navigator.clipboard.writeText(room.code)
       .then(() => {
-        console.log('방 코드가 복사되었습니다.');
+        // console.log('방 코드가 복사되었습니다.');
         setIsBlinking(true); // 깜빡임 효과를 트리거
         setTimeout(() => setIsBlinking(false), 1500);
       })

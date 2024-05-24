@@ -23,7 +23,7 @@ const RoomHeader = ({room}) => {
       });
 
       socket.emit("leaveRoom", room.code, (res) => {
-        console.log("leaveRoom res", res);
+        // console.log("leaveRoom res", res);
       })
 
       if(response.data.message === "redirect") {

@@ -18,7 +18,7 @@ const playAudio = async (sound) => {
     audioPlayer.currentTime = 0;
     audioPlayer.volume = 0;
     await audioPlayer.play();
-    console.log("Audio started successfully");
+    // console.log("Audio started successfully");
   } catch (error) {
     console.error("Error playing audio:", error);
   }
@@ -30,7 +30,7 @@ export const StartTuto = ({ stime, data, railRefs, send, myPosition, roomCode })
   const { playBGM, currentBGM, playMotionSFX } = useAudio();
   const processedNotes = new Set();
   let notes = data?.musicData?.notes;
-  console.log(notes);
+  // console.log(notes);
 
   useEffect(() => {
     if (railRefs[myPosition]) {
@@ -119,7 +119,7 @@ export const StartTuto = ({ stime, data, railRefs, send, myPosition, roomCode })
     };
 
     const End = () => {
-      console.log("게임 종료");
+      // console.log("게임 종료");
 
       const sendData = {
         score: sessionStorage.getItem("hitNote"),

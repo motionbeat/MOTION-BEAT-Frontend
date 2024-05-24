@@ -59,7 +59,7 @@ const RhythmGame = () => {
   const [allReady, setAllReady] = useState(false);
 
   const handleEnd = () => {
-    console.log("곡이 시작됩니다!");
+    // console.log("곡이 시작됩니다!");
     // 곡 시작 로직 구현
   };
 

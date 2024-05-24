@@ -31,7 +31,7 @@ const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
   const { playMotionSFX } = useAudio();
 
   useEffect(() => {
-    console.log("playerStatuses has been updated:", playerStatuses);
+    // console.log("playerStatuses has been updated:", playerStatuses);
   }, [playerStatuses]);
 
   useEffect(() => {
@@ -66,7 +66,7 @@ const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
           isReady: userReady.isReady,
         },
       }));
-      console.log("ready", userReady);
+      // console.log("ready", userReady);
     });
 
     socket.on("instrumentStatus", (res) => {
@@ -89,7 +89,7 @@ const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
   const readyBtnClick = (nickname) => {
     if (myNickname === nickname) {
       socket.emit("ready", (res) => {
-        console.log("ready res", res);
+        // console.log("ready res", res);
       });
       setPlayerStatuses((prevStatuses) => ({
         ...prevStatuses,

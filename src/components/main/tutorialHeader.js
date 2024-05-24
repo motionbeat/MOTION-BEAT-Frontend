@@ -24,7 +24,7 @@ const TutorialHeader = ({ roomName, roomCode }) => {
       });
 
       socket.emit("leaveRoom", roomCode, (res) => {
-        console.log("leaveRoom res", res);
+        // console.log("leaveRoom res", res);
       })
         navigate("/main"); 
     } catch (error) {

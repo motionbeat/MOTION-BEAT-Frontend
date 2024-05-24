@@ -18,7 +18,7 @@ const playAudio = (sound) => {
   audioPlayer.volume = 0
   audioPlayer.play()
     .then(() => {
-      console.log("Audio started successfully");
+      // console.log("Audio started successfully");
     })
     .catch((error) => console.error("Error playing audio:", error));
 };
@@ -172,7 +172,7 @@ export const Start = ({ stime, data, eventKey, railRefs, send, myPosition, roomC
     }
 
     const End = () => {
-      console.log("게임 종료");
+      // console.log("게임 종료");
 
       const sendData = {
         score: sessionStorage.getItem("hitNote"),

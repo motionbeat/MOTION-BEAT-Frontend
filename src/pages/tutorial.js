@@ -43,7 +43,7 @@ const Tutorial = () => {
 
   useEffect(() => {
     socket.emit(`joinRoom`, roomData, (res) => {
-      console.log("joinRoom res", res);
+      // console.log("joinRoom res", res);
     });
 
     const findSong = async () => {

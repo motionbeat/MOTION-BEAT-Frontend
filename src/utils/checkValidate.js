@@ -27,7 +27,7 @@ export const CheckLoginValidate = (data) => {
 
   const validationErrors = validate(data, rules);
   if (!validationErrors) {
-    console.log('유효한 폼입니다. 제출 중...');
+    // console.log('유효한 폼입니다. 제출 중...');
   }
 
   return validationErrors || {};
@@ -49,7 +49,7 @@ export const CheckForgotValidate = (data) => {
 
   const validationErrors = validate(data, rules);
   if (!validationErrors) {
-    console.log('유효한 폼입니다. 제출 중...');
+    // console.log('유효한 폼입니다. 제출 중...');
   }
 
   return validationErrors || {};
@@ -89,7 +89,7 @@ export const CheckSignupValidate = (data) => {
 
   const validationErrors = validate(data, rules);
   if (!validationErrors) {
-    console.log("유효한 폼입니다. 제출 중...");
+    // console.log("유효한 폼입니다. 제출 중...");
   }
 
   return validationErrors || {};

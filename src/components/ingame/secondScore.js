@@ -138,7 +138,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
       const handleEvent = (scoreData, combo, instrument, motionType) => {
         if (instrument && motionType) {
           /* 타 플레이어 소리 차단 */
-          console.log("타 플레이어 소리 테스트");
+          // console.log("타 플레이어 소리 테스트");
           // playMotionSFX(instrument, motionType, { volume: 2 });
           /* 모션별 소리 */
           // const volume = motionType === "A" ? 1 : 2;

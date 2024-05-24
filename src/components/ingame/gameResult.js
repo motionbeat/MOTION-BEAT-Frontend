@@ -31,7 +31,7 @@ const GameResult = ({ roomCode, gameData }) => {
   };
 
   const instrumentCounts = countInstruments(notes);
-  console.log("악기별 노트가 몇개인지", instrumentCounts);
+  // console.log("악기별 노트가 몇개인지", instrumentCounts);
 
   // 결과창 출력
   useEffect(() => {
@@ -51,7 +51,7 @@ const GameResult = ({ roomCode, gameData }) => {
             },
           }
         );
-        console.log("게임 끝나면 몇번 불리는지");
+        // console.log("게임 끝나면 몇번 불리는지");
         const sortedData = response.data.players.sort(
           (a, b) => b.score - a.score
         );

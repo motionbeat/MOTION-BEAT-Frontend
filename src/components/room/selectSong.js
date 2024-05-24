@@ -93,7 +93,7 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
       roomCode,
     };
     socket.emit("changeSong", sendData, (res) => {
-      console.log("changeSong res", res);
+      // console.log("changeSong res", res);
     });
 
     setModalOn(false);

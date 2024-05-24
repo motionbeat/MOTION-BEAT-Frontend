@@ -46,7 +46,7 @@ const Playtype = () => {
       };
 
       socket.emit(`joinRoom`, joinRoomData, (res) => {
-        console.log("joinRoom res", res);
+        // console.log("joinRoom res", res);
       });
 
       navigate("/room", { state: { roomData: response.data } });
@@ -90,7 +90,7 @@ const Playtype = () => {
       };
 
       socket.emit("joinRoom", joinRoomData, (res) => {
-        console.log("joinRoom res", res);
+        // console.log("joinRoom res", res);
       });
 
       navigate("/room", { state: { roomData: response.data } });
@@ -123,7 +123,7 @@ const Playtype = () => {
       };
 
       socket.emit("joinRoom", joinRoomData, (res) => {
-        console.log("joinRoom res", res);
+        // console.log("joinRoom res", res);
       });
 
       navigate("/room", { state: { roomData: response.data } });
