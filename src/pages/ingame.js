@@ -403,7 +403,7 @@ const VerticalRail = styled.div`
 const JudgeBox = styled.div`
   position: absolute;
   top: 50%;
-  left: 5%;
+  left: 10%;
   width: 20%;
   height: 100%;
   transform: translate(0%, -50%);

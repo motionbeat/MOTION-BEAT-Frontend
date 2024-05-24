@@ -56,13 +56,13 @@ export const Judge = (key, time, instrument, myPosition, myRailRef) => {
     closestNote.remove();
     TriggerMyHitEffect("early", hiteffect);
     return dispatch("early");
-  } else if (timeDiff >= 400 && timeDiff <= 700) {
+  } else if (timeDiff >= 450 && timeDiff <= 700) {
     sessionStorage.setItem("instrument", instrument);
     sessionStorage.setItem("motionType", currentMotion);
     closestNote.remove();
     TriggerMyHitEffect("perfect", hiteffect);
     return dispatch("perfect");
-  } else if (timeDiff >= 150 && timeDiff <= 400) {
+  } else if (timeDiff >= 150 && timeDiff <= 450) {
     closestNote.remove();
     TriggerMyHitEffect("late", hiteffect);
     return dispatch("late");
