@@ -72,13 +72,13 @@ const Login = () => {
     if (Object.keys(validationErrors).length > 0) {
       setErrors(validationErrors);
 
-      console.log("유효성 에러 : ");
-      console.log(validationErrors);
+      // console.log("유효성 에러 : ");
+      // console.log(validationErrors);
       return;
     }
 
     try {
-      console.log("Try to enter : " + backendUrl);
+      // console.log("Try to enter : " + backendUrl);
       const response = await axios.post(
         `${backendUrl}/api/users/login`,
         formData,

@@ -38,7 +38,7 @@ export const Load = async (song, players) => {
     ]);
 
     const [userDataFromServer, musicData, serverData, peerData, syncData, audioElem] = results;
-    console.log("시스템 준비");
+    // console.log("시스템 준비");
     return { userDataFromServer, musicData, serverData, peerData, syncData, audioElem };
 
   } catch (error) {
@@ -48,12 +48,12 @@ export const Load = async (song, players) => {
 }
 
 const LoadMyData = async () => {
-  console.log("인게임 스킨");
+  // console.log("인게임 스킨");
 
   let userData = sessionStorage.getItem("nickname")
 
   await new Promise(resolve => setTimeout(() => {
-    console.log("인게임 스킨 로딩 완료");
+    // console.log("인게임 스킨 로딩 완료");
     resolve();
   }, 1000))
 
@@ -62,7 +62,7 @@ const LoadMyData = async () => {
 
 const LoadNotes = async (song, players) => {
   const myNickname = sessionStorage.getItem("nickname");
-  console.log(players);
+  // console.log(players);
   /* 플레이어들 정보: [{nickname, inst, score} ...] */
   const playerObject = players.find(item => item.nickname === myNickname);
 
@@ -79,7 +79,8 @@ const LoadNotes = async (song, players) => {
     /* 내 악기 */
     notes = await response.data.notes
 
-    console.log("노트 정보", response.data.notes);
+    sessionStorage.setItem("notes", JSON.stringify(notes));
+    // console.log("노트 정보", response.data.notes);
   } catch (error) {
     console.error("Error start res:", error);
   }
@@ -88,44 +89,44 @@ const LoadNotes = async (song, players) => {
   let sound = `/song/${song}.mp3`
 
   await new Promise(resolve => setTimeout(() => {
-    console.log("Song data loaded.");
+    // console.log("Song data loaded.");
     resolve();
   }, 800));
   return { notes, sound };
 };
 
 const ConnectServer = async () => {
-  console.log("서버에서 노래 시작시간 수신");
+  // console.log("서버에서 노래 시작시간 수신");
   /* 노래 시작시간 데이터 받기, api같은거 */
   let startAfterTime = 3000;
   return { startAfterTime }
 };
 
 const ConnectPeer = async () => {
-  console.log("Connecting to peer...");
+  // console.log("Connecting to peer...");
   return new Promise(resolve => setTimeout(() => {
-    console.log("Connected to peer.");
+    // console.log("Connected to peer.");
     resolve();
   }, 500));
 };
 
 const SyncPeer = async () => {
-  console.log("Synchronizing with peer...");
+  // console.log("Synchronizing with peer...");
   return new Promise(resolve => setTimeout(() => {
-    console.log("Synchronization complete.");
+    // console.log("Synchronization complete.");
     resolve();
   }, 300));
 };
 
 const LoadInstrument = async (players) => {
-  console.log("Loading audio...");
-  console.log(players);
+  // console.log("Loading audio...");
+  // console.log(players);
 
   const loaded = {};
   for (let i = 0; i < players.length; i++) {
     try {
-      console.log(players[i])
-      console.log(players[i].instrument)
+      // console.log(players[i])
+      // console.log(players[i].instrument)
       const audioElem1 = document.getElementById(`keySound0Player${i}`);
       const audioElem2 = document.getElementById(`keySound1Player${i}`);
 
@@ -138,12 +139,12 @@ const LoadInstrument = async (players) => {
 
       loaded[`player${i}`] = { audio1: audioElem1, audio2: audioElem2 };
 
-      console.log(`player${i} instrument loaded`);
+      // console.log(`player${i} instrument loaded`);
     } catch (err) {
-      console.log(`loading for player${i} instrument failed`);
+      // console.log(`loading for player${i} instrument failed`);
     }
 
-    console.log("All Player's Instrument Loaded");
+    // console.log("All Player's Instrument Loaded");
   }
 
   return loaded

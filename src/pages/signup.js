@@ -62,7 +62,7 @@ const Signup = () => {
         }
       });
 
-      console.log("Signup successful: ", response.data);
+      // console.log("Signup successful: ", response.data);
       alert("회원가입 완료");
       navigate("/login");
     } catch (error) {

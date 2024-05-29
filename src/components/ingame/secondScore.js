@@ -7,13 +7,14 @@ import { useAudio } from "../common/useSoundManager.js";
 
 export const SecondScore = ({ gameData, railRefs, myPosition }) => {
   const [playerScores, setPlayerScores] = useState({});
-  const { playMotionSFX } = useAudio();
   const [playerCombos, setPlayerCombos] = useState({});
   const [hittedNotes, setHittedNotes] = useState(0);
   const [missedNotes, setMissedNotes] = useState(0);
   const [combo, setCombo] = useState(0);
+
   const dispatch = useDispatch();
   const myNickname = sessionStorage.getItem("nickname");
+  const { playMotionSFX } = useAudio();
 
   const handleScore = (res) => {
     setPlayerScores((prevScores) => ({
@@ -44,6 +45,7 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
         motionType: session_motionType,
       };
 
+
       socket.emit("hit", sendData);
       sessionStorage.setItem("hitNote", score);
       sessionStorage.setItem("combo", combo);
@@ -54,21 +56,22 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
   // 점수를 업데이트하는 함수
   const updateScore = useCallback(
     (result) => {
-      if (result === "hit") {
+      if (result === "early" || result === "late" || result === "perfect") {
         setHittedNotes((prev) => {
           const newHittedNotes = prev + 1;
           const newCombo = combo + 1;
           sendScoreUpdate(newHittedNotes, newCombo);
-          TriggerHitEffect(`player${myPosition}`, railRefs.current[myPosition]);
+          // TriggerHitEffect(`player${myPosition}`, railRefs.current[myPosition]);
 
           return newHittedNotes;
         });
         setCombo((prev) => prev + 1);
-      } else if (result === "miss" || result === "ignore") {
-        setMissedNotes((prev) => prev + 1);
-        sendScoreUpdate(hittedNotes, 0);
-        setCombo(0);
       }
+      // else if (result === "miss" || result === "ignore") {
+      //   setMissedNotes((prev) => prev + 1);
+      //   sendScoreUpdate(hittedNotes, 0);
+      //   setCombo(0);
+      // }
     },
     [combo, hittedNotes, sendScoreUpdate, myPosition, railRefs]
   );
@@ -105,20 +108,21 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
       return;
     }
 
-    // 포지션별 사운드 설정
-    // let volume = 1;
-    // if (session_instrument === "drum1") {
-    //   volume = session_motionType === "A" ? 1 : 2;
-    // } else if (session_instrument === "drum2") {
-    //   volume = session_motionType === "A" ? 1.2 : 1.7;
-    // } else if (session_instrument === "drum3") {
-    //   volume = session_motionType === "A" ? 1.3 : 1.8;
-    // } else if (session_instrument === "drum4") {
-    //   volume = session_motionType === "A" ? 1.4 : 1.9;
-    // }
+    //포지션별 사운드 설정
+    let volume = 1;
+    if (session_instrument === "drum1") {
+      volume = session_motionType === "A" ? 2 : 1.6;
+    } else if (session_instrument === "drum2") {
+      volume = session_motionType === "A" ? 1.5 : 1.4;
+    } else if (session_instrument === "drum3") {
+      volume = session_motionType === "A" ? 1.5 : 1.6;
+    } else if (session_instrument === "drum4") {
+      volume = session_motionType === "A" ? 1 : 1.5;
+    }
 
     // const volume = session_motionType === "A" ? 1 : 2;
-    const volume = 1.5;
+    // const volume = 1.5;
+    // console.log("자가 플레이어 소리 테스트");
     playMotionSFX(session_instrument, session_motionType, { volume: volume });
   }, [hittedNotes, myNickname, playMotionSFX]);
 
@@ -134,12 +138,13 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
       const handleEvent = (scoreData, combo, instrument, motionType) => {
         if (instrument && motionType) {
           /* 타 플레이어 소리 차단 */
+          // console.log("타 플레이어 소리 테스트");
           // playMotionSFX(instrument, motionType, { volume: 2 });
           /* 모션별 소리 */
           // const volume = motionType === "A" ? 1 : 2;
           // playMotionSFX(instrument, motionType, { volume });
           /* 타 플레이어 이펙트 활성화 */
-          TriggerHitEffect(`player${index}`, railRefs.current[index]);
+          // TriggerHitEffect(`player${index}`, railRefs.current[index]);
         }
 
         setPlayerScores((prevScores) => ({
@@ -198,39 +203,6 @@ export const SecondScore = ({ gameData, railRefs, myPosition }) => {
 export const TriggerHitEffect = (target) => {
   const hitEffect = document.getElementById(`${target}HitEffect`);
   if (!hitEffect) return; // hitEffect가 없으면 함수 실행 중지
-
-  // const notes = Array.from(elem?.current.children ?? []).filter((child) =>
-  //   child.hasAttribute("data-index")
-  // );
-
-  // let closestNote = null;
-  // let minIndex = Infinity;
-  // for (const note of notes) {
-  //   const index = parseInt(note.getAttribute("data-index"), 10);
-  //   if (index < minIndex) {
-  //     minIndex = index;
-  //     closestNote = note;
-  //   }
-  // }
-
-  // // 가장 작은 'data-index'를 가진 자식 요소가 있으면 제거
-  // if (closestNote) {
-  //   if (elem.current && elem.current.contains(closestNote)) {
-  //     elem.current.removeChild(closestNote);
-  //     // console.log(elem);
-  //     // console.log(elem.current);
-  //     // console.log(closestNote);
-  //     console.log(
-  //       "[SL] All Trigger에서 자식 클로짓 노트 삭제: ",
-  //       closestNote,
-  //       closestNote.getAttribute("data-index")
-  //     );
-  //   } else {
-  //     console.warn("[SL] closestNote is not a child of elem.current");
-  //     // console.log("elem.current:", elem.current);
-  //     // console.log("closestNote:", closestNote);
-  //   }
-  // }
 
   hitEffect.classList.add("active");
 

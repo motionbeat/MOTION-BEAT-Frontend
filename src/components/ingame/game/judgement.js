@@ -2,108 +2,92 @@ import { Parser } from "../../../utils/parser";
 // import { TriggerHitEffect } from "../secondScore.js";
 
 // let audioElements;
+// console.log("TEST1");
+// console.log(instrument);
+const dispatch = (result) => {
+  const event = new CustomEvent("scoreUpdate", { detail: { result } });
+  window.dispatchEvent(event);
+};
 
 export const Judge = (key, time, instrument, myPosition, myRailRef) => {
-  let result = "ignore";
+  const hiteffect = document.getElementById("HitEffect");
+  const notes = document.querySelectorAll(`.Note[data-instrument="${instrument}"]`);
 
-  // console.log("TEST1");
-  // console.log(instrument);
-  const dispatch = (result) => {
-    const event = new CustomEvent("scoreUpdate", { detail: { result } });
-    window.dispatchEvent(event);
-  };
-
-  const notes = document.querySelectorAll(
-    `.Note[data-instrument="${instrument}"]`
-  );
-  // console.log(notes)
-  let closestNote = null;
-  let minIndex = Infinity;
-
-  // console.log("TEST2");
-  notes.forEach((note) => {
-    const index = parseInt(note.getAttribute("data-index"), 10); // 요소의 data-index 속성 가져오기
-    if (!isNaN(index) && index < minIndex) {
-      // index가 유효한 숫자인지 확인
-      minIndex = index;
-      closestNote = note;
-    }
-  });
-
-  if (!closestNote) {
-    // console.log("No valid note elements found.");
-    return result;
-  }
-
-  const noteTime = parseInt(closestNote.getAttribute("data-time"), 10);
-
-  // console.log("MININDEX:" + minIndex + "JUDGEDNOTES:")
-  const timeDiff = noteTime - time;
-
-  // if (((timeDiff > 500 && timeDiff < 1000) || (timeDiff < -500 && timeDiff > -1000)) && closestNote.getAttribute('data-motion') === Parser(key)) {
-  //   console.log("MISS!")
-  //   dispatch("miss");
-  // }
-
-  /* timeDiff가 >=0,<=500 사이에 있고, 같은 모션 키를 입력했을 경우  */
-  let currentMotion = Parser(key);
-
-  if (
-    timeDiff >= -100 &&
-    timeDiff <= 450 &&
-    closestNote.getAttribute("data-motion") === currentMotion
-  ) {
-    // console.log("HIT from : ", timeDiff, " = ", noteTime, "-", time);
-
-    result = "hit";
-    sessionStorage.setItem("instrument", instrument);
-    sessionStorage.setItem("motionType", currentMotion);
-
-    dispatch(result);
-    TriggerMyHitEffect(`player${myPosition}`, myRailRef, closestNote);
-    // console.log("[SL] judgement 에서 My 클로젯 노트 Remove");
-
-    // closestNote.remove(); // 해당 노트를 화면에서 숨김
+  if (notes.length === 0) {
     return;
   }
 
-  /* timeDiff가 0.5이상 차이나거나, 같은 모션 키를 입력하지 않았을 경우 */
-  if (timeDiff < -100) {
-    // console.log("IGNORE");
+  let minIndex = Infinity;
+
+  // notes.forEach((note) => {
+  //   const index = parseInt(note.getAttribute("data-index"), 10);
+  //   if (!isNaN(index) && index < minIndex) {
+  //     minIndex = index;
+  //     closestNote = note;
+  //   }
+  // });
+
+  /* 성능향상 기대1 */
+  const closestNote = Array.from(notes).reduce((closest, note) => {
+    const index = parseInt(note.getAttribute("data-index"), 10);
+    return (index < closest.minIndex) ? { minIndex: index, note } : closest;
+  }, { minIndex: Infinity, note: null }).note;
+
+  if (!closestNote) {
+    return;
+  }
+
+  let currentMotion = Parser(key);
+  let cNoteMotion = closestNote.getAttribute("data-motion");
+
+  const noteTime = parseInt(closestNote.getAttribute("data-time"), 10);
+  const timeDiff = noteTime - time;
+
+  if (timeDiff < 150) {
     closestNote.setAttribute("data-index", minIndex + 100);
-    return dispatch("ignore");
-  }
-};
-
-const TriggerMyHitEffect = (target, elem, closestNote) => {
-  const hitEffect = document.getElementById(`${target}HitEffect`);
-  // console.log(hitEffect)
-  if (!hitEffect) return; // hitEffect가 없으면 함수 실행 중지
-
-  if (closestNote) {
-    if (elem.current && elem.current.contains(closestNote)) {
-      elem.current.removeChild(closestNote);
-      // console.log(elem);
-      // console.log(elem.current);
-      // console.log(closestNote);
-      // console.log(
-      //   "[SL] All Trigger에서 자식 클로짓 노트 삭제: ",
-      //   closestNote,
-      //   closestNote.getAttribute("data-index")
-      // );
-    } else {
-      console.warn("[SL] closestNote is not a child of elem.current");
-      // console.log("elem.current:", elem.current);
-      // console.log("closestNote:", closestNote);
-    }
+    return;
   }
 
-  hitEffect.classList.add("active");
+  if (currentMotion !== cNoteMotion) {
+    return;
+  }
 
-  setTimeout(() => {
-    hitEffect.classList.remove("active"); // 애니메이션이 끝나고 클래스를 제거
-  }, 350); // 애니메이션 시간과 동일하게 설정
+  if (timeDiff >= 700 && timeDiff <= 1000) {
+    closestNote.remove();
+    TriggerMyHitEffect("early", hiteffect);
+    return dispatch("early");
+  } else if (timeDiff >= 400 && timeDiff <= 700) {
+    sessionStorage.setItem("instrument", instrument);
+    sessionStorage.setItem("motionType", currentMotion);
+    closestNote.remove();
+    TriggerMyHitEffect("perfect", hiteffect);
+    return dispatch("perfect");
+  } else if (timeDiff >= 150 && timeDiff <= 400) {
+    closestNote.remove();
+    TriggerMyHitEffect("late", hiteffect);
+    return dispatch("late");
+  }
+  // console.log("[SL] judgement 에서 My 클로젯 노트 Remove");
+  // closestNote.remove(); // 해당 노트를 화면에서 숨김
 };
+
+export const TriggerMyHitEffect = async (judgeString, effect) => {
+  if (!effect) return;
+
+  // 모든 상태 클래스를 제거
+  ['early', 'late', 'perfect'].forEach(state => {
+    effect.classList.remove(state);
+  });
+  effect.classList.add(judgeString);
+
+  const handleAnimationEnd = () => {
+    effect.classList.remove(judgeString);
+    effect.removeEventListener('animationend', handleAnimationEnd);
+  };
+
+  effect.addEventListener('animationend', handleAnimationEnd);
+};
+
 
 // const PlayMyKeySound = (parsedkey, idx) => {
 //   const audio1 = document.getElementById(`keySound0player${idx}`);

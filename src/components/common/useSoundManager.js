@@ -279,7 +279,7 @@ const SoundManagerProvider = ({ children }) => {
   }, []);
 
   const value = {
-    playBGM: (name, options) => {
+    playBGM: async (name, options) => {
       if (currentBGM.source) {
         if (typeof currentBGM.source.stop === "function") {
           currentBGM.source.stop();
@@ -297,9 +297,9 @@ const SoundManagerProvider = ({ children }) => {
         });
       });
     },
-    playNormalSFX: (name, options) =>
+    playNormalSFX: async (name, options) =>
       loadAndPlaySound("normalSfx", "", name, options),
-    playMotionSFX: (setName, name, options) =>
+    playMotionSFX: async (setName, name, options) =>
       loadAndPlaySound("motionSfx", setName, name, options),
     pauseSound,
     resumeSound,

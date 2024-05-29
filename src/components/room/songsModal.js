@@ -1,13 +1,45 @@
-import React, { useEffect, useState } from "react"
+import React, { useEffect, useRef, useState } from "react"
 import axios from 'axios';
 import "../../styles/room/musicModal.scss"
 import emptyStar from "../../img/emptyStar.png"
 import fullStar from "../../img/fullStar.png"
+import { useAudio } from "../../components/common/useSoundManager.js";
 
 const SongsModal = ({ modalOn, handleCloseModal ,handleSongSelect }) => {
   const [songs, setSongs] = useState([]);
   const [difficulty, setDifficulty] = useState("all");
+  const [hoveredSong, setHoveredSong] = useState(null); 
   const backendUrl = process.env.REACT_APP_BACK_API_URL;
+  const { playNormalSFX } = useAudio();
+  const audioRef = useRef(null); // 노래 가져오기
+
+  // 노래 재생
+  useEffect(() => {
+    const audio = audioRef.current;
+    if (audio && hoveredSong) {
+      audio.src = `/song/${hoveredSong}.mp3`;
+      audio.play().catch((error) => {
+        console.error("오디오 재생 중 오류 발생:", error);
+      });
+    }
+  }, [hoveredSong]);
+
+  // 노래 중지
+  const handleStop = () => {
+    const audio = audioRef.current;
+    if (audio) {
+      audio.pause(); // 일시정지
+      audio.currentTime = 0; // 재생 위치를 처음으로 설정
+    }
+  };
+
+  const handleClickSound = () => {
+    playNormalSFX("menuHover.mp3", { volume: 1 });
+  };
+
+  const songSelectSound = () => {
+    playNormalSFX("selectSong.mp3", { volume: 0.5 });
+  };
 
   const fetchSongs = async () => {
     try {
@@ -68,7 +100,7 @@ const SongsModal = ({ modalOn, handleCloseModal ,handleSongSelect }) => {
         alert("즐겨찾기가 해제되었습니다.");
       }
       
-      console.log(song);
+      // console.log(song);
     } catch (error) {
       console.error("Error updating favorite status:", error);
     }
@@ -80,6 +112,7 @@ const SongsModal = ({ modalOn, handleCloseModal ,handleSongSelect }) => {
 
   return (
     <>
+      <audio ref={audioRef} />
       <div className={`modal-backdrop ${modalOn ? 'active' : ''}`}></div>
       <div className="musicModalBox">
         {/* 노래선택 카테고리 */}
@@ -87,34 +120,38 @@ const SongsModal = ({ modalOn, handleCloseModal ,handleSongSelect }) => {
           <div className="backArrow" onClick={handleCloseModal}></div>
           <div className="songSelectBox">
             <div className={`songSelect ${difficulty === 'all' ? 'selected' : ''}`}
-              onClick={() => setDifficulty('all')}>ALL</div>
+              onClick={() => { setDifficulty('all'); handleClickSound(); }}>ALL</div>
             <div className={`songSelect ${difficulty === 'favorite' ? 'selected' : ''}`}  
-              onClick={() => setDifficulty('favorite')}>FAVORITE</div>
+              onClick={() => { setDifficulty('favorite'); handleClickSound(); }}>FAVORITE</div>
             <div className={`songSelect ${difficulty === 'easy' ? 'selected' : ''}`} 
-              onClick={() => setDifficulty('easy')}>EASY</div>
+              onClick={() => { setDifficulty('easy'); handleClickSound(); }}>EASY</div>
             <div className={`songSelect ${difficulty === 'normal' ? 'selected' : ''}`} 
-              onClick={() => setDifficulty('normal')}>NORMAL</div>
+              onClick={() => { setDifficulty('normal'); handleClickSound(); }}>NORMAL</div>
             <div className={`songSelect ${difficulty === 'hard' ? 'selected' : ''}`} 
-              onClick={() => setDifficulty('hard')}>HARD</div>
+              onClick={() => { setDifficulty('hard'); handleClickSound(); }}>HARD</div>
           </div>
         </div>
         {/* 노래 목록 */}
         <div className="musicModalRight">
-          {songs.map((song) => (
-            <div className="songInfoWrapper" key={song.id} >
-              <div className="songAlbumImg" onClick={() => handleSongSelect(song)}>
-                <img src={`/thumbnail/${song.imagePath}`} alt = "songAlbum" />
+            {songs.map((song) => (
+              <div className="songInfoWrapper" key={song.id}
+                onMouseEnter={() => setHoveredSong(song.number)}
+                onMouseLeave={handleStop}>
+                <div className="songAlbumImg" onClick={() => {handleSongSelect(song); songSelectSound();}}>
+                  <img src={`/thumbnail/${song.imagePath}`} alt = "songAlbum" />
+                </div>
+                <div className="songInfo"
+                  onClick={() => {handleSongSelect(song); songSelectSound();}}
+                  >
+                  <h2>{song.title}</h2>
+                  <p>{song.artist}</p>
+                  <p>{song.difficulty}</p>
+                </div>
+                <div className="favorite" onClick={() => toggleFavorite(song.title)}>
+                  <img src={song.favorite ? fullStar : emptyStar} alt="favorite" />
+                </div>    
               </div>
-              <div className="songInfo" onClick={() => handleSongSelect(song)}>
-                <h2>{song.title}</h2>
-                <p>{song.artist}</p>
-                <p>{song.difficulty}</p>
-              </div>
-              <div className="favorite" onClick={() => toggleFavorite(song.title)}>
-                <img src={song.favorite ? fullStar : emptyStar} alt="favorite" />
-              </div>    
-            </div>
-          ))}
+            ))}
         </div>
       </div>
     </>

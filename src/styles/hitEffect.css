@@ -1,83 +1,70 @@
-@keyframes fadeRight {
-  0% {
-    width: 100px;
-  }
-  100% {
-    width: 300px;
-  }
-}
-
-/* .hit-effect {
-  /*position: absolute;
-  top: 50%;
-  left: 50%;
-  transform: translate(-50%, -50%);
-  width: 0;
-  height: 0;
-  border: 20px dashed rgba(255, 255, 255, 1);
-  border-radius: 50%;
-  display: none;
-  opacity: 1;
-  z-index: 10; 
-  position: absolute;
-  top: 50%;
-  left: 0;
-  width: 300px;
-  height: 100px;
-  background-image: url("../img/hit_effect.png");
-  background-size: cover;
-  background-repeat: no-repeat;
-  transform: translateY(-50%);
-  z-index: 10;
-} */
-
-@keyframes fadeIn {
-  0% {
-    opacity: 0;
-  }
-  100% {
-    transform: rotateX('180deg');
-    opacity: 1;
-  }
-  0% {
-    transform: rotateX('360deg');
-    opacity: 0;
-  }
-}
-
 .hit-effect {
   position: absolute;
   top: 50%;
-  left: 250%;
-  transform: translate(-50%, -50%);
-  width: 160px;
-  height: 160px;
-  background-image: url("../img/neweffect.png");
-  background-size: 100% 100%;
-  background-repeat: no-repeat;
-  z-index: 10;
-  opacity: 0;
-  /* animation: fadeInWidth 0.5s forwards; Apply the animation */
+  left: 50%;
+  transform: translate(-100%, -50%);
+  width: 400px;
+  height: 200px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 100px;
+  color: white;
+  z-index: 5000;
+  opacity: 1;
+  transition: opacity 0.2s;
 }
 
-.hit-effect.active {
-  animation: fadeIn 0.2s;
+.hit-effect.early::before {
+  content: "Early";
+  animation: fadeInEarly 0.2s forwards;
+  color: orange;
 }
 
-/* @keyframes hitAnimation {
+.hit-effect.late::before {
+  content: "Late";
+  animation: fadeInLate 0.2s forwards;
+  color: red;
+}
+
+.hit-effect.perfect::before {
+  content: "Perfect";
+  animation: fadeInPerfect 0.2s forwards;
+  color: cyan;
+}
+
+@keyframes fadeInEarly {
   0% {
-    width: 0;
-    height: 0;
-    opacity: 1;
-    border-width: 5px;
-    transform: translate(-50%, -50%) rotate(0deg);
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(0.8);
   }
 
   100% {
-    width: 300px;
-    height: 300px;
-    opacity: 0;
-    border-width: 30px;
-    transform: translate(-50%, -50%) rotate(360deg);
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
   }
-} */
+}
+
+@keyframes fadeInLate {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) scale(1.2);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) scale(1);
+  }
+}
+
+@keyframes fadeInPerfect {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -50%) translateY(50px);
+  }
+
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%) translateY(0);
+  }
+}

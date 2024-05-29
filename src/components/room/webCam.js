@@ -1,6 +1,6 @@
 import React, { useState, useEffect, useRef, useCallback } from "react";
 import axios from "axios";
-import Drum1 from "../mediapipe/drum1.js";
+import Drum1 from "../mediapipe/mediapipe.js";
 import "../../styles/room/webcam.scss";
 import { OpenVidu } from "openvidu-browser";
 
@@ -18,19 +18,19 @@ const WebCam = ({ players = [], roomCode }) => {
   const [hitNote, setHitNote] = useState(0);
   const [flash, setFlash] = useState(false);
 
-  useEffect(() => {
-    const interval = setInterval(() => {
-      const newHitNote = parseInt(sessionStorage.getItem("hitNote"), 10) || 0;
-      if (newHitNote > hitNote) {
-        setHitNote(newHitNote);
-        setFlash(true);
-        setTimeout(() => setFlash(false), 300); // 0.3초 후에 flash를 false로 설정
-      } else {
-        setHitNote(newHitNote);
-      }
-    }, 100); // 짧은 주기로 hitNote 값을 갱신하여 실시간 반응
-    return () => clearInterval(interval); // 컴포넌트 언마운트 시 인터벌 클리어
-  }, [hitNote]);
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     const newHitNote = parseInt(sessionStorage.getItem("hitNote"), 10) || 0;
+  //     if (newHitNote > hitNote) {
+  //       setHitNote(newHitNote);
+  //       setFlash(true);
+  //       setTimeout(() => setFlash(false), 300); // 0.3초 후에 flash를 false로 설정
+  //     } else {
+  //       setHitNote(newHitNote);
+  //     }
+  //   }, 100); // 짧은 주기로 hitNote 값을 갱신하여 실시간 반응
+  //   return () => clearInterval(interval); // 컴포넌트 언마운트 시 인터벌 클리어
+  // }, [hitNote]);
 
   useEffect(() => {
     setPlayerStatuses((prevStatuses) => {
@@ -96,7 +96,7 @@ const WebCam = ({ players = [], roomCode }) => {
         if (token) {
           session
             .connect(token, { clientData: myNickname })
-            .then(() => {
+            .then((stream) => {
               navigator.mediaDevices.getUserMedia({ video: true })
                 .then((stream) => {
                   const videoSource = stream.getVideoTracks()[0];
@@ -151,10 +151,13 @@ const WebCam = ({ players = [], roomCode }) => {
       ]);
     });
 
-     session.on("streamDestroyed", (event) => {
+    session.on("streamDestroyed", (event) => {
       const streamNickname = JSON.parse(event.stream.connection.data).clientData; // 닉네임 데이터 추출
       if (otherVideosRef.current[streamNickname]) {
-        otherVideosRef.current[streamNickname].innerHTML = ""; // 비디오 컨테이너를 비움
+        const videoContainer = otherVideosRef.current[streamNickname];
+        if (videoContainer && videoContainer.contains(event.element)) {
+          videoContainer.removeChild(event.element);
+        }
       }
 
       setSubscribers((subs) =>
@@ -195,11 +198,11 @@ const WebCam = ({ players = [], roomCode }) => {
                 <div
                   className="webCamBoxDiv"
                   style={{
-                    backgroundImage: `linear-gradient(to bottom, rgba(${color}, 1), black)`,
-                    boxShadow:
-                      myNickname === nickname && flash
-                        ? "0 0 15px 10px rgba(255, 255, 255, 0.8)"
-                        : "none",
+                    backgroundImage: `linear-gradient(to bottom, rgba(${color}, 1), rgba(${color}, 1))`,
+                    // boxShadow:
+                    //   myNickname === nickname && flash
+                    //     ? "0 0 15px 10px rgba(255, 255, 255, 0.8)"
+                    //     : "none",
                   }}
                 >
                   {myNickname === nickname ? (

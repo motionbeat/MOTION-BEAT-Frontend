@@ -68,6 +68,7 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
 
     const handleSongChange = (song) => {
       setSelectedSong(song);
+      setPlaySong(song.number);
       sessionStorage.setItem("songTitle", song.title);
       sessionStorage.setItem("songArtist", song.artist);
       sessionStorage.setItem("songAlbum", song.imagePath);
@@ -92,7 +93,7 @@ const SelectSong = ({ songNumber, hostName, roomCode }) => {
       roomCode,
     };
     socket.emit("changeSong", sendData, (res) => {
-      console.log("changeSong res", res);
+      // console.log("changeSong res", res);
     });
 
     setModalOn(false);

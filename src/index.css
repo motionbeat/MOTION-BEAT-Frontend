@@ -19,4 +19,5 @@ body {
   /* text-align: center; */
   /* 둘다는 overflow:hidden, 세로스크롤은 overflow-y: hidden */
   /* overflow-x: hidden; */
+  font-family: 'Pretendard', sans-serif;
 }

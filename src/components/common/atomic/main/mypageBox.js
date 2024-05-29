@@ -22,10 +22,10 @@ const MypageBox = () => {
 
       if (activeTab === 'favorite') {
         setFavoriteSongList(response.data);
-        console.log(response.data);
+        // console.log(response.data);
       } else if (activeTab === 'recent') {
         setRecentSongList(response.data.recentlyPlayed);
-        console.log(response.data.recentlyPlayed);
+        // console.log(response.data.recentlyPlayed);
       }
     } catch (error) {
       console.error("leave room error", error);
@@ -34,11 +34,11 @@ const MypageBox = () => {
 
   useEffect(() => {
     fetchData();
-    console.log("Active tab is now:", activeTab);
+    // console.log("Active tab is now:", activeTab);
   }, [activeTab]); // activeTab이 변경될 때마다 fetchData 호출
 
   const handleClick = (tab) => { // 탭 클릭 시 호출되는 함수
-    console.log("Changing tab to:", tab);
+    // console.log("Changing tab to:", tab);
     setActiveTab(tab);
   };
 

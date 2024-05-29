@@ -7,8 +7,20 @@ import sona1 from "../../img/sona1.jpg";
 import sona2 from "../../img/sona2.png";
 import sona3 from "../../img/sona3.jpg";
 import sona4 from "../../img/sona4.jpg";
+import GlitchButton from "components/common/atomic/room/glitchButton.js";
+import { useAudio } from "../common/useSoundManager.js";
+// import DRUM1 from "../../img/instrument/drum.png";
+// import DRUM2 from "../../img/instrument/triangle.png";
+// import DRUM3 from "../../img/instrument/tamburin.png";
 
 const sonaImages = [sona1, sona2, sona3, sona4];
+
+const instrumentDisplayNames = {
+  drum1: "KICK & CRASH",
+  drum2: "HIT & SNARE",
+  drum3: "HAT & TOM",
+  drum4: "BASS"
+};
 
 const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
   const [playerStatuses, setPlayerStatuses] = useState({});
@@ -17,9 +29,10 @@ const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
   const [instruModal, setInstruModal] = useState(false);
   const [instrumentList, setInstrumentList] = useState([]);
   const [playerImages, setPlayerImages] = useState({});
+  const { playMotionSFX } = useAudio();
 
   useEffect(() => {
-    console.log("playerStatuses has been updated:", playerStatuses);
+    // console.log("playerStatuses has been updated:", playerStatuses);
   }, [playerStatuses]);
 
   useEffect(() => {
@@ -54,7 +67,7 @@ const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
           isReady: userReady.isReady,
         },
       }));
-      console.log("ready", userReady);
+      // console.log("ready", userReady);
     });
 
     socket.on("instrumentStatus", (res) => {
@@ -77,7 +90,7 @@ const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
   const readyBtnClick = (nickname) => {
     if (myNickname === nickname) {
       socket.emit("ready", (res) => {
-        console.log("ready res", res);
+        // console.log("ready res", res);
       });
       setPlayerStatuses((prevStatuses) => ({
         ...prevStatuses,
@@ -148,6 +161,11 @@ const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
     setInstruModal(false);
   };
 
+    // 버튼 클릭 시 사운드 재생
+    const handleButtonClick = (instrument, motionType) => {
+      playMotionSFX(instrument, motionType, { volume: 1 });
+    };
+
   return (
     <>
       <div className="playersBox">
@@ -177,22 +195,34 @@ const RoomPlayers = ({ players = [], hostName, roomCode, ingame }) => {
                     className="myInstrument"
                     onClick={() => findingInstrument(nickname)}
                   >
-                    {instrument}
+                  {instrumentDisplayNames[instrument] || instrument}
                   </p>
                 </div>
                 {instruModal && (
                   <div className="instrumentModal">
-                    {instrumentList.map((instrument) => (
-                      <ul key={instrument.id}>
-                        <li
-                          onClick={() =>
-                            selectedInstrument(instrument.instrumentName)
-                          }
-                        >
-                          {instrument.instrumentName}
-                        </li>
-                      </ul>
-                    ))}
+                    {instrumentList.map((instrument) => {
+                      // const instrumentImage = instrumentImages[instrument.instrumentName] || null;
+                      return (
+                        <div className="instrumentInner" key={instrument.id}>
+                          <div className="instrumentBox">
+                            <h3 className="instruName"
+                              onClick={() =>
+                                selectedInstrument(instrument.instrumentName)
+                              }>
+                              {instrumentDisplayNames[instrument.instrumentName] || instrument.instrumentName}
+                              </h3>
+                            <div className="instrumentKind">
+                              <GlitchButton
+                                onClick={() =>handleButtonClick(instrument.instrumentName, "A")}>Left ♪
+                              </GlitchButton>
+                              <GlitchButton
+                                onClick={() =>handleButtonClick(instrument.instrumentName, "B")}>Right ♬
+                              </GlitchButton>
+                            </div>
+                          </div>
+                        </div>
+                      );
+                    })}
                   </div>
                 )}
               </div>

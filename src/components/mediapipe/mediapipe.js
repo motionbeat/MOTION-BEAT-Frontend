@@ -13,8 +13,7 @@ const Drum1 = ({ dispatchKey }) => {
 
   const initializePose = useCallback(() => {
     poseRef.current = new posedetection.Pose({
-      locateFile: (file) =>
-        `https://fastly.jsdelivr.net/npm/@mediapipe/pose/${file}`,
+      locateFile: (file) => `https://cdn.jsdelivr.net/npm/@mediapipe/pose/${file}?v=${new Date().getTime()}`,
     });
     poseRef.current.setOptions({
       upperBodyOnly: true,
@@ -55,6 +54,9 @@ const Drum1 = ({ dispatchKey }) => {
           const rightWrist =
             results.poseLandmarks?.[posedetection.POSE_LANDMARKS.RIGHT_WRIST];
 
+          let leftWristDetected = false;
+          let rightWristDetected = false;
+
           if (leftWrist && leftWrist.visibility > 0.5) {
             if (
               leftWrist.x * canvas.width > widthSegment &&
@@ -64,6 +66,7 @@ const Drum1 = ({ dispatchKey }) => {
                 updatePostureStatus("A"); // 오른쪽 아래에 있는 경우 A 상태로 업데이트
                 leftWristInArea.current = true;
               }
+              leftWristDetected = true;
             } else {
               leftWristInArea.current = false;
             }
@@ -80,12 +83,15 @@ const Drum1 = ({ dispatchKey }) => {
                 updatePostureStatus("B"); // 왼쪽 아래에 있는 경우 B 상태로 업데이트
                 rightWristInArea.current = true;
               }
+              rightWristDetected = true;
             } else {
               rightWristInArea.current = false;
             }
           } else {
             rightWristInArea.current = false;
           }
+
+          drawDetectionAreas(canvasContext, canvas.width, canvas.height, leftWristDetected, rightWristDetected);
         });
 
         onFrame();
@@ -97,7 +103,7 @@ const Drum1 = ({ dispatchKey }) => {
     }
   }, []);
 
-  const drawDetectionAreas = (ctx, width, height) => {
+  const drawDetectionAreas = (ctx, width, height, leftWristDetected, rightWristDetected) => {
     const widthSegment = width / 2;
     const heightSegment = height / 4;
 
@@ -105,11 +111,19 @@ const Drum1 = ({ dispatchKey }) => {
     ctx.strokeStyle = "rgba(255, 0, 0, 1)";
     ctx.lineWidth = 6;
     ctx.strokeRect(0, 3 * heightSegment - 10, widthSegment * 0.9, heightSegment);
+    if (leftWristDetected) {
+      ctx.fillStyle = "rgba(255, 0, 0, 0.5)";
+      ctx.fillRect(0, 3 * heightSegment - 10, widthSegment * 0.9, heightSegment);
+    }
 
     // Draw the second detection area (blue rectangle)
     ctx.strokeStyle = "rgba(0, 0, 255, 1)";
     ctx.lineWidth = 6;
     ctx.strokeRect(widthSegment + 15, 3 * heightSegment - 10, widthSegment * 0.9, heightSegment);
+    if (rightWristDetected) {
+      ctx.fillStyle = "rgba(0, 0, 255, 0.5)";
+      ctx.fillRect(widthSegment + 15, 3 * heightSegment - 10, widthSegment * 0.9, heightSegment);
+    }
   };
 
   const updatePostureStatus = useCallback(

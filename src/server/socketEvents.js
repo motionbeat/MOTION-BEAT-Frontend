@@ -4,7 +4,7 @@ import socket from "./server.js";
 export const login = (nickname)=>{
   socket.emit("login", nickname, (res) => {
       if (res?.ok) {
-        console.log(nickname);
+        // console.log(nickname);
       }
   });  
 }
